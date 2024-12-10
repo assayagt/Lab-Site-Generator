@@ -1,6 +1,7 @@
 import Publication
 class Website:
     def __init__(self, domain):
+        self.members = []
         self.members_publications = {}
         self.domain = domain
 
