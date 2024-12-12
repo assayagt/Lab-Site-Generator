@@ -30,6 +30,8 @@ class WebsiteFacade:
 
 
             #TODO : After sending the notifications to the website members, add the new publications to the website
-            # add the new publications to the website
-            # for publication in publications:
-            #     website.create_publication(publication.title, publication.authors, publication.date, publication.approved, publication.publication_link, publication.media)
+            # For now, assume that the publications are already sent to the website members
+            
+            #add the new publications to the website
+            for publication in publications:
+                website.create_publication(publication.title, publication.authors, publication.date, publication.approved, publication.publication_link, publication.media)
