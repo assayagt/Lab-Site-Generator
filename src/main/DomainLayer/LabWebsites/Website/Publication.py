@@ -9,4 +9,3 @@ class Publication:
         self.date = date
         self.approved = approved
         self.publication_link = publication_link
-        self.media = media
