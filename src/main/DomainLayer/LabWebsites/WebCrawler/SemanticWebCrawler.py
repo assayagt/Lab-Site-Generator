@@ -7,10 +7,6 @@ class SemanticWebCrawler(WebCrawler):
         self.visited_papers = set()  # Cache to store visited paper IDs
 
     def fetch_crawler_publications(self, authors, year):
-        """
-        Fetches publications for the given authors and year from the Semantic Scholar API.
-        Returns a list of PublicationDTO instances.
-        """
         results = []
 
         for author in authors:
@@ -35,7 +31,7 @@ class SemanticWebCrawler(WebCrawler):
                                     paper_id=paper_id,
                                     title=paper.get("title"),
                                     authors=paper_authors,
-                                    publication_date=f"{paper.get('year')}-01-01",  # Default to Jan 1 if only year available
+                                    publication_year=paper.get('year'),
                                     approved=False,  # Default value
                                     publication_link=paper.get("url"),
                                     media=None
