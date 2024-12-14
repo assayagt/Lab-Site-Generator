@@ -1,10 +1,9 @@
 import State
 
 class Member(State):
-    def __init__(self, user_id=None, member_id=None, username=None):
+    def __init__(self, user_id=None, email=None):
         self.user_id = user_id
-        self.member_id = member_id
-        self.username = username
+        self.email = email
 
     def logout(self):
         # Do nothing
@@ -16,11 +15,8 @@ class Member(State):
     def login(self):
         raise Exception("User is already logged in")
 
-    def get_username(self):
-        return self.username
-
-    def get_member_id(self):
-        return self.member_id
+    def get_email(self):
+        return self.email
 
     def is_member(self):
         return True
