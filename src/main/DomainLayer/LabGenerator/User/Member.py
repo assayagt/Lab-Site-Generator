@@ -1,4 +1,5 @@
 import State
+from src.main.Util.ExceptionsEnum import ExceptionsEnum
 
 class Member(State):
     def __init__(self, user_id=None, email=None):
@@ -13,7 +14,7 @@ class Member(State):
         pass
 
     def login(self):
-        raise Exception("User is already logged in")
+        raise Exception(ExceptionsEnum.USER_ALREADY_LOGGED_IN.value)
 
     def get_email(self):
         return self.email
