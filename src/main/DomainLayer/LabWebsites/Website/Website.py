@@ -1,6 +1,7 @@
 import Publication
 class Website:
     def __init__(self, domain):
+        self.members = []
         self.members_publications = {}
         self.domain = domain
 
@@ -12,12 +13,9 @@ class Website:
                 self.members_publications[author] = []
             self.members_publications[author].append(new_publication)
 
-    def verify_publication_not_blacklisted(self, publication_dto: Publication):
-        # Check if the publication exists in the system (in the members_publications list)
-        for publications in self.members_publications.values():
-            for publication in publications:
-                if publication.title == publication_dto.title and publication.date == publication_dto.date:
-                    if not publication.approved:
-                        return False
-        # If the publication is not found or is approved, return True (not blacklisted)
-        return True
+
+    def check_publication_exist(self, publication):
+        for member in self.members:
+            if publication in self.members_publications[member]:
+                return True
+        return False

@@ -1,6 +1,10 @@
-class WebCrawler:
-    def __init__(self):
-        pass
+from abc import ABC, abstractmethod
 
-    def some_operation(self):
+class WebCrawler(ABC):
+    @abstractmethod
+    def fetch_crawler_publications(self, authors, date):
+        """
+        Abstract method to fetch publications for the given authors and date.
+        Must be implemented by concrete crawlers.
+        """
         pass
