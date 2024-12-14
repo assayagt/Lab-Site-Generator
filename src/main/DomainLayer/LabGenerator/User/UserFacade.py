@@ -1,11 +1,10 @@
 import Member
+from src.main.Util.ExceptionsEnum import ExceptionsEnum
 
 class UserFacade:
     _singleton_instance = None
 
     def __init__(self):
-        if UserFacade._singleton_instance is not None:
-            raise Exception("This is a singleton class!")
         self.users = {}
         self.members_sites = {}
 
@@ -49,4 +48,4 @@ class UserFacade:
 
     def error_if_user_notExist(self, userId):
         if self.get_user_by_id(userId) is None:
-            raise Exception("User not exist!")
+            raise Exception(ExceptionsEnum.USER_NOT_EXIST.value)

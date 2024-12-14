@@ -1,4 +1,5 @@
 import State
+from src.main.Util.ExceptionsEnum import ExceptionsEnum
 
 class Guest(State):
     def __init__(self):
@@ -8,7 +9,7 @@ class Guest(State):
         return None
 
     def logout(self):
-        raise ValueError("Only a member can log out")
+        raise Exception(ExceptionsEnum.USER_IS_NOT_MEMBER.value)
 
     def exit_Generator_system(self):
         pass
