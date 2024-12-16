@@ -30,4 +30,5 @@ class NotificationsFacade:
         # Create the email notification
         email_notification = EmailNotification(recipientEmail, "New Publication Pending Approval", body)
 
+
         self.notify_user(email_notification)

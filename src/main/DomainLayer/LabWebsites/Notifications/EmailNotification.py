@@ -61,5 +61,6 @@ class EmailNotification:
             with open('token.json', 'w') as token:
                 token.write(creds.to_json())
 
+
         return build('gmail', 'v1', credentials=creds)
 
