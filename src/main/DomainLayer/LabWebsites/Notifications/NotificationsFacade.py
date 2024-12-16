@@ -24,7 +24,7 @@ class NotificationsFacade:
             f"Authors: {', '.join(publicationDto.authors)}\n"
             f"Year: {publicationDto.publication_year}\n"
             f"Link: {publicationDto.publication_link}\n\n"
-            f"Please review and approve or reject this publication."
+            f"Please review and approve or reject this publication on your lab site."
         )
 
         # Create the email notification

@@ -1,0 +1,109 @@
+[33mcommit dbf4442f908b8d803e05b4042be52b582ff1c97b[m[33m ([m[1;36mHEAD -> [m[1;32m7-notifications-lab-websites-email-notifications[m[33m)[m
+Author: Nitzan Horovitz <horovitn@post.bgu.ac.il>
+Date:   Mon Dec 16 18:14:17 2024 +0200
+
+    Added new changes with email notification
+
+[33mcommit 8e1b8a5941fa33bbbb90a70b434c4ef0f1c0e28b[m
+Author: Nitzan Horovitz <horovitn@post.bgu.ac.il>
+Date:   Mon Dec 16 17:54:20 2024 +0200
+
+    Updated notification component
+
+[33mcommit 5b15e7c1f7baed693892b55f0aac6ea4e93c6d9b[m[33m ([m[1;31morigin/7-notifications-lab-websites-email-notifications[m[33m)[m
+Author: Nitzan Horovitz <horovitn@post.bgu.ac.il>
+Date:   Sun Dec 15 15:36:14 2024 +0200
+
+    Added notification component - not done yet
+
+[33mcommit 2e438408597f735cd0d371463b46f12289e5c4b5[m
+Merge: e2896ee 5c35cc8
+Author: Nitzan Horovitz <104005602+nitzkiii@users.noreply.github.com>
+Date:   Sat Dec 14 14:14:04 2024 +0200
+
+    Merge pull request #6 from assayagt/1-generator-user-component
+    
+    merge branch 1 into main
+
+[33mcommit 5c35cc8eacf6dac2d3861bf2d04bf36877df23bb[m[33m ([m[1;31morigin/1-generator-user-component[m[33m, [m[1;32m1-generator-user-component[m[33m)[m
+Merge: 0d12851 29b9bd4
+Author: Nitzan Horovitz <horovitn@post.bgu.ac.il>
+Date:   Sat Dec 14 14:12:05 2024 +0200
+
+    Merge branch '1-generator-user-component' of https://github.com/assayagt/Lab-Site-Generator into 1-generator-user-component
+
+[33mcommit 0d128518107e6660e4231f623ab00a13fb1c906f[m
+Author: Nitzan Horovitz <horovitn@post.bgu.ac.il>
+Date:   Sat Dec 14 14:11:42 2024 +0200
+
+    Updated exceptions to be imported from enum
+
+[33mcommit e2896ee2c89afa5770cd9d37e428348207dff472[m
+Merge: b81c457 29b9bd4
+Author: Nitzan Horovitz <104005602+nitzkiii@users.noreply.github.com>
+Date:   Sat Dec 14 13:57:37 2024 +0200
+
+    Merge pull request #5 from assayagt/1-generator-user-component
+    
+    Added logic for user component in the generator site
+
+[33mcommit 29b9bd41207c101e2401c6bddb6a1fed2f0561f2[m
+Merge: 13900a0 b81c457
+Author: Nitzan Horovitz <104005602+nitzkiii@users.noreply.github.com>
+Date:   Sat Dec 14 13:57:29 2024 +0200
+
+    Merge branch 'main' into 1-generator-user-component
+
+[33mcommit 13900a049168699aafb3b13654579ffc0f771ba0[m
+Author: Nitzan Horovitz <horovitn@post.bgu.ac.il>
+Date:   Sat Dec 14 13:51:08 2024 +0200
+
+    Added logic for user component in the generator site
+
+[33mcommit b81c457d14c9c392b0e5e5e6f17b56d018758a86[m
+Merge: 59b7235 01ff2d0
+Author: assayagt <104003703+assayagt@users.noreply.github.com>
+Date:   Thu Dec 12 18:26:39 2024 +0200
+
+    Merge pull request #4 from assayagt/2-web-crawler-fetch-publications-feature
+    
+    Changed publication addition so publication add auto without permissi…
+
+[33mcommit 01ff2d09dc245f669c7e7c05aec8cea7adcc52d6[m
+Author: assayagt <assayagt@post.bgu.ac.il>
+Date:   Thu Dec 12 18:26:02 2024 +0200
+
+    Changed publication addition so publication add auto without permission, for now
+
+[33mcommit 59b7235e6fa1aed90aa582318e28dfcbd37f8bb1[m
+Merge: 9771c2c 01bfefe
+Author: assayagt <104003703+assayagt@users.noreply.github.com>
+Date:   Thu Dec 12 18:12:11 2024 +0200
+
+    Merge pull request #3 from assayagt/2-web-crawler-fetch-publications-feature
+    
+    2 web crawler fetch publications feature
+
+[33mcommit 01bfefe3499b722a8ceeb0c2a2395592de41ff6a[m
+Author: assayagt <assayagt@post.bgu.ac.il>
+Date:   Thu Dec 12 18:11:28 2024 +0200
+
+    Added some crawling functionality
+
+[33mcommit 89c4c350c9da62eadb973c1ae38a59df39561aa9[m
+Author: assayagt <assayagt@post.bgu.ac.il>
+Date:   Thu Dec 12 17:58:13 2024 +0200
+
+    Added Google Scholar web crawler
+
+[33mcommit 94eb35f82412d73e1e89dc4a025102c613509118[m
+Author: assayagt <assayagt@post.bgu.ac.il>
+Date:   Tue Dec 10 10:22:22 2024 +0200
+
+    Added SemanticCrawler
+
+[33mcommit 9771c2c805b49b263ba83aa5e1b7b52b18d09080[m[33m ([m[1;32mmain[m[33m)[m
+Author: Nitzan Horovitz <horovitn@post.bgu.ac.il>
+Date:   Sun Dec 8 12:31:00 2024 +0200
+
+    Added inital project code
