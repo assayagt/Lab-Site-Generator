@@ -5,3 +5,4 @@ class ExceptionsEnum(Enum):
     USER_NOT_EXIST = "User does not exist"
     USER_ALREADY_LOGGED_IN = "user is already logged in"
     USER_NOT_EXIST = "User does not exist"
+    ERROR_SENDING_EMAIL = "Error sending email"
