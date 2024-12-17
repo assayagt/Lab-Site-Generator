@@ -10,3 +10,5 @@ class GeneratorSystem:
         if GeneratorSystem._singleton_instance is None:
             GeneratorSystem._singleton_instance = GeneratorSystem()
         return GeneratorSystem._singleton_instance
+    
+    
