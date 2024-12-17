@@ -14,9 +14,10 @@ class WebsiteFacade:
     def get_all_websites(self):
         return self.websites
 
+    """
     def crawl_for_publications(self):
         # get list of all websites
-        websites = get_all_websites()
+        websites = self.get_all_websites()
 
         # for each website, send to the webCrawler facade the members and current year to fetch publications
         publications = []
@@ -35,3 +36,4 @@ class WebsiteFacade:
             #add the new publications to the website
             for publication in publications:
                 website.create_publication(publication.title, publication.authors, publication.date, publication.approved, publication.publication_link, publication.media)
+    """
