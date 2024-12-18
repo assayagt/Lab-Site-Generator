@@ -1,8 +1,8 @@
 from datetime import datetime
-from src.main.DomainLayer.LabWebsites.WebCrawler import WebCrawlerFacade
-from src.main.DomainLayer.LabWebsites.Website import WebsiteFacade
-from src.main.DomainLayer.LabWebsites.Notifications import NotificationsFacade
-
+from src.main.DomainLayer.LabWebsites.WebCrawler.WebCrawlerFacade import WebCrawlerFacade
+from src.main.DomainLayer.LabWebsites.Website.WebsiteFacade import WebsiteFacade
+from src.main.DomainLayer.LabWebsites.Notifications.NotificationsFacade import NotificationsFacade
+from src.main.DomainLayer.LabWebsites.User.AllWebsitesUserFacade import AllWebsitesUserFacade
 class LabSystem:
     _singleton_instance = None
 
@@ -10,6 +10,7 @@ class LabSystem:
         self.webCrawlerFacade = WebCrawlerFacade()
         self.websiteFacade = WebsiteFacade()
         self.notificationsFacade = NotificationsFacade()
+        self.allWebsitesUserFacade = AllWebsitesUserFacade()
 
     @staticmethod
     def get_instance():
@@ -34,7 +35,11 @@ class LabSystem:
                 if not website.check_publication_exist(publication):
                     publications.append(publication)
 
-            #TODO: send notifications to the website members about the new publications
+                    # send notifications to the website authors about the new publications, for initial approve
+                    authors = publication.authors
+                    for author in authors:
+                        email = self.allWebsitesUserFacade.getMemberEmailByName(author, website.domain)
+                        self.notificationsFacade.send_publication_notification(publication, email)
 
 
 
