@@ -86,9 +86,6 @@ class ChooseDomain(Resource):
         website_name = args['website_name']
 
         try:
-            # Validate domain
-            if not isinstance(domain, str) or not domain:
-                raise ValueError("Invalid domain provided")
             
             # Find the site by website name
             site_folder = os.path.join(GENERATED_WEBSITES_FOLDER, website_name.replace(' ', '_'))
@@ -180,7 +177,6 @@ class StartCustomSite(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('website_name', type=str, required=True, help="Website name is required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
-        parser.add_argument('components', type=list, required=True, help="Components are required")
         args = parser.parse_args()
 
         website_name = args['website_name']
@@ -188,30 +184,7 @@ class StartCustomSite(Resource):
         components = args['components']
 
         try:
-            # Validate the inputs
-            if not isinstance(website_name, str) or not website_name:
-                raise ValueError("Invalid website name")
-            if not isinstance(domain, str) or not domain:
-                raise ValueError("Invalid domain")
-            if not isinstance(components, list) or not all(isinstance(comp, str) for comp in components):
-                raise ValueError("Components should be a list of strings")
-
-            # Create a new website folder
-            website_folder = os.path.join(GENERATED_WEBSITES_FOLDER, website_name.replace(' ', '_'))
-            os.makedirs(website_folder, exist_ok=True)
-
-            # Prepare site data
-            site_data = {
-                "title": website_name,
-                "description": "",
-                "components": components,
-                "domain": domain
-            }
-
-            # Save site data to a JSON file
-            with open(os.path.join(website_folder, 'siteData.json'), 'w') as json_file:
-                json.dump(site_data, json_file)
-
+          
             return jsonify({"message": f"Custom site '{website_name}' started successfully", "websiteLink": f"/view/{website_name.replace(' ', '_')}/index.html"}), 200
 
         except Exception as e:
