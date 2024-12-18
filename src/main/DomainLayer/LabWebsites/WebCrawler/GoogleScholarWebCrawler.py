@@ -1,4 +1,8 @@
+import time
+from bs4 import BeautifulSoup
 from scholarly import scholarly
+from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
+import requests
 
 class GoogleScholarWebCrawler:
     def __init__(self):
@@ -26,11 +30,11 @@ class GoogleScholarWebCrawler:
 
                         url = f"https://scholar.google.com/citations?view_op=view_citation&hl=en&user={scholar_id}&citation_for_view={publication['author_pub_id']}"
 
-                        publication_authors = get_authors_from_citation(url)
+                        publication_authors = self.get_authors_from_citation(url)
 
                         publication_dto = PublicationDTO(
-                            paper_id=id_counter,
-                            title=title,
+                            paper_id=self.id_counter,
+                            title=new_publication_title,
                             authors=publication_authors,
                             publication_year=pub_year,
                             approved=False,  # Default value
@@ -38,7 +42,7 @@ class GoogleScholarWebCrawler:
                             media=None
                         )
 
-                        id_counter += 1
+                        self.id_counter += 1
 
                         self.visited_papers.add(publication_dto)
                         results.append(publication_dto)

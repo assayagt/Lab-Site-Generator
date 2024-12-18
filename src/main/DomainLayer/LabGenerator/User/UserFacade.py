@@ -1,4 +1,4 @@
-import Member
+from Member import Member
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 
 class UserFacade:
@@ -6,8 +6,8 @@ class UserFacade:
 
     def __init__(self):
         self.users = {}
-        self.members_sites = {}
-        self.custom_members_sites = {}
+        self.members_sites = {} # sites that was already generated
+        self.members_customSites = {}
 
     @staticmethod
     def get_instance():
@@ -16,8 +16,23 @@ class UserFacade:
         return UserFacade._singleton_instance
 
     def create_new_site_manager(self, email, domain):
-        if domain not in self.members_sites[email]["domains"]:
-            self.members_sites[email]["domains"].append(domain)
+        if domain not in self.members_sites[email]:
+            self.members_sites[email].append(domain)
+
+    def create_new_customSite_manager(self, email, domain):
+        if domain not in self.members_customSites[email]["domains"]:
+            self.members_customSites[email]["domains"].append(domain)
+
+    def change_site_domain(self, old_domain, new_domain):
+        # Update domains in self.members_sites
+        for email, domains in self.members_sites.items():
+            if old_domain in domains:
+                domains[domains.index(old_domain)] = new_domain
+
+        # Update domains in self.members_customSites
+        for email, data in self.members_customSites.items():
+            if old_domain in data["domains"]:
+                data["domains"][data["domains"].index(old_domain)] = new_domain
 
     def login(self, userId, email):
         """Handle login logic after retrieving user info."""
@@ -27,7 +42,8 @@ class UserFacade:
             member.setUserId(userId)
         else:
             member = Member(user_id=userId, email=email)
-            self.members_sites[email] = {"member": member, "domains": []}
+            self.members_sites[email] = []
+            self.members_customSites[email] = {"member": member, "domains": []}
         user.login(member)
 
     def logout(self, userId):
@@ -36,8 +52,8 @@ class UserFacade:
 
     def get_member_by_email(self, email):
         """Retrieve a Member object by email."""
-        if email in self.members_sites:
-            return self.members_sites[email]["member"]
+        if email in self.members_customSites:
+            return self.members_customSites[email]["member"]
         return None
 
     def get_user_by_id(self, userId):
