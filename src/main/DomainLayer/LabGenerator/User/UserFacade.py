@@ -7,6 +7,7 @@ class UserFacade:
     def __init__(self):
         self.users = {}
         self.members_sites = {}
+        self.custom_members_sites = {}
 
     @staticmethod
     def get_instance():
