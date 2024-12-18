@@ -17,6 +17,7 @@ class SiteCustomFacade:
     def create_new_site(self, domain, name, components, template: Template):
         site = SiteCustom(domain, name, components, template)
         self.sites.append(site)
+        return site
 
     def change_site_name(self, site_index, new_name):
         """Changes the name of a site."""

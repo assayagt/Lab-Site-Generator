@@ -19,13 +19,14 @@ class GeneratorSystem:
     
     def create_website(self, website_name, domain, components):
         """Create a website using SiteCustomFacade."""
-        return self.site_custom_facade.create_website(website_name, domain, components)
+        site =  self.site_custom_facade.create_website(website_name, domain, components)
+        self.user_facade.addCustomWebsite(site) ##TODO: add function to facade
 
     def change_website(self, website_name, new_name=None, new_domain=None, new_components=None):
         """Change website details using SiteCustomFacade."""
         return self.site_custom_facade.change_website(website_name, new_name, new_domain, new_components)
 
-    def login(self, email, password):
+    def login(self, email, password): #TODO: change a little
         """Log in a user using UserFacade."""
         return self.user_facade.login(email, password)
 

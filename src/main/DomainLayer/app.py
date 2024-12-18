@@ -1,7 +1,9 @@
 from flask import Flask, json, jsonify, render_template, request, send_from_directory
 from flask_restful import Api, Resource, reqparse
 import os
-from flask_cors import CORS  # Import CORS
+from flask_cors import CORS
+
+from main.DomainLayer.LabGenerator.GeneratorSystem import GeneratorSystem  # Import CORS
 
 app = Flask(__name__)
 CORS(app)
@@ -12,6 +14,10 @@ UPLOAD_FOLDER = './uploads'
 GENERATED_WEBSITES_FOLDER = './LabWebsites'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(GENERATED_WEBSITES_FOLDER, exist_ok=True)
+
+
+generator_system = GeneratorSystem.get_instance()
+
 
 # Service for uploading file
 class FileUploadResource(Resource):
