@@ -18,6 +18,38 @@ class LabSystem:
             LabSystem._singleton_instance = LabSystem()
         return LabSystem._singleton_instance
 
+    def login(self, domain, userId, email):
+        """
+        Login user into a specific website by email (should be via google in the future)
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId)
+        userFacade.login(userId, email)
+
+    def logout(self, domain, userId):
+        """
+        Logout user from a specific website
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.logout(userId)
+
+    def create_new_site_manager(self, domain, email):
+        """
+        Define and add new manager to a specific website.
+        The given email must be associated with a Lab Member of the given website
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_labMember_notExist(email)
+        userFacade.create_new_site_manager(email)
+
+    def register_new_LabMember(self, domain, email):
+        """
+        Define a new lab member in a specific website.
+        The given email must not be associated with a member(manager/lab member/creator..) of the given website
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.register_new_LabMember(email)
+
     def crawl_for_publications(self):
         """
         Fetches publications for the given authors and year from all WebCrawlers for all websites.
