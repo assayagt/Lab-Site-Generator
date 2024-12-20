@@ -21,10 +21,22 @@ class LabSystem:
     def login(self, domain, userId, email):
         """
         Login user into a specific website by email (should be via google in the future)
+        If the given email is not associated with a member, an email is sent to all managers in order to approve\reject
+        the registration request
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userId)
-        userFacade.login(userId, email)
+        member = userFacade.get_member_by_email(email)
+        if member is None:
+            self.send_registration_notification_to_all_LabManagers(domain, email)
+        else:
+            userFacade.login(userId, email)
+
+    def send_registration_notification_to_all_LabManagers(self, domain, requestedEmail):
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        managers = userFacade.getManagers()
+        for managerEmail in managers:
+            self.notificationsFacade.send_registration_request_notification(requestedEmail, managerEmail)
 
     def logout(self, domain, userId):
         """

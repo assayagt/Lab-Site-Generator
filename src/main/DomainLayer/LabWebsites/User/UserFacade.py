@@ -65,10 +65,7 @@ class UserFacade:
         member = self.get_member_by_email(email)
         if member is not None:
             member.setUserId(userId)
-        else:
-            member = None
-            #TODO: send notification to managers to approve or reject the registration
-        user.login(member)
+            user.login(member)
 
     def logout(self, userId):
         user = self.get_user_by_id(userId)
