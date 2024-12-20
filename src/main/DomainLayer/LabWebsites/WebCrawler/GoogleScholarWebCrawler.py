@@ -1,8 +1,7 @@
-from datetime import time
-
+import time
 from bs4 import BeautifulSoup
 from scholarly import scholarly
-from src.main.DomainLayer.LabWebsites.Website import PublicationDTO
+from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
 import requests
 
 class GoogleScholarWebCrawler:
