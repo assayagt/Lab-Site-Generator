@@ -6,4 +6,4 @@ class ExceptionsEnum(Enum):
     USER_ALREADY_LOGGED_IN = "User is already logged in"
     USER_IS_NOT_A_LAB_MEMBER = "User is not a lab member"
     ERROR_SENDING_EMAIL = "Error sending email"
-    EMAIL_IS_ALREADY_ASSOCIATED_WITH_A_LAB_MEMBER = "The given email is already associated with a lab member"
+    EMAIL_IS_ALREADY_ASSOCIATED_WITH_A_MEMBER = "The given email is already associated with a member"
