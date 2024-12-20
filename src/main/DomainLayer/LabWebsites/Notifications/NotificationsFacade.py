@@ -1,4 +1,4 @@
-import EmailNotification
+from EmailNotification import EmailNotification
 class NotificationsFacade:
     _instance = None
 

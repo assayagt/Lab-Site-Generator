@@ -1,8 +1,8 @@
 from datetime import datetime
-from src.main.DomainLayer.LabWebsites.WebCrawler import WebCrawlerFacade
-from src.main.DomainLayer.LabWebsites.Website import WebsiteFacade
-from src.main.DomainLayer.LabWebsites.Notifications import NotificationsFacade
-
+from src.main.DomainLayer.LabWebsites.WebCrawler.WebCrawlerFacade import WebCrawlerFacade
+from src.main.DomainLayer.LabWebsites.Website.WebsiteFacade import WebsiteFacade
+from src.main.DomainLayer.LabWebsites.Notifications.NotificationsFacade import NotificationsFacade
+from src.main.DomainLayer.LabWebsites.User.AllWebsitesUserFacade import AllWebsitesUserFacade
 class LabSystem:
     _singleton_instance = None
 
@@ -10,12 +10,45 @@ class LabSystem:
         self.webCrawlerFacade = WebCrawlerFacade()
         self.websiteFacade = WebsiteFacade()
         self.notificationsFacade = NotificationsFacade()
+        self.allWebsitesUserFacade = AllWebsitesUserFacade()
 
     @staticmethod
     def get_instance():
         if LabSystem._singleton_instance is None:
             LabSystem._singleton_instance = LabSystem()
         return LabSystem._singleton_instance
+
+    def login(self, domain, userId, email):
+        """
+        Login user into a specific website by email (should be via google in the future)
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId)
+        userFacade.login(userId, email)
+
+    def logout(self, domain, userId):
+        """
+        Logout user from a specific website
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.logout(userId)
+
+    def create_new_site_manager(self, domain, email):
+        """
+        Define and add new manager to a specific website.
+        The given email must be associated with a Lab Member of the given website
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_labMember_notExist(email)
+        userFacade.create_new_site_manager(email)
+
+    def register_new_LabMember(self, domain, email):
+        """
+        Define a new lab member in a specific website.
+        The given email must not be associated with a member(manager/lab member/creator..) of the given website
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.register_new_LabMember(email)
 
     def crawl_for_publications(self):
         """
@@ -34,7 +67,11 @@ class LabSystem:
                 if not website.check_publication_exist(publication):
                     publications.append(publication)
 
-            #TODO: send notifications to the website members about the new publications
+                    # send notifications to the website authors about the new publications, for initial approve
+                    authors = publication.authors
+                    for author in authors:
+                        email = self.allWebsitesUserFacade.getMemberEmailByName(author, website.domain)
+                        self.notificationsFacade.send_publication_notification(publication, email)
 
 
 

@@ -1,6 +1,23 @@
 from abc import ABC, abstractmethod
 
 class State(ABC):
+
     @abstractmethod
-    def some_operation(self):
+    def get_member_id(self):
+        pass
+
+    @abstractmethod
+    def logout(self):
+        pass
+
+    @abstractmethod
+    def login(self):
+        pass
+
+    @abstractmethod
+    def is_member(self):
+        pass
+
+    @abstractmethod
+    def get_username(self):
         pass
