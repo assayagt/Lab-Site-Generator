@@ -113,5 +113,14 @@ class LabSystem:
         """
         return self.websiteFacade.get_all_approved_publications_of_member(domain, email)
 
+    def get_all_alumnis(self, domain):
+        return self.allWebsitesUserFacade.get_all_alumnis(domain)
+
+    def get_all_lab_members(self, domain):
+        return self.allWebsitesUserFacade.get_all_lab_members(domain)
+
+    def get_all_lab_managers(self, domain):
+        """notice! this function returns all managers including site creator!"""
+        return self.get_all_lab_managers(domain)
 
 
