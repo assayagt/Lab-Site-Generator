@@ -1,11 +1,15 @@
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
-
+from Website import Website
 class WebsiteFacade:
     def __init__(self):
         self.websites = []
 
     def add_website(self, website):
         self.websites.append(website)
+
+    def create_new_website(self, domain):
+        website = Website(domain)
+        self.add_website(website)
 
     def get_website(self, domain):
         for website in self.websites:

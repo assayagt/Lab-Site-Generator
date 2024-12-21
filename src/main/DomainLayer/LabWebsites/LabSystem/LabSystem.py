@@ -18,6 +18,19 @@ class LabSystem:
             LabSystem._singleton_instance = LabSystem()
         return LabSystem._singleton_instance
 
+    def create_new_lab_website(self, domain, lab_members_emails, lab_managers_emails, site_creator_email):
+        """
+        Create a new lab website with the given domain, lab members, lab managers, and site creator
+        """
+        self.websiteFacade.create_new_website(domain)
+        self.allWebsitesUserFacade.add_new_webstie_userFacade(domain)
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        for lab_member_email in lab_members_emails:
+            userFacade.register_new_LabMember(lab_member_email)
+        for lab_manager_email in lab_managers_emails:
+            userFacade.create_new_site_manager(lab_manager_email)
+        userFacade.set_site_creator(site_creator_email)
+
     def login(self, domain, userId, email):
         """
         Login user into a specific website by email (should be via google in the future)
@@ -62,14 +75,14 @@ class LabSystem:
 
     def create_new_site_manager_from_generator(self, domain, nominated_manager_email):
         """
-        Define and add new manager to a specific website, during site creation or from generator site.
+        Define and add new manager to a specific website, from generator site.
         The given nominated_manager_email must be associated with a Lab Member of the given website.
         """
         self.allWebsitesUserFacade.create_new_site_manager_from_generator(nominated_manager_email, domain)
 
     def register_new_LabMember_from_generator(self, email_to_register, domain):
         """
-        Define a new lab member in a specific website, during site creation or from generator site.
+        Define a new lab member in a specific website, from generator site.
         The given email_to_register must not be associated with a member(manager/lab member/creator..) of the given website.
         """
         self.allWebsitesUserFacade.register_new_LabMember_from_generator(email_to_register, domain)
