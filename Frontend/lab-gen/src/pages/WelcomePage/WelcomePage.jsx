@@ -1,27 +1,25 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Use useNavigate instead of useHistory
 
-const WelcomePage = ({ onLogin, isLoggedIn }) => {
+const WelcomePage = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showLoginPopup, setShowLoginPopup] = useState(false); // Manage the popup visibility
-  const history = useHistory();
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const navigate = useNavigate(); // Use useNavigate
 
   const handleStartClick = () => {
-    // If the user is not logged in, show the login popup
-    if (!isLoggedIn) {
-      setShowLoginPopup(true);
+    if (!email || !password) {
+      setShowLoginPopup(true); // Show login if not logged in
     } else {
-      history.push('/choose-components');
+      navigate('/choose-components'); // Navigate to next page if logged in
     }
   };
 
   const handleLoginClick = () => {
-    // Simulate login logic
     if (email === 'test@example.com' && password === 'password123') {
-      onLogin(); // Update the parent component with the login state
-      setShowLoginPopup(false); // Close the popup
-      history.push('/choose-components'); // Redirect to next page after login
+      onLogin(); // Pass login state to App.js
+      setShowLoginPopup(false); // Close login popup
+      navigate('/choose-components'); // Redirect to next page
     } else {
       alert('Invalid credentials');
     }
@@ -39,6 +37,22 @@ const WelcomePage = ({ onLogin, isLoggedIn }) => {
       </header>
       <main>
         <h1>Welcome to Website Generator</h1>
+        <div>
+          <label>Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div>
+          <label>Password:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
         <button onClick={handleStartClick}>Let's Start</button>
       </main>
 

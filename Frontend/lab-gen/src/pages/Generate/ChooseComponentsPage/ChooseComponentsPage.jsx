@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Use useNavigate instead of useHistory
 
 const ChooseComponentsPage = () => {
   const [components, setComponents] = useState([]);
   const [template, setTemplate] = useState('');
-  const history = useHistory();
+  const navigate = useNavigate(); // Use useNavigate
 
   const handleComponentChange = (component) => {
     setComponents((prev) => {
@@ -24,11 +24,7 @@ const ChooseComponentsPage = () => {
       alert('Please select components and a template!');
       return;
     }
-    history.push('/upload-files');
-  };
-
-  const handleBack = () => {
-    history.push('/');
+    navigate('/upload-files'); // Use navigate to go to the next page
   };
 
   return (
@@ -72,7 +68,6 @@ const ChooseComponentsPage = () => {
         />
       </div>
 
-      <button onClick={handleBack}>Back</button>
       <button onClick={handleContinue}>Continue</button>
     </div>
   );
