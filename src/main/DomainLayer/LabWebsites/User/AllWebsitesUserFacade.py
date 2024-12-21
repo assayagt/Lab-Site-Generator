@@ -1,3 +1,4 @@
+from UserFacade import UserFacade
 class AllWebsitesUserFacade:
     _singleton_instance = None
 
@@ -9,6 +10,9 @@ class AllWebsitesUserFacade:
         if AllWebsitesUserFacade._singleton_instance is None:
             AllWebsitesUserFacade._singleton_instance = AllWebsitesUserFacade()
         return AllWebsitesUserFacade._singleton_instance
+
+    def add_new_webstie_userFacade(self, domain):
+        self.usersFacades[domain] = UserFacade()
 
     def getUserFacadeByDomain(self, domain):
         return self.usersFacades[domain]

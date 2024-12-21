@@ -19,9 +19,13 @@ class UserFacade:
         return UserFacade._singleton_instance
 
     def create_new_site_manager(self, nominated_manager_email):
-        member = self.getLabMemberByEmail(nominated_manager_email)
+        if nominated_manager_email in self.members:
+            member = self.getLabMemberByEmail(nominated_manager_email)
+            del self.members[nominated_manager_email]
+        else:
+            member = LabMember(nominated_manager_email)
         self.managers[nominated_manager_email] = member
-        del self.members[nominated_manager_email]
+
 
     def getLabMemberByEmail(self, email):
         return self.members[email]
@@ -119,3 +123,6 @@ class UserFacade:
     def getAlumnis(self):
         return self.alumnis
 
+    def set_site_creator(self, creator_email):
+        member = LabMember(creator_email)
+        self.siteCreator[creator_email] = member
