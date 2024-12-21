@@ -18,10 +18,10 @@ class UserFacade:
             UserFacade._singleton_instance = UserFacade()
         return UserFacade._singleton_instance
 
-    def create_new_site_manager(self, email):
-        member = self.getLabMemberByEmail(email)
-        self.managers[email] = member
-        del self.members[email]
+    def create_new_site_manager(self, nominated_manager_email):
+        member = self.getLabMemberByEmail(nominated_manager_email)
+        self.managers[nominated_manager_email] = member
+        del self.members[nominated_manager_email]
 
     def getLabMemberByEmail(self, email):
         return self.members[email]
@@ -65,14 +65,20 @@ class UserFacade:
         member = self.get_member_by_email(email)
         if member is not None:
             member.setUserId(userId)
-        else:
-            member = None
-            #TODO: send notification to managers to approve or reject the registration
-        user.login(member)
+            user.login(member)
 
     def logout(self, userId):
         user = self.get_user_by_id(userId)
         user.logout()
+
+    def get_email_by_userId(self, userId):
+        user = self.get_user_by_id(userId)
+        return user.get_email()
+
+    def error_if_user_not_logged_in(self, userId):
+        user = self.get_user_by_id(userId)
+        if not user.is_member():
+            raise Exception(ExceptionsEnum.USER_IS_NOT_MEMBER)
 
     def get_member_by_email(self, email):
         """Retrieve a Member object by email."""
