@@ -44,21 +44,35 @@ class LabSystem:
         """
         self.allWebsitesUserFacade.logout(domain, userId)
 
-    def create_new_site_manager(self, nominator_manager_userId, domain, nominated_manager_email):
+    def create_new_site_manager_from_labWebsite(self, nominator_manager_userId, domain, nominated_manager_email):
         """
-        Define and add new manager to a specific website.
+        Define and add new manager to a specific website, directly from the lab website.
         The given nominated_manager_email must be associated with a Lab Member of the given website.
         This operation can be done only by lab manager
         """
-        self.allWebsitesUserFacade.create_new_site_manager(nominator_manager_userId, nominated_manager_email, domain)
+        self.allWebsitesUserFacade.create_new_site_manager_from_labWebsite(nominator_manager_userId, nominated_manager_email, domain)
 
-    def register_new_LabMember(self, manager_userId, email_to_register, domain):
+    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, domain):
         """
-        Define a new lab member in a specific website.
+        Define a new lab member in a specific website, directly from the lab website.
         The given email_to_register must not be associated with a member(manager/lab member/creator..) of the given website.
         This operation can be done only by lab manager
         """
-        self.allWebsitesUserFacade.register_new_LabMember(manager_userId, email_to_register, domain)
+        self.allWebsitesUserFacade.register_new_LabMember_from_labWebsite(manager_userId, email_to_register, domain)
+
+    def create_new_site_manager_from_generator(self, domain, nominated_manager_email):
+        """
+        Define and add new manager to a specific website, during site creation or from generator site.
+        The given nominated_manager_email must be associated with a Lab Member of the given website.
+        """
+        self.allWebsitesUserFacade.create_new_site_manager_from_generator(nominated_manager_email, domain)
+
+    def register_new_LabMember_from_generator(self, email_to_register, domain):
+        """
+        Define a new lab member in a specific website, during site creation or from generator site.
+        The given email_to_register must not be associated with a member(manager/lab member/creator..) of the given website.
+        """
+        self.allWebsitesUserFacade.register_new_LabMember_from_generator(email_to_register, domain)
 
     def crawl_for_publications(self):
         """
