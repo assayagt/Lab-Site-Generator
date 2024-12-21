@@ -43,3 +43,20 @@ class AllWebsitesUserFacade:
         userFacade = self.getUserFacadeByDomain(domain)
         return userFacade.getMemberEmailByName(author)
 
+    def get_all_alumnis(self, domain):
+        userFacade = self.getUserFacadeByDomain(domain)
+        return userFacade.getAlumnis()
+
+    def get_all_lab_members(self, domain):
+        userFacade = self.getUserFacadeByDomain(domain)
+        return userFacade.getMembers()
+
+    def get_all_lab_managers(self, domain):
+        """notice! this function returns all managers including site creator!"""
+        userFacade = self.getUserFacadeByDomain(domain)
+        managers = userFacade.getManagers()
+        siteCreator = userFacade.getSiteCreator()
+        return {**managers, **siteCreator}
+
+
+
