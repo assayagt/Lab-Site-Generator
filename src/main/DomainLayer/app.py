@@ -19,6 +19,8 @@ os.makedirs(GENERATED_WEBSITES_FOLDER, exist_ok=True)
 generator_system = GeneratorSystem.get_instance()
 
 
+##todo: add email and domain where needed
+
 # Service for uploading file
 class FileUploadResource(Resource):
     def post(self):
@@ -84,10 +86,15 @@ class ChooseDomain(Resource):
         Handles setting the domain for the lab website.
         """
         parser = reqparse.RequestParser()
+        parser.add_argument('email', type=str, required=True, help=" Email is required")
+        parser.add_argument('old_domain', type=str, required=True, help=" Old Domain is required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
         parser.add_argument('website_name', type=str, required=True, help="Website name is required")
         args = parser.parse_args()
 
+
+        email = args['email']
+        old_domain = args['old_domain']
         domain = args['domain']
         website_name = args['website_name']
 
@@ -104,6 +111,7 @@ class ChooseDomain(Resource):
             
             # Update domain
             site_data["domain"] = domain
+            generator_system.change_website_domain(domain,old_domain)
 
             # Save the updated data to siteData.json
             with open(os.path.join(site_folder, 'siteData.json'), 'w') as json_file:
@@ -124,11 +132,14 @@ class ChooseComponents(Resource):
         """
         parser = reqparse.RequestParser()
         parser.add_argument('components', type=list, required=True, help="Components to be added are required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
         args = parser.parse_args()
         
         # Example: store the chosen components (could be in a database or in-memory)
+        domain = args['domain']
         selected_components = args['components']
-        
+        generator_system.add_components_to_site(domain,selected_components)
+
         return jsonify({"message": "Components selected", "components": selected_components}), 200
 
 # Handles the template selection for the lab website

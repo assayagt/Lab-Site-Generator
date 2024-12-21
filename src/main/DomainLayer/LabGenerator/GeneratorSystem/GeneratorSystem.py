@@ -1,4 +1,4 @@
-from main.DomainLayer.LabGenerator.SiteCustom import SiteCustomFacade
+from main.DomainLayer.LabGenerator.SiteCustom import SiteCustomFacade, Template
 from main.DomainLayer.LabGenerator.User import UserFacade
 
 
@@ -22,9 +22,18 @@ class GeneratorSystem:
         site =  self.site_custom_facade.create_website(website_name, domain, components)
         self.user_facade.addCustomWebsite(site) ##TODO: add function to facade
 
-    def change_website(self, website_name, new_name=None, new_domain=None, new_components=None):
+    def change_website_name(self, new_name, domain):
         """Change website details using SiteCustomFacade."""
-        return self.site_custom_facade.change_website(website_name, new_name, new_domain, new_components)
+        return self.site_custom_facade.change_site_name(domain, new_name)
+    
+    def change_website_domain(self,  new_domain, domain):
+        return self.site_custom_facade.change_site_domain(domain, new_domain)
+    
+    def change_website_template(self,  domain, new_template = Template):
+        return self.site_custom_facade.change_site_domain(domain, new_template)
+
+    def add_components_to_site(self, domain, new_components=None):
+         return self.site_custom_facade.add_components_to_site(domain, new_components)
 
     def login(self, email, password): #TODO: change a little
         """Log in a user using UserFacade."""
