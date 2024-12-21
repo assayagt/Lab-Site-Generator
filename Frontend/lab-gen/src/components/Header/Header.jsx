@@ -10,6 +10,11 @@ function Header(props){
         <div className = "header">
             <img alt = "Logo" src = {logoIcon} className="img_logo"/>
             <h1>{props.title}</h1>
+            <div className="menu"> 
+            <div class="hidden-box">I appear on hover!</div>
+
+            </div>
+
         </div>
     );
 }
