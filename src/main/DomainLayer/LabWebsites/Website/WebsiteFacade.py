@@ -1,3 +1,5 @@
+from src.main.Util.ExceptionsEnum import ExceptionsEnum
+
 class WebsiteFacade:
     def __init__(self):
         self.websites = []
@@ -14,26 +16,14 @@ class WebsiteFacade:
     def get_all_websites(self):
         return self.websites
 
-    """
-    def crawl_for_publications(self):
-        # get list of all websites
-        websites = self.get_all_websites()
+    def get_all_approved_publication(self, domain):
+        website = self.get_website(domain)
+        if website is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        return website.get_all_approved_publication()
 
-        # for each website, send to the webCrawler facade the members and current year to fetch publications
-        publications = []
-        for website in websites:
-            publications.extend(WebCrawlerFacade().fetch_publications(website.members, datetime.now().year))
-
-            # check that each publication is not already in website members publications
-            for publication in publications:
-                if website.check_publication_exist(publication):
-                    publications.remove(publication)
-
-
-            #TODO : After sending the notifications to the website members, add the new publications to the website
-            # For now, assume that the publications are already sent to the website members
-
-            #add the new publications to the website
-            for publication in publications:
-                website.create_publication(publication.title, publication.authors, publication.date, publication.approved, publication.publication_link, publication.media)
-    """
+    def get_all_approved_publications_of_member(self, domain, email):
+        website = self.get_website(domain)
+        if website is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        return website.get_all_approved_publications_of_member(email)

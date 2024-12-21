@@ -42,50 +42,62 @@ class LabSystem:
         """
         Logout user from a specific website
         """
-        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.logout(userId)
+        self.allWebsitesUserFacade.logout(domain, userId)
 
-    def create_new_site_manager(self, domain, email):
+    def create_new_site_manager(self, nominator_manager_userId, domain, nominated_manager_email):
         """
         Define and add new manager to a specific website.
-        The given email must be associated with a Lab Member of the given website
+        The given nominated_manager_email must be associated with a Lab Member of the given website.
+        This operation can be done only by lab manager
         """
-        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_labMember_notExist(email)
-        userFacade.create_new_site_manager(email)
+        self.allWebsitesUserFacade.create_new_site_manager(nominator_manager_userId, nominated_manager_email, domain)
 
-    def register_new_LabMember(self, domain, email):
+    def register_new_LabMember(self, manager_userId, email_to_register, domain):
         """
         Define a new lab member in a specific website.
-        The given email must not be associated with a member(manager/lab member/creator..) of the given website
+        The given email_to_register must not be associated with a member(manager/lab member/creator..) of the given website.
+        This operation can be done only by lab manager
         """
-        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.register_new_LabMember(email)
+        self.allWebsitesUserFacade.register_new_LabMember(manager_userId, email_to_register, domain)
 
     def crawl_for_publications(self):
         """
-        Fetches publications for the given authors and year from all WebCrawlers for all websites.
+        Fetches publications for the given authors and year from all WebCrawlers for all websites, and send
+        notifications to authors for initial approve/disapprove.
         """
         # get list of all websites
         websites = self.websiteFacade.get_all_websites()
 
         # for each website, send to the webCrawler facade the members and current year to fetch publications
-        publications = []
         for website in websites:
             websitePublications = self.webCrawlerFacade.fetch_publications(website.members, datetime.now().year)
 
             # check for each publication that is not already in website members publications
             for publication in websitePublications:
                 if not website.check_publication_exist(publication):
-                    publications.append(publication)
+                    authorsEmails = []
+                    for author in publication.authors:
+                        authorsEmails.append(self.allWebsitesUserFacade.getMemberEmailByName(author, website.domain))
+                    website.create_publication(publication.title, publication.authors, publication.date,
+                                               publication.approved, publication.publication_link, publication.media, authorsEmails)
 
                     # send notifications to the website authors about the new publications, for initial approve
-                    authors = publication.authors
-                    for author in authors:
-                        email = self.allWebsitesUserFacade.getMemberEmailByName(author, website.domain)
-                        self.notificationsFacade.send_publication_notification(publication, email)
+                    for authorEmail in authorsEmails:
+                        self.notificationsFacade.send_publication_notification(publication, authorEmail)
 
+    def get_all_approved_publication(self, domain):
+        """
+        return all approved publications of a specific website
+        (in order to display them on the publication component of the website)
+        """
+        return self.websiteFacade.get_all_approved_publication(domain)
 
+    def get_all_approved_publications_of_member(self, domain, email):
+        """
+        return all approved publications of a specific member of the lab website
+        (in order to display them on his personal profile on the website)
+        """
+        return self.websiteFacade.get_all_approved_publications_of_member(domain, email)
 
 
 

@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 class State(ABC):
 
     @abstractmethod
-    def get_member_id(self):
+    def get_email(self):
         pass
 
     @abstractmethod
@@ -16,8 +16,4 @@ class State(ABC):
 
     @abstractmethod
     def is_member(self):
-        pass
-
-    @abstractmethod
-    def get_username(self):
         pass
