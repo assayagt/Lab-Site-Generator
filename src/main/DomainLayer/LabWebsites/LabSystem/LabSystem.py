@@ -112,6 +112,10 @@ class LabSystem:
                     for authorEmail in authorsEmails:
                         self.notificationsFacade.send_publication_notification(publication, authorEmail)
 
+    def add_publication_manually(self, userId):
+        """A Lab Member updates the website with new research publications"""
+        pass
+
     def get_all_approved_publication(self, domain):
         """
         return all approved publications of a specific website
@@ -149,5 +153,17 @@ class LabSystem:
     def get_all_lab_managers(self, domain):
         """notice! this function returns all managers including site creator!"""
         return self.get_all_lab_managers(domain)
+
+    def set_secondEmail_by_member(self, userid, secondEmail, domain):
+        self.allWebsitesUserFacade.set_secondEmail_by_member(userid, secondEmail, domain)
+
+    def set_linkedin_link_by_member(self, userid, linkedin_link, domain):
+        self.allWebsitesUserFacade.set_linkedin_link_by_member(userid, linkedin_link, domain)
+
+    def set_media_by_member(self, userid, media, domain):
+        self.allWebsitesUserFacade.set_media_by_member(userid, media, domain)
+
+    def set_fullName_by_member(self, userid, fullName, domain):
+        self.allWebsitesUserFacade.set_fullName_by_member(userid, fullName, domain)
 
 

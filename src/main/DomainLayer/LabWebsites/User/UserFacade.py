@@ -119,9 +119,14 @@ class UserFacade:
         if self.get_user_by_id(userId) is None:
             raise Exception(ExceptionsEnum.USER_NOT_EXIST.value)
 
-    def error_if_member_is_not_member_or_manager(self, email):
+    def error_if_member_is_not_labMember_or_manager(self, email):
         if email not in self.members and email not in self.managers:
             raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MEMBER_OR_LAB_MANAGER)
+
+    def error_if_user_is_not_labMember_manager_creator(self, userId):
+        email = self.get_email_by_userId(userId)
+        if email not in self.members and email not in self.managers and email not in self.siteCreator:
+            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MEMBER_OR_LAB_MANAGER_OR_CREATOR)
 
     def define_member_as_alumni(self, email):
         if email in self.siteCreator:
@@ -158,3 +163,20 @@ class UserFacade:
     def set_site_creator(self, creator_email):
         member = LabMember(creator_email)
         self.siteCreator[creator_email] = member
+
+    def set_secondEmail_by_member(self, email, secondEmail):
+        member = self.get_member_by_email(email)
+        member.set_secondEmail(secondEmail)
+
+    def set_linkedin_link_by_member(self, email, linkedin_link):
+        member = self.get_member_by_email(email)
+        member.set_linkedin_link(linkedin_link)
+
+    def set_media_by_member(self, email, media):
+        member = self.get_member_by_email(email)
+        member.set_media(media)
+
+    def set_fullName_by_member(self,email, fullName):
+        member = self.get_member_by_email(email)
+        member.set_fullName_by_member(fullName)
+

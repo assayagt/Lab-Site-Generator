@@ -10,4 +10,5 @@ class ExceptionsEnum(Enum):
     WEBSITE_DOMAIN_NOT_EXIST = "Error! The given domain website does not exist"
     SITE_CREATOR_CANT_BE_ALUMNI = "The site creator cannot be designated as an alumni"
     USER_IS_NOT_A_LAB_MEMBER_OR_LAB_MANAGER = "User is not a lab member or a lab manager"
+    USER_IS_NOT_A_LAB_MEMBER_OR_LAB_MANAGER_OR_CREATOR = "User is not a lab member or a lab manager or a site creator"
     USER_IS_NOT_A_LAB_MANAGER = "User is not a lab manager"
