@@ -99,31 +99,13 @@ class ChooseDomain(Resource):
         website_name = args['website_name']
 
         try:
-            
-            # Find the site by website name
-            site_folder = os.path.join(GENERATED_WEBSITES_FOLDER, website_name.replace(' ', '_'))
-            if not os.path.exists(site_folder):
-                return jsonify({"error": "Site not found"}), 404
-            
-            # Load existing site data
-            with open(os.path.join(site_folder, 'siteData.json'), 'r') as json_file:
-                site_data = json.load(json_file)
-            
-            # Update domain
-            site_data["domain"] = domain
             generator_system.change_website_domain(domain,old_domain)
-
-            # Save the updated data to siteData.json
-            with open(os.path.join(site_folder, 'siteData.json'), 'w') as json_file:
-                json.dump(site_data, json_file)
-
             return jsonify({"message": "Domain updated successfully", "domain": domain}), 200
 
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 
-# Handle the selection of components (e.g., text boxes, images, etc.)
 class ChooseComponents(Resource):
     def post(self):
         """
@@ -139,7 +121,6 @@ class ChooseComponents(Resource):
         domain = args['domain']
         selected_components = args['components']
         generator_system.add_components_to_site(domain,selected_components)
-
         return jsonify({"message": "Components selected", "components": selected_components}), 200
 
 # Handles the template selection for the lab website
