@@ -3,7 +3,8 @@ from flask_restful import Api, Resource, reqparse
 import os
 from flask_cors import CORS
 
-from main.DomainLayer.LabGenerator.GeneratorSystem import GeneratorSystem  # Import CORS
+from main.DomainLayer.LabGenerator import GeneratorSystemService
+
 
 app = Flask(__name__)
 CORS(app)
@@ -16,7 +17,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(GENERATED_WEBSITES_FOLDER, exist_ok=True)
 
 
-generator_system = GeneratorSystem.get_instance()
+generator_system = GeneratorSystemService.get_instance()
 
 
 ##todo: add email and domain where needed
@@ -120,51 +121,64 @@ class ChooseComponents(Resource):
         # Example: store the chosen components (could be in a database or in-memory)
         domain = args['domain']
         selected_components = args['components']
-        generator_system.add_components_to_site(domain,selected_components)
-        return jsonify({"message": "Components selected", "components": selected_components}), 200
-
+        try:
+            generator_system.add_components_to_site(domain,selected_components)
+            return jsonify({"message": "Components selected", "components": selected_components}), 200
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+        
 # Handles the template selection for the lab website
 class ChooseTemplate(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('template', type=str, required=True, help="Template name is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
         args = parser.parse_args()
-        
+
+        domain = args['domain']
         selected_template = args['template']
+        try:
+            generator_system.change_website_template(domain,selected_template )
+            return jsonify({"message": "Template selected", "template": selected_template}), 200
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
         
-        return jsonify({"message": "Template selected", "template": selected_template}), 200
 
 # Handles setting the name for the lab website
 class ChooseName(Resource):
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('website_name', type=str, required=True, help="Website name is required")
+        parser.add_argument('name', type=str, required=True, help=" name is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
         args = parser.parse_args()
-        
-        website_name = args['website_name']
-        
-        return jsonify({"message": "Website name set", "website_name": website_name}), 200
 
+        domain = args['domain']
+        website_name = args['website_name']
+        try:
+            return jsonify({"message": "Website name set", "website_name": website_name}), 200
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 # Handles user login with email and password
 class Login(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('email', type=str, required=True, help="Email is required")
-        parser.add_argument('password', type=str, required=True, help="Password is required")
         args = parser.parse_args()
         
         email = args['email']
-        password = args['password']
-        
-        if email == "test@example.com" and password == "password123":
-            return jsonify({"message": "Login successful", "email": email}), 200
-        else:
-            return jsonify({"message": "Invalid credentials"}), 401
+
+        try:
+            generator_system.login(email)
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
         
 # Handles user logout
 class Logout(Resource):
     def post(self):
-        return jsonify({"message": "Logout successful"}), 200
+        try:
+            generator_system.logout(email)
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 
 class StartCustomSite(Resource):
@@ -173,16 +187,16 @@ class StartCustomSite(Resource):
         Starts a new custom site by setting a name, domain, and components.
         """
         parser = reqparse.RequestParser()
+        parser.add_argument('email', type=str, required=True, help="Email is required")
         parser.add_argument('website_name', type=str, required=True, help="Website name is required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
         args = parser.parse_args()
 
+        email = args['email']
         website_name = args['website_name']
         domain = args['domain']
-        components = args['components']
-
         try:
-          
+            generator_system.create_website(email,website_name,domain)
             return jsonify({"message": f"Custom site '{website_name}' started successfully", "websiteLink": f"/view/{website_name.replace(' ', '_')}/index.html"}), 200
 
         except Exception as e:

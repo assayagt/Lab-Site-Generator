@@ -24,7 +24,6 @@ class SiteCustomFacade:
         try:
             if not isinstance(new_name, str) or not new_name:
                 raise ValueError("Invalid site name provided")
-
             site = self.sites[domain]
             site.change_name(new_name)
         except IndexError:
