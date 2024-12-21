@@ -126,6 +126,20 @@ class LabSystem:
         """
         return self.websiteFacade.get_all_approved_publications_of_member(domain, email)
 
+    def define_member_as_alumni(self, manager_userId, member_email, domain):
+        """
+        define member (lab manager or lab member) as alumni
+        Only managers can perform this operation.
+        Site creator cant be defined as alumni.
+        """
+        return self.allWebsitesUserFacade.define_member_as_alumni(manager_userId, member_email, domain)
+
+    def remove_manager_permission(self, manager_userId, manager_toRemove_email, domain):
+        """A Lab Manager(manager_userId) removes the administrative permissions of another Lab Manager,
+        reverting their role to a Lab Member.
+        The permissions of the lab creator cannot be removed, it must always remain a Lab Manager"""
+        return self.allWebsitesUserFacade.remove_manager_permission(manager_userId, manager_toRemove_email, domain)
+
     def get_all_alumnis(self, domain):
         return self.allWebsitesUserFacade.get_all_alumnis(domain)
 

@@ -25,6 +25,7 @@ class AllWebsitesUserFacade:
         userFacade = self.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(nominator_manager_userId)
         userFacade.error_if_user_not_logged_in(nominator_manager_userId)
+        userFacade.error_if_user_is_not_manager(nominator_manager_userId)
         userFacade.error_if_labMember_notExist(nominated_manager_email)
         userFacade.create_new_site_manager(nominated_manager_email)
 
@@ -32,6 +33,7 @@ class AllWebsitesUserFacade:
         userFacade = self.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(manager_userId)
         userFacade.error_if_user_not_logged_in(manager_userId)
+        userFacade.error_if_user_is_not_manager(manager_userId)
         userFacade.register_new_LabMember(email_to_register)
 
     def create_new_site_manager_from_generator(self, nominated_manager_email, domain):
@@ -42,6 +44,21 @@ class AllWebsitesUserFacade:
     def register_new_LabMember_from_generator(self, email_to_register, domain):
         userFacade = self.getUserFacadeByDomain(domain)
         userFacade.register_new_LabMember(email_to_register)
+
+    def define_member_as_alumni(self, manager_userId, member_email, domain):
+        userFacade = self.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(manager_userId)
+        userFacade.error_if_user_not_logged_in(manager_userId)
+        userFacade.error_if_user_is_not_manager(manager_userId)
+        userFacade.error_if_member_is_not_member_or_manager(member_email)
+        userFacade.define_member_as_alumni(member_email)
+
+    def remove_manager_permission(self, manager_userId, manager_toRemove_email, domain):
+        userFacade = self.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(manager_userId)
+        userFacade.error_if_user_not_logged_in(manager_userId)
+        userFacade.error_if_user_is_not_manager(manager_userId)
+        userFacade.remove_manager_permissions(manager_toRemove_email)
 
     def getMemberEmailByName(self, author, domain):
         userFacade = self.getUserFacadeByDomain(domain)

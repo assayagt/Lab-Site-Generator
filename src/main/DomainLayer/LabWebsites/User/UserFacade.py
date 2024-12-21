@@ -26,13 +26,11 @@ class UserFacade:
             member = LabMember(nominated_manager_email)
         self.managers[nominated_manager_email] = member
 
-
     def getLabMemberByEmail(self, email):
         return self.members[email]
 
     def error_if_labMember_notExist(self, email):
-        member = self.members[email]
-        if member is None:
+        if email not in self.members:
             raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MEMBER.value)
 
     def register_new_LabMember(self, email):
@@ -84,8 +82,13 @@ class UserFacade:
         if not user.is_member():
             raise Exception(ExceptionsEnum.USER_IS_NOT_MEMBER)
 
+    def error_if_user_is_not_manager(self, userId):
+        email = self.get_email_by_userId(userId)
+        if email not in self.managers:
+            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER)
+
     def get_member_by_email(self, email):
-        """Retrieve a Member object by email."""
+        """Retrieve an active Member object by email."""
         if email in self.members:
             return self.members[email]
         elif email in self.managers:
@@ -97,6 +100,14 @@ class UserFacade:
             return self.siteCreator[email]
         return None
 
+    def delete_member_by_email(self, email):
+        """Delete an active member by an email
+        Site creator cant be deleted!"""
+        if email in self.members:
+            del self.members[email]
+        elif email in self.managers:
+            del self.managers[email]
+
     def get_user_by_id(self, userId):
         if userId in self.users:
             user = self.users[userId]
@@ -107,6 +118,27 @@ class UserFacade:
     def error_if_user_notExist(self, userId):
         if self.get_user_by_id(userId) is None:
             raise Exception(ExceptionsEnum.USER_NOT_EXIST.value)
+
+    def error_if_member_is_not_member_or_manager(self, email):
+        if email not in self.members and email not in self.managers:
+            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MEMBER_OR_LAB_MANAGER)
+
+    def define_member_as_alumni(self, email):
+        if email in self.siteCreator:
+            raise Exception(ExceptionsEnum.SITE_CREATOR_CANT_BE_ALUMNI)
+        member = self.get_member_by_email(email)
+        self.alumnis[email] = member
+        self.delete_member_by_email(email)
+
+    def get_manager_by_email(self, email):
+        return self.managers[email]
+
+    def remove_manager_permissions(self, email):
+        if email not in self.managers:
+            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER)
+        manager = self.get_manager_by_email(email)
+        self.members[email] = manager
+        del self.managers[email]
 
     def getUsers(self):
         return self.users
