@@ -1,4 +1,4 @@
-import EmailNotification
+from EmailNotification import EmailNotification
 class NotificationsFacade:
     _instance = None
 
@@ -29,5 +29,21 @@ class NotificationsFacade:
 
         # Create the email notification
         email_notification = EmailNotification(recipientEmail, "New Publication Pending Approval", body)
+
+        self.notify_user(email_notification)
+
+    def send_registration_request_notification(self, requestedEmail, recipientEmail):
+        """
+        Sends a notification email containing a registration request.
+        """
+        # Format email body
+        body = (
+            f"New Registration Request:\n\n"
+            f"The user with email address {requestedEmail} has requested to join your lab website.\n\n"
+            f"Please log in to your lab site to review and approve or reject this request."
+        )
+
+        # Create the email notification
+        email_notification = EmailNotification(recipientEmail, "New Registration Request Pending Approval", body)
 
         self.notify_user(email_notification)

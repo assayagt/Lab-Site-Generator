@@ -1,4 +1,4 @@
-import Member
+from Member import Member
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 
 class UserFacade:

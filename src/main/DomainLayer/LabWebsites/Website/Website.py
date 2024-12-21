@@ -1,4 +1,4 @@
-import Publication
+from Publication import Publication
 class Website:
     def __init__(self, domain):
         self.members = []

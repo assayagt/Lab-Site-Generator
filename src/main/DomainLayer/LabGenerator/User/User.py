@@ -1,4 +1,5 @@
-import State, Guest
+from State import State
+from Guest import Guest
 
 class User:
     def __init__(self, state, user_id=None):
