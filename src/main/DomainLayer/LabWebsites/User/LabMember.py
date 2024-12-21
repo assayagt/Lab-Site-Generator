@@ -28,3 +28,15 @@ class LabMember(State):
 
     def set_user_id(self, user_id):
         self.user_id = user_id
+
+    def set_secondEmail(self, secondEmail):
+        self.secondEmail = secondEmail
+
+    def set_linkedin_link(self, linkedin_link):
+        self.linkedin_link = linkedin_link
+
+    def set_media(self, media):
+        self.media = media
+
+    def set_fullName(self, fullName):
+        self.fullName = fullName
