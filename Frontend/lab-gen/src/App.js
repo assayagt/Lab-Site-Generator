@@ -3,37 +3,32 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import WelcomePage from './pages/WelcomePage/WelcomePage';
 import ChooseComponentsPage from './pages/Generate/ChooseComponentsPage/ChooseComponentsPage';
 import UploadFilesPage from './pages/Generate/UploadFilesPage/UploadFilesPage';
+import { AuthProvider } from './Context/AuthContext';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-  };
 
   return (
-    <Router>
-      <Routes>
-        {/* Use the new "Routes" component for defining your routes */}
-        <Route path="/" element={<WelcomePage onLogin={handleLogin} />} />
-        <Route
-          path="/choose-components"
-          element={isLoggedIn ? <ChooseComponentsPage /> : <Navigate to="/" />}
-        />
-        <Route
-          path="/upload-files"
-          element={isLoggedIn ? <UploadFilesPage /> : <Navigate to="/" />}
-        />
-        {/* <Route
-          path="/generate-website"
-          element={isLoggedIn ? <GenerateWebsitePage /> : <Navigate to="/" />}
-        /> */}
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+            <Routes>
+              {/* Use the new "Routes" component for defining your routes */}
+              <Route path="/" element={<WelcomePage/>} />
+              <Route
+                path="/choose-components"
+                element= {<ChooseComponentsPage />}
+              />
+              <Route
+                path="/upload-files"
+                element={<UploadFilesPage />}
+              />
+              {/* <Route
+                path="/generate-website"
+                element={isLoggedIn ? <GenerateWebsitePage /> : <Navigate to="/" />}
+              /> */}
+            </Routes>
+          </Router>
+    </AuthProvider>
+    
   );
 }
 
