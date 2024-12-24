@@ -7,6 +7,9 @@ import { useAuth } from '../../Context/AuthContext';
 const WelcomePage = () => {
   const [email, setEmail] = useState('');
   const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [showErrorPopup, setShowErrorPopup] = useState(false);  // New state for error popup
+  const [errorMessage, setErrorMessage] = useState('');  // Store error message
+
   const navigate = useNavigate();
   const {isLoggedIn, userEmail, login } = useAuth();
 
@@ -24,8 +27,13 @@ const WelcomePage = () => {
       setShowLoginPopup(false);
       navigate('/choose-components');
     } else {
-      alert('Invalid credentials'); //TODO: change to popup
+      setErrorMessage('Invalid credentials');  // Set the error message
+      setShowErrorPopup(true);  // Show error popup
     }
+  };
+
+  const handleErrorPopupClose = () => {
+    setShowErrorPopup(false);  // Close the error popup
   };
 
   
@@ -73,6 +81,17 @@ const WelcomePage = () => {
           </div>
         </div>
       )}
+       {/* Error Popup for Invalid Credentials */}
+       {showErrorPopup && (
+        <div className="error-popup-overlay">
+          <div className="error-popup">
+            <button className="close-popup" onClick={handleErrorPopupClose}>X</button>
+            <h3>Error</h3>
+            <p>{errorMessage}</p>  {/* Display the error message */}
+          </div>
+        </div>
+      )}
+    
     </div>
   );
 };

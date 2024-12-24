@@ -67,3 +67,38 @@
   .close-popup:hover {
     color: red;
   }
+
+
+  .error-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);  /* Semi-transparent overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .error-popup {
+    position: relative;
+
+    background-color: white;
+    color: black;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+ 
+  .error-popup h3 {
+    margin-bottom: 10px;
+  }
+  
+  .error-popup p {
+    margin-bottom: 10px;
+  }

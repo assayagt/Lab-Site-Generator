@@ -19,6 +19,7 @@
   position: absolute;
   right: 0;
   margin: 10px;
+  background-image: url("../../images/account_avatar.svg");
   
 }
 
@@ -33,7 +34,6 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
   transform: translateX(-70%) translateY(10px); /* Adjust horizontally */
   z-index: 1;
-
 }
 .menu:hover .hidden-box {
   display: block;
@@ -50,7 +50,6 @@
   height: 40px;
   width: 40px;
   border-radius: 50%;
-  background-color: rgb(140, 131, 131);
   margin: 10px;
 }
 .hr_line{
