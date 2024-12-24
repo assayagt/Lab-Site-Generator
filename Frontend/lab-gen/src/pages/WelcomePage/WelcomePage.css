@@ -7,8 +7,8 @@
     background-position: right; /* Centers the image */
     background-repeat: no-repeat; /* Prevent the background from repeating */
     position: relative;
-
-
+    gap:10px;
+    padding-top:20px;
 }
 
 .welcome-body{

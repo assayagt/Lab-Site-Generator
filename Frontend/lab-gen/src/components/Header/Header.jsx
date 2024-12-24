@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import logoIcon from "../../images/launcher.svg";
 import "./Header.css";
 import { useAuth } from "../../Context/AuthContext";
+import logOutIcon from "../../images/logout.svg";
+import myWebsitesIcon from "../../images/my_website.svg";
 
 function Header(props) {
   const { isLoggedIn, userEmail, login, logout } = useAuth();
@@ -21,6 +23,10 @@ function Header(props) {
     logout();  
   };
 
+  const doSomething = () => {
+     
+  };
+
   return (
     <div className="header">
       <img alt="Logo" src={logoIcon} className="img_logo" />
@@ -30,15 +36,24 @@ function Header(props) {
           <div className="personal_menu">
             <div className="icon_photo"></div>
             <hr className="hr_line" />
-            <div className="choose item">
-              {isLoggedIn ? (
-                <button onClick={handleLogout}>Logout</button>
-              ) : (
-                <button onClick={handleLogin}>Login</button>
-              )}
+            {isLoggedIn ? (
+            <div className="choose_item">
+                <button className ="my_sites_button" onClick={doSomething}>
+                    <img className = "my_sites_icon "src ={myWebsitesIcon} alt= "logout"></img>
+                    My Websites
+                </button> 
+                <button className ="logout_button" onClick={handleLogout}>
+                    <img src ={logOutIcon} alt= "logout"></img>
+                    Logout
+                </button>
             </div>
-          </div>
+
+            ) : ( <div className="choose_item">
+                <button className ="login_button"onClick={handleLogin}>Login</button>
+                </div>
+              )}
         </div>
+      </div>
       </div>
 
       {/* Conditional rendering of the login popup */}
