@@ -20,7 +20,7 @@ const WelcomePage = () => {
 
   const handleLoginClick = () => {
     if (email === 'test@example.com') {
-      login("test@example.com")
+      login("test@example.com");
       setShowLoginPopup(false);
       navigate('/choose-components');
     } else {
