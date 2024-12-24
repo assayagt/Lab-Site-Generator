@@ -175,6 +175,11 @@ class Login(Resource):
 # Handles user logout
 class Logout(Resource):
     def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('email', type=str, required=True, help="Email is required")
+        args = parser.parse_args()
+        
+        email = args['email']
         try:
             generator_system.logout(email)
         except Exception as e:
