@@ -58,15 +58,16 @@ const WelcomePage = () => {
       <Header title="LabLauncher"></Header>
       <main className='main_section'>
         <h1>Welcome to Website Generator</h1>
+
         <div className="welcome-body">
           <p className="intro-text">
             This tool allows you to effortlessly create custom websites for your lab
-            or research group. Whether you're a professor, researcher, or student, our platform makes it easy to generate a professional-looking website with just a few clicks.
+            or research group.<br/> Whether you're a professor, researcher, or student,<br/> our platform makes it easy to generate a professional-looking website<br/> with just a few clicks.
           </p>
           
           {/* Feature Carousel */}
           <div className="features">
-            <h2>Features:</h2>
+            <h2>Product Highlights:</h2>
             <FeatureCarousel features={features} />
           </div>
 
