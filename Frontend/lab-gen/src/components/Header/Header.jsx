@@ -16,11 +16,6 @@ function Header(props) {
     setShowLoginPopup(true);  
   };
 
-  const login_user = () => {
-    login(email);  
-    setShowLoginPopup(false);  
-  };
-
   const handleLogout = () => {
     logout();  
   };
