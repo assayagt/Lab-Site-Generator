@@ -5,6 +5,7 @@ import { useAuth } from "../../Context/AuthContext";
 import logOutIcon from "../../images/logout.svg";
 import myWebsitesIcon from "../../images/my_website.svg";
 import accountIcon from "../../images/account_avatar.svg";
+import LoginPopup from '../Popups/LoginPopup'; 
 
 function Header(props) {
   const { isLoggedIn, userEmail, login, logout } = useAuth();
@@ -62,23 +63,8 @@ function Header(props) {
       </div>
 
       {/* Conditional rendering of the login popup */}
-      {showLoginPopup && (
-        <div className="login-popup-overlay">
-          <div className="login-popup">
-            <button className="close-popup" onClick={() => setShowLoginPopup(false)}>X</button>
-            <h3>Login</h3>
-            <div>
-              <label>Email:</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <button onClick={login_user}>Login</button>
-          </div>
-        </div>
-      )}
+      {showLoginPopup && <LoginPopup onClose={() => setShowLoginPopup(false)} />}
+
     </div>
   );
 }

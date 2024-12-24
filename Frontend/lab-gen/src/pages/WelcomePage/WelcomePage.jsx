@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/Header';
 import "./WelcomePage.css";
 import { useAuth } from '../../Context/AuthContext';
+import LoginPopup from '../../components/Popups/LoginPopup'; 
 
 const WelcomePage = () => {
   const [email, setEmail] = useState('');
@@ -64,23 +65,8 @@ const WelcomePage = () => {
       </main>
 
       {/* Login Popup */}
-      {showLoginPopup && (
-        <div className="login-popup-overlay">
-          <div className="login-popup">
-            <button className="close-popup" onClick={() => setShowLoginPopup(false)}>X</button>
-            <h3>Login</h3>
-            <div>
-              <label>Email:</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <button onClick={handleLoginClick}>Login</button>
-          </div>
-        </div>
-      )}
+      {showLoginPopup && <LoginPopup onClose={() => setShowLoginPopup(false)} />}
+
        {/* Error Popup for Invalid Credentials */}
        {showErrorPopup && (
         <div className="error-popup-overlay">
