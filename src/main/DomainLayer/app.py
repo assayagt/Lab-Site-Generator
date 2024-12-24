@@ -202,7 +202,27 @@ class StartCustomSite(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
+class GetCustomWebsites(Resource):
+    def get(self):
+        try:
+            # Fetch the website by name from the service
+            websites = generator_system.get_custom_website()
+            return jsonify({"websites": websites}), 200
+         
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
+# Service to fetch all lab websites
+class GetAllLabWebsites(Resource):
+    def get(self):
+        """Fetch all lab websites."""
+        try:
+            # Fetch all lab websites from the service
+            websites = generator_system.get_all_lab_websites()
+            return jsonify({"websites": websites}), 200
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+        
 
 # Add the resources to API
 api.add_resource(FileUploadResource, '/api/uploadFile')
@@ -215,7 +235,8 @@ api.add_resource(Logout, '/api/Logout')
 api.add_resource(ViewWebsite, '/view/<folder_name>') 
 api.add_resource(ChooseDomain, '/api/chooseDomain') 
 api.add_resource(StartCustomSite, '/api/startCustomSite')  # New endpoint to start custom site
-
+api.add_resource(GetCustomWebsite, '/api/getCustomWebsite')
+api.add_resource(GetAllLabWebsites, '/api/getAllLabWebsites')
 
 if __name__ == '__main__':
     app.run(debug=True)

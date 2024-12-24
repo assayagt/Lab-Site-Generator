@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/Header';
 import "./WelcomePage.css";
-import backgroundImage from "../../images/back_img_welcome.svg";
+import { useAuth } from '../../Context/AuthContext';
 
-const WelcomePage = ({ onLogin }) => {
+const WelcomePage = () => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const navigate = useNavigate();
+  const {isLoggedIn, userEmail, login } = useAuth();
 
   const handleStartClick = () => {
-    if (!email || !password) {
+    if (!isLoggedIn) {
       setShowLoginPopup(true); 
     } else {
       navigate('/choose-components');
@@ -19,25 +19,19 @@ const WelcomePage = ({ onLogin }) => {
   };
 
   const handleLoginClick = () => {
-    if (email === 'test@example.com' && password === 'password123') {
-      onLogin();
+    if (email === 'test@example.com') {
+      login("test@example.com")
       setShowLoginPopup(false);
       navigate('/choose-components');
     } else {
-      alert('Invalid credentials');
+      alert('Invalid credentials'); //TODO: change to popup
     }
   };
 
-  const handleRegisterClick = () => {
-    alert('Registered successfully!');
-  };
-
+  
   return (
     <div>
-      <Header title="LabLauncher">
-        <button onClick={handleLoginClick}>Login</button>
-        <button onClick={handleRegisterClick}>Register</button>
-      </Header>
+      <Header title="LabLauncher"></Header>
       <main className='main_section'>
         <h1>Welcome to Website Generator</h1>
         <div className="welcome-body">
@@ -75,16 +69,7 @@ const WelcomePage = ({ onLogin }) => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <div>
-              <label>Password:</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
             <button onClick={handleLoginClick}>Login</button>
-            <button onClick={() => setShowLoginPopup(false)}>Cancel</button>
           </div>
         </div>
       )}
