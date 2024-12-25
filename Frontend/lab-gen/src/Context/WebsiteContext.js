@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
 
-// Create a context
 const WebsiteContext = createContext();
 
 export const useWebsite = () => {

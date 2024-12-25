@@ -9,45 +9,59 @@ const ChooseComponentsPage = () => {
   const [saved, setSaved] = useState(false); // Track if components are saved
   const navigate = useNavigate(); // Use navigate for routing
   const { websiteData, setWebsite } = useWebsite(); // Get website data and setter from context
-
+  const [components, setComponents] = useState(websiteData.components || []);
+  const [template, setTemplate] = useState(websiteData.template || '');
+  const [domain, setDomain] = useState(websiteData.domain || '');
+  const [websiteName, setWebsiteName] = useState(websiteData.websiteName || '');
 
   // Handle checkbox changes for components
   const handleComponentChange = (component) => {
-    setWebsite({ components: websiteData.components.includes(component)
-      ? websiteData.components.filter(item => item !== component)
-      : [...websiteData.components, component] });
+    setComponents(prevComponents =>
+      prevComponents.includes(component)
+        ? prevComponents.filter(item => item !== component)
+        : [...prevComponents, component]
+    );
   };
 
+  // Save website name and domain
+  const handleSaveNameAndDomain = () => {
+    setWebsite({ ...websiteData, domain, websiteName });
+  };
+
+  // Handle template selection
   const handleTemplateClick = (templateName) => {
-    setWebsite({ template: templateName });
+    setTemplate(templateName);
   };
 
   // Handle domain change
   const handleDomainChange = (event) => {
-    setWebsite({ domain: event.target.value });
+    setDomain(event.target.value);
   };
 
   // Handle website name input change
   const handleNameChange = (event) => {
-    setWebsite({ websiteName: event.target.value });
+    setWebsiteName(event.target.value);
   };
 
+  // Save components to the websiteData
   const handleSaveComponents = () => {
-    if (websiteData.components.length === 0) {
+    if (components.length === 0) {
       alert('Please select components');
       return;
     }
+    setWebsite({ ...websiteData, components });
     setSaved(true);
     alert('Components saved successfully!');
   };
 
   // Continue to the next page
   const handleContinue = () => {
-    if (websiteData.components.length === 0 || !websiteData.template) {
+    if (components.length === 0 || !template) {
       alert('Please select components and a template!');
       return;
     }
-    navigate('/upload-files'); // Use navigate to go to the next page
+    setWebsite({ ...websiteData, template });
+    navigate('/upload-files'); // Navigate to the next page
   };
 
   return (
@@ -60,7 +74,7 @@ const ChooseComponentsPage = () => {
               <label>Enter your website domain:</label>
               <input
                 type="text"
-                value={websiteData.domain}
+                value={domain}
                 onChange={handleDomainChange}
                 placeholder="Enter your website domain"
                 className="input_name_domain"
@@ -70,19 +84,20 @@ const ChooseComponentsPage = () => {
               <label>Enter your website name:</label>
               <input
                 type="text"
-                value={websiteData.websiteName}
+                value={websiteName}
                 onChange={handleNameChange}
                 placeholder="Enter your website name"
                 className="input_name_domain"
               />
             </div>
-            <button className="save_domain_name_button">Save</button>
+            <button className="save_domain_name_button" onClick={handleSaveNameAndDomain}>Save</button>
           </div>
           <div className="create_custom_website">
             <h2>Choose Components</h2>
             <label>
               <input
                 type="checkbox"
+                checked={components.includes('About Us')}
                 onChange={() => handleComponentChange('About Us')}
               />
               About Us
@@ -90,6 +105,7 @@ const ChooseComponentsPage = () => {
             <label>
               <input
                 type="checkbox"
+                checked={components.includes('Participants')}
                 onChange={() => handleComponentChange('Participants')}
               />
               Participants
@@ -97,6 +113,7 @@ const ChooseComponentsPage = () => {
             <label>
               <input
                 type="checkbox"
+                checked={components.includes('Contact Us')}
                 onChange={() => handleComponentChange('Contact Us')}
               />
               Contact Us
@@ -104,6 +121,7 @@ const ChooseComponentsPage = () => {
             <label>
               <input
                 type="checkbox"
+                checked={components.includes('Publications')}
                 onChange={() => handleComponentChange('Publications')}
               />
               Publications
