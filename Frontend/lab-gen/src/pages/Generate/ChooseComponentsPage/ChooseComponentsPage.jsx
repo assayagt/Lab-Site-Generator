@@ -59,62 +59,91 @@ const ChooseComponentsPage = () => {
   return (
     <div>
       <Header title="LabLauncher" />
+      <div className = "choose_components_main">
+        <div className='grid1'>
+            <div className='create_custom_website'>
+              <div className='website_domain_name'>
+                <label>Enter your website domain:</label>
+                <input
+                  type="text"
+                  value={domain} 
+                  onChange={handleDomainChange} 
+                  placeholder="Enter your website domain"
+                />
+              </div>
+              <div className='website_domain_name'>
+                <label>Enter your website name:</label>
+                <input
+                  type="text"
+                  value={websiteName} 
+                  onChange={handleNameChange} 
+                  placeholder="Enter your website name"
+                />
+              </div>
+              <button className='save_domain_name_button'>Save</button>
+            </div>
+          <div className='create_custom_website'>
+            <h2>Choose Components</h2>
+            <label>
+              <input
+                type="checkbox"
+                onChange={() => handleComponentChange('About Us')}
+              />
+              About Us
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                onChange={() => handleComponentChange('Participants')}
+              />
+              Participants
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                onChange={() => handleComponentChange('Contact Us')}
+              />
+              Contact Us
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                onChange={() => handleComponentChange('Participants')}
+              />
+              Participants
+            </label>
+            <label className='disabled'>
+              <input
+                type="checkbox"
+                disabled
+              />
+              News
+            </label>
+            <label className='disabled'>
+              <input
+                type="checkbox"
+                disabled
+              />
+              Media
+            </label>
+            <label className='disabled'>
+              <input
+                type="checkbox"
+                disabled
+              />
+              Page for each participant
+            </label>
+            <div>
+        <button  className='save_domain_name_button' onClick={handleSaveComponents}>Save Components</button>
+      </div>
+          </div>
+
+  
+        </div>
       
-      {/* Name input section */}
-      <div className='create_custom_website'>
-        <label>Enter your website domain:</label>
-        <input
-          type="text"
-          value={domain} 
-          onChange={handleDomainChange} 
-          placeholder="Enter your website domain"
-        />
-        <label>Enter your website name:</label>
-        <input
-          type="text"
-          value={websiteName} 
-          onChange={handleNameChange} 
-          placeholder="Enter your website name"
-        />
-      </div>
 
-      <h2>Choose Components</h2>
+      
       <div>
-        <label>
-          <input
-            type="checkbox"
-            onChange={() => handleComponentChange('About Us')}
-          />
-          About Us
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            onChange={() => handleComponentChange('Contact Us')}
-          />
-          Contact Us
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            onChange={() => handleComponentChange('Contact Us')}
-          />
-          Contact Us
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            onChange={() => handleComponentChange('Participants')}
-          />
-          Participants
-        </label>
-      </div>
-
-      {/* Save components button */}
-      <div>
-        <button onClick={handleSaveComponents}>Save Components</button>
-      </div>
-
       <h3>Choose a Template</h3>
       <div>
         <img className='tamplate'
@@ -130,6 +159,10 @@ const ChooseComponentsPage = () => {
       {/* Confirmation message if components are saved */}
       {saved && <p>Your components and template have been saved!</p>}
     </div>
+      </div>
+      
+      </div>
+      
   );
 };
 
