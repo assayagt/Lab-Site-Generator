@@ -157,5 +157,4 @@ const ChooseComponentsPage = () => {
       
   );
 };
-
 export default ChooseComponentsPage;
