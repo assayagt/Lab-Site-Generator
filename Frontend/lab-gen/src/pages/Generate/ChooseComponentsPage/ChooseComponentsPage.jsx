@@ -30,7 +30,11 @@ const ChooseComponentsPage = () => {
 
   // Handle template selection and apply border
   const handleTemplateClick = (templateName) => {
-    setTemplate(templateName); // Set the selected template
+    if (templateName === template) {
+      setTemplate(''); // Set the selected template
+    } else {
+      setTemplate(templateName);
+    }
   };
 
   // Handle domain change
@@ -64,6 +68,8 @@ const ChooseComponentsPage = () => {
     navigate('/upload-files'); // Navigate to the next page
   };
 
+  const isDomainAndNameValid = domain && websiteName;
+
   return (
     <div>
       <Header title="LabLauncher" />
@@ -90,15 +96,23 @@ const ChooseComponentsPage = () => {
                 className="input_name_domain"
               />
             </div>
-            <button className="save_domain_name_button" onClick={handleSaveNameAndDomain}>Save</button>
+            <button
+              className="save_domain_name_button"
+              onClick={handleSaveNameAndDomain}
+            >
+              Save
+            </button>
           </div>
-          <div className="create_custom_website">
+
+          {/* Conditionally disable the "Choose Components" section */}
+          <div className={`create_custom_website ${isDomainAndNameValid ? '' : 'disabled_section'}`}>
             <h2>Choose Components</h2>
             <label>
               <input
                 type="checkbox"
                 checked={components.includes('About Us')}
                 onChange={() => handleComponentChange('About Us')}
+                disabled={!isDomainAndNameValid} // Disable if domain or name is not valid
               />
               About Us
             </label>
@@ -107,6 +121,7 @@ const ChooseComponentsPage = () => {
                 type="checkbox"
                 checked={components.includes('Participants')}
                 onChange={() => handleComponentChange('Participants')}
+                disabled={!isDomainAndNameValid} // Disable if domain or name is not valid
               />
               Participants
             </label>
@@ -115,6 +130,7 @@ const ChooseComponentsPage = () => {
                 type="checkbox"
                 checked={components.includes('Contact Us')}
                 onChange={() => handleComponentChange('Contact Us')}
+                disabled={!isDomainAndNameValid} // Disable if domain or name is not valid
               />
               Contact Us
             </label>
@@ -123,6 +139,7 @@ const ChooseComponentsPage = () => {
                 type="checkbox"
                 checked={components.includes('Publications')}
                 onChange={() => handleComponentChange('Publications')}
+                disabled={!isDomainAndNameValid} // Disable if domain or name is not valid
               />
               Publications
             </label>
@@ -139,24 +156,35 @@ const ChooseComponentsPage = () => {
               Page for each participant
             </label>
             <div>
-              <button className="save_domain_name_button" onClick={handleSaveComponents}>
+              <button
+                className="save_domain_name_button"
+                onClick={handleSaveComponents}
+                disabled={!isDomainAndNameValid} // Disable if domain or name is not valid
+              >
                 Save Components
               </button>
             </div>
           </div>
         </div>
+
         <div>
           <h2>Choose a Template</h2>
           <div>
             <img
-              className={`tamplate ${template === 'Template 1' ? 'selected' : ''}`}
+              className={`template ${template === 'Template 1' ? 'selected' : ''}`}
               src={Tamplate}
               alt="Template 1"
               onClick={() => handleTemplateClick('Template 1')}
             />
           </div>
-          <button className= "continue_button"onClick={handleContinue}>Continue</button>
-          {saved && <p>Your components and template have been saved!</p>}
+          <button
+            className="continue_button"
+            onClick={handleContinue}
+            disabled={!isDomainAndNameValid} // Disable if domain or name is not valid
+          >
+            Continue
+          </button>
+          {saved && <div className="saved_message">Your components and template have been saved!</div>}
         </div>
       </div>
     </div>
