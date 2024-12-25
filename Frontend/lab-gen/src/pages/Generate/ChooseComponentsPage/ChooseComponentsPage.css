@@ -52,6 +52,18 @@
     outline: none;  /* Remove the default outline */
     border: 1px solid #545454;  /* Visible border for the input */
 }
+.save_domain_name_button {
+    background-color: #FFC147;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.save_domain_name_button:hover {
+    background-color: #ca9938;
+}
+
   
 .tamplate {
     width: 100%;  /* Make it responsive */
@@ -73,4 +85,14 @@
     border: 3px solid #382543; /* Green border for the selected template */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow effect */
   }
-  
+  .continue_button {
+    background-color: #FFC147;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.continue_button:hover {
+    background-color: #ca9938;
+}

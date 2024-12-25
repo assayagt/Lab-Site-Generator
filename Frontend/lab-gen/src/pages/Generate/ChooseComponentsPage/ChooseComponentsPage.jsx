@@ -155,7 +155,7 @@ const ChooseComponentsPage = () => {
               onClick={() => handleTemplateClick('Template 1')}
             />
           </div>
-          <button onClick={handleContinue}>Continue</button>
+          <button className= "continue_button"onClick={handleContinue}>Continue</button>
           {saved && <p>Your components and template have been saved!</p>}
         </div>
       </div>
