@@ -6,15 +6,14 @@ import { useWebsite } from '../../../Context/WebsiteContext';
 import './ChooseComponentsPage.css';
 
 const ChooseComponentsPage = () => {
-  const [saved, setSaved] = useState(false); // Track if components are saved
-  const navigate = useNavigate(); // Use navigate for routing
-  const { websiteData, setWebsite } = useWebsite(); // Get website data and setter from context
+  const [saved, setSaved] = useState(false); 
+  const navigate = useNavigate(); 
+  const { websiteData, setWebsite } = useWebsite(); 
   const [components, setComponents] = useState(websiteData.components || []);
   const [template, setTemplate] = useState(websiteData.template || '');
   const [domain, setDomain] = useState(websiteData.domain || '');
   const [websiteName, setWebsiteName] = useState(websiteData.websiteName || '');
 
-  // Handle checkbox changes for components
   const handleComponentChange = (component) => {
     setComponents(prevComponents =>
       prevComponents.includes(component)
@@ -23,31 +22,26 @@ const ChooseComponentsPage = () => {
     );
   };
 
-  // Save website name and domain
   const handleSaveNameAndDomain = () => {
     setWebsite({ ...websiteData, domain, websiteName });
   };
 
-  // Handle template selection and apply border
   const handleTemplateClick = (templateName) => {
     if (templateName === template) {
-      setTemplate(''); // Set the selected template
+      setTemplate(''); 
     } else {
       setTemplate(templateName);
     }
   };
 
-  // Handle domain change
   const handleDomainChange = (event) => {
     setDomain(event.target.value);
   };
 
-  // Handle website name input change
   const handleNameChange = (event) => {
     setWebsiteName(event.target.value);
   };
 
-  // Save components to the websiteData
   const handleSaveComponents = () => {
     if (components.length === 0) {
       alert('Please select components');
@@ -58,14 +52,13 @@ const ChooseComponentsPage = () => {
     alert('Components saved successfully!');
   };
 
-  // Continue to the next page
   const handleContinue = () => {
     if (components.length === 0 || !template) {
       alert('Please select components and a template!');
       return;
     }
     setWebsite({ ...websiteData, template });
-    navigate('/upload-files'); // Navigate to the next page
+    navigate('/upload-files'); 
   };
 
   const isDomainAndNameValid = domain && websiteName;
@@ -103,8 +96,6 @@ const ChooseComponentsPage = () => {
               Save
             </button>
           </div>
-
-          {/* Conditionally disable the "Choose Components" section */}
           <div className={`create_custom_website ${isDomainAndNameValid ? '' : 'disabled_section'}`}>
             <h2>Choose Components</h2>
             <label>
@@ -171,7 +162,7 @@ const ChooseComponentsPage = () => {
           <h2>Choose a Template</h2>
           <div>
             <img
-              className={`template ${template === 'Template 1' ? 'selected' : ''}`}
+              className={`template ${template !== '' ? 'selected' : ''}`}
               src={Tamplate}
               alt="Template 1"
               onClick={() => handleTemplateClick('Template 1')}
