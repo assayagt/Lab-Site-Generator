@@ -56,6 +56,10 @@ const ChooseComponentsPage = () => {
     navigate('/upload-files'); // Use navigate to go to the next page
   };
 
+  function getChooseCompontents(){
+
+  }
+
   return (
     <div>
       <Header title="LabLauncher" />
@@ -141,7 +145,7 @@ const ChooseComponentsPage = () => {
           </div>
         </div>
       <div>
-        <h3>Choose a Template</h3>
+        <h2>Choose a Template</h2>
         <div>
             <img className='tamplate'
               src= {Tamplate}
@@ -154,7 +158,6 @@ const ChooseComponentsPage = () => {
       </div>
     </div> 
   </div>
-      
   );
 };
 export default ChooseComponentsPage;

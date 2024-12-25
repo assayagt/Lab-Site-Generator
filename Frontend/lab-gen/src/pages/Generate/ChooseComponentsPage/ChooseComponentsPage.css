@@ -6,15 +6,13 @@
     gap: 20px;
   }
   
-  /* Grid for the first section */
-  .grid1 {
+.grid1 {
     display: flex;
     flex-direction: column;
     gap: 20px;
-  }
+}
   
-  /* Styling for the 'Create Custom Website' section */
-  .create_custom_website {
+.create_custom_website {
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -24,56 +22,51 @@
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     position: relative;
-  }
+}
   
-  /* Styling for domain name input */
-  .website_domain_name {
+.website_domain_name {
     display: flex;
     flex-direction: row;
     gap: 10px;
     position: relative;
     align-items: center;
-  }
-  
-  /* Save domain button at the bottom-right of its container */
-  .save_domain_name_button {
+}
+.save_domain_name_button {
     position: absolute;
     bottom: 10px;  /* Slightly higher so it's not at the absolute bottom */
     right: 10px;
     margin: 10px;
-  }
+}
   
-  /* Styling for the input field */
-  .input_name_domain {
+ 
+.input_name_domain {
     border: 1px solid #ccc;  /* Visible border for the input */
     border-radius: 10px;
     height: 35px;
     padding: 5px 10px;
     width: 200px;  /* Give the input a fixed width */
     font-size: 16px;
-  }
-  .input_name_domain:focus {
+}
+
+.input_name_domain:focus {
     outline: none;  /* Remove the default outline */
     border: 1px solid #545454;  /* Visible border for the input */
-  }
+}
   
-  /* Template card styling */
-  .tamplate {
+.tamplate {
     width: 100%;  /* Make it responsive */
     height: 200px;
     background-color: #f5f5f5;  /* Placeholder background */
     border-radius: 10px;
     overflow: hidden;  /* Hide any overflow */
-  }
+}
   
-  .tamplate:hover {
-    border-radius: 10px;
+.tamplate:hover {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
+}
   
-  /* Disabled styling */
-  .disabled {
+.disabled {
     opacity: 0.5;
     pointer-events: none;  /* Disable interactions when disabled */
-  }
+}
   
