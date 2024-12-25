@@ -29,8 +29,8 @@ const ChooseComponentsPage = () => {
   };
 
   // Handle domain change
-  const handleDomainChange = (domain) => {
-    setDomain(domain);
+  const handleDomainChange = (event) => {
+    setDomain(event.target.value);
   };
   
   // Handle website name input change
@@ -69,6 +69,7 @@ const ChooseComponentsPage = () => {
                   value={domain} 
                   onChange={handleDomainChange} 
                   placeholder="Enter your website domain"
+                  className='input_name_domain'
                 />
               </div>
               <div className='website_domain_name'>
@@ -78,6 +79,7 @@ const ChooseComponentsPage = () => {
                   value={websiteName} 
                   onChange={handleNameChange} 
                   placeholder="Enter your website name"
+                  className='input_name_domain'
                 />
               </div>
               <button className='save_domain_name_button'>Save</button>
@@ -110,7 +112,7 @@ const ChooseComponentsPage = () => {
                 type="checkbox"
                 onChange={() => handleComponentChange('Participants')}
               />
-              Participants
+              Publications
             </label>
             <label className='disabled'>
               <input
@@ -134,34 +136,24 @@ const ChooseComponentsPage = () => {
               Page for each participant
             </label>
             <div>
-        <button  className='save_domain_name_button' onClick={handleSaveComponents}>Save Components</button>
-      </div>
+              <button  className='save_domain_name_button' onClick={handleSaveComponents}>Save Components</button>
+            </div>
           </div>
-
-  
         </div>
-      
-
-      
       <div>
-      <h3>Choose a Template</h3>
-      <div>
-        <img className='tamplate'
-          src= {Tamplate}
-          alt="Template 1"
-          onClick={() => handleTemplateClick('Template 1')}
-        />
+        <h3>Choose a Template</h3>
+        <div>
+            <img className='tamplate'
+              src= {Tamplate}
+              alt="Template 1"
+              onClick={() => handleTemplateClick('Template 1')}
+            />
+        </div>
+        <button onClick={handleContinue}>Continue</button>
+        {saved && <p>Your components and template have been saved!</p>}
       </div>
-
-      {/* Continue button to proceed */}
-      <button onClick={handleContinue}>Continue</button>
-
-      {/* Confirmation message if components are saved */}
-      {saved && <p>Your components and template have been saved!</p>}
-    </div>
-      </div>
-      
-      </div>
+    </div> 
+  </div>
       
   );
 };

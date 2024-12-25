@@ -1,51 +1,79 @@
-.choose_components_main{
+/* Layout for the components grid */
+.choose_components_main {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     margin: 30px;
-    gap:20px;
-
-}
-.grid1{
+    gap: 20px;
+  }
+  
+  /* Grid for the first section */
+  .grid1 {
     display: flex;
     flex-direction: column;
-    gap:20px;
-}
-.create_custom_website{
+    gap: 20px;
+  }
+  
+  /* Styling for the 'Create Custom Website' section */
+  .create_custom_website {
     display: flex;
     flex-direction: column;
-    gap:20px;
+    gap: 20px;
     font-size: 20px;
     background-color: rgb(230, 229, 237);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     position: relative;
-    
-}
-.website_domain_name{
+  }
+  
+  /* Styling for domain name input */
+  .website_domain_name {
     display: flex;
     flex-direction: row;
-    gap:10px;
+    gap: 10px;
     position: relative;
-}
-.save_domain_name_button{
+    align-items: center;
+  }
+  
+  /* Save domain button at the bottom-right of its container */
+  .save_domain_name_button {
     position: absolute;
-    bottom: 0; 
-    right: 0;
+    bottom: 10px;  /* Slightly higher so it's not at the absolute bottom */
+    right: 10px;
     margin: 10px;
-}
-
-
-.tamplate{
-    width: 400px;
+  }
+  
+  /* Styling for the input field */
+  .input_name_domain {
+    border: 1px solid #ccc;  /* Visible border for the input */
+    border-radius: 10px;
+    height: 35px;
+    padding: 5px 10px;
+    width: 200px;  /* Give the input a fixed width */
+    font-size: 16px;
+  }
+  .input_name_domain:focus {
+    outline: none;  /* Remove the default outline */
+    border: 1px solid #545454;  /* Visible border for the input */
+  }
+  
+  /* Template card styling */
+  .tamplate {
+    width: 100%;  /* Make it responsive */
     height: 200px;
-}
-.tamplate:hover{
+    background-color: #f5f5f5;  /* Placeholder background */
+    border-radius: 10px;
+    overflow: hidden;  /* Hide any overflow */
+  }
+  
+  .tamplate:hover {
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-
-}
-
-.disabled{
+  }
+  
+  /* Disabled styling */
+  .disabled {
     opacity: 0.5;
-}
+    pointer-events: none;  /* Disable interactions when disabled */
+  }
+  
