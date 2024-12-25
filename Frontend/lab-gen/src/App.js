@@ -24,10 +24,6 @@ function App() {
                 path="/upload-files"
                 element={<UploadFilesPage />}
               />
-              {/* <Route
-                path="/generate-website"
-                element={isLoggedIn ? <GenerateWebsitePage /> : <Navigate to="/" />}
-              /> */}
             </Routes>
           </Router>
        </WebsiteProvider>
