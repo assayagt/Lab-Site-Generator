@@ -4,12 +4,15 @@ import WelcomePage from './pages/WelcomePage/WelcomePage';
 import ChooseComponentsPage from './pages/Generate/ChooseComponentsPage/ChooseComponentsPage';
 import UploadFilesPage from './pages/Generate/UploadFilesPage/UploadFilesPage';
 import { AuthProvider } from './Context/AuthContext';
-
+import { WebsiteProvider
+  
+ } from './Context/WebsiteContext';
 function App() {
 
   return (
     <AuthProvider>
-      <Router>
+       <WebsiteProvider>
+       <Router>
             <Routes>
               {/* Use the new "Routes" component for defining your routes */}
               <Route path="/" element={<WelcomePage/>} />
@@ -27,6 +30,8 @@ function App() {
               /> */}
             </Routes>
           </Router>
+       </WebsiteProvider>
+      
     </AuthProvider>
     
   );
