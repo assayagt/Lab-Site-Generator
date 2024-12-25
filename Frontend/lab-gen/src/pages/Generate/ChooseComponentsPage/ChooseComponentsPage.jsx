@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Use useNavigate instead of useHistory
+import Header from '../../../components/Header/Header';
+import Tamplate from "../../../images/tamplate.svg"
+import "./ChooseComponentsPage.css";
 
 const ChooseComponentsPage = () => {
   const [components, setComponents] = useState([]);
   const [template, setTemplate] = useState('');
+  const [domain, setDomain] = useState('');
+  const [websiteName, setWebsiteName] = useState(''); // Corrected state for website name
+  const [saved, setSaved] = useState(false); // New state to track if components are saved
+
   const navigate = useNavigate(); // Use useNavigate
 
+  // Handle checkbox changes for components
   const handleComponentChange = (component) => {
     setComponents((prev) => {
       if (prev.includes(component)) {
@@ -15,10 +23,31 @@ const ChooseComponentsPage = () => {
     });
   };
 
+  // Handle template selection
   const handleTemplateClick = (templateName) => {
     setTemplate(templateName);
   };
 
+  // Handle domain change
+  const handleDomainChange = (domain) => {
+    setDomain(domain);
+  };
+  
+  // Handle website name input change
+  const handleNameChange = (event) => {
+    setWebsiteName(event.target.value);
+  };
+
+  const handleSaveComponents = () => {
+    if (components.length === 0 ) {
+      alert('Please select components');
+      return;
+    }
+    setSaved(true); 
+    alert('Components saved successfully!');
+  };
+
+  // Continue to the next page
   const handleContinue = () => {
     if (components.length === 0 || !template) {
       alert('Please select components and a template!');
@@ -29,46 +58,77 @@ const ChooseComponentsPage = () => {
 
   return (
     <div>
+      <Header title="LabLauncher" />
+      
+      {/* Name input section */}
+      <div className='create_custom_website'>
+        <label>Enter your website domain:</label>
+        <input
+          type="text"
+          value={domain} 
+          onChange={handleDomainChange} 
+          placeholder="Enter your website domain"
+        />
+        <label>Enter your website name:</label>
+        <input
+          type="text"
+          value={websiteName} 
+          onChange={handleNameChange} 
+          placeholder="Enter your website name"
+        />
+      </div>
+
       <h2>Choose Components</h2>
       <div>
         <label>
           <input
             type="checkbox"
-            onChange={() => handleComponentChange('Header')}
+            onChange={() => handleComponentChange('About Us')}
           />
-          Header
+          About Us
         </label>
         <label>
           <input
             type="checkbox"
-            onChange={() => handleComponentChange('Footer')}
+            onChange={() => handleComponentChange('Contact Us')}
           />
-          Footer
+          Contact Us
         </label>
         <label>
           <input
             type="checkbox"
-            onChange={() => handleComponentChange('Sidebar')}
+            onChange={() => handleComponentChange('Contact Us')}
           />
-          Sidebar
+          Contact Us
         </label>
+        <label>
+          <input
+            type="checkbox"
+            onChange={() => handleComponentChange('Participants')}
+          />
+          Participants
+        </label>
+      </div>
+
+      {/* Save components button */}
+      <div>
+        <button onClick={handleSaveComponents}>Save Components</button>
       </div>
 
       <h3>Choose a Template</h3>
       <div>
-        <img
-          src="template1.jpg"
+        <img className='tamplate'
+          src= {Tamplate}
           alt="Template 1"
           onClick={() => handleTemplateClick('Template 1')}
         />
-        <img
-          src="template2.jpg"
-          alt="Template 2"
-          onClick={() => handleTemplateClick('Template 2')}
-        />
       </div>
 
+      {/* Continue button to proceed */}
       <button onClick={handleContinue}>Continue</button>
+
+      {/* Confirmation message if components are saved */}
+      {saved && <p>Your components and template have been saved!</p>}
     </div>
   );
 };

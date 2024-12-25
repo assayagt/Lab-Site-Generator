@@ -1,0 +1,8 @@
+.tamplate{
+    width: 400px;
+    height: 200px;
+}
+.tamplate:hover{
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+}
