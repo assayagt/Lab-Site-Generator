@@ -28,9 +28,9 @@ const ChooseComponentsPage = () => {
     setWebsite({ ...websiteData, domain, websiteName });
   };
 
-  // Handle template selection
+  // Handle template selection and apply border
   const handleTemplateClick = (templateName) => {
-    setTemplate(templateName);
+    setTemplate(templateName); // Set the selected template
   };
 
   // Handle domain change
@@ -149,7 +149,7 @@ const ChooseComponentsPage = () => {
           <h2>Choose a Template</h2>
           <div>
             <img
-              className="tamplate"
+              className={`tamplate ${template === 'Template 1' ? 'selected' : ''}`}
               src={Tamplate}
               alt="Template 1"
               onClick={() => handleTemplateClick('Template 1')}

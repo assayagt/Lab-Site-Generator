@@ -69,4 +69,8 @@
     opacity: 0.5;
     pointer-events: none;  /* Disable interactions when disabled */
 }
+.tamplate.selected {
+    border: 3px solid #382543; /* Green border for the selected template */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow effect */
+  }
   

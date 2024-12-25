@@ -10,7 +10,6 @@ import LoginPopup from '../Popups/LoginPopup';
 function Header(props) {
   const { isLoggedIn, userEmail, login, logout } = useAuth();
   const [showLoginPopup, setShowLoginPopup] = useState(false);
-  const [email, setEmail] = useState('');  // Email state for the popup
 
   const handleLogin = () => {
     setShowLoginPopup(true);  
