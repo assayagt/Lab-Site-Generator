@@ -112,6 +112,10 @@ class LabSystem:
                     for authorEmail in authorsEmails:
                         self.notificationsFacade.send_publication_notification(publication, authorEmail)
 
+    def add_publication_manually(self, userId):
+        """A Lab Member updates the website with new research publications"""
+        pass
+
     def get_all_approved_publication(self, domain):
         """
         return all approved publications of a specific website
@@ -126,6 +130,20 @@ class LabSystem:
         """
         return self.websiteFacade.get_all_approved_publications_of_member(domain, email)
 
+    def define_member_as_alumni(self, manager_userId, member_email, domain):
+        """
+        define member (lab manager or lab member) as alumni
+        Only managers can perform this operation.
+        Site creator cant be defined as alumni.
+        """
+        return self.allWebsitesUserFacade.define_member_as_alumni(manager_userId, member_email, domain)
+
+    def remove_manager_permission(self, manager_userId, manager_toRemove_email, domain):
+        """A Lab Manager(manager_userId) removes the administrative permissions of another Lab Manager,
+        reverting their role to a Lab Member.
+        The permissions of the lab creator cannot be removed, it must always remain a Lab Manager"""
+        return self.allWebsitesUserFacade.remove_manager_permission(manager_userId, manager_toRemove_email, domain)
+
     def get_all_alumnis(self, domain):
         return self.allWebsitesUserFacade.get_all_alumnis(domain)
 
@@ -135,5 +153,17 @@ class LabSystem:
     def get_all_lab_managers(self, domain):
         """notice! this function returns all managers including site creator!"""
         return self.get_all_lab_managers(domain)
+
+    def set_secondEmail_by_member(self, userid, secondEmail, domain):
+        self.allWebsitesUserFacade.set_secondEmail_by_member(userid, secondEmail, domain)
+
+    def set_linkedin_link_by_member(self, userid, linkedin_link, domain):
+        self.allWebsitesUserFacade.set_linkedin_link_by_member(userid, linkedin_link, domain)
+
+    def set_media_by_member(self, userid, media, domain):
+        self.allWebsitesUserFacade.set_media_by_member(userid, media, domain)
+
+    def set_fullName_by_member(self, userid, fullName, domain):
+        self.allWebsitesUserFacade.set_fullName_by_member(userid, fullName, domain)
 
 
