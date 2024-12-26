@@ -78,3 +78,7 @@ class GeneratorSystemController:
     def get_logged_in_user(self):
         """Get the currently logged-in user."""
         return self.user_facade.get_logged_in_user()
+
+    def enter_generator_system(self):
+        """Enter the generator system."""
+        return self.user_facade.add_user()

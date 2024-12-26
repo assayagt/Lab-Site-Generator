@@ -1,5 +1,6 @@
 from Member import Member
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
+import uuid
 
 class UserFacade:
     _singleton_instance = None
@@ -66,3 +67,9 @@ class UserFacade:
     def error_if_user_notExist(self, userId):
         if self.get_user_by_id(userId) is None:
             raise Exception(ExceptionsEnum.USER_NOT_EXIST.value)
+
+    def add_user(self):
+        user_id = str(uuid.uuid4())
+        user = User(user_id=user_id)
+        self.users[user_id] = user
+        return user_id
