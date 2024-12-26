@@ -4,13 +4,12 @@ class Website:
         self.members_publications = {}
         self.domain = domain
 
-    def create_publication(self, title, authors, date, approved, publication_link, media, authors_emails):
-        # create new publicaiton and add it to the dictionary
-        new_publication = PublicationDTO(title, authors, date, approved, publication_link, media)
+    def create_publication(self, publicationDTO, authors_emails):
+        # get new publicationDTO and add it to the dictionary
         for author_email in authors_emails:
             if author_email not in self.members_publications:
                 self.members_publications[author_email] = []
-            self.members_publications[author_email].append(new_publication)
+            self.members_publications[author_email].append(publicationDTO)
 
 
     def check_publication_exist(self, publication):
