@@ -25,3 +25,7 @@ class State(ABC):
     @abstractmethod
     def get_username(self):
         pass
+
+    @abstractmethod
+    def get_email(self):
+        pass
