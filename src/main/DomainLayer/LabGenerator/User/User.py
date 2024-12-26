@@ -24,4 +24,6 @@ class User:
     def get_user_id(self):
         return self.user_id
 
+    def get_email(self):
+        return self.state.get_email()
 
