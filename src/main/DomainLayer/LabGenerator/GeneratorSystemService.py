@@ -16,6 +16,10 @@ class GeneratorSystemService:
             GeneratorSystemService._singleton_instance = GeneratorSystemService()
         return GeneratorSystemService._singleton_instance
 
+    def enter_generator_system(self):
+        """Enter the generator system through GeneratorSystemController."""
+        return self.generator_system_controller.enter_generator_system()
+
     def create_website(self, email, website_name, domain):
         """Create a website through GeneratorSystemController."""
         return self.generator_system_controller.create_website(email, website_name, domain)
