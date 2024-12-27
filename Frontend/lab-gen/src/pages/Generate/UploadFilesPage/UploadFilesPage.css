@@ -1,0 +1,52 @@
+.upload_files_main{
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:20px;
+}
+.upload_files_page{
+  padding: 20px;
+}
+
+.file-upload-section{
+  height: auto;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.upload_title{
+  font-size: 20px;
+}
+.upload_instruction{
+  font-size: 20px;
+}
+.file-upload_title{
+  font-size: 20px;
+
+}
+.file-upload-item{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+}
+.about_contact_section{
+ 
+}
+.about_contact_input{
+  width: 300px;
+  height: 100px;
+  border-radius: 10px;
+  border-color: transparent;
+}
+.about_contact_input:focus {
+  outline: none;  /* Remove the default outline */
+}
+
+.about_contact_button{
+  width: 60px;
+  height: 30px;
+  bottom: 0;
+  
+}
+

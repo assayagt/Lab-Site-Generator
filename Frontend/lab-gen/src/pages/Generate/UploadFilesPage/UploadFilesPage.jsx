@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Header from '../../../components/Header/Header';
 import { useWebsite } from '../../../Context/WebsiteContext';
 import './UploadFilesPage.css';
 
 const UploadFilesPage = () => {
-  const navigate = useNavigate();
   const { websiteData, setWebsite } = useWebsite();
   const [formData, setFormData] = useState({
     domain: websiteData.domain || '',
@@ -56,30 +54,29 @@ const UploadFilesPage = () => {
   return (
     <div>
       <Header title="LabLauncher" />
-      <div className="upload_files_main">
-        <h2>Upload Files for Each Component</h2>
-        <div>First, download the template, fill it in, and upload it.</div>
-
+      <div className="upload_files_page">
+        <h2 className='upload_title'> Upload Files for Each Component</h2>
+        <div className='upload_instruction'>First, download the template, fill it in, and upload it.</div>
+        <div className="upload_files_main">
         {websiteData.components.map((component) => (
           <div key={component} className="file-upload-section">
-            <div>
-              <div>{component}</div>
+            <div className = "file-upload-item" >
+              <div className = "file-upload_title">{component}</div>
               <div>
                 {component === 'About Us' || component === 'Contact Us' ? (
-                  <div>
-                    <textarea
+                  <div className = "about_contact_section">
+                    <input className = "about_contact_input"
                       name={component}
                       placeholder={`Enter content for ${component}`}
                       value={formData[component]}
                       onChange={handleInputChange}
                     />
-                    <button>Save</button>
+                    <button className = "about_contact_button">Save</button>
                   </div>
                 ) : (
                   <button onClick={() => handleDownload(component)}>Download Template</button>
                 )}
               </div>
-              {/* Display file input for components other than About Us and Contact Us */}
               {(component !== 'About Us' && component !== 'Contact Us') && (
                 <div>
                   <input
@@ -97,6 +94,7 @@ const UploadFilesPage = () => {
           <button >Generate</button>
         </div>
       </div>
+    </div>
     </div>
   );
 };
