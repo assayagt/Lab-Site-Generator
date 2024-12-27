@@ -74,16 +74,17 @@ const UploadFilesPage = () => {
                     <button className = "about_contact_button">Save</button>
                   </div>
                 ) : (
-                  <button onClick={() => handleDownload(component)}>Download Template</button>
+                  <button className ="downloadTemplate" onClick={() => handleDownload(component)}>Download Template</button>
                 )}
               </div>
               {(component !== 'About Us' && component !== 'Contact Us') && (
                 <div>
                   <input
+                    className ="downloadTemplate"
                     type="file"
                     onChange={(e) => handleFileChange(e, component)}
                   />
-                  <button onClick={handleSubmit}>Submit</button>
+                  <button className ="downloadTemplate"  onClick={handleSubmit}>Submit</button>
                 </div>
               )}
             </div>
