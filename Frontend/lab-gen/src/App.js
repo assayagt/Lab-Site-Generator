@@ -14,7 +14,6 @@ function App() {
        <WebsiteProvider>
        <Router>
             <Routes>
-              {/* Use the new "Routes" component for defining your routes */}
               <Route path="/" element={<WelcomePage/>} />
               <Route
                 path="/choose-components"

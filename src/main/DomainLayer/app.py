@@ -118,7 +118,6 @@ class ChooseComponents(Resource):
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
         args = parser.parse_args()
         
-        # Example: store the chosen components (could be in a database or in-memory)
         domain = args['domain']
         selected_components = args['components']
         try:
