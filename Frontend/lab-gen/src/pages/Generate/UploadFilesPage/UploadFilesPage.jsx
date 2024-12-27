@@ -12,8 +12,8 @@ const UploadFilesPage = () => {
     websiteName: websiteData.websiteName || '',
     components: websiteData.components || [],
     files: {},
-    aboutUsContent: '',  // For About Us content
-    contactUsContent: '',  // For Contact Us content
+    aboutUsContent: '',  
+    contactUsContent: '',  
   });
 
   const handleInputChange = (e) => {
@@ -49,11 +49,8 @@ const UploadFilesPage = () => {
       alert('Please upload all required files!');
       return;
     }
-
-    // If all files are uploaded, you can save the data and navigate
-    setWebsite({ ...formData });  // Save the form data
+    setWebsite({ ...formData }); 
     alert('Website data saved successfully!');
-    navigate('/some-other-page');
   };
 
   return (
@@ -66,33 +63,38 @@ const UploadFilesPage = () => {
         {websiteData.components.map((component) => (
           <div key={component} className="file-upload-section">
             <div>
-              <strong>{component}</strong>
+              <div>{component}</div>
               <div>
-                {/* Special Handling for About Us and Contact Us */}
                 {component === 'About Us' || component === 'Contact Us' ? (
-                  <textarea
-                    name={component}
-                    placeholder={`Enter content for ${component}`}
-                    value={formData[component]}
-                    onChange={handleInputChange}
-                  />
+                  <div>
+                    <textarea
+                      name={component}
+                      placeholder={`Enter content for ${component}`}
+                      value={formData[component]}
+                      onChange={handleInputChange}
+                    />
+                    <button>Save</button>
+                  </div>
                 ) : (
                   <button onClick={() => handleDownload(component)}>Download Template</button>
                 )}
               </div>
               {/* Display file input for components other than About Us and Contact Us */}
               {(component !== 'About Us' && component !== 'Contact Us') && (
-                <input
-                  type="file"
-                  onChange={(e) => handleFileChange(e, component)}
-                />
+                <div>
+                  <input
+                    type="file"
+                    onChange={(e) => handleFileChange(e, component)}
+                  />
+                  <button onClick={handleSubmit}>Submit</button>
+                </div>
               )}
             </div>
           </div>
         ))}
 
         <div>
-          <button onClick={handleSubmit}>Submit</button>
+          <button >Generate</button>
         </div>
       </div>
     </div>
