@@ -105,16 +105,19 @@ class LabSystem:
                     authorsEmails = []
                     for author in publication.authors:
                         authorsEmails.append(self.allWebsitesUserFacade.getMemberEmailByName(author, website.domain))
-                    website.create_publication(publication.title, publication.authors, publication.date,
-                                               publication.approved, publication.publication_link, publication.media, authorsEmails)
+                    website.create_publication(publication, authorsEmails)
 
                     # send notifications to the website authors about the new publications, for initial approve
                     for authorEmail in authorsEmails:
                         self.notificationsFacade.send_publication_notification(publication, authorEmail)
 
-    def add_publication_manually(self, userId):
+    def add_publication_manually(self, userId, publicationDTO, domain, authors_emails):
         """A Lab Member updates the website with new research publications"""
-        pass
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId)
+        userFacade.error_if_user_not_logged_in(userId)
+        userFacade.error_if_user_is_not_labMember_manager_creator(userId, domain)
+        self.websiteFacade.create_new_publication(domain, publicationDTO, authors_emails)
 
     def get_all_approved_publication(self, domain):
         """

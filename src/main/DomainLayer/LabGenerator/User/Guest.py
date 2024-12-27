@@ -23,3 +23,6 @@ class Guest(State):
 
     def get_username(self):
         return None
+
+    def get_email(self):
+        return None

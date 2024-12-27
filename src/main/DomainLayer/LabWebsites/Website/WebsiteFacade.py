@@ -31,3 +31,10 @@ class WebsiteFacade:
         if website is None:
             raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
         return website.get_all_approved_publications_of_member(email)
+
+    #creare new publication manually
+    def create_new_publication(self, domain, publicationDTO, authors_emails):
+        website = self.get_website(domain)
+        if website is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        website.create_publication(publicationDTO, authors_emails)

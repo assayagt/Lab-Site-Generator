@@ -226,6 +226,15 @@ class GetAllLabWebsites(Resource):
             return jsonify({"websites": websites}), 200
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+class EnterGeneratorSystem(Resource):
+    def get(self):
+        try:
+            # Generate a new guest ID via the service
+            user_id = generator_system.enter_generator_system()
+            return jsonify({"guest_id": user_id, "message": "Guest entered the system successfully"}), 200
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
         
 
 # Add the resources to API
@@ -241,6 +250,7 @@ api.add_resource(ChooseDomain, '/api/chooseDomain')
 api.add_resource(StartCustomSite, '/api/startCustomSite')  # New endpoint to start custom site
 api.add_resource(GetCustomWebsite, '/api/getCustomWebsite')
 api.add_resource(GetAllLabWebsites, '/api/getAllLabWebsites')
+api.add_resource(EnterGeneratorSystem, '/api/enterGeneratorSystem')
 
 if __name__ == '__main__':
     app.run(debug=True)
