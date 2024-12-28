@@ -1,3 +1,51 @@
-# Default ignored files
-/shelf/
-/workspace.xml
+# Python bytecode files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment directories
+venv/
+.env/
+.venv/
+ENV/
+env/
+
+# Flask specific files
+instance/
+.webassets-cache
+
+# Database files (SQLite)
+*.sqlite3
+*.db
+
+# PyCharm/VSCode IDE settings
+.vscode/
+.idea/
+
+# Python Egg files
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+
+# Log files
+*.log
+
+# Temporary files
+*.bak
+*.swp
+*~
+.DS_Store
+
+# Jupyter Notebook files
+.ipynb_checkpoints/
+
+# Coverage files
+.coverage
+.coverage.*
+nosetests.xml
+pytest_cache/
+
+# Environment variables file
+.env

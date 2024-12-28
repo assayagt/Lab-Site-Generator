@@ -8,3 +8,8 @@ class ExceptionsEnum(Enum):
     ERROR_SENDING_EMAIL = "Error sending email"
     EMAIL_IS_ALREADY_ASSOCIATED_WITH_A_MEMBER = "The given email is already associated with a member"
     WEBSITE_DOMAIN_NOT_EXIST = "Error! The given domain website does not exist"
+    SITE_CREATOR_CANT_BE_ALUMNI = "The site creator cannot be designated as an alumni"
+    USER_IS_NOT_A_LAB_MEMBER_OR_LAB_MANAGER = "User is not a lab member or a lab manager"
+    USER_IS_NOT_A_LAB_MEMBER_OR_LAB_MANAGER_OR_CREATOR = "User is not a lab member or a lab manager or a site creator"
+    USER_IS_NOT_A_LAB_MANAGER = "User is not a lab manager"
+    USER_IS_NOT_PUBLICATION_AUTHOR_OR_LAB_MANAGER = "User is not a publication author or a lab manager"

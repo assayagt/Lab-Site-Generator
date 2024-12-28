@@ -1,17 +1,15 @@
 from PublicationDTO import PublicationDTO
 class Website:
     def __init__(self, domain):
-        self.members = []
         self.members_publications = {}
         self.domain = domain
 
-    def create_publication(self, title, authors, date, approved, publication_link, media, authors_emails):
-        # create new publicaiton and add it to the dictionary
-        new_publication = PublicationDTO(title, authors, date, approved, publication_link, media)
+    def create_publication(self, publicationDTO, authors_emails):
+        # get new publicationDTO and add it to the dictionary
         for author_email in authors_emails:
             if author_email not in self.members_publications:
                 self.members_publications[author_email] = []
-            self.members_publications[author_email].append(new_publication)
+            self.members_publications[author_email].append(publicationDTO)
 
 
     def check_publication_exist(self, publication):
@@ -37,3 +35,31 @@ class Website:
                 if publication.approved:  # Check if the publication is approved
                     approved_publications.append(publication)
         return approved_publications
+
+    def set_publication_video_link(self, publication_paper_id, video_link):
+        for author_email in self.members_publications:
+            for publication in self.members_publications[author_email]:
+                if publication.get_paper_id() == publication_paper_id:
+                    publication.set_video_link(video_link)
+                    return
+
+    def set_publication_git_link(self, publication_paper_id, git_link):
+        for author_email in self.members_publications:
+            for publication in self.members_publications[author_email]:
+                if publication.get_paper_id() == publication_paper_id:
+                    publication.set_git_link(git_link)
+                    return
+
+    def set_publication_presentation_link(self, publication_paper_id):
+        for author_email in self.members_publications:
+            for publication in self.members_publications[author_email]:
+                if publication.get_paper_id() == publication_paper_id:
+                    publication.set_presentation_link()
+                    return
+
+    def check_if_member_is_publication_author(self, email, publication_paper_id):
+        if email in self.members_publications:
+            for publication in self.members_publications[email]:
+                if publication.get_paper_id() == publication_paper_id:
+                    return True
+        return False
