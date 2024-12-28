@@ -1,0 +1,39 @@
+/* Navbar Container */
+.navbar {
+  display: flex;
+  flex-direction: row;
+  gap: 30px; /* Space between items */
+  background-color: gray;
+  border-radius: 30px;
+  width: 300px;
+  height: 30px; /* Height of navbar */
+  padding: 20px;
+  margin: 20px;
+  overflow-x: scroll; /* Allow horizontal scrolling */
+  white-space: nowrap; /* Prevent items from wrapping */
+  position: relative; /* For positioning the items */
+  flex-shrink: 0; /* Prevent shrinking */
+  transition: transform 1s ease; /* Smooth scrolling transition */
+}
+
+.navbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Navbar items */
+.navbar-items {
+  display: flex;
+  gap: 30px; 
+  flex-shrink: 0; /* Prevent shrinking */
+  transition: transform 1s ease; /* Smooth scrolling transition */
+}
+
+/* Individual navbar item */
+.navbar-item {
+  cursor: pointer;
+  flex-shrink: 0; /* Prevent items from shrinking */
+}
+
+/* Hover effect for items */
+.navbar-item:hover {
+}
