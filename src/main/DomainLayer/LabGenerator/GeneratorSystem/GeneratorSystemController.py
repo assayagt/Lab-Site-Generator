@@ -25,11 +25,16 @@ class GeneratorSystemController:
         self.site_custom_facade.create_new_site(domain, website_name, components, template)
         self.user_facade.create_new_customSite_manager(user_id, domain)
 
-    def create_new_lab_website(self, domain, lab_members_emails, lab_managers_emails, site_creator_email):
+    def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator):
         """
         Generates a new lab website once the custom site configuration is complete.
+        Parameters:
+        domain (str): The domain of the new lab website.
+        lab_members (dict): A dictionary of lab members with emails as keys and full names as values.
+        lab_managers (dict): A dictionary of lab managers with emails as keys and full names as values.
+        site_creator (dict): A dictionary containing the site creator's email and full name.
         """
-        self.labSystem.create_new_lab_website(domain, lab_members_emails, lab_managers_emails, site_creator_email)
+        self.labSystem.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
 
     def change_website_name(self, user_id, new_name, domain):
         """Change website details using SiteCustomFacade."""
@@ -64,7 +69,7 @@ class GeneratorSystemController:
         self.user_facade.create_new_site_manager(nominated_manager_email, domain)
         self.labSystem.create_new_site_manager_from_generator(domain, nominated_manager_email)
 
-    def register_new_LabMember_from_generator(self, manager_userId, email_to_register, domain):
+    def register_new_LabMember_from_generator(self, manager_userId, email_to_register, lab_member_fullName, domain):
         """
         Define a new lab member in a specific website, from generator site.
         The given email_to_register must not be associated with a member(manager/lab member/creator..) of the given website.
@@ -72,7 +77,7 @@ class GeneratorSystemController:
         self.user_facade.error_if_user_notExist(manager_userId)
         self.user_facade.error_if_user_not_logged_in(manager_userId)
         self.user_facade.error_if_user_is_not_site_manager(manager_userId, domain)
-        self.labSystem.register_new_LabMember_from_generator(email_to_register, domain)
+        self.labSystem.register_new_LabMember_from_generator(email_to_register, lab_member_fullName, domain)
 
     def login(self, userId, email):
         """
