@@ -119,6 +119,11 @@ class UserFacade:
         if self.get_user_by_id(userId) is None:
             raise Exception(ExceptionsEnum.USER_NOT_EXIST.value)
 
+    def verify_if_member_is_manager(self, email):
+        if email in self.managers:
+            return True
+        return False
+
     def error_if_member_is_not_labMember_or_manager(self, email):
         if email not in self.members and email not in self.managers:
             raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MEMBER_OR_LAB_MANAGER)
@@ -179,4 +184,13 @@ class UserFacade:
     def set_fullName_by_member(self,email, fullName):
         member = self.get_member_by_email(email)
         member.set_fullName_by_member(fullName)
+
+    def set_degree_by_member(self,email, degree):
+        member = self.get_member_by_email(email)
+        member.set_degree(degree)
+
+    def set_bio_by_member(self,email, bio):
+        member = self.get_member_by_email(email)
+        member.set_bio(bio)
+
 
