@@ -27,23 +27,25 @@ class AllWebsitesUserFacade:
         userFacade.error_if_user_not_logged_in(nominator_manager_userId)
         userFacade.error_if_user_is_not_manager(nominator_manager_userId)
         userFacade.error_if_labMember_notExist(nominated_manager_email)
-        userFacade.create_new_site_manager(nominated_manager_email)
+        nominated_manager_fullName = userFacade.getLabMemberByEmail(nominated_manager_email).get_fullName()
+        userFacade.create_new_site_manager(nominated_manager_email, nominated_manager_fullName)
 
-    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, domain):
+    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName, domain):
         userFacade = self.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(manager_userId)
         userFacade.error_if_user_not_logged_in(manager_userId)
         userFacade.error_if_user_is_not_manager(manager_userId)
-        userFacade.register_new_LabMember(email_to_register)
+        userFacade.register_new_LabMember(email_to_register, lab_member_fullName)
 
     def create_new_site_manager_from_generator(self, nominated_manager_email, domain):
         userFacade = self.getUserFacadeByDomain(domain)
         userFacade.error_if_labMember_notExist(nominated_manager_email)
-        userFacade.create_new_site_manager(nominated_manager_email)
+        nominated_manager_fullName = userFacade.getLabMemberByEmail(nominated_manager_email).get_fullName()
+        userFacade.create_new_site_manager(nominated_manager_email, nominated_manager_fullName)
 
-    def register_new_LabMember_from_generator(self, email_to_register, domain):
+    def register_new_LabMember_from_generator(self, email_to_register, lab_member_fullName, domain):
         userFacade = self.getUserFacadeByDomain(domain)
-        userFacade.register_new_LabMember(email_to_register)
+        userFacade.register_new_LabMember(email_to_register, lab_member_fullName)
 
     def define_member_as_alumni(self, manager_userId, member_email, domain):
         userFacade = self.getUserFacadeByDomain(domain)
