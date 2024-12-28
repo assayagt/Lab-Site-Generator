@@ -18,12 +18,12 @@ class UserFacade:
             UserFacade._singleton_instance = UserFacade()
         return UserFacade._singleton_instance
 
-    def create_new_site_manager(self, nominated_manager_email):
+    def create_new_site_manager(self, nominated_manager_email, nominated_manager_fullName):
         if nominated_manager_email in self.members:
             member = self.getLabMemberByEmail(nominated_manager_email)
             del self.members[nominated_manager_email]
         else:
-            member = LabMember(nominated_manager_email)
+            member = LabMember(nominated_manager_email, nominated_manager_fullName)
         self.managers[nominated_manager_email] = member
 
     def getLabMemberByEmail(self, email):
@@ -33,11 +33,11 @@ class UserFacade:
         if email not in self.members:
             raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MEMBER.value)
 
-    def register_new_LabMember(self, email):
+    def register_new_LabMember(self, email, fullName):
         member = self.get_member_by_email(email)
         if member is not None:
             raise Exception(ExceptionsEnum.EMAIL_IS_ALREADY_ASSOCIATED_WITH_A_MEMBER.value)
-        member = LabMember(email)
+        member = LabMember(email, fullName)
         self.members[email] = member
 
     def getMemberEmailByName(self, author):
@@ -165,8 +165,8 @@ class UserFacade:
     def getAlumnis(self):
         return self.alumnis
 
-    def set_site_creator(self, creator_email):
-        member = LabMember(creator_email)
+    def set_site_creator(self, creator_email, creator_fullName):
+        member = LabMember(creator_email, creator_fullName)
         self.siteCreator[creator_email] = member
 
     def set_secondEmail_by_member(self, email, secondEmail):
