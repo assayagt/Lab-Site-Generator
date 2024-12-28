@@ -8,14 +8,16 @@ function App() {
 
   const components = [
     "Home",
-    "About",
-    "Services",
-    "Contact",
+    "Participants",
+    "Contact Us",
     "Publications"
   ];
   return (
     <div className="App">
-     <Header components={components} ></Header>
+      <div>
+        <Header components={components} title="SPL"></Header>
+        <div>Welcome to our lab website. </div>
+      </div>
     </div>
   );
 }
