@@ -27,11 +27,11 @@ class SiteCustomFacade:
             site = self.sites[domain]
             site.change_name(new_name)
         except IndexError:
-            print("Error: Site index out of range")
+            raise Exception("Error: Site index out of range")
         except ValueError as ve:
-            print(f"Error changing site name: {ve}")
+            raise Exception(f"Error changing site name: {ve}")
         except Exception as e:
-            print(f"Unexpected error: {e}")
+            raise Exception(f"Unexpected error: {e}")
 
     def change_site_domain(self, old_domain, new_domain):
         """Changes the domain of a site."""
@@ -42,11 +42,11 @@ class SiteCustomFacade:
             site = self.sites[old_domain]
             site.change_domain(new_domain)
         except IndexError:
-            print("Error: Site index out of range")
+            raise Exception("Error: Site index out of range")
         except ValueError as ve:
-            print(f"Error changing site domain: {ve}")
+            raise Exception(f"Error changing site domain: {ve}")
         except Exception as e:
-            print(f"Unexpected error: {e}")
+            raise Exception(f"Unexpected error: {e}")
 
     def change_site_template(self, old_domain, new_template: Template):
         """Changes the template of a site."""
@@ -57,11 +57,11 @@ class SiteCustomFacade:
             site = self.sites[old_domain]
             site.change_template(new_template)
         except IndexError:
-            print("Error: Site index out of range")
+            raise Exception("Error: Site index out of range")
         except ValueError as ve:
-            print(f"Error changing site template: {ve}")
+            raise Exception(f"Error changing site template: {ve}")
         except Exception as e:
-            print(f"Unexpected error: {e}")
+            raise Exception(f"Unexpected error: {e}")
 
     def add_components_to_site(self, old_domain, components):
         """Adds components to a site."""
@@ -72,11 +72,11 @@ class SiteCustomFacade:
             site = self.sites[old_domain]
             site.add_component(components)
         except IndexError:
-            print("Error: Site index out of range")
+            raise Exception("Error: Site index out of range")
         except ValueError as ve:
-            print(f"Error adding components: {ve}")
+            raise Exception(f"Error adding components: {ve}")
         except Exception as e:
-            print(f"Unexpected error: {e}")
+            raise Exception(f"Unexpected error: {e}")
 
     def remove_component_from_site(self, old_domain, component):
         """Removes a component from a site."""
@@ -87,8 +87,8 @@ class SiteCustomFacade:
             site = self.sites[old_domain]
             site.remove_component(component)
         except IndexError:
-            print("Error: Site index out of range")
+            raise Exception("Error: Site index out of range")
         except ValueError as ve:
-            print(f"Error removing component: {ve}")
+            raise Exception(f"Error removing component: {ve}")
         except Exception as e:
-            print(f"Unexpected error: {e}")
+            raise Exception(f"Unexpected error: {e}")
