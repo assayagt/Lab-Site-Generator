@@ -1,12 +1,16 @@
 from flask import Flask, json, jsonify, render_template, request, send_from_directory
+from flask import session
 from flask_restful import Api, Resource, reqparse
 import os
 from flask_cors import CORS
 
-from main.DomainLayer.LabGenerator import GeneratorSystemService
+from src.main.DomainLayer.LabGenerator import GeneratorSystemService
 
 
+# Create a Flask app
+app_secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app = Flask(__name__)
+app.config["SECRET_KEY"] = app.secret_key
 CORS(app)
 api = Api(app)
 
@@ -110,14 +114,14 @@ class ChooseDomain(Resource):
 class ChooseComponents(Resource):
     def post(self):
         """
-        Handles the selection of components (e.g., text boxes, images, etc.) 
+        Handles the selection of components (e.g., text boxes, images, etc.)
         for the lab website.
         """
         parser = reqparse.RequestParser()
         parser.add_argument('components', type=list, required=True, help="Components to be added are required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
         args = parser.parse_args()
-        
+
         # Example: store the chosen components (could be in a database or in-memory)
         domain = args['domain']
         selected_components = args['components']
@@ -126,7 +130,7 @@ class ChooseComponents(Resource):
             return jsonify({"message": "Components selected", "components": selected_components}), 200
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
-        
+
 # Handles the template selection for the lab website
 class ChooseTemplate(Resource):
     def post(self):
@@ -142,7 +146,7 @@ class ChooseTemplate(Resource):
             return jsonify({"message": "Template selected", "template": selected_template}), 200
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
-        
+
 
 # Handles setting the name for the lab website
 class ChooseName(Resource):
@@ -164,24 +168,27 @@ class Login(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('email', type=str, required=True, help="Email is required")
         args = parser.parse_args()
-        
+
         email = args['email']
+        user_id = session.get('user_id')
 
         try:
-            generator_system.login(email)
+            generator_system.login(user_id, email)
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
-        
+
 # Handles user logout
 class Logout(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('email', type=str, required=True, help="Email is required")
         args = parser.parse_args()
-        
+
         email = args['email']
+        user_id = session.get('user_id')
+
         try:
-            generator_system.logout(email)
+            generator_system.logout(user_id)
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -213,7 +220,7 @@ class GetCustomWebsites(Resource):
             # Fetch the website by name from the service
             websites = generator_system.get_custom_website()
             return jsonify({"websites": websites}), 200
-         
+
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -228,15 +235,25 @@ class GetAllLabWebsites(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
+
 class EnterGeneratorSystem(Resource):
     def get(self):
         try:
             # Generate a new guest ID via the service
             user_id = generator_system.enter_generator_system()
-            return jsonify({"guest_id": user_id, "message": "Guest entered the system successfully"}), 200
+
+            # Store the user ID in the session for tracking
+            session['user_id'] = str(user_id)
+
+            return jsonify({
+                "guest_id": user_id,
+                "message": "Guest entered the system successfully"
+            }), 200
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
-        
+            # Log the exception (consider integrating a logging library)
+            print(f"Unexpected error: {e}")
+            return jsonify({"error": "An internal server error occurred"}), 500
+
 
 # Add the resources to API
 api.add_resource(FileUploadResource, '/api/uploadFile')
@@ -246,10 +263,10 @@ api.add_resource(ChooseTemplate, '/api/chooseTemplate')
 api.add_resource(ChooseName, '/api/chooseName')
 api.add_resource(Login, '/api/Login')
 api.add_resource(Logout, '/api/Logout')
-api.add_resource(ViewWebsite, '/view/<folder_name>') 
-api.add_resource(ChooseDomain, '/api/chooseDomain') 
+api.add_resource(ViewWebsite, '/view/<folder_name>')
+api.add_resource(ChooseDomain, '/api/chooseDomain')
 api.add_resource(StartCustomSite, '/api/startCustomSite')  # New endpoint to start custom site
-api.add_resource(GetCustomWebsite, '/api/getCustomWebsite')
+api.add_resource(GetCustomWebsites, '/api/getCustomWebsites')
 api.add_resource(GetAllLabWebsites, '/api/getAllLabWebsites')
 api.add_resource(EnterGeneratorSystem, '/api/enterGeneratorSystem')
 
