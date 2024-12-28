@@ -38,8 +38,7 @@ class GoogleScholarWebCrawler:
                             authors=publication_authors,
                             publication_year=pub_year,
                             approved=False,  # Default value
-                            publication_link=url,
-                            media=None
+                            publication_link=url
                         )
 
                         self.id_counter += 1

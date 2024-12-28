@@ -169,4 +169,62 @@ class LabSystem:
     def set_fullName_by_member(self, userid, fullName, domain):
         self.allWebsitesUserFacade.set_fullName_by_member(userid, fullName, domain)
 
+    def set_degree_by_member(self, userid, degree, domain):
+        self.allWebsitesUserFacade.set_degree_by_member(userid, degree, domain)
+
+    def set_bio_by_member(self, userid, bio, domain):
+        self.allWebsitesUserFacade.set_bio_by_member(userid, bio, domain)
+
+    def set_publication_video_link(self, userId, domain, publication_id, video_link):
+        """
+        Set video link for a publication.
+        - Authors can add video links, but it must be approved by a lab manager (the notification feature - in the future).
+        - Lab managers can add video links directly without approval.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId)
+        userFacade.error_if_user_not_logged_in(userId)
+        email = userFacade.get_email_by_userId(userId)
+        if userFacade.verify_if_member_is_manager(email):
+            self.websiteFacade.set_publication_video_link(domain, publication_id, video_link)
+        else:
+            self.websiteFacade.error_if_member_is_not_publication_author(domain, publication_id, email)
+            self.websiteFacade.set_publication_video_link(domain, publication_id, video_link)
+            #TODO: in the future, send notification to lab manager for approve
+
+    def set_publication_git_link_by_author(self, userId, domain, publication_id, git_link):
+        """
+        Set git link for a publication.
+        - Authors can add git links, but it must be approved by a lab manager (the notification feature - in the future).
+        - Lab managers can add git links directly without approval.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId)
+        userFacade.error_if_user_not_logged_in(userId)
+        email = userFacade.get_email_by_userId(userId)
+        if userFacade.verify_if_member_is_manager(email):
+            self.websiteFacade.set_publication_git_link(domain, publication_id, git_link)
+        else:
+            self.websiteFacade.error_if_member_is_not_publication_author(domain, publication_id, email)
+            self.websiteFacade.set_publication_git_link(domain, publication_id, git_link)
+            #TODO: in the future, send notification to lab manager for approve
+
+    def set_publication_presentation_link_by_author(self, userId, domain, publication_id, presentation_link):
+        """
+        Set presentation link for a publication .
+        - Authors can add presentation links, but it must be approved by a lab manager (the notification feature - in the future).
+        - Lab managers can add presentation links directly without approval.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId)
+        userFacade.error_if_user_not_logged_in(userId)
+        email = userFacade.get_email_by_userId(userId)
+        if userFacade.verify_if_member_is_manager(email):
+            self.websiteFacade.set_publication_presentation_link(domain, publication_id, presentation_link)
+        else:
+            self.websiteFacade.error_if_member_is_not_publication_author(domain, publication_id, email)
+            self.websiteFacade.set_publication_presentation_link(domain, publication_id, presentation_link)
+            #TODO: in the future, send notification to lab manager for approve
+
+
 
