@@ -1,10 +1,16 @@
 import React, { useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "./Header.css";
-import Logo from "../images/brain.svg";
+import Logo from "../../images/brain.svg";
+
+
 
 function Header(props) {
-  const navbarRef = useRef(null); // Reference to the navbar container
-  let scrollAnimationFrame = null; // Reference for the animation frame
+  
+  const navbarRef = useRef(null); 
+  const navigate = useNavigate();
+
+  let scrollAnimationFrame = null; 
 
   const smoothScroll = (direction) => {
     const navbar = navbarRef.current;
@@ -31,14 +37,21 @@ function Header(props) {
   const handleMouseEnter = (e) => {
     const { left, right, width } = navbarRef.current.getBoundingClientRect();
     const center = (left + right) / 2; // Calculate the center of the navbar
-    console.log(center);
     const mouseX = e.clientX;
 
-    if (mouseX <= center - 100) {
+    if (mouseX <= center - 150) {
       smoothScroll("left");
     }
-    if (mouseX >= center + 100) {
+    if (mouseX >= center + 150) {
       smoothScroll("right");
+    }
+  };
+
+  const handleClick = (item) => {
+    if (item === "Home") {
+      navigate("/"); 
+    } else if (item === "Participants") {
+      navigate("/Participants"); 
     }
   };
 
@@ -47,12 +60,14 @@ function Header(props) {
       <img className="header_logo" src={Logo} alt="logoItem"></img>
       <div className="header_title">{props.title}</div>
       <div className="navbar" ref={navbarRef} onMouseMove={handleMouseEnter}>
-        {props.components.map((item, index) => (
-          <div className="navbar-item" key={item.id}>
-            <div>{item}</div>
-            {/* Add | only for items that are not the last item */}
-            {index !== props.components.length - 1 && <div>|</div>}
-          </div>
+      {props.components.filter(item => item !== "About Us").map((item, index, filteredArray) => (
+        <div className="navbar-item" key={item.id || index}> {/* Use index if there's no id */}
+          <button onClick={()=>handleClick(item)} className="navbar-item-button" >
+            {item}
+          </button>
+          {/* Add | only for items that are not the last item */}
+          {index !== filteredArray.length - 1 && <div>|</div>}
+        </div>
         ))}
       </div>
     </div>

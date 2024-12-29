@@ -45,7 +45,13 @@
 }
 
 /* Hover effect for items */
-.navbar-item:hover {
+
+.navbar-item-button{
+  background-color: transparent;
+  border: none;
+}
+
+.navbar-item-button:hover {
   color: black;
 
 }

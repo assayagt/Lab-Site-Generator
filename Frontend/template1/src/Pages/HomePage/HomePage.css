@@ -1,0 +1,22 @@
+.HomePage{
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+}
+.subTitle{
+    font-size: 20px;
+}
+
+.main_section_homePage{
+    margin: 0 40px 40px 40px;
+    display: flex;
+    flex-direction: column;
+    gap:30px;
+    
+}
+.homeImg{
+    background-color: rgb(165, 200, 230);
+    height: 400px;
+    border-radius: 20px;
+    
+}

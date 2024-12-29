@@ -1,8 +1,8 @@
-import logo from './logo.svg';
 import './App.css';
-import Header from "./Header/Header"
-
-
+import HomePage from './Pages/HomePage/HomePage';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'; // Import Routes, Navigate
+import ParticipantsPage from "./Pages/ParticipantsPage/ParticipantsPage"
+import Header from './Components/Header/Header';
 
 function App() {
 
@@ -13,12 +13,22 @@ function App() {
     "Publications"
   ];
   return (
-    <div className="App">
-      <div>
-        <Header components={components} title="SPL"></Header>
-        <div>Welcome to our lab website. </div>
-      </div>
-    </div>
+    <Router>
+            <Header components={components} title="SPL"></Header>
+            <Routes>
+              <Route path="/" element={<HomePage/>} />
+              <Route
+                path="/Participants"
+                element= {<ParticipantsPage />}
+              />
+              {/* <Route
+                path="/upload-files"
+                element={<UploadFilesPage />}
+              /> */}
+            </Routes>
+    </Router>
+
+    
   );
 }
 
