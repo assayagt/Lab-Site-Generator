@@ -4,15 +4,18 @@ import WelcomePage from './pages/WelcomePage/WelcomePage';
 import ChooseComponentsPage from './pages/Generate/ChooseComponentsPage/ChooseComponentsPage';
 import UploadFilesPage from './pages/Generate/UploadFilesPage/UploadFilesPage';
 import { AuthProvider } from './Context/AuthContext';
-import { WebsiteProvider
-  
- } from './Context/WebsiteContext';
+import { WebsiteProvider} from './Context/WebsiteContext';
+import MyAccountPage from './pages/MyAccountPage/MyAccountPage';
+import Header from './components/Header/Header';
+
 function App() {
 
   return (
     <AuthProvider>
        <WebsiteProvider>
+        
        <Router>
+        <Header title = "LabLauncher"/>
             <Routes>
               <Route path="/" element={<WelcomePage/>} />
               <Route
@@ -22,6 +25,10 @@ function App() {
               <Route
                 path="/upload-files"
                 element={<UploadFilesPage />}
+              />
+               <Route
+                path="/my-account"
+                element={<MyAccountPage />}
               />
             </Routes>
           </Router>

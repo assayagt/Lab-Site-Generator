@@ -70,7 +70,6 @@ const ChooseComponentsPage = () => {
 
   return (
     <div>
-      <Header title="LabLauncher" />
       <div className="choose_components_main">
         <div className="grid1">
           <div className="create_custom_website">

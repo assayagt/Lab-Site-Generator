@@ -33,12 +33,12 @@ export const SendLogout = async (
   ) => {
     let data;
 
-    await axios
-        .get(`${baseApiUrl}enterGeneratorSystem`)
-        .then((resp) => {
-            data = resp.data;
-        })
-        .catch((err) => console.log(err.message));
+    // await axios
+    //     .get(`${baseApiUrl}enterGeneratorSystem`)
+    //     .then((resp) => {
+    //         data = resp.data;
+    //     })
+    //     .catch((err) => console.log(err.message));
     return data
 
   };

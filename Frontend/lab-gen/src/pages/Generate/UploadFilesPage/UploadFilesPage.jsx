@@ -53,7 +53,6 @@ const UploadFilesPage = () => {
 
   return (
     <div>
-      <Header title="LabLauncher" />
       <div className="upload_files_page">
         <h2 className='upload_title'> Upload Files for Each Component</h2>
         <div className='upload_instruction'>First, download the template, fill it in, and upload it.</div>

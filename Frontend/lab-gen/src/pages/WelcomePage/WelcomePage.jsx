@@ -61,7 +61,6 @@ const WelcomePage = () => {
 
   return (
     <div>
-      <Header title="LabLauncher"></Header>
       <main className='main_section'>
         <h1>Welcome to Website Generator</h1>
 
