@@ -3,6 +3,7 @@ from src.main.DomainLayer.LabWebsites.WebCrawler.WebCrawlerFacade import WebCraw
 from src.main.DomainLayer.LabWebsites.Website.WebsiteFacade import WebsiteFacade
 from src.main.DomainLayer.LabWebsites.Notifications.NotificationsFacade import NotificationsFacade
 from src.main.DomainLayer.LabWebsites.User.AllWebsitesUserFacade import AllWebsitesUserFacade
+from src.main.Util.ExceptionsEnum import ExceptionsEnum
 class LabSystem:
     _singleton_instance = None
 
@@ -112,6 +113,36 @@ class LabSystem:
                     # send notifications to the website authors about the new publications, for initial approve
                     for authorEmail in authorsEmails:
                         self.notificationsFacade.send_publication_notification(publication, authorEmail)
+
+    def initial_approve_publication_by_author(self, userId, domain, publication_id):
+        """
+        Approve a publication by its author in the initial review stage.
+        If the publication has not yet been final approved by a lab manager,
+        the system sends a notification to lab managers requesting final approval.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId)
+        userFacade.error_if_user_not_logged_in(userId)
+        email = userFacade.get_email_by_userId(userId)
+        self.websiteFacade.error_if_member_is_not_publication_author(domain, publication_id, email)
+        if not self.websiteFacade.check_if_publication_approved(domain, publication_id):
+            managers_emails = list(userFacade.getManagers().keys())
+            for manager_email in managers_emails:
+                publicationDTO = self.websiteFacade.get_publication_by_paper_id(domain, publication_id)
+                self.notificationsFacade.send_publication_notification_for_final_approval(publicationDTO, manager_email)
+        else:
+            raise Exception(ExceptionsEnum.PUBLICATION_ALREADY_APPROVED.value)
+
+    def final_approve_publication_by_manager(self, userId, domain, publication_id):
+        """
+        Approve a publication by a lab manager in the final review stage.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId)
+        userFacade.error_if_user_not_logged_in(userId)
+        email = userFacade.get_email_by_userId(userId)
+        userFacade.error_if_user_is_not_labManager(email, domain)
+        self.websiteFacade.final_approve_publication(domain, publication_id)
 
     def add_publication_manually(self, userId, publicationDTO, domain, authors_emails):
         """A Lab Member updates the website with new research publications"""
