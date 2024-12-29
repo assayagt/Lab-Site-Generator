@@ -63,3 +63,21 @@ class WebsiteFacade:
             raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
         if not website.check_if_member_is_publication_author(publication_id, email):
             raise Exception(ExceptionsEnum.USER_IS_NOT_PUBLICATION_AUTHOR_OR_LAB_MANAGER)
+
+    def check_if_publication_approved(self, domain, publication_id):
+        website = self.get_website(domain)
+        if website is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        return website.check_if_publication_approved(publication_id)
+
+    def get_publication_by_paper_id(self, domain, paper_id):
+        website = self.get_website(domain)
+        if website is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        return website.get_publication_by_paper_id(paper_id)
+
+    def final_approve_publication(self, domain, publication_id):
+        website = self.get_website(domain)
+        if website is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        website.final_approve_publication(publication_id)
