@@ -243,8 +243,6 @@ class EnterGeneratorSystem(Resource):
             user_id = generator_system.enter_generator_system()
 
             # Store the user ID in the session for tracking
-            session['user_id'] = str(user_id)
-
             return jsonify({
                 "guest_id": user_id,
                 "message": "Guest entered the system successfully"
