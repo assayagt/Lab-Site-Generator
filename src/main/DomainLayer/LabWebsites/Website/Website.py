@@ -28,6 +28,12 @@ class Website:
                     approved_publications.append(publication)
         return approved_publications
 
+    def check_if_publication_approved(self, publication_paper_id):
+        for author_email in self.members_publications:
+            for publication in self.members_publications[author_email]:
+                if publication.get_paper_id() == publication_paper_id:
+                    return publication.approved
+
     def get_all_approved_publications_of_member(self, email):
         approved_publications = []
         if email in self.members_publications:  # Check if the email exists in the dictionary
@@ -35,3 +41,42 @@ class Website:
                 if publication.approved:  # Check if the publication is approved
                     approved_publications.append(publication)
         return approved_publications
+
+    def set_publication_video_link(self, publication_paper_id, video_link):
+        for author_email in self.members_publications:
+            for publication in self.members_publications[author_email]:
+                if publication.get_paper_id() == publication_paper_id:
+                    publication.set_video_link(video_link)
+                    return
+
+    def set_publication_git_link(self, publication_paper_id, git_link):
+        for author_email in self.members_publications:
+            for publication in self.members_publications[author_email]:
+                if publication.get_paper_id() == publication_paper_id:
+                    publication.set_git_link(git_link)
+                    return
+
+    def set_publication_presentation_link(self, publication_paper_id):
+        for author_email in self.members_publications:
+            for publication in self.members_publications[author_email]:
+                if publication.get_paper_id() == publication_paper_id:
+                    publication.set_presentation_link()
+                    return
+
+    def check_if_member_is_publication_author(self, email, publication_paper_id):
+        if email in self.members_publications:
+            for publication in self.members_publications[email]:
+                if publication.get_paper_id() == publication_paper_id:
+                    return True
+        return False
+
+    def get_publication_by_paper_id(self, paper_id):
+        for author_email in self.members_publications:
+            for publication in self.members_publications[author_email]:
+                if publication.get_paper_id() == paper_id:
+                    return publication
+        return None
+
+    def final_approve_publication(self, paper_id):
+        publication = self.get_publication_by_paper_id(paper_id)
+        publication.approved = True

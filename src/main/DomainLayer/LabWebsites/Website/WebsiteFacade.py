@@ -38,3 +38,46 @@ class WebsiteFacade:
         if website is None:
             raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
         website.create_publication(publicationDTO, authors_emails)
+
+    def set_publication_video_link(self, domain, publication_id, video_link):
+        website = self.get_website(domain)
+        if website is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        website.set_publication_video_link(publication_id, video_link)
+
+    def set_publication_git_link(self, domain, publication_id, git_link):
+        website = self.get_website(domain)
+        if website is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        website.set_publication_git_link(publication_id, git_link)
+
+    def set_publication_presentation_link(self, domain, publication_id, presentation_link):
+        website = self.get_website(domain)
+        if website is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        website.set_publication_presentation_link(publication_id, presentation_link)
+
+    def error_if_member_is_not_publication_author(self, domain, publication_id, email):
+        website = self.get_website(domain)
+        if website is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        if not website.check_if_member_is_publication_author(publication_id, email):
+            raise Exception(ExceptionsEnum.USER_IS_NOT_PUBLICATION_AUTHOR_OR_LAB_MANAGER)
+
+    def check_if_publication_approved(self, domain, publication_id):
+        website = self.get_website(domain)
+        if website is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        return website.check_if_publication_approved(publication_id)
+
+    def get_publication_by_paper_id(self, domain, paper_id):
+        website = self.get_website(domain)
+        if website is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        return website.get_publication_by_paper_id(paper_id)
+
+    def final_approve_publication(self, domain, publication_id):
+        website = self.get_website(domain)
+        if website is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        website.final_approve_publication(publication_id)

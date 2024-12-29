@@ -3,6 +3,7 @@ from src.main.DomainLayer.LabWebsites.WebCrawler.WebCrawlerFacade import WebCraw
 from src.main.DomainLayer.LabWebsites.Website.WebsiteFacade import WebsiteFacade
 from src.main.DomainLayer.LabWebsites.Notifications.NotificationsFacade import NotificationsFacade
 from src.main.DomainLayer.LabWebsites.User.AllWebsitesUserFacade import AllWebsitesUserFacade
+from src.main.Util.ExceptionsEnum import ExceptionsEnum
 class LabSystem:
     _singleton_instance = None
 
@@ -18,18 +19,20 @@ class LabSystem:
             LabSystem._singleton_instance = LabSystem()
         return LabSystem._singleton_instance
 
-    def create_new_lab_website(self, domain, lab_members_emails, lab_managers_emails, site_creator_email):
+    def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator):
         """
         Create a new lab website with the given domain, lab members, lab managers, and site creator
         """
         self.websiteFacade.create_new_website(domain)
         self.allWebsitesUserFacade.add_new_webstie_userFacade(domain)
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        for lab_member_email in lab_members_emails:
-            userFacade.register_new_LabMember(lab_member_email)
-        for lab_manager_email in lab_managers_emails:
-            userFacade.create_new_site_manager(lab_manager_email)
-        userFacade.set_site_creator(site_creator_email)
+        for lab_member_email, lab_member_full_name in lab_members.items():
+            userFacade.register_new_LabMember(lab_member_email, lab_member_full_name)
+        for lab_manager_email, lab_manager_full_name in lab_managers.items():
+            userFacade.create_new_site_manager(lab_manager_email, lab_manager_full_name)
+        site_creator_email = site_creator.get("email")
+        site_creator_full_name = site_creator.get("full_name")
+        userFacade.set_site_creator(site_creator_email, site_creator_full_name)
 
     def login(self, domain, userId, email):
         """
@@ -65,13 +68,13 @@ class LabSystem:
         """
         self.allWebsitesUserFacade.create_new_site_manager_from_labWebsite(nominator_manager_userId, nominated_manager_email, domain)
 
-    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, domain):
+    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName, domain):
         """
         Define a new lab member in a specific website, directly from the lab website.
         The given email_to_register must not be associated with a member(manager/lab member/creator..) of the given website.
         This operation can be done only by lab manager
         """
-        self.allWebsitesUserFacade.register_new_LabMember_from_labWebsite(manager_userId, email_to_register, domain)
+        self.allWebsitesUserFacade.register_new_LabMember_from_labWebsite(manager_userId, email_to_register, lab_member_fullName, domain)
 
     def create_new_site_manager_from_generator(self, domain, nominated_manager_email):
         """
@@ -80,12 +83,12 @@ class LabSystem:
         """
         self.allWebsitesUserFacade.create_new_site_manager_from_generator(nominated_manager_email, domain)
 
-    def register_new_LabMember_from_generator(self, email_to_register, domain):
+    def register_new_LabMember_from_generator(self, email_to_register, lab_member_fullName, domain):
         """
         Define a new lab member in a specific website, from generator site.
         The given email_to_register must not be associated with a member(manager/lab member/creator..) of the given website.
         """
-        self.allWebsitesUserFacade.register_new_LabMember_from_generator(email_to_register, domain)
+        self.allWebsitesUserFacade.register_new_LabMember_from_generator(email_to_register, lab_member_fullName, domain)
 
     def crawl_for_publications(self):
         """
@@ -110,6 +113,36 @@ class LabSystem:
                     # send notifications to the website authors about the new publications, for initial approve
                     for authorEmail in authorsEmails:
                         self.notificationsFacade.send_publication_notification(publication, authorEmail)
+
+    def initial_approve_publication_by_author(self, userId, domain, publication_id):
+        """
+        Approve a publication by its author in the initial review stage.
+        If the publication has not yet been final approved by a lab manager,
+        the system sends a notification to lab managers requesting final approval.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId)
+        userFacade.error_if_user_not_logged_in(userId)
+        email = userFacade.get_email_by_userId(userId)
+        self.websiteFacade.error_if_member_is_not_publication_author(domain, publication_id, email)
+        if not self.websiteFacade.check_if_publication_approved(domain, publication_id):
+            managers_emails = list(userFacade.getManagers().keys())
+            for manager_email in managers_emails:
+                publicationDTO = self.websiteFacade.get_publication_by_paper_id(domain, publication_id)
+                self.notificationsFacade.send_publication_notification_for_final_approval(publicationDTO, manager_email)
+        else:
+            raise Exception(ExceptionsEnum.PUBLICATION_ALREADY_APPROVED.value)
+
+    def final_approve_publication_by_manager(self, userId, domain, publication_id):
+        """
+        Approve a publication by a lab manager in the final review stage.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId)
+        userFacade.error_if_user_not_logged_in(userId)
+        email = userFacade.get_email_by_userId(userId)
+        userFacade.error_if_user_is_not_labManager(email, domain)
+        self.websiteFacade.final_approve_publication(domain, publication_id)
 
     def add_publication_manually(self, userId, publicationDTO, domain, authors_emails):
         """A Lab Member updates the website with new research publications"""
@@ -168,5 +201,63 @@ class LabSystem:
 
     def set_fullName_by_member(self, userid, fullName, domain):
         self.allWebsitesUserFacade.set_fullName_by_member(userid, fullName, domain)
+
+    def set_degree_by_member(self, userid, degree, domain):
+        self.allWebsitesUserFacade.set_degree_by_member(userid, degree, domain)
+
+    def set_bio_by_member(self, userid, bio, domain):
+        self.allWebsitesUserFacade.set_bio_by_member(userid, bio, domain)
+
+    def set_publication_video_link(self, userId, domain, publication_id, video_link):
+        """
+        Set video link for a publication.
+        - Authors can add video links, but it must be approved by a lab manager (the notification feature - in the future).
+        - Lab managers can add video links directly without approval.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId)
+        userFacade.error_if_user_not_logged_in(userId)
+        email = userFacade.get_email_by_userId(userId)
+        if userFacade.verify_if_member_is_manager(email):
+            self.websiteFacade.set_publication_video_link(domain, publication_id, video_link)
+        else:
+            self.websiteFacade.error_if_member_is_not_publication_author(domain, publication_id, email)
+            self.websiteFacade.set_publication_video_link(domain, publication_id, video_link)
+            #TODO: in the future, send notification to lab manager for approve
+
+    def set_publication_git_link_by_author(self, userId, domain, publication_id, git_link):
+        """
+        Set git link for a publication.
+        - Authors can add git links, but it must be approved by a lab manager (the notification feature - in the future).
+        - Lab managers can add git links directly without approval.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId)
+        userFacade.error_if_user_not_logged_in(userId)
+        email = userFacade.get_email_by_userId(userId)
+        if userFacade.verify_if_member_is_manager(email):
+            self.websiteFacade.set_publication_git_link(domain, publication_id, git_link)
+        else:
+            self.websiteFacade.error_if_member_is_not_publication_author(domain, publication_id, email)
+            self.websiteFacade.set_publication_git_link(domain, publication_id, git_link)
+            #TODO: in the future, send notification to lab manager for approve
+
+    def set_publication_presentation_link_by_author(self, userId, domain, publication_id, presentation_link):
+        """
+        Set presentation link for a publication .
+        - Authors can add presentation links, but it must be approved by a lab manager (the notification feature - in the future).
+        - Lab managers can add presentation links directly without approval.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId)
+        userFacade.error_if_user_not_logged_in(userId)
+        email = userFacade.get_email_by_userId(userId)
+        if userFacade.verify_if_member_is_manager(email):
+            self.websiteFacade.set_publication_presentation_link(domain, publication_id, presentation_link)
+        else:
+            self.websiteFacade.error_if_member_is_not_publication_author(domain, publication_id, email)
+            self.websiteFacade.set_publication_presentation_link(domain, publication_id, presentation_link)
+            #TODO: in the future, send notification to lab manager for approve
+
 
 

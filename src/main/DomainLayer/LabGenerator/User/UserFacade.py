@@ -1,4 +1,5 @@
 from Member import Member
+from User import User
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 import uuid
 
