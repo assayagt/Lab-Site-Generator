@@ -13,3 +13,4 @@ class ExceptionsEnum(Enum):
     USER_IS_NOT_A_LAB_MEMBER_OR_LAB_MANAGER_OR_CREATOR = "User is not a lab member or a lab manager or a site creator"
     USER_IS_NOT_A_LAB_MANAGER = "User is not a lab manager"
     USER_IS_NOT_PUBLICATION_AUTHOR_OR_LAB_MANAGER = "User is not a publication author or a lab manager"
+    PUBLICATION_ALREADY_APPROVED = "Publication already approved, and appears on the website"
