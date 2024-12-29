@@ -1,6 +1,6 @@
 from src.main.DomainLayer.LabGenerator.GeneratorSystem import GeneratorSystemController
 from src.main.Util.Response import Response
-import SiteCustom.Template as Template
+import src.main.DomainLayer.LabGenerator.SiteCustom.Template as Template
 
 
 class GeneratorSystemService:

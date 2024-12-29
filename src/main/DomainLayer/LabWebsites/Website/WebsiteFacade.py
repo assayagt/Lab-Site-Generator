@@ -1,5 +1,5 @@
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
-from Website import Website
+from src.main.DomainLayer.LabWebsites.Website.Website import Website
 class WebsiteFacade:
     def __init__(self):
         self.websites = []

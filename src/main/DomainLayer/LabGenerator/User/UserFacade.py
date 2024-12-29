@@ -1,5 +1,5 @@
-from Member import Member
-from User import User
+from src.main.DomainLayer.LabGenerator.User.Member import Member
+from src.main.DomainLayer.LabGenerator.User.User import User
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 import uuid
 
