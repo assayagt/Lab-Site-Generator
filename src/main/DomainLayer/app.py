@@ -244,7 +244,7 @@ class EnterGeneratorSystem(Resource):
 
             # Store the user ID in the session for tracking
             return jsonify({
-                "guest_id": user_id,
+                "user_id": user_id,
                 "message": "Guest entered the system successfully"
             }), 200
         except Exception as e:
