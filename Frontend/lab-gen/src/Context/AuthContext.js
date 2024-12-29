@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
+import {SendLogin, SendLogout,EnterSystem} from "../services/UserService"
 
 const AuthContext = createContext();
 
@@ -34,8 +35,15 @@ export const AuthProvider = ({ children }) => {
   };
 
   const fetchToken = async () => {
-    console.log("1")
-    localStorage.setItem('sid',"id");
+    let data = EnterSystem();
+    if(data){
+      localStorage.setItem('sid',data.user_id);
+      console.log(data);
+    }
+    else{
+
+    }
+    
   };
 
   return (
