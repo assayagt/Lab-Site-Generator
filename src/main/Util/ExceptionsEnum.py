@@ -14,3 +14,5 @@ class ExceptionsEnum(Enum):
     USER_IS_NOT_A_LAB_MANAGER = "User is not a lab manager"
     USER_IS_NOT_PUBLICATION_AUTHOR_OR_LAB_MANAGER = "User is not a publication author or a lab manager"
     PUBLICATION_ALREADY_APPROVED = "Publication already approved, and appears on the website"
+    SITE_INDEX_OUT_OF_RANGE = "Error: Site index out of range"
+    INVALID_SITE_NAME = "Error: Invalid site name"
