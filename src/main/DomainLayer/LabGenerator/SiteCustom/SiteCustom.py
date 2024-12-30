@@ -1,4 +1,4 @@
-import Template
+from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
 
 class SiteCustom:
     def __init__(self, domain, name, components, template: Template):

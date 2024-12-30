@@ -1,4 +1,4 @@
-from UserFacade import UserFacade
+from src.main.DomainLayer.LabWebsites.User.UserFacade import UserFacade
 class AllWebsitesUserFacade:
     _singleton_instance = None
 
