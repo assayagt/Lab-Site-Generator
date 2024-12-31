@@ -91,21 +91,20 @@ class ChooseDomain(Resource):
         Handles setting the domain for the lab website.
         """
         parser = reqparse.RequestParser()
-        parser.add_argument('email', type=str, required=True, help=" Email is required")
+        parser.add_argument('user_id', type=str, required=True, help="User id is required")
         parser.add_argument('old_domain', type=str, required=True, help=" Old Domain is required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
-        parser.add_argument('website_name', type=str, required=True, help="Website name is required")
         args = parser.parse_args()
 
 
-        email = args['email']
+        user_id = args['user_id']
         old_domain = args['old_domain']
         domain = args['domain']
-        website_name = args['website_name']
 
         try:
-            generator_system.change_website_domain(domain,old_domain)
-            return jsonify({"message": "Domain updated successfully", "domain": domain}), 200
+            response = generator_system.change_website_domain(user_id, domain, old_domain)
+            if response.is_success():
+                return jsonify({"message": "Domain updated successfully", "domain": domain}), 200
 
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
@@ -118,16 +117,19 @@ class ChooseComponents(Resource):
         for the lab website.
         """
         parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User id is required")
         parser.add_argument('components', type=list, required=True, help="Components to be added are required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
         args = parser.parse_args()
 
         # Example: store the chosen components (could be in a database or in-memory)
+        user_id = args['user_id']
         domain = args['domain']
         selected_components = args['components']
         try:
-            generator_system.add_components_to_site(domain,selected_components)
-            return jsonify({"message": "Components selected", "components": selected_components}), 200
+            response = generator_system.add_components_to_site(user_id, domain, selected_components)
+            if response.is_success():
+                return jsonify({"message": "Components selected", "components": selected_components}), 200
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -135,15 +137,18 @@ class ChooseComponents(Resource):
 class ChooseTemplate(Resource):
     def post(self):
         parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User id is required")
         parser.add_argument('template', type=str, required=True, help="Template name is required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
         args = parser.parse_args()
 
+        user_id = args['user_id']
         domain = args['domain']
         selected_template = args['template']
         try:
-            generator_system.change_website_template(domain,selected_template )
-            return jsonify({"message": "Template selected", "template": selected_template}), 200
+            response = generator_system.change_website_template(user_id, domain, selected_template)
+            if response.is_success():
+                return jsonify({"message": "Template selected", "template": selected_template}), 200
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -153,7 +158,7 @@ class ChooseName(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('user_id', type=str, required=True, help="User id is required")
-        parser.add_argument('name', type=str, required=True, help=" name is required")
+        parser.add_argument('website_name', type=str, required=True, help=" name is required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
         args = parser.parse_args()
 

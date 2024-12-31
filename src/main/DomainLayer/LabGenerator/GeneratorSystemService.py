@@ -43,26 +43,26 @@ class GeneratorSystemService:
             return Response(None, str(e))
 
 
-    def change_website_domain(self, email, new_domain, domain):
+    def change_website_domain(self, user_id, new_domain, domain):
         """Change website domain through GeneratorSystemController."""
         try:
-            self.generator_system_controller.change_website_domain(email, new_domain, domain)
+            self.generator_system_controller.change_website_domain(user_id, new_domain, domain)
             return Response(new_domain, "Website domain changed successfully")
         except Exception as e:
             return Response(None, str(e))
 
-    def change_website_template(self, domain, new_template=Template):
+    def change_website_template(self, user_id, domain, new_template=Template):
         """Change website template through GeneratorSystemController."""
         try:
-            self.generator_system_controller.change_website_template(domain, new_template)
-            return Response(new_template, "Website template changed successfully")
+            self.generator_system_controller.change_website_template(user_id, domain, new_template)
+            return Response(True, "Website template changed successfully")
         except Exception as e:
             return Response(None, str(e))
 
-    def add_components_to_site(self, domain, new_components=None):
+    def add_components_to_site(self, user_id, domain, new_components=None):
         """Add components to the site through GeneratorSystemController."""
         try:
-            self.generator_system_controller.add_components_to_site(domain, new_components)
+            self.generator_system_controller.add_components_to_site(user_id, domain, new_components)
             return Response(new_components, "Website components added successfully")
         except Exception as e:
             return Response(None, str(e))
