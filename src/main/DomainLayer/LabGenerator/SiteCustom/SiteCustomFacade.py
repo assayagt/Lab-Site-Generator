@@ -93,3 +93,12 @@ class SiteCustomFacade:
             raise Exception(f"Error removing component: {ve}")
         except Exception as e:
             raise Exception(f"Unexpected error: {e}")
+
+    def get_custom_websites(self):
+        """Get all lab websites. return map of domain and site name"""
+        try:
+            return {site.domain: site.name for site in self.sites}
+        except IndexError:
+            raise Exception("Error: Site index out of range")
+        except Exception as e:
+            raise Exception(f"Unexpected error: {e}")
