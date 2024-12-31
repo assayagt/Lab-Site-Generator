@@ -1,4 +1,5 @@
-import Template,SiteCustom
+from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
+from src.main.DomainLayer.LabGenerator.SiteCustom.SiteCustom import SiteCustom
 
 class SiteCustomFacade:
     _singleton_instance = None

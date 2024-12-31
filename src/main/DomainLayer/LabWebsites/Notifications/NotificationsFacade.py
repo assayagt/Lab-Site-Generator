@@ -1,4 +1,4 @@
-from EmailNotification import EmailNotification
+from src.main.DomainLayer.LabWebsites.Notifications.EmailNotification import EmailNotification
 class NotificationsFacade:
     _instance = None
 
