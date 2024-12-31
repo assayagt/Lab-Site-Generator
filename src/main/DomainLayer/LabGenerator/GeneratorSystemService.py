@@ -34,44 +34,44 @@ class GeneratorSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def change_website_name(self, new_name, domain):
+    def change_website_name(self, user_id, new_name, domain):
         """Change website name through GeneratorSystemController."""
         try:
-            new_name_returned = self.generator_system_controller.change_website_name(new_name, domain)
+            new_name_returned = self.generator_system_controller.change_website_name(user_id, new_name, domain)
             return Response(new_name_returned, "Website name changed successfully")
         except Exception as e:
             return Response(None, str(e))
 
 
-    def change_website_domain(self, email, new_domain, domain):
+    def change_website_domain(self, user_id, new_domain, domain):
         """Change website domain through GeneratorSystemController."""
         try:
-            self.generator_system_controller.change_website_domain(email, new_domain, domain)
+            self.generator_system_controller.change_website_domain(user_id, new_domain, domain)
             return Response(new_domain, "Website domain changed successfully")
         except Exception as e:
             return Response(None, str(e))
 
-    def change_website_template(self, domain, new_template=Template):
+    def change_website_template(self, user_id, domain, new_template=Template):
         """Change website template through GeneratorSystemController."""
         try:
-            self.generator_system_controller.change_website_template(domain, new_template)
-            return Response(new_template, "Website template changed successfully")
+            self.generator_system_controller.change_website_template(user_id, domain, new_template)
+            return Response(True, "Website template changed successfully")
         except Exception as e:
             return Response(None, str(e))
 
-    def add_components_to_site(self, domain, new_components=None):
+    def add_components_to_site(self, user_id, domain, new_components=None):
         """Add components to the site through GeneratorSystemController."""
         try:
-            self.generator_system_controller.add_components_to_site(domain, new_components)
+            self.generator_system_controller.add_components_to_site(user_id, domain, new_components)
             return Response(new_components, "Website components added successfully")
         except Exception as e:
             return Response(None, str(e))
 
-    def login(self, user_id, email):
+    def login(self, user_id):
         """Log in a user through GeneratorSystemController."""
         try:
-            user = self.generator_system_controller.login(email)
-            return Response(user, "User logged in successfully")
+            self.generator_system_controller.login(user_id)
+            return Response(user_id, "User logged in successfully")
         except Exception as e:
             return Response(None, str(e))
 
@@ -79,7 +79,7 @@ class GeneratorSystemService:
         """Log out the current user through GeneratorSystemController."""
         try:
             self.generator_system_controller.logout(user_id)
-            return Response(None, "User logged out successfully")
+            return Response(True, "User logged out successfully")
         except Exception as e:
             return Response(None, str(e))
 
@@ -91,3 +91,19 @@ class GeneratorSystemService:
         except Exception as e:
             return Response(None, str(e))
 
+
+    def get_custom_websites(self, user_id):
+        """Get all lab websites through GeneratorSystemController."""
+        try:
+            websites = self.generator_system_controller.get_custom_websites(user_id)
+            return Response(websites, "Successfully retrieved lab websites")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def get_lab_websites(self, user_id):
+        """Get a lab website through GeneratorSystemController."""
+        try:
+            websites = self.generator_system_controller.get_lab_websites(user_id)
+            return Response(websites, "Successfully retrieved lab website")
+        except Exception as e:
+            return Response(None, str(e))

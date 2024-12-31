@@ -8,8 +8,8 @@ class UserFacade:
 
     def __init__(self):
         self.users = {}
-        self.members_sites = {} # sites that was already generated
-        self.members_customSites = {}
+        self.members_sites = {} # sites that was already generated <email, [domains]>
+        self.members_customSites = {} # sites that was created by the user <email, <Member, [domains]>>
 
     @staticmethod
     def get_instance():
@@ -43,8 +43,9 @@ class UserFacade:
         if domain not in self.members_sites[email]:
             raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER.value)
 
-    def login(self, userId, email):
+    def login(self, userId):
         """Handle login logic after retrieving user info."""
+        email = self.get_email_by_userId(userId)
         user = self.get_user_by_id(userId)
         member = self.get_member_by_email(email)
         if member is not None:
@@ -92,3 +93,6 @@ class UserFacade:
         self.users[user_id] = user
         return user_id
 
+    def get_lab_websites(self, user_id):
+        """Get all lab websites."""
+        return self.members_sites[self.get_email_by_userId(user_id)]
