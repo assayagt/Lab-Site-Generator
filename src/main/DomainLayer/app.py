@@ -177,17 +177,21 @@ class ChooseName(Resource):
 class Login(Resource):
     def post(self):
         parser = reqparse.RequestParser()
+        parser.add_argument('email', type=str, required=True, help="email is required")
         parser.add_argument('user_id', type=str, required=True, help="User id is required")
+
         args = parser.parse_args()
 
         email = args['email']
         user_id = args['user_id']
+    
 
         try:
-            response = generator_system.login(email,user_id)
+            response = generator_system.login(email, user_id)
+            
             if response.is_success():
-                return jsonify({"message": "User logged out successfully","response" : "true" })
-            return jsonify({"message": "Error","response" : "false" })
+                return jsonify({"message": "User logged in successfully","response" : "true" })
+            return jsonify({"message": response.get_message(),"response" : "false" })
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}","response" : "false"})
 
@@ -285,11 +289,9 @@ class EnterGeneratorSystem(Resource):
                     "message": "New user entered the system successfully"
                 })
             else:
-                print(f"Unexpected error: {e}")
                 return jsonify({"error": "An internal server error occurred"})
         except Exception as e:
             # Log the exception (consider integrating a logging library)
-            print(f"Unexpected error: {e}")
             return jsonify({"error": "An internal server error occurred"}), 500
 
 

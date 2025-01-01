@@ -88,6 +88,7 @@ class UserFacade:
 
     def add_user(self):
         user_id = str(uuid.uuid4())
+        print(user_id)
         user = User(user_id=user_id)
         self.users[user_id] = user
         return user_id

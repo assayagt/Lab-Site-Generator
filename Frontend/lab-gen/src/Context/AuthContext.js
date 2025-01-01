@@ -7,7 +7,6 @@ export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState('');
   
-  // Retrieve from localStorage to persist login state across page reloads
   useEffect(() => {
     const loggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
     const savedUserEmail = sessionStorage.getItem('userEmail');
@@ -20,7 +19,6 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email) => {
     let data = await SendLogin(email);
-    console.log(data);
     if(data){
       if(data.response === "true"){
         setIsLoggedIn(true);
@@ -30,7 +28,6 @@ export const AuthProvider = ({ children }) => {
         //sessionStorage.setItem('sid',"id"); still doesn't exist
         return true;
       }
-      console.log("h");
       return false;
     }
     return false; 

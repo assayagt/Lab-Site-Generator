@@ -13,7 +13,6 @@ export const SendLogin = (email) => {
     })
     .then((response) => {
       data = response.data;
-      console.log(data);
       return data; // Return the data after the promise resolves
     })
     .catch((err) => {
@@ -26,17 +25,17 @@ export const SendLogin = (email) => {
 export const SendLogout = async (
     
   ) => {
-    let data;
-    const sid = sessionStorage.getItem("sid");
-    try {
-      const response = await axios.post(`${baseApiUrl}Login`, {
-        user_id: sid,
-      });
-      data =  response.data;
-    } catch (err) {
-      console.error("Error sending to signup" + err);
-    }
-    return data;
+    // let data;
+    // const sid = sessionStorage.getItem("sid");
+    // try {
+    //   const response = await axios.post(`${baseApiUrl}Login`, {
+    //     user_id: sid,
+    //   });
+    //   data =  response.data;
+    // } catch (err) {
+    //   console.error("Error sending to signup" + err);
+    // }
+    // return data;
   };
 
   export const EnterSystem = async (
@@ -49,7 +48,6 @@ export const SendLogout = async (
             data = resp.data;
         })
         .catch((err) => console.log(err.message));
-    console.log(data);
     return data;
 
   };
