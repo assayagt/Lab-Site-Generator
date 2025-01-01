@@ -38,12 +38,9 @@ export const AuthProvider = ({ children }) => {
     let data = EnterSystem();
     if(data){
       localStorage.setItem('sid',data.user_id);
-      console.log(data);
+      
     }
-    else{
-
-    }
-    
+    return data;
   };
 
   return (

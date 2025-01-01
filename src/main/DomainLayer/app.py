@@ -280,7 +280,10 @@ class EnterGeneratorSystem(Resource):
                 return jsonify({
                     "user_id": user_id,
                     "message": "New user entered the system successfully"
-                }), 200
+                })
+            else:
+                print(f"Unexpected error: {e}")
+                return jsonify({"error": "An internal server error occurred"})
         except Exception as e:
             # Log the exception (consider integrating a logging library)
             print(f"Unexpected error: {e}")

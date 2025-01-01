@@ -16,7 +16,8 @@ const WelcomePage = () => {
   const {isLoggedIn, userEmail, login, fetchToken } = useAuth();
 
   useEffect(() => {
-    if (!localStorage.getItem('sid')) {
+
+    if (localStorage.getItem('sid')==="undefined") {
       fetchToken();
     }
   }, [ fetchToken]);
