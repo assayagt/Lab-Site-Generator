@@ -43,9 +43,8 @@ class UserFacade:
         if domain not in self.members_sites[email]:
             raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER.value)
 
-    def login(self, userId):
+    def login(self, userId, email):
         """Handle login logic after retrieving user info."""
-        email = self.get_email_by_userId(userId)
         user = self.get_user_by_id(userId)
         member = self.get_member_by_email(email)
         if member is not None:
