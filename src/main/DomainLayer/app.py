@@ -208,7 +208,7 @@ class Logout(Resource):
             response = generator_system.logout(user_id)
             if response.is_success():
                 return jsonify({"message": "User logged out successfully","response" : "true"})
-            return jsonify({"message": "Error","response" : "false" })
+            return jsonify({"message": response.get_message(),"response" : "false" })
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}","response" : "false"})
 

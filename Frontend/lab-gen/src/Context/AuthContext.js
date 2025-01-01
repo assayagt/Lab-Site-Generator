@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    let data = SendLogout();
+    let data =  await SendLogout();
     if(data.response === "true"){
       setIsLoggedIn(false);
       setUserEmail('');

@@ -21,6 +21,9 @@ function Header(props) {
     if(data===true){
       navigate("/");
     }
+    else{
+      console.log("gdas");
+    }
   };
 
   const doSomething = () => {
