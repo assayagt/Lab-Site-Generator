@@ -1,4 +1,4 @@
-import State
+from src.main.DomainLayer.LabGenerator.User.State import State
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 
 class Guest(State):
@@ -22,4 +22,7 @@ class Guest(State):
         return False
 
     def get_username(self):
+        return None
+
+    def get_email(self):
         return None

@@ -1,0 +1,14 @@
+.AboutUsComponent{
+    display:flex;
+    flex-direction: column;
+    gap:10px;
+}
+
+.aboutUsTitle{
+    font-size: 20px;
+    font-weight: 600;
+}
+.aboutUsParagraph{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+}

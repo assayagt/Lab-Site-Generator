@@ -1,13 +1,15 @@
-import Member
+from src.main.DomainLayer.LabGenerator.User.Member import Member
+from src.main.DomainLayer.LabGenerator.User.User import User
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
+import uuid
 
 class UserFacade:
     _singleton_instance = None
 
     def __init__(self):
         self.users = {}
-        self.members_sites = {} # sites that was already generated
-        self.members_customSites = {}
+        self.members_sites = {} # sites that was already generated <email, [domains]>
+        self.members_customSites = {} # sites that was created by the user <email, <Member, [domains]>>
 
     @staticmethod
     def get_instance():
@@ -19,7 +21,8 @@ class UserFacade:
         if domain not in self.members_sites[email]:
             self.members_sites[email].append(domain)
 
-    def create_new_customSite_manager(self, email, domain):
+    def create_new_customSite_manager(self, userId, domain):
+        email = self.get_email_by_userId(userId)
         if domain not in self.members_customSites[email]["domains"]:
             self.members_customSites[email]["domains"].append(domain)
 
@@ -34,8 +37,15 @@ class UserFacade:
             if old_domain in data["domains"]:
                 data["domains"][data["domains"].index(old_domain)] = new_domain
 
-    def login(self, userId, email):
+    def error_if_user_is_not_site_manager(self, userId, domain):
+        email = self.get_email_by_userId(userId)
+        #check if domain is one of the sites that the user is a manager of
+        if domain not in self.members_sites[email]:
+            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER.value)
+
+    def login(self, userId):
         """Handle login logic after retrieving user info."""
+        email = self.get_email_by_userId(userId)
         user = self.get_user_by_id(userId)
         member = self.get_member_by_email(email)
         if member is not None:
@@ -66,3 +76,23 @@ class UserFacade:
     def error_if_user_notExist(self, userId):
         if self.get_user_by_id(userId) is None:
             raise Exception(ExceptionsEnum.USER_NOT_EXIST.value)
+
+
+    def error_if_user_not_logged_in(self, userId):
+        user = self.get_user_by_id(userId)
+        if not user.is_member():
+            raise Exception(ExceptionsEnum.USER_IS_NOT_MEMBER)
+
+    def get_email_by_userId(self, userId):
+        user = self.get_user_by_id(userId)
+        return user.get_email()
+
+    def add_user(self):
+        user_id = str(uuid.uuid4())
+        user = User(user_id=user_id)
+        self.users[user_id] = user
+        return user_id
+
+    def get_lab_websites(self, user_id):
+        """Get all lab websites."""
+        return self.members_sites[self.get_email_by_userId(user_id)]
