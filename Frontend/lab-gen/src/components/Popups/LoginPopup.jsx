@@ -4,15 +4,17 @@ import './LoginPopup.css'; // Add necessary styles
 
 const LoginPopup = ({ onClose }) => {
   const [email, setEmail] = useState('');
+  const [error, setError] = useState(false);
   const { login } = useAuth();  // Access the login function from context
 
   const handleLogin = () => {
     if (email) {
       let data = login(email); 
       if(data === false) {
-        //todo: show error message
+        setError(true);
       }
       else{
+        setError(false);
         onClose();  
       }
     } else {
@@ -25,6 +27,7 @@ const LoginPopup = ({ onClose }) => {
       <div className="login-popup">
         <button className="close-popup" onClick={onClose}>X</button>
         <h3>Login</h3>
+        <div className={error?"error":"no_error"}>Wrong email, please try again</div>
         <div>
           <label>Email:</label>
           <input
