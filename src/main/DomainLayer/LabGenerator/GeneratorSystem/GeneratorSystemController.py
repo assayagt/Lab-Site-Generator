@@ -79,13 +79,13 @@ class GeneratorSystemController:
         self.user_facade.error_if_user_is_not_site_manager(manager_userId, domain)
         self.labSystem.register_new_LabMember_from_generator(email_to_register, lab_member_fullName, domain)
 
-    def login(self, userId, email):
+    def login(self, userId):
         """
         login into the generator system  (should be via Google in the future).
         A user can log in to the generator system using any email address of their choice.
         """
         self.user_facade.error_if_user_notExist(userId)
-        self.user_facade.login(userId, email)
+        self.user_facade.login(userId)
 
     def logout(self, userId):
         """
@@ -101,3 +101,15 @@ class GeneratorSystemController:
     def enter_generator_system(self):
         """Enter the generator system."""
         return self.user_facade.add_user()
+
+    def get_custom_websites(self, user_id):
+        """Get all lab websites."""
+        self.user_facade.error_if_user_notExist(user_id)
+        self.user_facade.error_if_user_not_logged_in(user_id)
+        return self.site_custom_facade.get_custom_websites()
+
+    def get_lab_websites(self, user_id):
+        """Get all lab websites."""
+        self.user_facade.error_if_user_notExist(user_id)
+        self.user_facade.error_if_user_not_logged_in(user_id)
+        return self.user_facade.get_lab_websites(user_id)
