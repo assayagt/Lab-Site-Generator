@@ -16,8 +16,8 @@ const WelcomePage = () => {
   const {isLoggedIn, userEmail, login, fetchToken } = useAuth();
 
   useEffect(() => {
-
-    if (localStorage.getItem('sid')==="undefined") {
+    console.log(sessionStorage.getItem('sid'));
+    if (sessionStorage.getItem('sid')==null || sessionStorage.getItem('sid')=='undefined') {
       fetchToken();
     }
   }, [ fetchToken]);
@@ -30,16 +30,7 @@ const WelcomePage = () => {
     }
   };
 
-  const handleLoginClick = () => {
-    if (email === 'test@example.com') {
-      login("test@example.com");
-      setShowLoginPopup(false);
-      navigate('/choose-components');
-    } else {
-      setErrorMessage('Invalid credentials');
-      setShowErrorPopup(true);  
-    }
-  };
+ 
 
   const handleErrorPopupClose = () => {
     setShowErrorPopup(false);  
@@ -85,7 +76,7 @@ const WelcomePage = () => {
         </div>
       </main>
 
-      {/* Login Popup */}
+     
       {showLoginPopup && <LoginPopup onClose={() => setShowLoginPopup(false)} />}
 
       {/* Error Popup for Invalid Credentials */}

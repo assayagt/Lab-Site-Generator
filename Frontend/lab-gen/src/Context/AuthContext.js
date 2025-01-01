@@ -9,8 +9,8 @@ export const AuthProvider = ({ children }) => {
   
   // Retrieve from localStorage to persist login state across page reloads
   useEffect(() => {
-    const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    const savedUserEmail = localStorage.getItem('userEmail');
+    const loggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+    const savedUserEmail = sessionStorage.getItem('userEmail');
     
     if (loggedIn) {
       setIsLoggedIn(true);
@@ -21,27 +21,28 @@ export const AuthProvider = ({ children }) => {
   const login = (email) => {
     setIsLoggedIn(true);
     setUserEmail(email);
-    localStorage.setItem('isLoggedIn', 'true');
-    localStorage.setItem('userEmail', email);
-    localStorage.setItem('sid',"id");
+    sessionStorage.setItem('isLoggedIn', 'true');
+    sessionStorage.setItem('userEmail', email);
+    sessionStorage.setItem('sid',"id");
   };
 
   const logout = () => {
     setIsLoggedIn(false);
     setUserEmail('');
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('sid');
+    sessionStorage.removeItem('isLoggedIn');
+    sessionStorage.removeItem('userEmail');
+    sessionStorage.removeItem('sid');
   };
 
   const fetchToken = async () => {
-    let data = EnterSystem();
-    if(data){
-      localStorage.setItem('sid',data.user_id);
-      
+    let data = await EnterSystem(); // Wait for the result of EnterSystem
+    if (data) {
+      sessionStorage.setItem('sid', data.user_id); 
     }
+    
     return data;
   };
+  
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, userEmail, login, logout ,fetchToken}}>

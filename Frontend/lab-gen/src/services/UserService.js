@@ -36,10 +36,10 @@ export const SendLogout = async (
         .get(`${baseApiUrl}enterGeneratorSystem`)
         .then((resp) => {
             data = resp.data;
-            console.log(data);
         })
         .catch((err) => console.log(err.message));
-    return data
+    console.log(data);
+    return data;
 
   };
   
