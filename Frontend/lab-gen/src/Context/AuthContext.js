@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = (email) => {
     let data = SendLogin;
-    if(data.response == "true"){
+    if(data.response === "true"){
       setIsLoggedIn(true);
       setUserEmail(email);
       sessionStorage.setItem('isLoggedIn', 'true');
@@ -32,11 +32,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    setIsLoggedIn(false);
-    setUserEmail('');
-    sessionStorage.removeItem('isLoggedIn');
-    sessionStorage.removeItem('userEmail');
-    sessionStorage.removeItem('sid');
+    let data = SendLogin;
+    if(data.response === "true"){
+      setIsLoggedIn(false);
+      setUserEmail('');
+      sessionStorage.removeItem('isLoggedIn');
+      sessionStorage.removeItem('userEmail');
+      sessionStorage.removeItem('sid');
+      return true;
+    }
+    return false; 
   };
 
   const fetchToken = async () => {
