@@ -18,21 +18,26 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const login = (email) => {
-    let data = SendLogin;
-    if(data.response === "true"){
-      setIsLoggedIn(true);
-      setUserEmail(email);
-      sessionStorage.setItem('isLoggedIn', 'true');
-      sessionStorage.setItem('userEmail', email);
-      //sessionStorage.setItem('sid',"id"); still doesn't exist
-      return true;
+  const login = async (email) => {
+    let data = await SendLogin(email);
+    console.log(data);
+    if(data){
+      if(data.response === "true"){
+        setIsLoggedIn(true);
+        setUserEmail(email);
+        sessionStorage.setItem('isLoggedIn', 'true');
+        sessionStorage.setItem('userEmail', email);
+        //sessionStorage.setItem('sid',"id"); still doesn't exist
+        return true;
+      }
+      console.log("h");
+      return false;
     }
     return false; 
   };
 
-  const logout = () => {
-    let data = SendLogin;
+  const logout = async () => {
+    let data = SendLogout();
     if(data.response === "true"){
       setIsLoggedIn(false);
       setUserEmail('');

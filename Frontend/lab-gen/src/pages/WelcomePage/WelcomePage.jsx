@@ -13,7 +13,7 @@ const WelcomePage = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate();
-  const {isLoggedIn, userEmail, login, fetchToken } = useAuth();
+  const {isLoggedIn, fetchToken } = useAuth();
 
   useEffect(() => {
     console.log(sessionStorage.getItem('sid'));

@@ -2,21 +2,25 @@ import axios from "axios";
 
 const baseApiUrl = "http://127.0.0.1:5000/api/";
 
-export const SendLogin = async (
-  email,
-) => {
+export const SendLogin = (email) => {
   let data;
   const sid = sessionStorage.getItem("sid");
-  try {
-    const response = await axios.post(`${baseApiUrl}Login`, {
+
+  return axios
+    .post(`${baseApiUrl}Login`, {
       user_id: sid,
+    })
+    .then((response) => {
+      data = response.data;
+      console.log(data);
+      return data; // Return the data after the promise resolves
+    })
+    .catch((err) => {
+      console.error("Error sending to login: " + err); // Handle error
+      return null; // Return null or handle error data as needed
     });
-    data = response.data;
-  } catch (err) {
-    console.error("Error sending to signup" + err);
-  }
-  return data;
 };
+
 
 export const SendLogout = async (
     

@@ -7,18 +7,25 @@ const LoginPopup = ({ onClose }) => {
   const [error, setError] = useState(false);
   const { login } = useAuth();  // Access the login function from context
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (email) {
-      let data = login(email); 
-      if(data === false) {
-        setError(true);
-      }
-      else{
-        setError(false);
-        onClose();  
+      try {
+        let data = await login(email); // Await the login function to get the result
+        console.log(data);
+        
+        if (data === false) {
+          setError(true);
+        } else {
+        
+          setError(false);
+          onClose();  
+        }
+      } catch (err) {
+        console.error("Login error:", err);
+        setError(true); 
       }
     } else {
-      alert('Please enter a valid email.');
+      setError(true); 
     }
   };
 
