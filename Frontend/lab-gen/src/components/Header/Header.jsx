@@ -17,7 +17,10 @@ function Header(props) {
   };
 
   const handleLogout = () => {
-    logout();  
+    let data= logout();  
+    if(data===true){
+      navigate("/");
+    }
   };
 
   const doSomething = () => {
