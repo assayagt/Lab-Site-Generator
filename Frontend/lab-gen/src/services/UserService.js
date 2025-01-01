@@ -8,6 +8,7 @@ export const SendLogin = (email) => {
 
   return axios
     .post(`${baseApiUrl}Login`, {
+      email:email,
       user_id: sid,
     })
     .then((response) => {
