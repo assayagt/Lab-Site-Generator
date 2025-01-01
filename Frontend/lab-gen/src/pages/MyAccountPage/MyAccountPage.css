@@ -1,0 +1,10 @@
+.myAccountPage{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    margin: 20px;
+}
+
+.accountInfo{
+    background-color: antiquewhite;
+    height: 700px;
+}

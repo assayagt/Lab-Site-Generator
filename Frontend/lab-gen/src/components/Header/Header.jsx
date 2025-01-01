@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import logoIcon from "../../images/launcher.svg";
 import "./Header.css";
 import { useAuth } from "../../Context/AuthContext";
@@ -6,10 +7,10 @@ import logOutIcon from "../../images/logout.svg";
 import myWebsitesIcon from "../../images/my_website.svg";
 import accountIcon from "../../images/account_avatar.svg";
 import LoginPopup from '../Popups/LoginPopup'; 
-
 function Header(props) {
   const { isLoggedIn, userEmail, login, logout } = useAuth();
   const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogin = () => {
     setShowLoginPopup(true);  
@@ -23,6 +24,10 @@ function Header(props) {
      
   };
 
+  const onIconClick = () => {
+    navigate("/my-account")
+  };
+
   return (
     <div className="header">
       <img alt="Logo" src={logoIcon} className="img_logo" />
@@ -31,8 +36,8 @@ function Header(props) {
             <div className="hidden-box">
             <div className="personal_menu">
                 <div className="icon_photo">
-                    {isLoggedIn?<img src ={accountIcon} alt= "icon"></img>:
-                    <img src ={accountIcon} alt= "logout"></img>
+                    {isLoggedIn?<img src ={accountIcon} alt= "icon" onClick={onIconClick}></img>:
+                    <img src ={accountIcon} alt= "icon" ></img>
                     }
                 </div>
                 <hr className="hr_line" />

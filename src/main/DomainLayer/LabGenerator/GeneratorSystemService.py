@@ -10,7 +10,7 @@ class GeneratorSystemService:
         if GeneratorSystemService._singleton_instance is not None:
             raise Exception("This is a singleton class!")
         # Get the instance of GeneratorSystemController
-        self.generator_system_controller = GeneratorSystemController.get_instance()
+        self.generator_system_controller = GeneratorSystemController.GeneratorSystemController.get_instance()
 
     @staticmethod
     def get_instance():

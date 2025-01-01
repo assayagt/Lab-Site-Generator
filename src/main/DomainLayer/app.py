@@ -21,7 +21,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(GENERATED_WEBSITES_FOLDER, exist_ok=True)
 
 
-generator_system = GeneratorSystemService.get_instance()
+generator_system = GeneratorSystemService.GeneratorSystemService.get_instance()
 
 
 ##todo: add email and domain where needed

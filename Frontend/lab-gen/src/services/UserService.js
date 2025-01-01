@@ -27,6 +27,21 @@ export const SendLogout = async (
       console.error("Error sending to signup" + err);
     }
   };
+
+  export const EnterSystem = async (
+    
+  ) => {
+    let data;
+
+    // await axios
+    //     .get(`${baseApiUrl}enterGeneratorSystem`)
+    //     .then((resp) => {
+    //         data = resp.data;
+    //     })
+    //     .catch((err) => console.log(err.message));
+    return data
+
+  };
   
 
 
