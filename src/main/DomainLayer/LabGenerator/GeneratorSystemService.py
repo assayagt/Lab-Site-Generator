@@ -67,10 +67,10 @@ class GeneratorSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def login(self, user_id):
+    def login(self,email, user_id):
         """Log in a user through GeneratorSystemController."""
         try:
-            self.generator_system_controller.login(user_id)
+            self.generator_system_controller.login(email, user_id)
             return Response(user_id, "User logged in successfully")
         except Exception as e:
             return Response(None, str(e))
