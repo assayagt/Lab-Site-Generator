@@ -19,11 +19,16 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (email) => {
-    setIsLoggedIn(true);
-    setUserEmail(email);
-    sessionStorage.setItem('isLoggedIn', 'true');
-    sessionStorage.setItem('userEmail', email);
-    sessionStorage.setItem('sid',"id");
+    let data = SendLogin;
+    if(data.response == "true"){
+      setIsLoggedIn(true);
+      setUserEmail(email);
+      sessionStorage.setItem('isLoggedIn', 'true');
+      sessionStorage.setItem('userEmail', email);
+      //sessionStorage.setItem('sid',"id"); still doesn't exist
+      return true;
+    }
+    return false; 
   };
 
   const logout = () => {

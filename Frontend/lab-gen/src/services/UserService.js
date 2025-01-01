@@ -5,27 +5,33 @@ const baseApiUrl = "http://127.0.0.1:5000/api/";
 export const SendLogin = async (
   email,
 ) => {
+  let data;
+  const sid = sessionStorage.getItem("sid");
   try {
     const response = await axios.post(`${baseApiUrl}Login`, {
-      email: email,
+      user_id: sid,
     });
-    return response.data;
+    data = response.data;
   } catch (err) {
     console.error("Error sending to signup" + err);
   }
+  return data;
 };
 
 export const SendLogout = async (
-    email,
+    
   ) => {
+    let data;
+    const sid = sessionStorage.getItem("sid");
     try {
       const response = await axios.post(`${baseApiUrl}Login`, {
-        email: email,
+        user_id: sid,
       });
-      return response.data;
+      data =  response.data;
     } catch (err) {
       console.error("Error sending to signup" + err);
     }
+    return data;
   };
 
   export const EnterSystem = async (

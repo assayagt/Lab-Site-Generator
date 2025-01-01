@@ -185,9 +185,9 @@ class Login(Resource):
         try:
             response = generator_system.login(user_id)
             if response.is_success():
-                return jsonify({"message": "User logged out successfully"}), 200
+                return jsonify({"message": "User logged out successfully","response" : "true" }), 200
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}","response" : "false"}), 500
 
 # Handles user logout
 class Logout(Resource):
@@ -201,9 +201,9 @@ class Logout(Resource):
         try:
             response = generator_system.logout(user_id)
             if response.is_success():
-                return jsonify({"message": "User logged out successfully"}), 200
+                return jsonify({"message": "User logged out successfully","response" : "true"}), 200
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}","response" : "false"}), 500
 
 
 class StartCustomSite(Resource):

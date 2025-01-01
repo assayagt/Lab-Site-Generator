@@ -8,8 +8,13 @@ const LoginPopup = ({ onClose }) => {
 
   const handleLogin = () => {
     if (email) {
-      login(email);  // Login user using the email
-      onClose();  // Close the popup after login
+      let data = login(email); 
+      if(data === false) {
+        //todo: show error message
+      }
+      else{
+        onClose();  
+      }
     } else {
       alert('Please enter a valid email.');
     }
