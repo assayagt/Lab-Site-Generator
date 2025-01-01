@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../../../components/Header/Header';
 import { useWebsite } from '../../../Context/WebsiteContext';
 import './UploadFilesPage.css';
+import { useAuth } from '../../../Context/AuthContext';
 
 const UploadFilesPage = () => {
+  const navigate = useNavigate(); 
   const { websiteData, setWebsite } = useWebsite();
   const [formData, setFormData] = useState({
     domain: websiteData.domain || '',
@@ -13,6 +16,13 @@ const UploadFilesPage = () => {
     aboutUsContent: '',  
     contactUsContent: '',  
   });
+   const {isLoggedIn} = useAuth();
+  
+    useEffect(() => {
+      if (!isLoggedIn) {
+        navigate("/");
+      }
+    }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

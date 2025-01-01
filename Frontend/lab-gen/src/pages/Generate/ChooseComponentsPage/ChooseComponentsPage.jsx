@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../../components/Header/Header';
 import Tamplate from "../../../images/tamplate.svg";
 import { useWebsite } from '../../../Context/WebsiteContext';
 import './ChooseComponentsPage.css';
+import { useAuth } from '../../../Context/AuthContext';
 
 const ChooseComponentsPage = () => {
   const [saved, setSaved] = useState(false); 
@@ -14,7 +15,13 @@ const ChooseComponentsPage = () => {
   const [domain, setDomain] = useState(websiteData.domain || '');
   const [websiteName, setWebsiteName] = useState(websiteData.websiteName || '');
   const [savedDomainName, setSaveDomainName] = useState(false || websiteData.domain); 
+  const {isLoggedIn} = useAuth();
 
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/");
+    }
+  }, []);
 
   const handleComponentChange = (component) => {
     setComponents(prevComponents =>
