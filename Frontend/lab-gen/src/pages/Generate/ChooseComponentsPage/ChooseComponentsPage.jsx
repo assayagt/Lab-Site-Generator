@@ -5,6 +5,7 @@ import Tamplate from "../../../images/tamplate.svg";
 import { useWebsite } from '../../../Context/WebsiteContext';
 import './ChooseComponentsPage.css';
 import { useAuth } from '../../../Context/AuthContext';
+import {createCustomSite} from '../../../services/Generator'
 
 const ChooseComponentsPage = () => {
   const [saved, setSaved] = useState(false); 
@@ -32,9 +33,13 @@ const ChooseComponentsPage = () => {
     );
   };
 
-  const handleSaveNameAndDomain = () => {
-    setWebsite({ ...websiteData, domain, websiteName });
-    setSaveDomainName(true);
+  const handleSaveNameAndDomain = async() => {
+    let data = await createCustomSite(domain,websiteName);
+    if(data){
+      setWebsite({ ...websiteData, domain, websiteName });
+      setSaveDomainName(true);
+    }
+        
   };
 
   const handleTemplateClick = (templateName) => {

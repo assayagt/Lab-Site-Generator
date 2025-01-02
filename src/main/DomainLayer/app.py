@@ -230,10 +230,11 @@ class StartCustomSite(Resource):
         try:
             response = generator_system.create_website(user_id, website_name, domain)
             if response.is_success():
-                return jsonify({"message": f"Custom site '{website_name}' started successfully", "websiteLink": f"/view/{website_name.replace(' ', '_')}/index.html"}), 200
+                return jsonify({"message": f"Custom site '{website_name}' started successfully", "websiteLink": f"/view/{website_name.replace(' ', '_')}/index.html"})
+            return jsonify({"message": response.get_message()})
 
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}"})
 
 # Service to fetch all lab websites
 class GetAllLabWebsites(Resource):

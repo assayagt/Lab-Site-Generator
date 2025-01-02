@@ -72,6 +72,7 @@ export const createCustomSite= (domain, name) => {
     })
     .then((response) => {
       data = response.data;
+      console.log(data);
       return data; 
     })
     .catch((err) => {
