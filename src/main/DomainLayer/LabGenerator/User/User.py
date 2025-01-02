@@ -28,4 +28,5 @@ class User:
         return self.state.get_email()
 
     def is_member(self):
-        pass
+        return self.state.is_member()
+

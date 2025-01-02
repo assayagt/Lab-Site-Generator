@@ -26,10 +26,10 @@ class GeneratorSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def create_website(self, userId, website_name, domain):
+    def create_website(self, email, website_name, domain, componentes=None, template=None):
         """Create a website through GeneratorSystemController."""
         try:
-            self.generator_system_controller.create_website(userId, website_name, domain)
+            self.generator_system_controller.create_website(email, website_name, domain, componentes, template)
             return Response(domain, "Website created successfully")
         except Exception as e:
             return Response(None, str(e))

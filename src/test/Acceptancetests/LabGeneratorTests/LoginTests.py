@@ -34,9 +34,9 @@ class TestLogin(unittest.TestCase):
 
     def test_incorrect_email(self):
         # Test login with incorrect email
-        response1 = self.generator_system_service.login(self.user_id1, "wrongemail@example.com")
+        response1 = self.generator_system_service.login(self.user_id1, "wrongemail@exa!mple.com")
         self.assertFalse(response1.is_success())
-        self.assertEqual(response1.description, ExceptionsEnum.usernameOrPasswordIncorrect.value)
+        self.assertEqual(response1.get_message(), ExceptionsEnum.INVALID_EMAIL_FORMAT.value)
 
     def test_already_logged_in(self):
         # Log in users
@@ -47,12 +47,24 @@ class TestLogin(unittest.TestCase):
         # Attempt to log in again
         response1 = self.generator_system_service.login(self.user_id1, "user1@example.com")
         self.assertFalse(response1.is_success())
-        self.assertEqual(response1.description, ExceptionsEnum.userAlreadyLoggedIn.value)
+        self.assertEqual(response1.get_message(), ExceptionsEnum.USER_ALREADY_LOGGED_IN.value)
 
         response2 = self.generator_system_service.login(self.user_id2, "user2@example.com")
         self.assertFalse(response2.is_success())
-        self.assertEqual(response2.description, ExceptionsEnum.userAlreadyLoggedIn.value)
+        self.assertEqual(response2.get_message(), ExceptionsEnum.USER_ALREADY_LOGGED_IN.value)
 
         response3 = self.generator_system_service.login(self.user_id3, "user3@example.com")
         self.assertFalse(response3.is_success())
-        self.assertEqual(response3.description, ExceptionsEnum.userAlreadyLoggedIn.value)
+        self.assertEqual(response3.get_message(), ExceptionsEnum.USER_ALREADY_LOGGED_IN.value)
+
+    def test_login_logout_login(self):
+        # Log in user
+        self.generator_system_service.login(self.user_id1, "user1@example.com")
+
+        # Log out user
+        self.generator_system_service.logout(self.user_id1)
+
+        # Log in user again
+        response = self.generator_system_service.login(self.user_id1, "user1@example.com")
+        self.assertTrue(response.is_success())
+
