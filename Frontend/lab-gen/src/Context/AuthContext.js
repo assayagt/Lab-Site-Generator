@@ -1,12 +1,12 @@
 import React, { createContext, useState, useEffect } from 'react';
+import {SendLogin, SendLogout,EnterSystem} from "../services/UserService"
 
-// Create context for authentication
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState('');
-
+  
   // Retrieve from localStorage to persist login state across page reloads
   useEffect(() => {
     const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
     setUserEmail(email);
     localStorage.setItem('isLoggedIn', 'true');
     localStorage.setItem('userEmail', email);
+    localStorage.setItem('sid',"id");
   };
 
   const logout = () => {
@@ -30,10 +31,23 @@ export const AuthProvider = ({ children }) => {
     setUserEmail('');
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('userEmail');
+    localStorage.removeItem('sid');
+  };
+
+  const fetchToken = async () => {
+    let data = EnterSystem();
+    if(data){
+      localStorage.setItem('sid',data.user_id);
+      console.log(data);
+    }
+    else{
+
+    }
+    
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, userEmail, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, userEmail, login, logout ,fetchToken}}>
       {children}
     </AuthContext.Provider>
   );

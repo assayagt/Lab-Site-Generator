@@ -10,7 +10,7 @@ class GeneratorSystemService:
         if GeneratorSystemService._singleton_instance is not None:
             raise Exception("This is a singleton class!")
         # Get the instance of GeneratorSystemController
-        self.generator_system_controller = GeneratorSystemController.get_instance()
+        self.generator_system_controller = GeneratorSystemController.GeneratorSystemController.get_instance()
 
     @staticmethod
     def get_instance():
@@ -26,10 +26,10 @@ class GeneratorSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def create_website(self, email, website_name, domain):
+    def create_website(self, email, website_name, domain, componentes=None, template=None):
         """Create a website through GeneratorSystemController."""
         try:
-            self.generator_system_controller.create_website(email, website_name, domain)
+            self.generator_system_controller.create_website(email, website_name, domain, componentes, template)
             return Response(domain, "Website created successfully")
         except Exception as e:
             return Response(None, str(e))
@@ -67,10 +67,10 @@ class GeneratorSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def login(self, user_id):
+    def login(self,email, user_id):
         """Log in a user through GeneratorSystemController."""
         try:
-            self.generator_system_controller.login(user_id)
+            self.generator_system_controller.login(email, user_id)
             return Response(user_id, "User logged in successfully")
         except Exception as e:
             return Response(None, str(e))

@@ -22,6 +22,7 @@ class GeneratorSystemController:
         """Create a website using SiteCustomFacade."""
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
+        self.site_custom_facade.error_if_domain_already_exist(domain)
         self.site_custom_facade.create_new_site(domain, website_name, components, template)
         self.user_facade.create_new_customSite_manager(user_id, domain)
 
@@ -40,22 +41,26 @@ class GeneratorSystemController:
         """Change website details using SiteCustomFacade."""
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
+        self.site_custom_facade.error_if_domain_not_exist(domain)
         return self.site_custom_facade.change_site_name(domain, new_name)
     
     def change_website_domain(self, user_id, new_domain, domain):
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
+        self.site_custom_facade.error_if_domain_not_exist(domain)
         self.site_custom_facade.change_site_domain(domain, new_domain)
         self.user_facade.change_site_domain(domain, new_domain)
     
     def change_website_template(self, user_id, domain, new_template = Template):
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
+        self.site_custom_facade.error_if_domain_not_exist(domain)
         return self.site_custom_facade.change_site_domain(domain, new_template)
 
     def add_components_to_site(self, user_id, domain, new_components=None):
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
+        self.site_custom_facade.error_if_domain_not_exist(domain)
         return self.site_custom_facade.add_components_to_site(domain, new_components)
 
     def create_new_site_manager(self, nominator_manager_userId, nominated_manager_email, domain):
@@ -79,13 +84,14 @@ class GeneratorSystemController:
         self.user_facade.error_if_user_is_not_site_manager(manager_userId, domain)
         self.labSystem.register_new_LabMember_from_generator(email_to_register, lab_member_fullName, domain)
 
-    def login(self, userId):
+    def login(self, userId, email):
         """
         login into the generator system  (should be via Google in the future).
         A user can log in to the generator system using any email address of their choice.
         """
         self.user_facade.error_if_user_notExist(userId)
-        self.user_facade.login(userId)
+        self.user_facade.error_if_email_is_not_valid(email)
+        self.user_facade.login(userId, email)
 
     def logout(self, userId):
         """

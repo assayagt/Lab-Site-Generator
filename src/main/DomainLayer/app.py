@@ -21,7 +21,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(GENERATED_WEBSITES_FOLDER, exist_ok=True)
 
 
-generator_system = GeneratorSystemService.get_instance()
+generator_system = GeneratorSystemService.GeneratorSystemService.get_instance()
 
 
 ##todo: add email and domain where needed
@@ -180,10 +180,11 @@ class Login(Resource):
         parser.add_argument('user_id', type=str, required=True, help="User id is required")
         args = parser.parse_args()
 
+        email = args['email']
         user_id = args['user_id']
 
         try:
-            response = generator_system.login(user_id)
+            response = generator_system.login(email,user_id)
             if response.is_success():
                 return jsonify({"message": "User logged out successfully"}), 200
         except Exception as e:

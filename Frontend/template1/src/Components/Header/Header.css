@@ -1,0 +1,57 @@
+.header{
+  display: flex;
+  flex-direction: row;
+  margin: 20px;
+  align-items: center;
+  gap:20px
+}
+.header_logo{
+  height: 50px;
+  width: 50px;
+}
+.header_title{
+  font-size: 45px;
+  font-weight:500;
+  padding-right: 200px;
+}
+.navbar {
+  display: flex;
+  flex-direction: row;
+  background-color: #D9D9D9;
+  border-radius: 30px;
+  width: 450px;
+  height: 20px; /* Height of navbar */
+  padding: 10px;
+  overflow-x: scroll; /* Allow horizontal scrolling */
+  white-space: nowrap; /* Prevent items from wrapping */
+  position: relative; /* For positioning the items */
+  transition: transform 3s ease; /* Smooth scrolling transition */
+  align-items: center;
+}
+
+.navbar::-webkit-scrollbar {
+  display: none;
+}
+
+
+.navbar-item {
+  cursor: pointer;
+  flex-shrink: 0; /* Prevent items from shrinking */
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+  color: rgb(64, 64, 64);
+}
+
+/* Hover effect for items */
+
+.navbar-item-button{
+  background-color: transparent;
+  border: none;
+}
+
+.navbar-item-button:hover {
+  color: black;
+
+}

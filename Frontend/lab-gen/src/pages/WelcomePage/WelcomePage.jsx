@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/Header';
 import "./WelcomePage.css";
@@ -13,7 +13,13 @@ const WelcomePage = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate();
-  const {isLoggedIn, userEmail, login } = useAuth();
+  const {isLoggedIn, userEmail, login, fetchToken } = useAuth();
+
+  useEffect(() => {
+    if (!localStorage.getItem('sid')) {
+      fetchToken();
+    }
+  }, [ fetchToken]);
 
   const handleStartClick = () => {
     if (!isLoggedIn) {
@@ -55,7 +61,6 @@ const WelcomePage = () => {
 
   return (
     <div>
-      <Header title="LabLauncher"></Header>
       <main className='main_section'>
         <h1>Welcome to Website Generator</h1>
 
