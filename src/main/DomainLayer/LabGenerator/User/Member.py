@@ -10,9 +10,6 @@ class Member(State):
         # Do nothing
         pass
 
-    def exit_Generator_system(self):
-        pass
-
     def login(self):
         raise Exception(ExceptionsEnum.USER_ALREADY_LOGGED_IN.value)
 
