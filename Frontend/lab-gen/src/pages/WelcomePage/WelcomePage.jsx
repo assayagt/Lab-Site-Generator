@@ -15,12 +15,22 @@ const WelcomePage = () => {
   const navigate = useNavigate();
   const {isLoggedIn, fetchToken } = useAuth();
 
+  // useEffect(async() => {
+  //   console.log(sessionStorage.getItem('sid'));
+  //   if (sessionStorage.getItem('sid')==null || sessionStorage.getItem('sid')=='undefined') {
+  //     fetchToken();
+  //   }
+  // }, [fetchToken]);
+
   useEffect(() => {
-    console.log(sessionStorage.getItem('sid'));
-    if (sessionStorage.getItem('sid')==null || sessionStorage.getItem('sid')=='undefined') {
-      fetchToken();
+    async function fetchData() {
+      console.log(sessionStorage.getItem('sid'));
+      if (sessionStorage.getItem('sid')==null || sessionStorage.getItem('sid')=='undefined') {
+        fetchToken();
+      }
     }
-  }, [ fetchToken]);
+    fetchData();
+  }, [fetchToken]);
 
   const handleStartClick = () => {
     if (!isLoggedIn) {
