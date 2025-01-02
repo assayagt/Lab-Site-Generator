@@ -34,7 +34,7 @@
     flex-direction: row;
     gap: 10px;
     position: relative;
-    align-items: center;
+    align-items: baseline;
 }
 
 .save_domain_name_button {
@@ -52,6 +52,17 @@
     width: 200px;  
     font-size: 16px;
 }
+
+.input_name_domain.error_domain {
+    border: 1.5px solid #f74f4f;  
+    
+}
+.domain-error-message {
+    font-size: 12px;
+    color: red;
+    margin-top: 4px; /* Adds some space between the input and the error message */
+  }
+
 
 .input_name_domain:focus {
     outline: none;  /* Remove the default outline */

@@ -16,6 +16,7 @@ const ChooseComponentsPage = () => {
   const [websiteName, setWebsiteName] = useState(websiteData.websiteName || '');
   const [savedDomainName, setSaveDomainName] = useState(false || websiteData.domain); 
   const {isLoggedIn} = useAuth();
+  const [domainError, setDomainError] = useState(false); // New state for domain error message
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -73,6 +74,11 @@ const ChooseComponentsPage = () => {
     navigate('/upload-files'); 
   };
 
+  const isValidDomain = (domain) => {
+    const regex = /^(?!:\/\/)([A-Za-z0-9-]+\.)+[A-Za-z]{2,6}$/;
+    return regex.test(domain);
+};
+
   const isDomainAndNameValid = domain && websiteName &&savedDomainName;
 
   return (
@@ -82,13 +88,25 @@ const ChooseComponentsPage = () => {
           <div className="create_custom_website">
             <div className="website_domain_name">
               <label>Enter your website domain:</label>
+              <div>
               <input
                 type="text"
                 value={domain}
                 onChange={handleDomainChange}
+                onBlur={() => { // Optional: You can check domain validity onBlur as well
+                  if (!isValidDomain(domain)) {
+                    setDomainError(true);
+                  }
+                  else{
+                    setDomainError(false);
+                  }
+                }}
                 placeholder="Enter your website domain"
-                className="input_name_domain"
+                className={domainError?"input_name_domain error_domain" :"input_name_domain"}
               />
+               {domainError && <div className="domain-error-message">Please enter a valid domain</div>}
+              </div>
+              
             </div>
             <div className="website_domain_name">
               <label>Enter your website name:</label>
