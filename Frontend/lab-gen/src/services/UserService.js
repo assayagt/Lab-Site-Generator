@@ -13,6 +13,7 @@ export const SendLogin = (email) => {
     })
     .then((response) => {
       data = response.data;
+      console.log(data);
       return data; // Return the data after the promise resolves
     })
     .catch((err) => {
