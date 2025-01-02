@@ -119,3 +119,9 @@ class GeneratorSystemController:
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
         return self.user_facade.get_lab_websites(user_id)
+
+    def get_custom_website(self, user_id, domain):
+        """Get a custom website."""
+        self.user_facade.error_if_user_notExist(user_id)
+        self.user_facade.error_if_user_not_logged_in(user_id)
+        return self.site_custom_facade.get_site_by_domain(domain)
