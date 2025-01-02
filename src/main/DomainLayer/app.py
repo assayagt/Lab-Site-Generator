@@ -21,7 +21,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(GENERATED_WEBSITES_FOLDER, exist_ok=True)
 
 
-generator_system = GeneratorSystemService.get_instance()
+generator_system = GeneratorSystemService.GeneratorSystemService.get_instance()
 
 
 ##todo: add email and domain where needed
@@ -91,21 +91,20 @@ class ChooseDomain(Resource):
         Handles setting the domain for the lab website.
         """
         parser = reqparse.RequestParser()
-        parser.add_argument('email', type=str, required=True, help=" Email is required")
+        parser.add_argument('user_id', type=str, required=True, help="User id is required")
         parser.add_argument('old_domain', type=str, required=True, help=" Old Domain is required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
-        parser.add_argument('website_name', type=str, required=True, help="Website name is required")
         args = parser.parse_args()
 
 
-        email = args['email']
+        user_id = args['user_id']
         old_domain = args['old_domain']
         domain = args['domain']
-        website_name = args['website_name']
 
         try:
-            generator_system.change_website_domain(domain,old_domain)
-            return jsonify({"message": "Domain updated successfully", "domain": domain}), 200
+            response = generator_system.change_website_domain(user_id, domain, old_domain)
+            if response.is_success():
+                return jsonify({"message": "Domain updated successfully", "domain": domain}), 200
 
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
@@ -118,16 +117,19 @@ class ChooseComponents(Resource):
         for the lab website.
         """
         parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User id is required")
         parser.add_argument('components', type=list, required=True, help="Components to be added are required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
         args = parser.parse_args()
 
         # Example: store the chosen components (could be in a database or in-memory)
+        user_id = args['user_id']
         domain = args['domain']
         selected_components = args['components']
         try:
-            generator_system.add_components_to_site(domain,selected_components)
-            return jsonify({"message": "Components selected", "components": selected_components}), 200
+            response = generator_system.add_components_to_site(user_id, domain, selected_components)
+            if response.is_success():
+                return jsonify({"message": "Components selected", "components": selected_components}), 200
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -135,15 +137,18 @@ class ChooseComponents(Resource):
 class ChooseTemplate(Resource):
     def post(self):
         parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User id is required")
         parser.add_argument('template', type=str, required=True, help="Template name is required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
         args = parser.parse_args()
 
+        user_id = args['user_id']
         domain = args['domain']
         selected_template = args['template']
         try:
-            generator_system.change_website_template(domain,selected_template )
-            return jsonify({"message": "Template selected", "template": selected_template}), 200
+            response = generator_system.change_website_template(user_id, domain, selected_template)
+            if response.is_success():
+                return jsonify({"message": "Template selected", "template": selected_template}), 200
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -152,28 +157,36 @@ class ChooseTemplate(Resource):
 class ChooseName(Resource):
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('name', type=str, required=True, help=" name is required")
+        parser.add_argument('user_id', type=str, required=True, help="User id is required")
+        parser.add_argument('website_name', type=str, required=True, help=" name is required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
         args = parser.parse_args()
 
+        user_id = args['user_id']
         domain = args['domain']
         website_name = args['website_name']
         try:
-            return jsonify({"message": "Website name set", "website_name": website_name}), 200
+            response = generator_system.change_website_name(user_id, website_name, domain)
+            if response.is_success():
+                return jsonify({"message": "Website name set", "website_name": website_name}), 200
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+
 # Handles user login with email and password
 class Login(Resource):
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('email', type=str, required=True, help="Email is required")
+        parser.add_argument('user_id', type=str, required=True, help="User id is required")
         args = parser.parse_args()
 
         email = args['email']
-        user_id = session.get('user_id')
+        user_id = args['user_id']
 
         try:
-            generator_system.login(user_id, email)
+            response = generator_system.login(email,user_id)
+            if response.is_success():
+                return jsonify({"message": "User logged out successfully"}), 200
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -181,14 +194,15 @@ class Login(Resource):
 class Logout(Resource):
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('email', type=str, required=True, help="Email is required")
+        parser.add_argument('user_id', type=str, required=True, help="User id is required")
         args = parser.parse_args()
 
-        email = args['email']
-        user_id = session.get('user_id')
+        user_id = args['user_id']
 
         try:
-            generator_system.logout(user_id)
+            response = generator_system.logout(user_id)
+            if response.is_success():
+                return jsonify({"message": "User logged out successfully"}), 200
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -199,27 +213,18 @@ class StartCustomSite(Resource):
         Starts a new custom site by setting a name, domain, and components.
         """
         parser = reqparse.RequestParser()
-        parser.add_argument('email', type=str, required=True, help="Email is required")
+        parser.add_argument('user_id', type=str, required=True, help="User id is required")
         parser.add_argument('website_name', type=str, required=True, help="Website name is required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
         args = parser.parse_args()
 
-        email = args['email']
+        user_id = args['user_id']
         website_name = args['website_name']
         domain = args['domain']
         try:
-            generator_system.create_website(email,website_name,domain)
-            return jsonify({"message": f"Custom site '{website_name}' started successfully", "websiteLink": f"/view/{website_name.replace(' ', '_')}/index.html"}), 200
-
-        except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
-
-class GetCustomWebsites(Resource):
-    def get(self):
-        try:
-            # Fetch the website by name from the service
-            websites = generator_system.get_custom_website()
-            return jsonify({"websites": websites}), 200
+            response = generator_system.create_website(user_id, website_name, domain)
+            if response.is_success():
+                return jsonify({"message": f"Custom site '{website_name}' started successfully", "websiteLink": f"/view/{website_name.replace(' ', '_')}/index.html"}), 200
 
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
@@ -228,10 +233,39 @@ class GetCustomWebsites(Resource):
 class GetAllLabWebsites(Resource):
     def get(self):
         """Fetch all lab websites."""
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User id is required")
+        args = parser.parse_args()
+
+        user_id = args['user_id']
+
         try:
-            # Fetch all lab websites from the service
-            websites = generator_system.get_all_lab_websites()
-            return jsonify({"websites": websites}), 200
+            response = generator_system.get_lab_websites(user_id)
+            if response.is_success():
+                websites = response.get_data()  # rertun list of <domain>
+                # Store the user ID in the session for tracking
+                return jsonify({"websites": websites}), 200
+
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+# Service to fetch all custom websites
+class GetAllCustomWebsites(Resource):
+    def get(self):
+        """Fetch all lab websites."""
+        try:
+            parser = reqparse.RequestParser()
+            parser.add_argument('user_id', type=str, required=True, help="User id is required")
+            args = parser.parse_args()
+
+            user_id = args['user_id']
+
+            response = generator_system.get_custom_websites(user_id)
+            if response.is_success():
+                websites = response.get_data() #rertun map of <domain, site name>
+                # Store the user ID in the session for tracking
+                return jsonify({"websites": websites}), 200
+
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -240,13 +274,14 @@ class EnterGeneratorSystem(Resource):
     def get(self):
         try:
             # Generate a new guest ID via the service
-            user_id = generator_system.enter_generator_system()
-
-            # Store the user ID in the session for tracking
-            return jsonify({
-                "user_id": user_id,
-                "message": "Guest entered the system successfully"
-            }), 200
+            response = generator_system.enter_generator_system()
+            if response.is_success():
+                user_id = response.get_data()
+                # Store the user ID in the session for tracking
+                return jsonify({
+                    "user_id": user_id,
+                    "message": "New user entered the system successfully"
+                }), 200
         except Exception as e:
             # Log the exception (consider integrating a logging library)
             print(f"Unexpected error: {e}")
@@ -264,7 +299,7 @@ api.add_resource(Logout, '/api/Logout')
 api.add_resource(ViewWebsite, '/view/<folder_name>')
 api.add_resource(ChooseDomain, '/api/chooseDomain')
 api.add_resource(StartCustomSite, '/api/startCustomSite')  # New endpoint to start custom site
-api.add_resource(GetCustomWebsites, '/api/getCustomWebsites')
+api.add_resource(GetAllCustomWebsites, '/api/getCustomWebsites')
 api.add_resource(GetAllLabWebsites, '/api/getAllLabWebsites')
 api.add_resource(EnterGeneratorSystem, '/api/enterGeneratorSystem')
 

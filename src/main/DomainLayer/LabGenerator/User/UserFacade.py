@@ -1,5 +1,5 @@
-from Member import Member
-from User import User
+from src.main.DomainLayer.LabGenerator.User.Member import Member
+from src.main.DomainLayer.LabGenerator.User.User import User
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 import uuid
 
@@ -8,8 +8,8 @@ class UserFacade:
 
     def __init__(self):
         self.users = {}
-        self.members_sites = {} # sites that was already generated
-        self.members_customSites = {}
+        self.members_sites = {} # sites that was already generated <email, [domains]>
+        self.members_customSites = {} # sites that was created by the user <email, <Member, [domains]>>
 
     @staticmethod
     def get_instance():
@@ -48,7 +48,7 @@ class UserFacade:
         user = self.get_user_by_id(userId)
         member = self.get_member_by_email(email)
         if member is not None:
-            member.setUserId(userId)
+            member.set_user_id(userId)
         else:
             member = Member(user_id=userId, email=email)
             self.members_sites[email] = []
@@ -92,3 +92,6 @@ class UserFacade:
         self.users[user_id] = user
         return user_id
 
+    def get_lab_websites(self, user_id):
+        """Get all lab websites."""
+        return self.members_sites[self.get_email_by_userId(user_id)]

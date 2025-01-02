@@ -13,6 +13,8 @@ const ChooseComponentsPage = () => {
   const [template, setTemplate] = useState(websiteData.template || '');
   const [domain, setDomain] = useState(websiteData.domain || '');
   const [websiteName, setWebsiteName] = useState(websiteData.websiteName || '');
+  const [savedDomainName, setSaveDomainName] = useState(false || websiteData.domain); 
+
 
   const handleComponentChange = (component) => {
     setComponents(prevComponents =>
@@ -24,6 +26,7 @@ const ChooseComponentsPage = () => {
 
   const handleSaveNameAndDomain = () => {
     setWebsite({ ...websiteData, domain, websiteName });
+    setSaveDomainName(true);
   };
 
   const handleTemplateClick = (templateName) => {
@@ -36,10 +39,12 @@ const ChooseComponentsPage = () => {
 
   const handleDomainChange = (event) => {
     setDomain(event.target.value);
+    setSaveDomainName(false);
   };
 
   const handleNameChange = (event) => {
     setWebsiteName(event.target.value);
+    setSaveDomainName(false);
   };
 
   const handleSaveComponents = () => {
@@ -61,11 +66,10 @@ const ChooseComponentsPage = () => {
     navigate('/upload-files'); 
   };
 
-  const isDomainAndNameValid = domain && websiteName;
+  const isDomainAndNameValid = domain && websiteName &&savedDomainName;
 
   return (
     <div>
-      <Header title="LabLauncher" />
       <div className="choose_components_main">
         <div className="grid1">
           <div className="create_custom_website">

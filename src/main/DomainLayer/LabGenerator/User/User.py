@@ -1,5 +1,5 @@
-from State import State
-from Guest import Guest
+from src.main.DomainLayer.LabGenerator.User.State import State
+from src.main.DomainLayer.LabGenerator.User.Guest import Guest
 
 class User:
     def __init__(self, user_id=None):

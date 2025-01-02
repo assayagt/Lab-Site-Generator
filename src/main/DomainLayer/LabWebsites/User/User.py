@@ -1,5 +1,5 @@
-from State import State
-from Guest import Guest
+from src.main.DomainLayer.LabWebsites.User.State import State
+from src.main.DomainLayer.LabWebsites.User.Guest import Guest
 
 class User:
     def __init__(self, state, user_id=None):

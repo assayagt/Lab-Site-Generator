@@ -101,3 +101,15 @@ class GeneratorSystemController:
     def enter_generator_system(self):
         """Enter the generator system."""
         return self.user_facade.add_user()
+
+    def get_custom_websites(self, user_id):
+        """Get all lab websites."""
+        self.user_facade.error_if_user_notExist(user_id)
+        self.user_facade.error_if_user_not_logged_in(user_id)
+        return self.site_custom_facade.get_custom_websites()
+
+    def get_lab_websites(self, user_id):
+        """Get all lab websites."""
+        self.user_facade.error_if_user_notExist(user_id)
+        self.user_facade.error_if_user_not_logged_in(user_id)
+        return self.user_facade.get_lab_websites(user_id)

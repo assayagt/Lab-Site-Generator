@@ -1,4 +1,4 @@
-from State import State
+from src.main.DomainLayer.LabWebsites.User.State import State
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 
 class Guest(State):

@@ -1,4 +1,3 @@
-from PublicationDTO import PublicationDTO
 class Website:
     def __init__(self, domain):
         self.members_publications = {}
