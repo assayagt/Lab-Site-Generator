@@ -5,7 +5,7 @@ import Tamplate from "../../../images/tamplate.svg";
 import { useWebsite } from '../../../Context/WebsiteContext';
 import './ChooseComponentsPage.css';
 import { useAuth } from '../../../Context/AuthContext';
-import {createCustomSite} from '../../../services/Generator'
+import {createCustomSite,changeComponents} from '../../../services/Generator'
 
 const ChooseComponentsPage = () => {
   const [saved, setSaved] = useState(false); 
@@ -65,9 +65,14 @@ const ChooseComponentsPage = () => {
       alert('Please select components');
       return;
     }
-    setWebsite({ ...websiteData, components });
-    setSaved(true);
-    alert('Components saved successfully!');
+
+    let data = changeComponents(domain,components);
+    if(data.response=="true"){
+      setWebsite({ ...websiteData, components });
+      setSaved(true);
+      alert('Components saved successfully!');
+    }
+    
   };
 
   const handleContinue = () => {

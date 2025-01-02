@@ -129,9 +129,10 @@ class ChooseComponents(Resource):
         try:
             response = generator_system.add_components_to_site(user_id, domain, selected_components)
             if response.is_success():
-                return jsonify({"message": "Components selected", "components": selected_components}), 200
+                return jsonify({"message": "Components selected", "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}"})
 
 # Handles the template selection for the lab website
 class ChooseTemplate(Resource):

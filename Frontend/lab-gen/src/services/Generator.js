@@ -5,14 +5,17 @@ const baseApiUrl = "http://127.0.0.1:5000/api/";
 export const changeComponents= (domain, components) => {
   let data;
   const sid = sessionStorage.getItem("sid");
-  console.log(sid)
+  console.log(domain);
   return axios
-    .post(`${baseApiUrl}`, {
-      
+    .post(`${baseApiUrl}chooseComponents`, {
+      user_id: sid,
+      components: components,
+      domain:domain, 
+    
     })
     .then((response) => {
       data = response.data;
-    
+      console.log(data);
       return data; 
     })
     .catch((err) => {

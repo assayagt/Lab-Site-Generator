@@ -23,7 +23,7 @@ function Header(props) {
       // window.location.reload();
     }
     else{
-      console.log("gdas");
+      
     }
   };
 
