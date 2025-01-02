@@ -42,8 +42,8 @@ class GeneratorSystemController:
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
         self.site_custom_facade.error_if_domain_not_exist(domain)
-        return self.site_custom_facade.change_site_name(domain, new_name)
-    
+        self.site_custom_facade.change_site_name(domain, new_name)
+
     def change_website_domain(self, user_id, new_domain, domain):
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
@@ -55,13 +55,13 @@ class GeneratorSystemController:
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
         self.site_custom_facade.error_if_domain_not_exist(domain)
-        return self.site_custom_facade.change_site_domain(domain, new_template)
+        self.site_custom_facade.change_site_domain(domain, new_template)
 
     def add_components_to_site(self, user_id, domain, new_components=None):
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
         self.site_custom_facade.error_if_domain_not_exist(domain)
-        return self.site_custom_facade.add_components_to_site(domain, new_components)
+        self.site_custom_facade.add_components_to_site(domain, new_components)
 
     def create_new_site_manager(self, nominator_manager_userId, nominated_manager_email, domain):
         """

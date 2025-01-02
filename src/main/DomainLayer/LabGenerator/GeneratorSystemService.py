@@ -37,8 +37,8 @@ class GeneratorSystemService:
     def change_website_name(self, user_id, new_name, domain):
         """Change website name through GeneratorSystemController."""
         try:
-            new_name_returned = self.generator_system_controller.change_website_name(user_id, new_name, domain)
-            return Response(new_name_returned, "Website name changed successfully")
+            self.generator_system_controller.change_website_name(user_id, new_name, domain)
+            return Response(new_name, "Website name changed successfully")
         except Exception as e:
             return Response(None, str(e))
 

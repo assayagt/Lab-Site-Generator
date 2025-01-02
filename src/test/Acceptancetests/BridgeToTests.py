@@ -12,7 +12,7 @@ class BridgeToTests(ABC):
         pass
 
     @abstractmethod
-    def change_website_name(self, new_name, domain):
+    def change_website_name(self, userId, new_name, domain):
         """Change the website's name."""
         pass
 
