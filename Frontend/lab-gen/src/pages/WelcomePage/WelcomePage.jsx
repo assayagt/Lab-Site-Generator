@@ -18,15 +18,10 @@ const WelcomePage = () => {
   // useEffect to check sessionStorage and fetch token if neede
     function fetchData() {
       const storedSid = sessionStorage.getItem('sid');
-      console.log('SID from sessionStorage:', storedSid);  // Debugging: Check sid in sessionStorage
 
       if (!storedSid) {
-        console.log("SID not found, fetching token...");
         fetchToken();  // Fetch the sid
-      }
-
-      // After fetching, check if sid is available and update state
-    
+      }    
     }
 
     

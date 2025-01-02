@@ -27,8 +27,8 @@ class SiteCustomFacade:
             raise Exception(ExceptionsEnum.INVALID_DOMAIN_FORMAT.value)
 
     def create_new_site(self, domain, name, components, template):
-        if not isinstance(template, Template):
-            raise Exception(ExceptionsEnum.INVALID_TEMPLATE.value)
+        # if not isinstance(template, Template):
+        #     raise Exception(ExceptionsEnum.INVALID_TEMPLATE.value)
         if not isinstance(name, str) or not name:
             raise Exception(ExceptionsEnum.INVALID_SITE_NAME.value)
         self.error_if_domain_is_not_valid(domain)

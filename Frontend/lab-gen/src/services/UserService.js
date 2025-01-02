@@ -4,7 +4,6 @@ const baseApiUrl = "http://127.0.0.1:5000/api/";
 
 export const SendLogin = async(email,sid) => {
   let data;
-  console.log(sid)
   return axios
     .post(`${baseApiUrl}Login`, {
       email:email,
@@ -12,12 +11,11 @@ export const SendLogin = async(email,sid) => {
     })
     .then((response) => {
       data = response.data;
-      console.log(data);
-      return data; // Return the data after the promise resolves
+      return data; 
     })
     .catch((err) => {
-      console.error("Error sending to login: " + err); // Handle error
-      return null; // Return null or handle error data as needed
+      console.error("Error sending to login: " + err); 
+      return null; 
     });
 };
 
@@ -32,7 +30,6 @@ export const SendLogout = async (
         user_id: sid,
       });
       data =  response.data;
-      console.log(data);
     } catch (err) {
       console.error("Error sending to signup" + err);
     }
@@ -47,7 +44,6 @@ export const SendLogout = async (
         .get(`${baseApiUrl}enterGeneratorSystem`)
         .then((resp) => {
             data = resp.data.user_id;
-            console.log(data);
             return data;
         })
         .catch((err) => console.log(err.message));
