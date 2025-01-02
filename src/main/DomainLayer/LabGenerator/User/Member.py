@@ -1,4 +1,4 @@
-import State
+from src.main.DomainLayer.LabGenerator.User.State import State
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 
 class Member(State):
@@ -8,9 +8,6 @@ class Member(State):
 
     def logout(self):
         # Do nothing
-        pass
-
-    def exit_Generator_system(self):
         pass
 
     def login(self):

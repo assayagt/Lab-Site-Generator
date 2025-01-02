@@ -1,0 +1,127 @@
+.header{
+    background-color: darkgrey;
+    height: 70px;
+    display: flex;
+    align-items:center;
+    position: relative;
+    background: linear-gradient(90deg, #cacde3, #597a9c); /* Blue gradient */
+    color: black;
+    text-align: center;
+    font-size: 1.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.img_logo{
+    height: 40px;
+    width: 40px;
+    padding: 20px;
+}
+.menu {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  position: absolute;
+  right: 0;
+  margin: 10px;
+  background-image: url("../../images/account_avatar.svg");
+  
+}
+
+.hidden-box {
+  display: none;  /* Initially hidden */
+  position: absolute;
+  left: -100%;
+  background-color: white;
+  padding: 20px;
+  width: 150px; /* Adjust width as needed */
+  border-radius: 10px; /* Rounded corners to match the shape of the menu */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
+  transform: translateX(-70%) translateY(10px); /* Adjust horizontally */
+  z-index: 1;
+}
+.menu:hover .hidden-box {
+  display: block;
+
+}
+.personal_menu{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap:10px;
+}
+  
+.icon_photo{
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  margin: 10px;
+}
+.hr_line{
+  height: 1px;
+  width: 100%;
+  background-color: gray;
+}
+
+.choose_item{
+  width: 100%;
+}
+
+.logout_button{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap:10px;
+  background-color: transparent;
+  border-color: transparent;
+  font-size: 14px;
+  border-radius: 10px;
+  width:100%;
+  justify-content: center;
+  padding: 10px;
+
+}
+
+.logout_button:hover{
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
+}
+
+.my_sites_button{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap:10px;
+  background-color: transparent;
+  border-color: transparent;
+  font-size: 14px;
+  border-radius: 10px;
+  width:100%;
+  justify-content: center;
+  padding: 10px;
+
+}
+
+.my_sites_button:hover{
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
+}
+
+.login_button{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap:10px;
+  background-color: transparent;
+  border-color: transparent;
+  font-size: 14px;
+  border-radius: 10px;
+  width:100%;
+  justify-content: center;
+  padding: 10px;
+}
+
+.login_button:hover{
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
+}
+
+.my_sites_icon{
+  width: 18px;
+  height: 18px;
+}

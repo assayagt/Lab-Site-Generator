@@ -1,4 +1,4 @@
-from UserFacade import UserFacade
+from src.main.DomainLayer.LabWebsites.User.UserFacade import UserFacade
 class AllWebsitesUserFacade:
     _singleton_instance = None
 
@@ -27,23 +27,25 @@ class AllWebsitesUserFacade:
         userFacade.error_if_user_not_logged_in(nominator_manager_userId)
         userFacade.error_if_user_is_not_manager(nominator_manager_userId)
         userFacade.error_if_labMember_notExist(nominated_manager_email)
-        userFacade.create_new_site_manager(nominated_manager_email)
+        nominated_manager_fullName = userFacade.getLabMemberByEmail(nominated_manager_email).get_fullName()
+        userFacade.create_new_site_manager(nominated_manager_email, nominated_manager_fullName)
 
-    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, domain):
+    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName, domain):
         userFacade = self.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(manager_userId)
         userFacade.error_if_user_not_logged_in(manager_userId)
         userFacade.error_if_user_is_not_manager(manager_userId)
-        userFacade.register_new_LabMember(email_to_register)
+        userFacade.register_new_LabMember(email_to_register, lab_member_fullName)
 
     def create_new_site_manager_from_generator(self, nominated_manager_email, domain):
         userFacade = self.getUserFacadeByDomain(domain)
         userFacade.error_if_labMember_notExist(nominated_manager_email)
-        userFacade.create_new_site_manager(nominated_manager_email)
+        nominated_manager_fullName = userFacade.getLabMemberByEmail(nominated_manager_email).get_fullName()
+        userFacade.create_new_site_manager(nominated_manager_email, nominated_manager_fullName)
 
-    def register_new_LabMember_from_generator(self, email_to_register, domain):
+    def register_new_LabMember_from_generator(self, email_to_register, lab_member_fullName, domain):
         userFacade = self.getUserFacadeByDomain(domain)
-        userFacade.register_new_LabMember(email_to_register)
+        userFacade.register_new_LabMember(email_to_register, lab_member_fullName)
 
     def define_member_as_alumni(self, manager_userId, member_email, domain):
         userFacade = self.getUserFacadeByDomain(domain)
@@ -110,6 +112,23 @@ class AllWebsitesUserFacade:
         userFacade.error_if_user_is_not_labMember_manager_creator(userid)
         email = userFacade.get_email_by_userId(userid)
         userFacade.set_fullName_by_member(email, fullName)
+
+    def set_degree_by_member(self, userid, degree, domain):
+        userFacade = self.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userid)
+        userFacade.error_if_user_not_logged_in(userid)
+        userFacade.error_if_user_is_not_labMember_manager_creator(userid)
+        email = userFacade.get_email_by_userId(userid)
+        userFacade.set_degree_by_member(email, degree)
+
+    def set_bio_by_member(self, userid, bio, domain):
+        userFacade = self.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userid)
+        userFacade.error_if_user_not_logged_in(userid)
+        userFacade.error_if_user_is_not_labMember_manager_creator(userid)
+        email = userFacade.get_email_by_userId(userid)
+        userFacade.set_bio_by_member(email, bio)
+
 
 
 
