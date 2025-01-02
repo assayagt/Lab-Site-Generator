@@ -321,6 +321,7 @@ api.add_resource(StartCustomSite, '/api/startCustomSite')  # New endpoint to sta
 api.add_resource(GetAllCustomWebsites, '/api/getCustomWebsites')
 api.add_resource(GetAllLabWebsites, '/api/getAllLabWebsites')
 api.add_resource(EnterGeneratorSystem, '/api/enterGeneratorSystem')
+api.add_resource(GetCustomSite, '/api/getCustomSite')
 
 if __name__ == '__main__':
     app.run(debug=True)
