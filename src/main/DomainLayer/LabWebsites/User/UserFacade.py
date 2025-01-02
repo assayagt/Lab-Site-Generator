@@ -66,7 +66,7 @@ class UserFacade:
         user = self.get_user_by_id(userId)
         member = self.get_member_by_email(email)
         if member is not None:
-            member.setUserId(userId)
+            member.set_user_id(userId)
             user.login(member)
 
     def logout(self, userId):
