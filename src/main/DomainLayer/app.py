@@ -296,6 +296,25 @@ class EnterGeneratorSystem(Resource):
             # Log the exception (consider integrating a logging library)
             return jsonify({"error": "An internal server error occurred"}), 500
 
+class GetCustomSite(Resource):
+    def get(self):
+        try:
+            parser = reqparse.RequestParser()
+            parser.add_argument('user_id', type=str, required=True, help="User id is required")
+            parser.add_argument('domain', type=str, required=True, help="Domain is required")
+            args = parser.parse_args()
+
+            user_id = args['user_id']
+            domain = args['domain']
+
+            response = generator_system.get_custom_website(user_id, domain)
+            if response.is_success():
+                #the returned value is website name, template, components
+                website_data = response.get_data()
+                return jsonify(website_data)
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"})
+
 
 # Add the resources to API
 api.add_resource(FileUploadResource, '/api/uploadFile')
@@ -311,6 +330,7 @@ api.add_resource(StartCustomSite, '/api/startCustomSite')  # New endpoint to sta
 api.add_resource(GetAllCustomWebsites, '/api/getCustomWebsites')
 api.add_resource(GetAllLabWebsites, '/api/getAllLabWebsites')
 api.add_resource(EnterGeneratorSystem, '/api/enterGeneratorSystem')
+api.add_resource(GetCustomSite, '/api/getCustomSite')
 
 if __name__ == '__main__':
     app.run(debug=True)
