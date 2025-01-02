@@ -13,24 +13,23 @@ const WelcomePage = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate();
-  const {isLoggedIn, fetchToken } = useAuth();
+  const { isLoggedIn, fetchToken } = useAuth();
 
-  // useEffect(async() => {
-  //   console.log(sessionStorage.getItem('sid'));
-  //   if (sessionStorage.getItem('sid')==null || sessionStorage.getItem('sid')=='undefined') {
-  //     fetchToken();
-  //   }
-  // }, [fetchToken]);
+  // useEffect to check sessionStorage and fetch token if neede
+    function fetchData() {
+      const storedSid = sessionStorage.getItem('sid');
+      console.log('SID from sessionStorage:', storedSid);  // Debugging: Check sid in sessionStorage
 
-  useEffect(() => {
-    async function fetchData() {
-      console.log(sessionStorage.getItem('sid'));
-      if (sessionStorage.getItem('sid')==null || sessionStorage.getItem('sid')=='undefined') {
-        fetchToken();
+      if (!storedSid) {
+        console.log("SID not found, fetching token...");
+        fetchToken();  // Fetch the sid
       }
+
+      // After fetching, check if sid is available and update state
+    
     }
-    fetchData();
-  }, [fetchToken]);
+
+    
 
   const handleStartClick = () => {
     if (!isLoggedIn) {
@@ -39,8 +38,6 @@ const WelcomePage = () => {
       navigate('/choose-components');
     }
   };
-
- 
 
   const handleErrorPopupClose = () => {
     setShowErrorPopup(false);  
@@ -63,6 +60,7 @@ const WelcomePage = () => {
 
   return (
     <div>
+      {fetchData()}
       <main className='main_section'>
         <h1>Welcome to Website Generator</h1>
 
@@ -86,7 +84,6 @@ const WelcomePage = () => {
         </div>
       </main>
 
-     
       {showLoginPopup && <LoginPopup onClose={() => setShowLoginPopup(false)} />}
 
       {/* Error Popup for Invalid Credentials */}
@@ -99,7 +96,6 @@ const WelcomePage = () => {
           </div>
         </div>
       )}
-    
     </div>
   );
 };

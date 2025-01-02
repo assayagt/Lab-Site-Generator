@@ -7,6 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState('');
   
+
   useEffect(() => {
     const loggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
     const savedUserEmail = sessionStorage.getItem('userEmail');
@@ -18,7 +19,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email) => {
-    let data = await SendLogin(email);
+    let data = await SendLogin(email,sessionStorage.getItem("sid"));
     if(data){
       if(data.response === "true"){
         setIsLoggedIn(true);
@@ -47,11 +48,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   const fetchToken = async () => {
-    let data = await EnterSystem(); // Wait for the result of EnterSystem
+    let data = await EnterSystem(); 
     if (data) {
-      sessionStorage.setItem('sid', data.user_id); 
+      console.log("h");
+      sessionStorage.setItem('sid', data); 
+      console.log("b");
+      return data;
     }
-    
     return data;
   };
   

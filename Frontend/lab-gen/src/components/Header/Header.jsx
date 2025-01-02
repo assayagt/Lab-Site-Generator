@@ -20,7 +20,7 @@ function Header(props) {
     let data= logout();  
     if(data===true){
       navigate("/");
-      window.location.reload();
+      // window.location.reload();
     }
     else{
       console.log("gdas");

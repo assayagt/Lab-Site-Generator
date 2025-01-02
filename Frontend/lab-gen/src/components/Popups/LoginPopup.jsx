@@ -11,14 +11,11 @@ const LoginPopup = ({ onClose }) => {
     if (email) {
       try {
         let data = await login(email); // Await the login function to get the result
-        
         if (data === false) {
           setError(true);
         } else {
-        
           setError(false);
-          onClose();  
-          
+          onClose(); 
         }
       } catch (err) {
         console.error("Login error:", err);

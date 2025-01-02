@@ -2,9 +2,8 @@ import axios from "axios";
 
 const baseApiUrl = "http://127.0.0.1:5000/api/";
 
-export const SendLogin = (email) => {
+export const SendLogin = async(email,sid) => {
   let data;
-  const sid = sessionStorage.getItem("sid");
   console.log(sid)
   return axios
     .post(`${baseApiUrl}Login`, {
@@ -47,8 +46,9 @@ export const SendLogout = async (
     await axios
         .get(`${baseApiUrl}enterGeneratorSystem`)
         .then((resp) => {
-            data = resp.data;
+            data = resp.data.user_id;
             console.log(data);
+            return data;
         })
         .catch((err) => console.log(err.message));
     return data;
