@@ -25,3 +25,6 @@ class SiteCustom:
 
     def change_domain(self, new_domain: str):
         self.domain = new_domain
+
+    def get_domain(self):
+        return self.domain

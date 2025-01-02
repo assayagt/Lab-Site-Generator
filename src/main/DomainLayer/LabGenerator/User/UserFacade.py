@@ -1,3 +1,5 @@
+import re
+
 from src.main.DomainLayer.LabGenerator.User.Member import Member
 from src.main.DomainLayer.LabGenerator.User.User import User
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
@@ -43,6 +45,17 @@ class UserFacade:
         if domain not in self.members_sites[email]:
             raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER.value)
 
+    def error_if_email_is_not_valid(self, email):
+        """
+        Validate the email format using a regular expression.
+        Raise an error if the email is not valid.
+        """
+        email_regex = (
+            r"^(?!.*\.\.)(?!.*\.$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        )
+        if re.match(email_regex, email) is  None:
+            raise Exception(ExceptionsEnum.INVALID_EMAIL_FORMAT.value)
+
     def login(self, userId, email):
         """Handle login logic after retrieving user info."""
         user = self.get_user_by_id(userId)
@@ -80,7 +93,7 @@ class UserFacade:
     def error_if_user_not_logged_in(self, userId):
         user = self.get_user_by_id(userId)
         if not user.is_member():
-            raise Exception(ExceptionsEnum.USER_IS_NOT_MEMBER)
+            raise Exception(ExceptionsEnum.USER_IS_NOT_MEMBER.value)
 
     def get_email_by_userId(self, userId):
         user = self.get_user_by_id(userId)
