@@ -45,81 +45,40 @@ class SiteCustomFacade:
             if not any(site.get_domain() == domain for site in self.sites):
                     raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST.value)
 
- def change_site_name(self, domain, new_name):
-    """Changes the name of a site."""
-    if not isinstance(new_name, str) or not new_name:
-        raise Exception(ExceptionsEnum.INVALID_SITE_NAME.value)
+    def change_site_name(self, domain, new_name):
+        """Changes the name of a site."""
+        if not isinstance(new_name, str) or not new_name:
+            raise Exception(ExceptionsEnum.INVALID_SITE_NAME.value)
+        site = self.sites[domain]
+        site.change_name(new_name)
 
-    # Find the site with the matching domain
-    site = next((site for site in self.sites if site.get_domain() == domain), None)
+    def change_site_domain(self, old_domain, new_domain):
+        """Changes the domain of a site."""
+        if not isinstance(new_domain, str) or not new_domain:
+            raise Exception(ExceptionsEnum.INVALID_DOMAIN_FORMAT.value)
+        site = self.sites[old_domain]
+        site.change_domain(new_domain)
 
-    # If no site with the given domain exists, raise an exception
-    if site is None:
-        raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST.value)
+    def change_site_template(self, old_domain, new_template: Template):
+        """Changes the template of a site."""
+        if not isinstance(new_template, Template):
+            raise Exception(ExceptionsEnum.INVALID_TEMPLATE.value)
+        site = self.sites[old_domain]
+        site.change_template(new_template)
 
-    # Change the name of the found site
-    site.change_name(new_name)
+    def add_components_to_site(self, old_domain, components):
+        """Adds components to a site."""
+        if not isinstance(components, list) or not all(isinstance(c, str) for c in components):
+            raise Exception(ExceptionsEnum.INVALID_COMPONENTS_FORMAT.value)
+        site = self.sites[old_domain]
+        site.add_component(components)
 
-def change_site_domain(self, old_domain, new_domain):
-    """Changes the domain of a site."""
-    if not isinstance(new_domain, str) or not new_domain:
-        raise Exception(ExceptionsEnum.INVALID_DOMAIN_FORMAT.value)
-
-    # Find the site with the matching domain
-    site = next((site for site in self.sites if site.get_domain() == old_domain), None)
-
-    # If no site with the given domain exists, raise an exception
-    if site is None:
-        raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST.value)
-
-    # Change the domain of the found site
-    site.change_domain(new_domain)
-
-def change_site_template(self, old_domain, new_template: Template):
-    """Changes the template of a site."""
-    if not isinstance(new_template, Template):
-        raise Exception(ExceptionsEnum.INVALID_TEMPLATE.value)
-
-    # Find the site with the matching domain
-    site = next((site for site in self.sites if site.get_domain() == old_domain), None)
-
-    # If no site with the given domain exists, raise an exception
-    if site is None:
-        raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST.value)
-
-    # Change the template of the found site
-    site.change_template(new_template)
-
-def add_components_to_site(self, old_domain, components):
-    """Adds components to a site."""
-    if not isinstance(components, list) or not all(isinstance(c, str) for c in components):
-        raise Exception(ExceptionsEnum.INVALID_COMPONENTS_FORMAT.value)
-
-    # Find the site with the matching domain
-    site = next((site for site in self.sites if site.get_domain() == old_domain), None)
-
-    # If no site with the given domain exists, raise an exception
-    if site is None:
-        raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST.value)
-
-    # Add components to the found site
-    site.add_component(components)
-
-def remove_component_from_site(self, old_domain, component):
-    """Removes a component from a site."""
-    if not isinstance(component, str):
-        raise Exception(ExceptionsEnum.INVALID_COMPONENT_FORMAT.value)
-
-    # Find the site with the matching domain
-    site = next((site for site in self.sites if site.get_domain() == old_domain), None)
-
-    # If no site with the given domain exists, raise an exception
-    if site is None:
-        raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST.value)
-
-    # Remove the component from the found site
-    site.remove_component(component)
-
+    def remove_component_from_site(self, old_domain, component):
+        """Removes a component from a site."""
+        if not isinstance(component, str):
+            raise Exception(ExceptionsEnum.INVALID_COMPONENT_FORMAT.value)
+        site = self.sites[old_domain]
+        site.remove_component(component)
 
     def get_custom_websites(self):
         """Get all lab websites. return map of domain and site name"""
