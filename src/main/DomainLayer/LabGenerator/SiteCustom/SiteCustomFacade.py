@@ -3,6 +3,7 @@ import re
 from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
 from src.main.DomainLayer.LabGenerator.SiteCustom.SiteCustom import SiteCustom
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
+from src.main.DomainLayer.LabGenerator.SiteCustom.SiteCustomDTO import SiteCustomDTO
 
 
 class SiteCustomFacade:
@@ -81,6 +82,7 @@ class SiteCustomFacade:
 
     def get_custom_websites(self):
         """Get all lab websites. return map of domain and site name"""
+
         return {site.domain: site.name for site in self.sites}
 
     def reset_system(self):
@@ -88,3 +90,16 @@ class SiteCustomFacade:
         Resets the entire system by clearing all stored sites.
         """
         self.sites.clear()
+       
+    def get_site_by_domain(self, domain):
+        """Get site by domain."""
+        try:
+            #return siteCustomDTO object
+            site = self.sites[domain]
+            site_custom_dto = SiteCustomDTO.from_site_custom(site)
+            return site_custom_dto
+        except IndexError:
+            raise Exception("Error: Site index out of range")
+        except Exception as e:
+            raise Exception(f"Unexpected error: {e}")
+

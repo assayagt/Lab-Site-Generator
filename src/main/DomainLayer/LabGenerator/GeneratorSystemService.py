@@ -121,5 +121,16 @@ class GeneratorSystemService:
         try:
             self.generator_system_controller.reset_system()
             return Response(True, "System reset successfully")
+
+    def get_custom_website(self, user_id, domain):
+        """Get a custom website through GeneratorSystemController."""
+        try:
+            website = self.generator_system_controller.get_custom_website(user_id, domain)
+            return Response({
+                    "domain": domain,
+                    "name": website.get_name(),
+                    "components": website.get_components(),
+                    "template": website.get_template()
+                }, "Successfully retrieved custom website")
         except Exception as e:
             return Response(None, str(e))
