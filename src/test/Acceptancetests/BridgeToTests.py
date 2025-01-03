@@ -7,8 +7,12 @@ class BridgeToTests(ABC):
         pass
 
     @abstractmethod
-    def create_website(self, email, website_name, domain):
+    def create_website(self, email, website_name, domain, components, template):
         """Create a website."""
+        pass
+
+    def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator):
+        """Create a new lab website."""
         pass
 
     @abstractmethod
@@ -17,17 +21,17 @@ class BridgeToTests(ABC):
         pass
 
     @abstractmethod
-    def change_website_domain(self, email, new_domain, domain):
+    def change_website_domain(self, userId, new_domain, domain):
         """Change the website's domain."""
         pass
 
     @abstractmethod
-    def change_website_template(self, domain, new_template=None):
+    def change_website_template(self, userId, domain, new_template=None):
         """Change the website's template."""
         pass
 
     @abstractmethod
-    def add_components_to_site(self, domain, new_components=None):
+    def add_components_to_site(self, userId, domain, new_components):
         """Add components to the site."""
         pass
 
@@ -44,4 +48,8 @@ class BridgeToTests(ABC):
     @abstractmethod
     def get_logged_in_user(self):
         """Get the currently logged-in user."""
+        pass
+
+    def reset_system(self):
+        """Reset the system."""
         pass

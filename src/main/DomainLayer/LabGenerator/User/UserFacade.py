@@ -22,9 +22,6 @@ class UserFacade:
     def create_new_site_manager(self, email, domain):
         if domain not in self.members_sites[email]:
             self.members_sites[email].append(domain)
-
-    def create_new_customSite_manager(self, userId, domain):
-        email = self.get_email_by_userId(userId)
         if domain not in self.members_customSites[email]["domains"]:
             self.members_customSites[email]["domains"].append(domain)
 
@@ -42,7 +39,7 @@ class UserFacade:
     def error_if_user_is_not_site_manager(self, userId, domain):
         email = self.get_email_by_userId(userId)
         #check if domain is one of the sites that the user is a manager of
-        if domain not in self.members_sites[email]:
+        if domain not in self.members_sites[email] and domain not in self.members_customSites[email]["domains"]:
             raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER.value)
 
     def error_if_email_is_not_valid(self, email):
@@ -108,3 +105,11 @@ class UserFacade:
     def get_lab_websites(self, user_id):
         """Get all lab websites."""
         return self.members_sites[self.get_email_by_userId(user_id)]
+
+    def reset_system(self):
+        """
+        Resets the entire system by clearing all users, members, and site-related data.
+        """
+        self.users.clear()
+        self.members_sites.clear()
+        self.members_customSites.clear()

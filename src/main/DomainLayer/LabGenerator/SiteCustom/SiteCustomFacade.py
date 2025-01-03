@@ -59,7 +59,7 @@ class SiteCustomFacade:
         site = self.sites[old_domain]
         site.change_domain(new_domain)
 
-    def change_site_template(self, old_domain, new_template: Template):
+    def change_site_template(self, old_domain, new_template):
         """Changes the template of a site."""
         if not isinstance(new_template, Template):
             raise Exception(ExceptionsEnum.INVALID_TEMPLATE.value)
@@ -84,8 +84,13 @@ class SiteCustomFacade:
         """Get all lab websites. return map of domain and site name"""
 
         return {site.domain: site.name for site in self.sites}
-       
 
+    def reset_system(self):
+        """
+        Resets the entire system by clearing all stored sites.
+        """
+        self.sites.clear()
+       
     def get_site_by_domain(self, domain):
         """Get site by domain."""
         try:
