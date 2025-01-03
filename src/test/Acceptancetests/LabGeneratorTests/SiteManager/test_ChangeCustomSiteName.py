@@ -22,7 +22,7 @@ class TestChangeWebsiteName(unittest.TestCase):
 
     def tearDown(self):
         # Reset the system after each test
-        self.generator_system_service.login(user_id=self.user_id, email="user_1@example.com")
+        self.generator_system_service.reset_system()
 
     def test_successful_name_change(self):
         # Test changing the website name successfully

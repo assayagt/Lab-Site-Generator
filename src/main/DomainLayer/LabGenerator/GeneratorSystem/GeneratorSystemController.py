@@ -18,13 +18,14 @@ class GeneratorSystemController:
             GeneratorSystemController._singleton_instance = GeneratorSystemController()
         return GeneratorSystemController._singleton_instance
     
-    def create_website(self, user_id, website_name, domain, components=None, template=None):
+    def create_website(self, user_id, website_name, domain, components, template):
         """Create a website using SiteCustomFacade."""
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
         self.site_custom_facade.error_if_domain_already_exist(domain)
         self.site_custom_facade.create_new_site(domain, website_name, components, template)
-        self.user_facade.create_new_customSite_manager(user_id, domain)
+        email = self.user_facade.get_email_by_userId(user_id)
+        self.user_facade.create_new_site_manager(email, domain)
 
     def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator):
         """
@@ -35,6 +36,7 @@ class GeneratorSystemController:
         lab_managers (dict): A dictionary of lab managers with emails as keys and full names as values.
         site_creator (dict): A dictionary containing the site creator's email and full name.
         """
+        self.site_custom_facade.error_if_domain_not_exist(domain)
         self.labSystem.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
 
     def change_website_name(self, user_id, new_name, domain):
@@ -42,12 +44,16 @@ class GeneratorSystemController:
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
         self.site_custom_facade.error_if_domain_not_exist(domain)
+        self.user_facade.error_if_user_is_not_site_manager(user_id, domain)
         self.site_custom_facade.change_site_name(domain, new_name)
 
     def change_website_domain(self, user_id, new_domain, domain):
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
         self.site_custom_facade.error_if_domain_not_exist(domain)
+        self.user_facade.error_if_user_is_not_site_manager(user_id, domain)
+        self.site_custom_facade.error_if_domain_is_not_valid(new_domain)
+        self.site_custom_facade.error_if_domain_already_exist(new_domain)
         self.site_custom_facade.change_site_domain(domain, new_domain)
         self.user_facade.change_site_domain(domain, new_domain)
     
@@ -55,12 +61,14 @@ class GeneratorSystemController:
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
         self.site_custom_facade.error_if_domain_not_exist(domain)
-        self.site_custom_facade.change_site_domain(domain, new_template)
+        self.user_facade.error_if_user_is_not_site_manager(user_id, domain)
+        self.site_custom_facade.change_site_template(domain, new_template)
 
-    def add_components_to_site(self, user_id, domain, new_components=None):
+    def add_components_to_site(self, user_id, domain, new_components):
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
         self.site_custom_facade.error_if_domain_not_exist(domain)
+        self.user_facade.error_if_user_is_not_site_manager(user_id, domain)
         self.site_custom_facade.add_components_to_site(domain, new_components)
 
     def create_new_site_manager(self, nominator_manager_userId, nominated_manager_email, domain):
@@ -119,3 +127,10 @@ class GeneratorSystemController:
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
         return self.user_facade.get_lab_websites(user_id)
+
+    def reset_system(self):
+        """
+        Resets the entire system, clearing all users, websites, and lab-related data.
+        """
+        self.user_facade.reset_system()
+        self.site_custom_facade.reset_system()

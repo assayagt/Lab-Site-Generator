@@ -34,6 +34,14 @@ class GeneratorSystemService:
         except Exception as e:
             return Response(None, str(e))
 
+    def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator):
+        """Create a new lab website through GeneratorSystemController."""
+        try:
+            self.generator_system_controller.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
+            return Response(domain, "Lab website created successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
     def change_website_name(self, user_id, new_name, domain):
         """Change website name through GeneratorSystemController."""
         try:
@@ -105,5 +113,13 @@ class GeneratorSystemService:
         try:
             websites = self.generator_system_controller.get_lab_websites(user_id)
             return Response(websites, "Successfully retrieved lab website")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def reset_system(self):
+        """Reset the system through GeneratorSystemController."""
+        try:
+            self.generator_system_controller.reset_system()
+            return Response(True, "System reset successfully")
         except Exception as e:
             return Response(None, str(e))
