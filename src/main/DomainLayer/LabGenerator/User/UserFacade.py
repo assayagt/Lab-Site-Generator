@@ -20,6 +20,14 @@ class UserFacade:
         return UserFacade._singleton_instance
 
     def create_new_site_manager(self, email, domain):
+        #first check if key in self.members_sites
+        if email not in self.members_sites:
+            self.members_sites[email] = []
+        #check if key in self.members_customSites
+        if email not in self.members_customSites:
+            member = Member(email=email)
+            self.members_customSites[email] = {"member": member, "domains": []}
+        #add domain to the user's sites
         if domain not in self.members_sites[email]:
             self.members_sites[email].append(domain)
         if domain not in self.members_customSites[email]["domains"]:

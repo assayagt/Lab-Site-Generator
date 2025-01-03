@@ -1,4 +1,6 @@
 from src.main.DomainLayer.LabWebsites.User.UserFacade import UserFacade
+from src.main.Util.ExceptionsEnum import ExceptionsEnum
+
 class AllWebsitesUserFacade:
     _singleton_instance = None
 
@@ -16,6 +18,10 @@ class AllWebsitesUserFacade:
 
     def getUserFacadeByDomain(self, domain):
         return self.usersFacades[domain]
+
+    def error_if_domain_not_exist(self, domain):
+        if domain not in self.usersFacades:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST.value)
 
     def logout(self, domain, userId):
         userFacade = self.getUserFacadeByDomain(domain)
@@ -38,6 +44,7 @@ class AllWebsitesUserFacade:
         userFacade.register_new_LabMember(email_to_register, lab_member_fullName)
 
     def create_new_site_manager_from_generator(self, nominated_manager_email, domain):
+        self.error_if_domain_not_exist(domain)
         userFacade = self.getUserFacadeByDomain(domain)
         userFacade.error_if_labMember_notExist(nominated_manager_email)
         nominated_manager_fullName = userFacade.getLabMemberByEmail(nominated_manager_email).get_fullName()

@@ -37,6 +37,7 @@ class GeneratorSystemController:
         site_creator (dict): A dictionary containing the site creator's email and full name.
         """
         self.site_custom_facade.error_if_domain_not_exist(domain)
+        self.site_custom_facade.set_custom_site_as_generated(domain)
         self.labSystem.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
 
     def change_website_name(self, user_id, new_name, domain):

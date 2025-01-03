@@ -6,6 +6,7 @@ class SiteCustom:
         self.name = name
         self.components = components
         self.template = template
+        self.generated = False
 
     def change_template(self, template: Template):
         self.template = template
@@ -28,3 +29,6 @@ class SiteCustom:
 
     def get_domain(self):
         return self.domain
+
+    def set_generated(self):
+        self.generated = True
