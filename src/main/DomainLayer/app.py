@@ -104,7 +104,7 @@ class ChooseDomain(Resource):
         try:
             response = generator_system.change_website_domain(user_id, domain, old_domain)
             if response.is_success():
-                return jsonify({"message": "Domain updated successfully", "domain": domain}), 200
+                return jsonify({"message": "Domain updated successfully", "domain": domain})
 
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
@@ -170,10 +170,10 @@ class ChooseName(Resource):
         try:
             response = generator_system.change_website_name(user_id, website_name, domain)
             if response.is_success():
-                return jsonify({"message": "Website name set", "website_name": website_name}), 200
+                return jsonify({"message": "Website name set", "website_name": website_name})
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}"})
 
 
 # Handles user login with email and password

@@ -16,16 +16,19 @@ const ChooseComponentsPage = () => {
   const [websiteName, setWebsiteName] = useState(websiteData.websiteName || '');
   const { isLoggedIn } = useAuth();
   const [domainError, setDomainError] = useState(false);
-  const[hasContinued, setHasContinued] = useState(websiteData.created || false);
+  const [hasContinued, setHasContinued] = useState(false);  // Track if Continue button was pressed
+  const [isChanged, setIsChanged] = useState(false);  // Track if anything was changed
 
   const [initialDomain, setInitialDomain] = useState(websiteData.domain || ''); // Track initial domain
   const [initialWebsiteName, setInitialWebsiteName] = useState(websiteData.websiteName || ''); // Track initial website name
+  const [initialComponents, setInitialComponents] = useState(websiteData.components || []); // Track initial components
+  const [initialTemplate, setInitialTemplate] = useState(websiteData.template || ''); // Track initial template
 
   useEffect(() => {
     if (!isLoggedIn) {
       navigate("/");
     }
-  }, []);
+  }, [isLoggedIn, navigate]);
 
   const handleComponentChange = (component) => {
     setComponents(prevComponents =>
@@ -33,6 +36,7 @@ const ChooseComponentsPage = () => {
         ? prevComponents.filter(item => item !== component)
         : [...prevComponents, component]
     );
+    setIsChanged(true); // Mark as changed when components are modified
   };
 
   const handleSaveNameAndDomain = async () => {
@@ -45,6 +49,7 @@ const ChooseComponentsPage = () => {
       if (data) {
         setWebsite({ ...websiteData, domain });
         setInitialDomain(domain); 
+        setIsChanged(false); // Mark as changed when domain is modified
       }
     }
     if (websiteName !== initialWebsiteName) {
@@ -52,24 +57,28 @@ const ChooseComponentsPage = () => {
       if (data) {
         setWebsite({ ...websiteData, websiteName });
         setInitialWebsiteName(websiteName); 
+        setIsChanged(false); // Mark as changed when websiteName is modified
       }
     }
   };
 
-  const handleTemplateClick =async (templateName) => {
+  const handleTemplateClick = (templateName) => {
     if (templateName === template) {
       setTemplate('');
     } else {
       setTemplate(templateName);
     }
+    setIsChanged(true); // Mark as changed when template is modified
   };
 
   const handleDomainChange = (event) => {
     setDomain(event.target.value);
+    setIsChanged(true); // Mark as changed when domain is modified
   };
 
   const handleNameChange = (event) => {
     setWebsiteName(event.target.value);
+    setIsChanged(true); // Mark as changed when websiteName is modified
   };
 
   const handleSaveComponents = () => {
@@ -83,18 +92,24 @@ const ChooseComponentsPage = () => {
       setWebsite({ ...websiteData, components });
       setSaved(true);
       alert('Components saved successfully!');
+      setIsChanged(false); // Reset the change state after saving components
     }
   };
 
-  const handleContinue = async() => {
+  const handleContinue = async () => {
     if (components.length === 0 || !template) {
       alert('Please select components and a template!');
       return;
     }
-    let data =  await createCustomSite(domain,websiteName,components,template);
-    console.log(data.response);
+
+    // If no changes have been made, just navigate without saving
+    if (!isChanged) {
+      navigate("/upload-files");
+      return;
+    }
+
+    let data = await createCustomSite(domain, websiteName, components, template);
     if (data.response === "true") {
-      console.log("her");
       setWebsite({ 
         ...websiteData, 
         domain,
@@ -103,7 +118,8 @@ const ChooseComponentsPage = () => {
         template, 
         created: true  // Update the created field
       });
-      setHasContinued(true);
+      setHasContinued(true); // Set hasContinued to true
+      setIsChanged(false); // Reset the change state after continuing
       navigate("/upload-files");
     }
   };
