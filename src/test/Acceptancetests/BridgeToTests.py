@@ -35,6 +35,14 @@ class BridgeToTests(ABC):
         """Add components to the site."""
         pass
 
+    def create_new_site_manager(self, nominator_manager_userId, nominated_manager_email, domain):
+        """Create a new site manager."""
+        pass
+
+    def register_new_LabMember_from_generator(self, manager_userId, email_to_register, lab_member_fullName, domain):
+        """Register a new lab member."""
+        pass
+
     @abstractmethod
     def login(self, user_id, email):
         """Log in a user."""

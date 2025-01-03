@@ -85,6 +85,11 @@ class SiteCustomFacade:
 
         return {site.domain: site.name for site in self.sites}
 
+    def set_custom_site_as_generated(self, domain):
+        """Sets a custom site as generated."""
+        site = self.sites[domain]
+        site.set_generated()
+
     def reset_system(self):
         """
         Resets the entire system by clearing all stored sites.

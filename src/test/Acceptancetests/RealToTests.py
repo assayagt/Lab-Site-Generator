@@ -31,6 +31,12 @@ class RealToTests(BridgeToTests):
     def add_components_to_site(self, userId, domain, new_components):
         return self.generator_system_service.add_components_to_site(userId, domain, new_components)
 
+    def create_new_site_manager(self, nominator_manager_userId, nominated_manager_email, domain):
+        return self.generator_system_service.create_new_site_manager(nominator_manager_userId, nominated_manager_email, domain)
+
+    def register_new_LabMember_from_generator(self, manager_userId, email_to_register, lab_member_fullName, domain):
+        return self.generator_system_service.register_new_LabMember_from_generator(manager_userId, email_to_register, lab_member_fullName, domain)
+
     def login(self, user_id, email):
         return self.generator_system_service.login(user_id, email)
 
