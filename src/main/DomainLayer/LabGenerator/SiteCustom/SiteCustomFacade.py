@@ -42,8 +42,9 @@ class SiteCustomFacade:
             raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_ALREADY_EXIST.value)
 
     def error_if_domain_not_exist(self, domain):
-            if not any(site.get_domain() == domain for site in self.sites):
-                    raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST.value)
+        if domain not in self.sites:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST.value)
+
 
     def change_site_name(self, domain, new_name):
         """Changes the name of a site."""

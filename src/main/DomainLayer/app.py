@@ -149,7 +149,8 @@ class ChooseTemplate(Resource):
         try:
             response = generator_system.change_website_template(user_id, domain, selected_template)
             if response.is_success():
-                return jsonify({"message": "Template selected", "template": selected_template}), 200
+                return jsonify({"message": "Template selected", "template": selected_template})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -170,6 +171,7 @@ class ChooseName(Resource):
             response = generator_system.change_website_name(user_id, website_name, domain)
             if response.is_success():
                 return jsonify({"message": "Website name set", "website_name": website_name}), 200
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -223,16 +225,20 @@ class StartCustomSite(Resource):
         parser.add_argument('user_id', type=str, required=True, help="User id is required")
         parser.add_argument('website_name', type=str, required=True, help="Website name is required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        parser.add_argument('components', type=str, required=True, help="components is required")
+        parser.add_argument('template', type=str, required=True, help="template is required")
         args = parser.parse_args()
 
         user_id = args['user_id']
         website_name = args['website_name']
         domain = args['domain']
+        components = args['components']
+        template = args['template']
         try:
-            response = generator_system.create_website(user_id, website_name, domain)
+            response = generator_system.create_website(user_id, website_name, domain,components,template)
             if response.is_success():
-                return jsonify({"message": f"Custom site '{website_name}' started successfully", "websiteLink": f"/view/{website_name.replace(' ', '_')}/index.html"})
-            return jsonify({"message": response.get_message()})
+                return jsonify({"message": f"Custom site '{website_name}' started successfully", "websiteLink": f"/view/{website_name.replace(' ', '_')}/index.html","response": "true"})
+            return jsonify({"message": response.get_message(),"response": "false"})
 
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
@@ -311,7 +317,8 @@ class GetCustomSite(Resource):
             if response.is_success():
                 #the returned value is website name, template, components
                 website_data = response.get_data()
-                return jsonify(website_data)
+                return jsonify({'data': website_data,"response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 

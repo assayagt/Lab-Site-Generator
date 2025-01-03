@@ -11,7 +11,8 @@ export const WebsiteProvider = ({ children }) => {
     components: [],
     template: '',
     domain: '',
-    websiteName: ''
+    websiteName: '',
+    created : false
   });
 
   const setWebsite = (newData) => {

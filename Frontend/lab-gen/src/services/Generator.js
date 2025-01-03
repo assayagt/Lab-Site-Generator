@@ -2,7 +2,7 @@ import axios from "axios";
 
 const baseApiUrl = "http://127.0.0.1:5000/api/";
 
-export const changeComponents= (domain, components) => {
+export const changeComponents= async (domain, components) => {
   let data;
   const sid = sessionStorage.getItem("sid");
   console.log(domain);
@@ -25,13 +25,15 @@ export const changeComponents= (domain, components) => {
 };
 
 
-export const changeDomain= (oldDomain, domain) => {
+export const changeDomain= async(oldDomain, domain) => {
   let data;
   const sid = sessionStorage.getItem("sid");
   console.log(sid)
   return axios
-    .post(`${baseApiUrl}`, {
-      
+    .post(`${baseApiUrl}chooseDomain`, {
+      user_id: sid,
+      old_domain: oldDomain,
+      domain : domain
     })
     .then((response) => {
       data = response.data;
@@ -44,13 +46,15 @@ export const changeDomain= (oldDomain, domain) => {
     });
 };
 
-export const changeName= (domain, name) => {
+export const changeName= async(domain, name) => {
   let data;
   const sid = sessionStorage.getItem("sid");
   console.log(sid)
   return axios
-    .post(`${baseApiUrl}`, {
-      
+    .post(`${baseApiUrl}chooseName`, {
+      user_id: sid,
+      website_name: name,
+      domain : domain
     })
     .then((response) => {
       data = response.data;
@@ -63,7 +67,7 @@ export const changeName= (domain, name) => {
     });
 };
 
-export const createCustomSite= (domain, name) => {
+export const createCustomSite= async(domain, name, components, template) => {
   let data;
   const sid = sessionStorage.getItem("sid");
   console.log(sid)
@@ -72,6 +76,8 @@ export const createCustomSite= (domain, name) => {
       user_id: sid,
       website_name: name,
       domain:domain,
+      components:components,
+      template:template,
     })
     .then((response) => {
       data = response.data;
@@ -85,13 +91,15 @@ export const createCustomSite= (domain, name) => {
 };
 
 
-export const changeTemplate= (domain, template) => {
+export const changeTemplate= async(domain, template) => {
   let data;
   const sid = sessionStorage.getItem("sid");
   console.log(sid)
   return axios
-    .post(`${baseApiUrl}`, {
-      
+    .post(`${baseApiUrl}chooseTemplate`, {
+      user_id: sid,
+      domain:domain,
+      template:template,
     })
     .then((response) => {
       data = response.data;
