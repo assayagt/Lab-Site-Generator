@@ -27,16 +27,42 @@ generator_system = GeneratorSystemService.GeneratorSystemService.get_instance()
 ##todo: add email and domain where needed
 
 # Service for uploading file
-class FileUploadResource(Resource):
+class UploadFilesAndData(Resource):
     def post(self):
-        if 'file' not in request.files:
-            return jsonify({'error': 'No file part'}), 400
-        file = request.files['file']
-        if file.filename == '':
-            return jsonify({'error': 'No selected file'}), 400
-        filename = os.path.join(UPLOAD_FOLDER, file.filename)
-        file.save(filename)
-        return jsonify({'message': 'File uploaded successfully', 'file_path': filename})
+        try:
+            # Get the data from the frontend (domain, website_name, content for each component)
+            domain = request.form['domain']
+            website_name = request.form['website_name']
+            about_us_content = request.form.get('about_us_content', '')
+            contact_us_content = request.form.get('contact_us_content', '')
+
+            # Prepare the directory for the domain
+            website_folder = os.path.join(GENERATED_WEBSITES_FOLDER, domain)
+            os.makedirs(website_folder, exist_ok=True)
+
+            # Save site data (content) to siteData.json
+            site_data = {
+                "domain": domain,
+                "website_name": website_name,
+                "about_us_content": about_us_content,
+                "contact_us_content": contact_us_content
+            }
+            with open(os.path.join(website_folder, 'siteData.json'), 'w') as json_file:
+                json.dump(site_data, json_file)
+
+            # Handle dynamic file uploads for each component (Publications, Participants)
+            files = request.files
+            for component in files:
+                file = files[component]
+                if file:
+                    # Save each file with the component's name (e.g., "Publications.xlsx")
+                    file_path = os.path.join(website_folder, f"{component}.xlsx")
+                    file.save(file_path)
+
+            return jsonify({'message': 'Files and data uploaded successfully!'}), 200
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
 
 # Service for generating a website from templates
 class GenerateWebsiteResource(Resource):
@@ -232,8 +258,9 @@ class StartCustomSite(Resource):
         user_id = args['user_id']
         website_name = args['website_name']
         domain = args['domain']
-        components = args['components']
+        components = args['components'].split(", ")  # Split the string back into a list
         template = args['template']
+        print(components)
         try:
             response = generator_system.create_website(user_id, website_name, domain,components,template)
             if response.is_success():
@@ -324,7 +351,7 @@ class GetCustomSite(Resource):
 
 
 # Add the resources to API
-api.add_resource(FileUploadResource, '/api/uploadFile')
+api.add_resource(UploadFilesAndData, '/api/uploadFile')
 api.add_resource(GenerateWebsiteResource, '/api/generateWebsite')
 api.add_resource(ChooseComponents, '/api/chooseComponents')
 api.add_resource(ChooseTemplate, '/api/chooseTemplate')

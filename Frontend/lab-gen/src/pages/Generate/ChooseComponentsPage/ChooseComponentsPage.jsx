@@ -21,8 +21,7 @@ const ChooseComponentsPage = () => {
 
   const [initialDomain, setInitialDomain] = useState(websiteData.domain || ''); // Track initial domain
   const [initialWebsiteName, setInitialWebsiteName] = useState(websiteData.websiteName || ''); // Track initial website name
-  const [initialComponents, setInitialComponents] = useState(websiteData.components || []); // Track initial components
-  const [initialTemplate, setInitialTemplate] = useState(websiteData.template || ''); // Track initial template
+
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -107,7 +106,7 @@ const ChooseComponentsPage = () => {
       navigate("/upload-files");
       return;
     }
-
+    console.log(components)
     let data = await createCustomSite(domain, websiteName, components, template);
     if (data.response === "true") {
       setWebsite({ 
@@ -222,7 +221,7 @@ const ChooseComponentsPage = () => {
               Page for each participant
             </label>
 
-            {hasContinued && (
+            {websiteData.created && (
               <button
                 className="save_domain_name_button"
                 onClick={handleSaveComponents}

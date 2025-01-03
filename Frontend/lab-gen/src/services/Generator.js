@@ -76,7 +76,7 @@ export const createCustomSite= async(domain, name, components, template) => {
       user_id: sid,
       website_name: name,
       domain:domain,
-      components:components,
+      components:components.join(", "),
       template:template,
     })
     .then((response) => {
