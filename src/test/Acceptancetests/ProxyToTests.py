@@ -15,14 +15,14 @@ class ProxyToTest(BridgeToTests):
             return self.real_service_adapter.enter_generator_system()
         return Response(None, "Not Implemented yet")
 
-    def create_website(self, email, website_name, domain, components=None, template=None):
+    def create_website(self, userId, website_name, domain, components=None, template=None):
         if self.real_service_adapter:
-            return self.real_service_adapter.create_website(email, website_name, domain, components, template)
+            return self.real_service_adapter.create_website(userId, website_name, domain, components, template)
         return Response(None, "Not Implemented yet")
 
-    def change_website_name(self, new_name, domain):
+    def change_website_name(self, userId, new_name, domain):
         if self.real_service_adapter:
-            return self.real_service_adapter.change_website_name(new_name, domain)
+            return self.real_service_adapter.change_website_name(userId, new_name, domain)
         return Response(None, "Not Implemented yet")
 
     def change_website_domain(self, email, new_domain, domain):

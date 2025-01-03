@@ -12,7 +12,7 @@ class SiteCustomFacade:
     def __init__(self):
         if SiteCustomFacade._singleton_instance is not None:
             raise Exception("This is a singleton class!")
-        self.sites = []
+        self.sites = {}
 
     @staticmethod
     def get_instance():
@@ -34,13 +34,12 @@ class SiteCustomFacade:
             raise Exception(ExceptionsEnum.INVALID_SITE_NAME.value)
         self.error_if_domain_is_not_valid(domain)
         site = SiteCustom(domain, name, components, template)
-        self.sites.append(site)
+        self.sites[domain] = site
         return site
 
     def error_if_domain_already_exist(self, domain):
-        for site in self.sites:
-            if site.get_domain() == domain:
-                raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_ALREADY_EXIST.value)
+        if domain in self.sites:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_ALREADY_EXIST.value)
 
     def error_if_domain_not_exist(self, domain):
         if domain not in self.sites:

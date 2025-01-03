@@ -16,8 +16,8 @@ class RealToTests(BridgeToTests):
     def create_website(self, email, website_name, domain, components=None, template=None):
         return self.generator_system_service.create_website(email, website_name, domain, components, template)
 
-    def change_website_name(self, new_name, domain):
-        return self.generator_system_service.change_website_name(new_name, domain)
+    def change_website_name(self, userId, new_name, domain):
+        return self.generator_system_service.change_website_name(userId, new_name, domain)
 
     def change_website_domain(self, email, new_domain, domain):
         return self.generator_system_service.change_website_domain(email, new_domain, domain)
