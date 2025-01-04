@@ -16,7 +16,7 @@ api = Api(app)
 
 # Directories for file storage and website generation
 UPLOAD_FOLDER = './uploads'
-GENERATED_WEBSITES_FOLDER = './LabWebsites'
+GENERATED_WEBSITES_FOLDER = './LabWebsitesUploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(GENERATED_WEBSITES_FOLDER, exist_ok=True)
 
@@ -59,9 +59,9 @@ class UploadFilesAndData(Resource):
                     file_path = os.path.join(website_folder, f"{component}.xlsx")
                     file.save(file_path)
 
-            return jsonify({'message': 'Files and data uploaded successfully!'}), 200
+            return jsonify({'message': 'Files and data uploaded successfully!'})
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}"})
 
 
 # Service for generating a website from templates

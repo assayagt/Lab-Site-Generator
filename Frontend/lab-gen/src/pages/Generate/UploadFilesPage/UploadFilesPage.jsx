@@ -74,7 +74,7 @@ const UploadFilesPage = () => {
 
     try {
       // Send data to backend (Flask)
-      const response = await fetch('/api/uploadFileAndData', {
+      const response = await fetch('http://127.0.0.1:5000/api/uploadFile', {
         method: 'POST',
         body: formDataToSend,
       });
