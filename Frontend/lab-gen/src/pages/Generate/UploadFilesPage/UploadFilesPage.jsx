@@ -18,13 +18,14 @@ const UploadFilesPage = () => {
     participantsFile: null,
     
   });
-  const { isLoggedIn } = useAuth();
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      navigate('/');
+    console.log(sessionStorage.getItem('isLoggedIn'));
+    if (sessionStorage.getItem('isLoggedIn')!=='true') {
+      navigate("/");
     }
-  }, [isLoggedIn, navigate]);
+  }, [ navigate]);
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
