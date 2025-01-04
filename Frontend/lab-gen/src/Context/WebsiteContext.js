@@ -7,13 +7,15 @@ export const useWebsite = () => {
 };
 
 export const WebsiteProvider = ({ children }) => {
-  const [websiteData, setWebsiteData] = useState({
+  const initialWebsiteData = {
     components: [],
     template: '',
     domain: '',
     websiteName: '',
-    created : false
-  });
+    created: false
+  };
+
+  const [websiteData, setWebsiteData] = useState(initialWebsiteData);
 
   const setWebsite = (newData) => {
     setWebsiteData(prev => ({
@@ -22,8 +24,13 @@ export const WebsiteProvider = ({ children }) => {
     }));
   };
 
+  const resetWebsiteData = () => {
+    setWebsiteData(initialWebsiteData);
+    console.log(websiteData);
+  };
+
   return (
-    <WebsiteContext.Provider value={{ websiteData, setWebsite }}>
+    <WebsiteContext.Provider value={{ websiteData, setWebsite, resetWebsiteData }}>
       {children}
     </WebsiteContext.Provider>
   );

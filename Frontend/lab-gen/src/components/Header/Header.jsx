@@ -7,8 +7,13 @@ import logOutIcon from "../../images/logout.svg";
 import myWebsitesIcon from "../../images/my_website.svg";
 import accountIcon from "../../images/account_avatar.svg";
 import LoginPopup from '../Popups/LoginPopup'; 
+import { useWebsite } from "../../Context/WebsiteContext";
+
+
+
 function Header(props) {
-  const { isLoggedIn, userEmail, login, logout } = useAuth();
+  const { isLoggedIn,logout,setIsLoggedIn } = useAuth();
+  const { resetWebsiteData} = useWebsite();
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const navigate = useNavigate();
 
@@ -16,14 +21,16 @@ function Header(props) {
     setShowLoginPopup(true);  
   };
 
-  const handleLogout = () => {
-    let data= logout();  
+  const handleLogout = async() => {
+    let data= await logout();  
     if(data===true){
+      resetWebsiteData();
+      sessionStorage.clear();
+      setIsLoggedIn(false);
       navigate("/");
-      // window.location.reload();
     }
     else{
-      
+      console.log("sad");
     }
   };
 

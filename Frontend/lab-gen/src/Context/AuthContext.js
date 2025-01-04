@@ -36,12 +36,9 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     let data =  await SendLogout();
+    console.log(data);
     if(data.response === "true"){
-      setIsLoggedIn(false);
       setUserEmail('');
-      sessionStorage.removeItem('isLoggedIn');
-      sessionStorage.removeItem('userEmail');
-      sessionStorage.removeItem('sid');
       return true;
     }
     return false; 
@@ -50,9 +47,7 @@ export const AuthProvider = ({ children }) => {
   const fetchToken = async () => {
     let data = await EnterSystem(); 
     if (data) {
-      console.log("h");
       sessionStorage.setItem('sid', data); 
-      console.log("b");
       return data;
     }
     return data;
@@ -60,7 +55,7 @@ export const AuthProvider = ({ children }) => {
   
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, userEmail, login, logout ,fetchToken}}>
+    <AuthContext.Provider value={{ isLoggedIn, userEmail, login, logout ,fetchToken,setIsLoggedIn}}>
       {children}
     </AuthContext.Provider>
   );
