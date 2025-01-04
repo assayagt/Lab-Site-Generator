@@ -5,25 +5,26 @@ import './UploadFilesPage.css';
 
 const UploadFilesPage = () => {
   const navigate = useNavigate();
-  const { websiteData,setWebsite} = useWebsite();
+  const { websiteData, setWebsite } = useWebsite();
   const [formData, setFormData] = useState({
     domain: websiteData.domain || '',
     websiteName: websiteData.websiteName || '',
     components: websiteData.components || [],
     files: {},
-    AboutUs: '',  
-    ContactUs: '',  
+    AboutUs: '', // About Us content
+    ContactUs: '', // Contact Us content
+    email: '', // Added email state
+    phoneNumber: '', // Added phone number state
+    address: '',
     publicationsFile: null,
     participantsFile: null,
-    
   });
 
   useEffect(() => {
-    if (sessionStorage.getItem('isLoggedIn')!=='true') {
-      navigate("/");
+    if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+      navigate('/');
     }
-  }, [ navigate]);
-
+  }, [navigate]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -54,26 +55,30 @@ const UploadFilesPage = () => {
   };
 
   const handleSubmit = async (component) => {
-    let component_new = component.replace(" ", '')
-    if (!formData.files[component_new] && !formData[`${component_new}`]) {
-      alert(`Please upload a file or provide content for ${component}`);
-      return;
-    }
-  
+    const component_new = component.replace(" ", '').toLowerCase();
+
+    // if (!formData.files[component_new] && !formData[`${component_new}` && component_new !== 'contactus']) {
+    //   alert(`Please upload a file or provide content for ${component}`);
+    //   return;
+    // }
+
     const formDataToSend = new FormData();
     formDataToSend.append('domain', formData.domain);
     formDataToSend.append('website_name', formData.websiteName);
-  
-    // Ensure the correct content is being appended for each component
-    if (formData[`${component_new}`]) {
-      console.log(`${component_new.toLowerCase()}_content`)
-      formDataToSend.append(`${component_new.toLowerCase()}_content`, formData[component_new]);
+    if (component === 'Contact Us') {
+      const contactUsData = {
+        phone: formData.phoneNumber,
+        address: formData.address,
+        email: formData.email,
+      };
+      formDataToSend.append('contactus_content', JSON.stringify(contactUsData)); // Send the contact data as a JSON string
     }
-  
-    if (formData.files[component_new]) {
-      formDataToSend.append(component, formData.files[component]);
+
+
+    else if (formData.files[component_new]) {
+      formDataToSend.append(component_new, formData.files[component_new]);
     }
-    
+
     try {
       const response = await fetch('http://127.0.0.1:5000/api/uploadFile', {
         method: 'POST',
@@ -92,18 +97,14 @@ const UploadFilesPage = () => {
   };
 
   const handleGenerate = async () => {
-    
     try {
-      // Call the backend to generate the website
       const response = await fetch('http://127.0.0.1:5000/api/generateWebsite', {
         method: 'POST',
-       
       });
       const data = await response.json();
       if (response.ok) {
         console.log(data.message);
         alert(data);
-        
       } else {
         alert('Error: ' + data.error);
       }
@@ -125,13 +126,13 @@ const UploadFilesPage = () => {
               <div className="file-upload-item">
                 <div className="file-upload_title">{component}</div>
                 <div>
-                  {component === 'About Us' || component === 'Contact Us' ? (
+                  {component === 'About Us' ? (
                     <div className="about_contact_section">
                       <input
                         className="about_contact_input"
-                        name={`${component.replace(" ", '')}`}
+                        name="AboutUs"
                         placeholder={`Enter content for ${component}`}
-                        value={formData[`${component.replace(" ", '')}`]}
+                        value={formData.AboutUs}
                         onChange={handleInputChange}
                       />
                       <button
@@ -141,15 +142,50 @@ const UploadFilesPage = () => {
                         Save
                       </button>
                     </div>
-                  ) : (
+                  ) : component !== 'Contact Us' ? (
                     <button
                       className="downloadTemplate"
                       onClick={() => handleDownload(component)}
                     >
                       Download Template
                     </button>
+                  ) : (
+                    <div> </div> // This block is for Contact Us
                   )}
                 </div>
+
+                {component === 'Contact Us' && (
+                  <div className="contact_us_section">
+                    <input
+                      className="contact_us_input"
+                      name="email"
+                      placeholder="Enter your email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                    />
+                    <input
+                      className="contact_us_input"
+                      name="phoneNumber"
+                      placeholder="Enter your phone number"
+                      value={formData.phoneNumber}
+                      onChange={handleInputChange}
+                    />
+                    <input
+                      className="contact_us_input"
+                      name="address"
+                      placeholder="Enter your address"
+                      value={formData.address}
+                      onChange={handleInputChange}
+                    />
+                  
+                    <button
+                      className="about_contact_button"
+                      onClick={() => handleSubmit(component)}
+                    >
+                      Save
+                    </button>
+                  </div>
+                )}
 
                 {(component === 'Publications' || component === 'Participants') && (
                   <div>
