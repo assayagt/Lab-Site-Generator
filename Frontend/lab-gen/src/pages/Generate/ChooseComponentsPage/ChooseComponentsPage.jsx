@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import Tamplate from "../../../images/tamplate.svg";
 import { useWebsite } from '../../../Context/WebsiteContext';
 import './ChooseComponentsPage.css';
-import { useAuth } from '../../../Context/AuthContext';
 import { createCustomSite, changeComponents, changeDomain, changeName } from '../../../services/Generator';
 
 const ChooseComponentsPage = () => {

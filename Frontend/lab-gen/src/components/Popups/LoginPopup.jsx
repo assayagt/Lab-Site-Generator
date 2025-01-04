@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../Context/AuthContext'; // Assuming you have this context
 import './LoginPopup.css'; // Add necessary styles
+import { useNavigate } from 'react-router-dom';
 
 const LoginPopup = ({ onClose }) => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState(false);
   const { login } = useAuth();  // Access the login function from context
-
+  const navigate = useNavigate();
   const handleLogin = async () => {
     if (email) {
       try {
@@ -16,6 +17,7 @@ const LoginPopup = ({ onClose }) => {
         } else {
           setError(false);
           onClose(); 
+          navigate("/choose-components")
         }
       } catch (err) {
         console.error("Login error:", err);
