@@ -26,7 +26,6 @@ export const WebsiteProvider = ({ children }) => {
 
   const resetWebsiteData = () => {
     setWebsiteData(initialWebsiteData);
-    console.log(websiteData);
   };
 
   return (
