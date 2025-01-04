@@ -34,8 +34,8 @@ class UploadFilesAndData(Resource):
             # Get the data from the frontend (domain, website_name, content for each component)
             domain = request.form['domain']
             website_name = request.form['website_name']
-            about_us_content = request.form.get('about_us_content', '')
-            contact_us_content = request.form.get('contact_us_content', '')
+            about_us_content = request.form.get('aboutus_content')
+            contact_us_content = request.form.get('contactus_content')
 
             # Prepare the directory for the domain
             website_folder = os.path.join(GENERATED_WEBSITES_FOLDER, domain)
@@ -45,8 +45,8 @@ class UploadFilesAndData(Resource):
             site_data = {
                 "domain": domain,
                 "website_name": website_name,
-                "about_us_content": about_us_content,
-                "contact_us_content": contact_us_content
+                "aboutus_content": about_us_content,
+                "contactus_content": contact_us_content
             }
             with open(os.path.join(website_folder, 'siteData.json'), 'w') as json_file:
                 json.dump(site_data, json_file)
