@@ -7,27 +7,24 @@ import LoginPopup from '../../components/Popups/LoginPopup';
 import FeatureCarousel from './FeatureCarousel';  // Import FeatureCarousel component
 
 const WelcomePage = () => {
-  const [email, setEmail] = useState('');
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [showErrorPopup, setShowErrorPopup] = useState(false);  
   const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate();
-  const { isLoggedIn, fetchToken } = useAuth();
+  const { fetchToken } = useAuth();
 
   // useEffect to check sessionStorage and fetch token if neede
     function fetchData() {
       const storedSid = sessionStorage.getItem('sid');
-
       if (!storedSid) {
-        fetchToken();  // Fetch the sid
+        fetchToken();  
       }    
     }
 
-    
-
+  
   const handleStartClick = () => {
-    if (!isLoggedIn) {
+    if (!sessionStorage.getItem('isLoggedIn')) {
       setShowLoginPopup(true); 
     } else {
       navigate('/choose-components');

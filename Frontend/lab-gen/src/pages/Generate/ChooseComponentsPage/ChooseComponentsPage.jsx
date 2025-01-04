@@ -14,20 +14,20 @@ const ChooseComponentsPage = () => {
   const [template, setTemplate] = useState(websiteData.template || '');
   const [domain, setDomain] = useState(websiteData.domain || '');
   const [websiteName, setWebsiteName] = useState(websiteData.websiteName || '');
-  const { isLoggedIn } = useAuth();
   const [domainError, setDomainError] = useState(false);
-  const [hasContinued, setHasContinued] = useState(false);  // Track if Continue button was pressed
-  const [isChanged, setIsChanged] = useState(false);  // Track if anything was changed
+  const [hasContinued, setHasContinued] = useState(false);  
+  const [isChanged, setIsChanged] = useState(false);  
 
-  const [initialDomain, setInitialDomain] = useState(websiteData.domain || ''); // Track initial domain
-  const [initialWebsiteName, setInitialWebsiteName] = useState(websiteData.websiteName || ''); // Track initial website name
+  const [initialDomain, setInitialDomain] = useState(websiteData.domain || ''); 
+  const [initialWebsiteName, setInitialWebsiteName] = useState(websiteData.websiteName || ''); 
 
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    console.log(sessionStorage.getItem('isLoggedIn'));
+    if (sessionStorage.getItem('isLoggedIn')!=='true') {
       navigate("/");
     }
-  }, [isLoggedIn, navigate]);
+  }, [ navigate]);
 
   const handleComponentChange = (component) => {
     setComponents(prevComponents =>
@@ -35,7 +35,7 @@ const ChooseComponentsPage = () => {
         ? prevComponents.filter(item => item !== component)
         : [...prevComponents, component]
     );
-    setIsChanged(true); // Mark as changed when components are modified
+    setIsChanged(true); 
   };
 
   const handleSaveNameAndDomain = async () => {
