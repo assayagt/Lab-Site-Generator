@@ -7,6 +7,8 @@ from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
+from src.main.Util.ExceptionsEnum import ExceptionsEnum
+
 # Define the required Gmail API scope
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
@@ -19,15 +21,14 @@ class EmailNotification:
 
     def send_email(self):
         """Authenticate and send the email."""
-        service = self.authenticate_gmail_api_env()
-
         try:
+            service = self.authenticate_gmail_api_env()
             message = self.create_message()
             send_message = service.users().messages().send(userId="me", body=message).execute()
             print(f'Message sent! Message ID: {send_message["id"]}')
             return send_message
-        except HttpError as e:
-            raise Exception("An error occurred while sending the email.") from e
+        except Exception:
+            raise Exception(ExceptionsEnum.ERROR_SENDING_EMAIL.value)
 
     def create_message(self):
         """Create an email message in the required format."""

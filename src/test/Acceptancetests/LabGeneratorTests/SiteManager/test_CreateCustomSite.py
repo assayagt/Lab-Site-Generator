@@ -1,6 +1,5 @@
 import unittest
-from src.test.Acceptancetests.ProxyToTests import ProxyToTest
-from src.main.Util.Response import Response
+from src.test.Acceptancetests.LabGeneratorTests.ProxyToTests import ProxyToTest
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
 
