@@ -187,7 +187,7 @@ const UploadFilesPage = () => {
                   </div>
                 )}
 
-                {(component === 'Publications' || component === 'Participants') && (
+                {(component !== 'About Us' && component !== 'Contact Us') && (
                   <div>
                     <input
                       className="downloadTemplate"
