@@ -136,3 +136,19 @@ class LabSystemService:
             return Response(True, "Manager permissions removed successfully")
         except Exception as e:
             return Response(None, str(e))
+
+    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name):
+        """Approve a registration request."""
+        try:
+            self.lab_system_controller.approve_registration_request(domain, manager_userId, requested_email, requested_full_name)
+            return Response(True, "Registration request approved successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def reject_registration_request(self, domain, manager_userId, requested_email):
+        """Reject a registration request."""
+        try:
+            self.lab_system_controller.reject_registration_request(domain, manager_userId, requested_email)
+            return Response(True, "Registration request rejected successfully")
+        except Exception as e:
+            return Response(None, str(e))

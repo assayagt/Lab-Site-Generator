@@ -50,3 +50,9 @@ class RealToTests(BridgeToTests):
 
     def remove_manager_permission(self, manager_user_id, manager_to_remove_email, domain):
         return self.lab_system_service.remove_manager_permission(manager_user_id, manager_to_remove_email, domain)
+
+    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name):
+        return self.lab_system_service.approve_registration_request(domain, manager_userId, requested_email, requested_full_name)
+
+    def reject_registration_request(self, domain, manager_userId, requested_email):
+        return self.lab_system_service.reject_registration_request(domain, manager_userId, requested_email)

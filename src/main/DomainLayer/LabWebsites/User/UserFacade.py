@@ -1,6 +1,7 @@
 import uuid
 
 from src.main.DomainLayer.LabWebsites.User.LabMember import LabMember
+from src.main.DomainLayer.LabWebsites.User.RegistrationStatus import RegistrationStatus
 from src.main.DomainLayer.LabWebsites.User.User import User
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 
@@ -14,6 +15,7 @@ class UserFacade:
         self.managers = {}
         self.siteCreator = {}
         self.alumnis = {}
+        self.emails_requests_to_register = {}  #holds all the emails that an email with registration request was already sent to managers
 
     @staticmethod
     def get_instance():
@@ -28,6 +30,21 @@ class UserFacade:
         else:
             member = LabMember(nominated_manager_email, nominated_manager_fullName)
         self.managers[nominated_manager_email] = member
+        if nominated_manager_email in self.emails_requests_to_register:
+            del self.emails_requests_to_register[nominated_manager_email]
+
+    def add_email_to_requests(self, email):
+        self.emails_requests_to_register[email] = RegistrationStatus.PENDING.value
+
+    def error_if_email_is_in_requests_and_wait_approval(self, email):
+        if email in self.emails_requests_to_register:
+            if self.emails_requests_to_register[email] == RegistrationStatus.PENDING.value:
+                raise Exception(ExceptionsEnum.REGISTRATION_EMAIL_ALREADY_SENT_TO_MANAGER.value)
+
+    def error_if_email_is_in_requests_and_rejected(self, email):
+        if email in self.emails_requests_to_register:
+            if self.emails_requests_to_register[email] == RegistrationStatus.REJECTED.value:
+                raise Exception(ExceptionsEnum.REGISTRATION_REQUEST_REJECTED_BY_MANAGER.value)
 
     def getLabMemberByEmail(self, email):
         return self.members[email]
@@ -42,6 +59,20 @@ class UserFacade:
             raise Exception(ExceptionsEnum.EMAIL_IS_ALREADY_ASSOCIATED_WITH_A_MEMBER.value)
         member = LabMember(email, fullName)
         self.members[email] = member
+        if email in self.emails_requests_to_register:
+            del self.emails_requests_to_register[email]
+
+    def approve_registration_request(self, email, fullName):
+        if email in self.emails_requests_to_register and self.emails_requests_to_register[email] == RegistrationStatus.PENDING.value:
+            self.register_new_LabMember(email, fullName)
+        else:
+            raise Exception(ExceptionsEnum.DECISION_ALREADY_MADE_FOR_THIS_REGISTRATION_REQUEST.value)
+
+    def reject_registration_request(self, email):
+        if email in self.emails_requests_to_register and self.emails_requests_to_register[email] == RegistrationStatus.PENDING.value:
+            self.emails_requests_to_register[email] = RegistrationStatus.REJECTED.value
+        else:
+            raise Exception(ExceptionsEnum.DECISION_ALREADY_MADE_FOR_THIS_REGISTRATION_REQUEST.value)
 
     def getMemberEmailByName(self, author):
         author_lower = author.lower()
@@ -89,6 +120,11 @@ class UserFacade:
         email = self.get_email_by_userId(userId)
         if email not in self.managers:
             raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER)
+
+    def error_if_user_is_not_manager_or_site_creator(self, userId):
+        email = self.get_email_by_userId(userId)
+        if email not in self.managers and email not in self.siteCreator:
+            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER_OR_CREATOR)
 
     def get_member_by_email(self, email):
         """Retrieve an active Member object by email."""

@@ -84,3 +84,13 @@ class ProxyToTests(BridgeToTests):
         if self.real_service_adapter:
             return self.real_service_adapter.remove_manager_permission(manager_user_id, manager_to_remove_email, domain)
         return Response(None, "Not Implemented yet")
+
+    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name):
+        if self.real_service_adapter:
+            return self.real_service_adapter.approve_registration_request(domain, manager_userId, requested_email, requested_full_name)
+        return Response(None, "Not Implemented yet")
+
+    def reject_registration_request(self, domain, manager_userId, requested_email):
+        if self.real_service_adapter:
+            return self.real_service_adapter.reject_registration_request(domain, manager_userId, requested_email)
+        return Response(None, "Not Implemented yet")

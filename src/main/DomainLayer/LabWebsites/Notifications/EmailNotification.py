@@ -25,7 +25,6 @@ class EmailNotification:
             service = self.authenticate_gmail_api_env()
             message = self.create_message()
             send_message = service.users().messages().send(userId="me", body=message).execute()
-            print(f'Message sent! Message ID: {send_message["id"]}')
             return send_message
         except Exception:
             raise Exception(ExceptionsEnum.ERROR_SENDING_EMAIL.value)
