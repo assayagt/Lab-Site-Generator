@@ -16,6 +16,7 @@ const UploadFilesPage = () => {
     contactUsContent: '',  
     publicationsFile: null,
     participantsFile: null,
+    
   });
   const { isLoggedIn } = useAuth();
 
