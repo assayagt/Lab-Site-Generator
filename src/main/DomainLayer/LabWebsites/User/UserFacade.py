@@ -1,4 +1,7 @@
+import uuid
+
 from src.main.DomainLayer.LabWebsites.User.LabMember import LabMember
+from src.main.DomainLayer.LabWebsites.User.User import User
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 
 
@@ -193,4 +196,8 @@ class UserFacade:
         member = self.get_member_by_email(email)
         member.set_bio(bio)
 
-
+    def add_user(self):
+        user_id = str(uuid.uuid4())
+        user = User(user_id=user_id)
+        self.users[user_id] = user
+        return user_id

@@ -2,10 +2,10 @@ from src.main.DomainLayer.LabWebsites.User.State import State
 from src.main.DomainLayer.LabWebsites.User.Guest import Guest
 
 class User:
-    def __init__(self, state, user_id=None):
+    def __init__(self, user_id):
         self.user_id = user_id
         self.state = Guest()
-        self.is_guest = not state.is_member()
+        self.is_guest = not self.state.is_member()
 
     def set_state(self, state: State):
         self.state = state

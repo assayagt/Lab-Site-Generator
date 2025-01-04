@@ -136,6 +136,7 @@ class AllWebsitesUserFacade:
         email = userFacade.get_email_by_userId(userid)
         userFacade.set_bio_by_member(email, bio)
 
-
+    def add_user_to_website(self, domain):
+        return self.getUserFacadeByDomain(domain).add_user()
 
 

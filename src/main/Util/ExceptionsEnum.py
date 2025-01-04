@@ -5,7 +5,6 @@ class ExceptionsEnum(Enum):
     USER_NOT_EXIST = "User does not exist"
     USER_ALREADY_LOGGED_IN = "User is already logged in"
     USER_IS_NOT_A_LAB_MEMBER = "User is not a lab member"
-    ERROR_SENDING_EMAIL = "Error sending email"
     EMAIL_IS_ALREADY_ASSOCIATED_WITH_A_MEMBER = "The given email is already associated with a member"
     WEBSITE_DOMAIN_NOT_EXIST = "Error! The given domain website does not exist"
     SITE_CREATOR_CANT_BE_ALUMNI = "The site creator cannot be designated as an alumni"
@@ -22,3 +21,4 @@ class ExceptionsEnum(Enum):
     INVALID_COMPONENTS_FORMAT = "Error: Components should be a list of strings"
     INVALID_COMPONENT_FORMAT = "Error: Component should be a string"
     WEBSITE_DOMAIN_ALREADY_EXIST = "Error: The given website domain already exists"
+    ERROR_SENDING_EMAIL = "An error occurred while sending the email"
