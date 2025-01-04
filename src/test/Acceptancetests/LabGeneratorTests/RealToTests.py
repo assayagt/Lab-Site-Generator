@@ -1,5 +1,4 @@
-from src.main.Util.Response import Response
-from src.test.Acceptancetests.BridgeToTests import BridgeToTests
+from src.test.Acceptancetests.LabGeneratorTests.BridgeToTests import BridgeToTests
 from src.main.DomainLayer.LabGenerator.GeneratorSystemService import GeneratorSystemService
 
 
@@ -9,6 +8,9 @@ class RealToTests(BridgeToTests):
 
     def init(self):
         return self.generator_system_service.enter_generator_system()
+
+    def get_lab_system_controller(self):
+        return self.generator_system_service.get_lab_system_controller()
 
     def enter_generator_system(self):
         return self.generator_system_service.enter_generator_system()

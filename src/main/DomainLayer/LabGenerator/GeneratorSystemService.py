@@ -18,6 +18,10 @@ class GeneratorSystemService:
             GeneratorSystemService._singleton_instance = GeneratorSystemService()
         return GeneratorSystemService._singleton_instance
 
+    def get_lab_system_controller(self):
+        """Get the lab system controller through GeneratorSystemController."""
+        return self.generator_system_controller.get_lab_system_controller()
+
     def enter_generator_system(self):
         """Enter the generator system through GeneratorSystemController."""
         try:

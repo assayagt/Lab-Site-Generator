@@ -1,5 +1,5 @@
-from src.test.Acceptancetests.BridgeToTests import BridgeToTests
-from src.test.Acceptancetests.RealToTests import RealToTests
+from src.test.Acceptancetests.LabGeneratorTests.BridgeToTests import BridgeToTests
+from src.test.Acceptancetests.LabGeneratorTests.RealToTests import RealToTests
 from src.main.Util.Response import Response
 
 
@@ -9,6 +9,11 @@ class ProxyToTest(BridgeToTests):
             self.real_service_adapter = RealToTests()
         else:
             self.real_service_adapter = None
+
+    def get_lab_system_controller(self):
+        if self.real_service_adapter:
+            return self.real_service_adapter.get_lab_system_controller()
+        return Response(None, "Not Implemented yet")
 
     def enter_generator_system(self):
         if self.real_service_adapter:

@@ -4,7 +4,7 @@ from src.main.DomainLayer.LabWebsites.Website.WebsiteFacade import WebsiteFacade
 from src.main.DomainLayer.LabWebsites.Notifications.NotificationsFacade import NotificationsFacade
 from src.main.DomainLayer.LabWebsites.User.AllWebsitesUserFacade import AllWebsitesUserFacade
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
-class LabSystem:
+class LabSystemController:
     _singleton_instance = None
 
     def __init__(self):
@@ -15,9 +15,17 @@ class LabSystem:
 
     @staticmethod
     def get_instance():
-        if LabSystem._singleton_instance is None:
-            LabSystem._singleton_instance = LabSystem()
-        return LabSystem._singleton_instance
+        if LabSystemController._singleton_instance is None:
+            LabSystemController._singleton_instance = LabSystemController()
+        return LabSystemController._singleton_instance
+
+    def enter_lab_website(self, domain):
+        """
+        Enter a specific lab website
+        This function returns a unique userId for the user
+        """
+        self.allWebsitesUserFacade.error_if_domain_not_exist(domain)
+        return self.allWebsitesUserFacade.add_user_to_website(domain)
 
     def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator):
         """
@@ -40,6 +48,7 @@ class LabSystem:
         If the given email is not associated with a member, an email is sent to all managers in order to approve\reject
         the registration request
         """
+        self.allWebsitesUserFacade.error_if_domain_not_exist(domain)
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userId)
         member = userFacade.get_member_by_email(email)

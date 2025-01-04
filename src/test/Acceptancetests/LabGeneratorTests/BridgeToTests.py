@@ -6,6 +6,10 @@ class BridgeToTests(ABC):
         """Enter the generator system."""
         pass
 
+    def get_lab_system_controller(self):
+        """Get the lab system controller through GeneratorSystemController."""
+        pass
+
     @abstractmethod
     def create_website(self, email, website_name, domain, components, template):
         """Create a website."""

@@ -1,6 +1,6 @@
 from src.main.DomainLayer.LabGenerator.SiteCustom.SiteCustomFacade import SiteCustomFacade, Template
 from src.main.DomainLayer.LabGenerator.User.UserFacade import UserFacade
-from src.main.DomainLayer.LabWebsites.LabSystem.LabSystem import LabSystem
+from src.main.DomainLayer.LabWebsites.LabSystem.LabSystemController import LabSystemController
 
 class GeneratorSystemController:
     _singleton_instance = None
@@ -10,14 +10,18 @@ class GeneratorSystemController:
             raise Exception("This is a singleton class!")
         self.user_facade = UserFacade()
         self.site_custom_facade = SiteCustomFacade()
-        self.labSystem = LabSystem()
+        self.labSystem = LabSystemController()
 
     @staticmethod
     def get_instance():
         if GeneratorSystemController._singleton_instance is None:
             GeneratorSystemController._singleton_instance = GeneratorSystemController()
         return GeneratorSystemController._singleton_instance
-    
+
+    def get_lab_system_controller(self):
+        """Get the lab system controller."""
+        return self.labSystem
+
     def create_website(self, user_id, website_name, domain, components, template):
         """Create a website using SiteCustomFacade."""
         self.user_facade.error_if_user_notExist(user_id)
