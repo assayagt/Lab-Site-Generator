@@ -12,6 +12,8 @@ const AccountPage = () => {
   ]);
   const [publications, setPublications] = useState(publicationsData);
   const [uploadedPhoto, setUploadedPhoto] = useState(accountIcon);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   const handleSectionChange = (section) => {
     setActiveSection(section);
@@ -55,6 +57,23 @@ const AccountPage = () => {
 
   const handleSavePhoto = () => {
     alert('Photo saved successfully!');
+  };
+  const totalPages = Math.ceil(publications.length / itemsPerPage);
+  const paginatedPublications = publications.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
   };
 
   return (
@@ -105,7 +124,7 @@ const AccountPage = () => {
         {activeSection === 'my-publications' && (
           <div id="my-publications" className="my-publications">
             <h2>My Publications</h2>
-              {publications.map((publication) => (
+              {paginatedPublications.map((publication) => (
                 <div key={publication.id} className='publication-item'>
                   <from className='publication-form'>
                     <strong>{publication.title}</strong>
@@ -130,7 +149,17 @@ const AccountPage = () => {
                   
                 </div>
               ))}
-          
+          <div className="pagination">
+              <button onClick={handlePrevPage} disabled={currentPage === 1}>
+                Previous
+              </button>
+              <span>
+                Page {currentPage} of {totalPages}
+              </span>
+              <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+                Next
+              </button>
+            </div>
           </div>
         )}
 
