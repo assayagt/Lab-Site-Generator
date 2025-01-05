@@ -94,3 +94,53 @@ class ProxyToTests(BridgeToTests):
         if self.real_service_adapter:
             return self.real_service_adapter.reject_registration_request(domain, manager_userId, requested_email)
         return Response(None, "Not Implemented yet")
+
+    def create_new_site_manager_from_labWebsite(self, nominator_manager_userId, domain, nominated_manager_email):
+        if self.real_service_adapter:
+            return self.real_service_adapter.create_new_site_manager_from_labWebsite(nominator_manager_userId, domain, nominated_manager_email)
+        return Response(None, "Not Implemented yet")
+
+    def get_all_lab_managers(self, domain):
+        if self.real_service_adapter:
+            return self.real_service_adapter.get_all_lab_managers(domain)
+        return Response(None, "Not Implemented yet")
+
+    def get_all_lab_members(self, domain):
+        if self.real_service_adapter:
+            return self.real_service_adapter.get_all_lab_members(domain)
+        return Response(None, "Not Implemented yet")
+
+    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName, domain):
+        if self.real_service_adapter:
+            return self.real_service_adapter.register_new_LabMember_from_labWebsite(manager_userId, email_to_register, lab_member_fullName, domain)
+        return Response(None, "Not Implemented yet")
+
+    def get_all_alumnis(self, domain):
+        if self.real_service_adapter:
+            return self.real_service_adapter.get_all_alumnis(domain)
+        return Response(None, "Not Implemented yet")
+
+    def set_secondEmail_by_member(self, userid, secondEmail, domain):
+        if self.real_service_adapter:
+            return self.real_service_adapter.set_secondEmail_by_member(userid, secondEmail, domain)
+        return Response(None, "Not Implemented yet")
+
+    def set_linkedin_link_by_member(self, userid, linkedin_link, domain):
+        if self.real_service_adapter:
+            return self.real_service_adapter.set_linkedin_link_by_member(userid, linkedin_link, domain)
+        return Response(None, "Not Implemented yet")
+
+    def set_fullName_by_member(self, userid, fullName, domain):
+        if self.real_service_adapter:
+            return self.real_service_adapter.set_fullName_by_member(userid, fullName, domain)
+        return Response(None, "Not Implemented yet")
+
+    def set_degree_by_member(self, userid, degree, domain):
+        if self.real_service_adapter:
+            return self.real_service_adapter.set_degree_by_member(userid, degree, domain)
+        return Response(None, "Not Implemented yet")
+
+    def set_bio_by_member(self, userid, bio, domain):
+        if self.real_service_adapter:
+            return self.real_service_adapter.set_bio_by_member(userid, bio, domain)
+        return Response(None, "Not Implemented yet")
