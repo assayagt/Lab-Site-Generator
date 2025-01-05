@@ -24,12 +24,9 @@ function App() {
               />
               <Route
                 path="/ContactUs"
-                element= {<ContactUsPage address = "Ben-Gurion University of the Negev, David Ben-Gurion Blvd. 1, Beer-Sheva 8410501 P.O Box 653." email ="roni@bgu.ac.il" phone="+972 523456789"/>}
+                element= {<ContactUsPage address = "Ben Gurion University of the Negev" email ="roni@bgu.ac.il" phone="+972 523456789"/>}
               />
-              {/* <Route
-                path="/upload-files"
-                element={<UploadFilesPage />}
-              /> */}
+           
             </Routes>
     </Router>
 
