@@ -19,7 +19,7 @@
   flex-direction: row;
   background-color: #D9D9D9;
   border-radius: 30px;
-  width: 450px;
+  width: 500px;
   height: 20px; /* Height of navbar */
   padding: 10px;
   overflow-x: scroll; /* Allow horizontal scrolling */
@@ -43,7 +43,11 @@
   gap: 40px;
   color: rgb(64, 64, 64);
 }
-
+.navbar-item-button{
+  font-size: 17px;
+  cursor: pointer;
+  color: rgb(64, 64, 64);
+}
 /* Hover effect for items */
 
 .navbar-item-button{
@@ -167,7 +171,7 @@ height: 18px;
 
 
 .notification-icon {
-
+  
   display: inline-block;
 }
 
