@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './AccountPage.css';
+import accountIcon from "../../images/account_avatar.svg";
 
 const AccountPage = () => {
   const [activeSection, setActiveSection] = useState('personal-info'); // Track the active section
@@ -43,35 +44,35 @@ const AccountPage = () => {
           <form id="personal-info" className="personal-info" onSubmit={(e) => { e.preventDefault(); alert('Form Submitted'); }}>
             <h2>Personal Information</h2>
             <div className="info">
-              <img src="default-photo.jpg" alt="User" className="user-photo" />
+              <img src={accountIcon} alt="User" className="user-photo" />
               <div className="details">
-                <label>
+                <label className='detail-bio'>
                   <strong>Bio:</strong>
-                  <textarea defaultValue="Lorem ipsum dolor sit amet." />
+                  <input className="text-detail" defaultValue="Lorem ipsum dolor sit amet." />
                 </label>
 
-                <label>
+                <label className='detail-bio'>
                   <strong>Email:</strong>
-                  <input type="email" defaultValue="user@example.com" />
+                  <input  className="text-detail" type="email" defaultValue="user@example.com" />
                 </label>
 
-                <label>
+                <label className='detail-bio'>
                   <strong>Secondary Email:</strong>
-                  <input type="email" defaultValue="secondary@example.com" />
+                  <input className="text-detail" type="email" defaultValue="secondary@example.com" />
                 </label>
 
-                <label>
+                <label className='detail-bio'>
                   <strong>Degree:</strong>
-                  <input type="text" defaultValue="Bachelor of Science" />
+                  <input className="text-detail" type="text" defaultValue="Bachelor of Science" />
                 </label>
 
-                <label>
+                <label className='detail-bio'>
                   <strong>LinkedIn:</strong>
-                  <input type="url" defaultValue="linkedin.com/in/username" />
+                  <input className="text-detail" type="url" defaultValue="linkedin.com/in/username" />
                 </label>
               </div>
             </div>
-            <button type="submit">Save Changes</button>
+            <button className="save-changes" type="submit">Save Changes</button>
           </form>
         )}
         {activeSection === 'my-publications' && (

@@ -19,6 +19,20 @@
   .notifications {
     margin-bottom: 20px;
   }
+
+  .personal-info{
+    margin-left: 20px;
+    border-radius: 10px;
+    padding: 20px;
+    padding-left: 30px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  }
+.info{
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+}
   
   .user-photo {
     width: 100px;
@@ -28,8 +42,8 @@
   }
   
   .details {
-    display: inline-block;
-    vertical-align: top;
+    display: flex;
+    flex-direction: column;
   }
   
   button {
@@ -85,7 +99,7 @@
   }
   
   .sidebar button.active {
-    background-color: #007bff;
+    background-color: #7bb3f0;
     color: white;
     font-weight: bold;
   }
@@ -101,4 +115,30 @@
   .notifications.active {
     display: block;
   }
+
+  .detail-bio{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+    padding: 10px;
+  }
+
+  .text-detail{
+    width: 200px;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid transparent;
+  }
   
+
+ .save-changes{
+    padding: 10px;
+    border-radius: 20px;
+    right: 0;
+    position: relative;
+    cursor: pointer;
+ }
+ .save-changes:hover{
+  
+}
