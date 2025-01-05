@@ -9,7 +9,6 @@ const PublicationPage = ({ publications }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  // Extract unique years and authors when the component mounts
   useEffect(() => {
     const years = Array.from(new Set(publications.map((pub) => pub.publication_year)));
     setAvailableYears(years);
