@@ -1,20 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../../../components/Header/Header';
 import Tamplate from "../../../images/tamplate.svg";
 import { useWebsite } from '../../../Context/WebsiteContext';
 import './ChooseComponentsPage.css';
+import { createCustomSite, changeComponents, changeDomain, changeName } from '../../../services/Generator';
 
 const ChooseComponentsPage = () => {
-  const [saved, setSaved] = useState(false); 
-  const navigate = useNavigate(); 
-  const { websiteData, setWebsite } = useWebsite(); 
+  const [saved, setSaved] = useState(false);
+  const navigate = useNavigate();
+  const { websiteData, setWebsite } = useWebsite();
   const [components, setComponents] = useState(websiteData.components || []);
   const [template, setTemplate] = useState(websiteData.template || '');
   const [domain, setDomain] = useState(websiteData.domain || '');
   const [websiteName, setWebsiteName] = useState(websiteData.websiteName || '');
-  const [savedDomainName, setSaveDomainName] = useState(false || websiteData.domain); 
+  const [domainError, setDomainError] = useState(false);
+  const [hasContinued, setHasContinued] = useState(false);  
+  const [isChanged, setIsChanged] = useState(false);  
 
+  const [initialDomain, setInitialDomain] = useState(websiteData.domain || ''); 
+  const [initialWebsiteName, setInitialWebsiteName] = useState(websiteData.websiteName || ''); 
+
+
+  useEffect(() => {
+    console.log(sessionStorage.getItem('isLoggedIn'));
+    if (sessionStorage.getItem('isLoggedIn')!=='true') {
+      navigate("/");
+    }
+  }, [ navigate]);
 
   const handleComponentChange = (component) => {
     setComponents(prevComponents =>
@@ -22,29 +34,49 @@ const ChooseComponentsPage = () => {
         ? prevComponents.filter(item => item !== component)
         : [...prevComponents, component]
     );
+    setIsChanged(true); 
   };
 
-  const handleSaveNameAndDomain = () => {
-    setWebsite({ ...websiteData, domain, websiteName });
-    setSaveDomainName(true);
+  const handleSaveNameAndDomain = async () => {
+    if (domain !== initialDomain) {
+      if (!isValidDomain(domain)) {
+        setDomainError(true);
+        return;
+      }
+      let data = await changeDomain(initialDomain, domain);
+      if (data) {
+        setWebsite({ ...websiteData, domain });
+        setInitialDomain(domain); 
+        setIsChanged(false); // Mark as changed when domain is modified
+      }
+    }
+    if (websiteName !== initialWebsiteName) {
+      let data = await changeName(domain, websiteName); 
+      if (data) {
+        setWebsite({ ...websiteData, websiteName });
+        setInitialWebsiteName(websiteName); 
+        setIsChanged(false); // Mark as changed when websiteName is modified
+      }
+    }
   };
 
   const handleTemplateClick = (templateName) => {
     if (templateName === template) {
-      setTemplate(''); 
+      setTemplate('');
     } else {
       setTemplate(templateName);
     }
+    setIsChanged(true); // Mark as changed when template is modified
   };
 
   const handleDomainChange = (event) => {
     setDomain(event.target.value);
-    setSaveDomainName(false);
+    setIsChanged(true); // Mark as changed when domain is modified
   };
 
   const handleNameChange = (event) => {
     setWebsiteName(event.target.value);
-    setSaveDomainName(false);
+    setIsChanged(true); // Mark as changed when websiteName is modified
   };
 
   const handleSaveComponents = () => {
@@ -52,21 +84,48 @@ const ChooseComponentsPage = () => {
       alert('Please select components');
       return;
     }
-    setWebsite({ ...websiteData, components });
-    setSaved(true);
-    alert('Components saved successfully!');
+
+    let data = changeComponents(domain, components);
+    if (data.response === "true") {
+      setWebsite({ ...websiteData, components });
+      setSaved(true);
+      alert('Components saved successfully!');
+      setIsChanged(false); // Reset the change state after saving components
+    }
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (components.length === 0 || !template) {
       alert('Please select components and a template!');
       return;
     }
-    setWebsite({ ...websiteData, template });
-    navigate('/upload-files'); 
+
+    // If no changes have been made, just navigate without saving
+    if (!isChanged) {
+      navigate("/upload-files");
+      return;
+    }
+    console.log(components)
+    let data = await createCustomSite(domain, websiteName, components, template);
+    if (data.response === "true") {
+      setWebsite({ 
+        ...websiteData, 
+        domain,
+        websiteName,
+        components,
+        template, 
+        created: true  // Update the created field
+      });
+      setHasContinued(true); // Set hasContinued to true
+      setIsChanged(false); // Reset the change state after continuing
+      navigate("/upload-files");
+    }
   };
 
-  const isDomainAndNameValid = domain && websiteName &&savedDomainName;
+  const isValidDomain = (domain) => {
+    const regex = /^(?!:\/\/)([A-Za-z0-9-]+\.)+[A-Za-z]{2,6}$/;
+    return regex.test(domain);
+  };
 
   return (
     <div>
@@ -75,13 +134,23 @@ const ChooseComponentsPage = () => {
           <div className="create_custom_website">
             <div className="website_domain_name">
               <label>Enter your website domain:</label>
-              <input
-                type="text"
-                value={domain}
-                onChange={handleDomainChange}
-                placeholder="Enter your website domain"
-                className="input_name_domain"
-              />
+              <div>
+                <input
+                  type="text"
+                  value={domain}
+                  onChange={handleDomainChange}
+                  onBlur={() => {
+                    if (!isValidDomain(domain)) {
+                      setDomainError(true);
+                    } else {
+                      setDomainError(false);
+                    }
+                  }}
+                  placeholder="Enter your website domain"
+                  className={domainError ? "input_name_domain error_domain" : "input_name_domain"}
+                />
+                {domainError && <div className="domain-error-message">Please enter a valid domain</div>}
+              </div>
             </div>
             <div className="website_domain_name">
               <label>Enter your website name:</label>
@@ -93,21 +162,24 @@ const ChooseComponentsPage = () => {
                 className="input_name_domain"
               />
             </div>
-            <button
-              className="save_domain_name_button"
-              onClick={handleSaveNameAndDomain}
-            >
-              Save
-            </button>
+
+            {websiteData.created && (
+              <button
+                className="save_domain_name_button"
+                onClick={handleSaveNameAndDomain}
+              >
+                Save
+              </button>
+            )}
           </div>
-          <div className={`create_custom_website ${isDomainAndNameValid ? '' : 'disabled_section'}`}>
+
+          <div className="create_custom_website">
             <h2>Choose Components</h2>
             <label>
               <input
                 type="checkbox"
                 checked={components.includes('About Us')}
                 onChange={() => handleComponentChange('About Us')}
-                disabled={!isDomainAndNameValid} // Disable if domain or name is not valid
               />
               About Us
             </label>
@@ -116,7 +188,6 @@ const ChooseComponentsPage = () => {
                 type="checkbox"
                 checked={components.includes('Participants')}
                 onChange={() => handleComponentChange('Participants')}
-                disabled={!isDomainAndNameValid} // Disable if domain or name is not valid
               />
               Participants
             </label>
@@ -125,7 +196,6 @@ const ChooseComponentsPage = () => {
                 type="checkbox"
                 checked={components.includes('Contact Us')}
                 onChange={() => handleComponentChange('Contact Us')}
-                disabled={!isDomainAndNameValid} // Disable if domain or name is not valid
               />
               Contact Us
             </label>
@@ -134,7 +204,6 @@ const ChooseComponentsPage = () => {
                 type="checkbox"
                 checked={components.includes('Publications')}
                 onChange={() => handleComponentChange('Publications')}
-                disabled={!isDomainAndNameValid} // Disable if domain or name is not valid
               />
               Publications
             </label>
@@ -150,15 +219,15 @@ const ChooseComponentsPage = () => {
               <input type="checkbox" disabled />
               Page for each participant
             </label>
-            <div>
+
+            {websiteData.created && (
               <button
                 className="save_domain_name_button"
                 onClick={handleSaveComponents}
-                disabled={!isDomainAndNameValid} // Disable if domain or name is not valid
               >
                 Save Components
               </button>
-            </div>
+            )}
           </div>
         </div>
 
@@ -175,7 +244,6 @@ const ChooseComponentsPage = () => {
           <button
             className="continue_button"
             onClick={handleContinue}
-            disabled={!isDomainAndNameValid} // Disable if domain or name is not valid
           >
             Continue
           </button>

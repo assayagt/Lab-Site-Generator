@@ -1,5 +1,5 @@
 from enum import Enum
 
 class Template(Enum):
-    BASIC = "Basic"
-    ADVANCED = "Advanced"
+    template1 = "template1"
+    

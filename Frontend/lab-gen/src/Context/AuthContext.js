@@ -4,50 +4,44 @@ import {SendLogin, SendLogout,EnterSystem} from "../services/UserService"
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
   
-  // Retrieve from localStorage to persist login state across page reloads
-  useEffect(() => {
-    const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    const savedUserEmail = localStorage.getItem('userEmail');
-    
-    if (loggedIn) {
-      setIsLoggedIn(true);
-      setUserEmail(savedUserEmail);
+  
+  const login = async (email) => {
+    let data = await SendLogin(email,sessionStorage.getItem("sid"));
+    if(data){
+      if(data.response === "true"){
+        sessionStorage.setItem('isLoggedIn', true);
+        sessionStorage.setItem('userEmail', email);
+        //sessionStorage.setItem('sid',"id"); still doesn't exist
+        return true;
+      }
+      return false;
     }
-  }, []);
-
-  const login = (email) => {
-    setIsLoggedIn(true);
-    setUserEmail(email);
-    localStorage.setItem('isLoggedIn', 'true');
-    localStorage.setItem('userEmail', email);
-    localStorage.setItem('sid',"id");
+    return false; 
   };
 
-  const logout = () => {
-    setIsLoggedIn(false);
-    setUserEmail('');
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('sid');
+  const logout = async () => {
+    let data =  await SendLogout();
+    console.log(data);
+    if(data.response === "true"){
+      return true;
+    }
+    return false; 
   };
 
   const fetchToken = async () => {
-    let data = EnterSystem();
-    if(data){
-      localStorage.setItem('sid',data.user_id);
-      console.log(data);
+    let data = await EnterSystem(); 
+    if (data) {
+      sessionStorage.setItem('sid', data);
+      console.log(data) ;
+      return data;
     }
-    else{
-
-    }
-    
+    return data;
   };
+  
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, userEmail, login, logout ,fetchToken}}>
+    <AuthContext.Provider value={{ login, logout ,fetchToken}}>
       {children}
     </AuthContext.Provider>
   );

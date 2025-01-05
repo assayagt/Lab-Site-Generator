@@ -7,36 +7,27 @@ import LoginPopup from '../../components/Popups/LoginPopup';
 import FeatureCarousel from './FeatureCarousel';  // Import FeatureCarousel component
 
 const WelcomePage = () => {
-  const [email, setEmail] = useState('');
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [showErrorPopup, setShowErrorPopup] = useState(false);  
   const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate();
-  const {isLoggedIn, userEmail, login, fetchToken } = useAuth();
+  const { fetchToken } = useAuth();
 
-  useEffect(() => {
-    if (!localStorage.getItem('sid')) {
-      fetchToken();
+  // useEffect to check sessionStorage and fetch token if neede
+    function fetchData() {
+      const storedSid = sessionStorage.getItem('sid');
+      if (!storedSid) {
+        fetchToken();  
+      }    
     }
-  }, [ fetchToken]);
 
+  
   const handleStartClick = () => {
-    if (!isLoggedIn) {
+    if (!sessionStorage.getItem('isLoggedIn')) {
       setShowLoginPopup(true); 
     } else {
       navigate('/choose-components');
-    }
-  };
-
-  const handleLoginClick = () => {
-    if (email === 'test@example.com') {
-      login("test@example.com");
-      setShowLoginPopup(false);
-      navigate('/choose-components');
-    } else {
-      setErrorMessage('Invalid credentials');
-      setShowErrorPopup(true);  
     }
   };
 
@@ -61,6 +52,7 @@ const WelcomePage = () => {
 
   return (
     <div>
+      {fetchData()}
       <main className='main_section'>
         <h1>Welcome to Website Generator</h1>
 
@@ -84,7 +76,6 @@ const WelcomePage = () => {
         </div>
       </main>
 
-      {/* Login Popup */}
       {showLoginPopup && <LoginPopup onClose={() => setShowLoginPopup(false)} />}
 
       {/* Error Popup for Invalid Credentials */}
@@ -97,7 +88,6 @@ const WelcomePage = () => {
           </div>
         </div>
       )}
-    
     </div>
   );
 };

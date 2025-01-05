@@ -3,6 +3,7 @@ from flask import session
 from flask_restful import Api, Resource, reqparse
 import os
 from flask_cors import CORS
+import subprocess
 
 from src.main.DomainLayer.LabGenerator import GeneratorSystemService
 
@@ -16,74 +17,69 @@ api = Api(app)
 
 # Directories for file storage and website generation
 UPLOAD_FOLDER = './uploads'
-GENERATED_WEBSITES_FOLDER = './LabWebsites'
+GENERATED_WEBSITES_FOLDER = './LabWebsitesUploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(GENERATED_WEBSITES_FOLDER, exist_ok=True)
 
 
 generator_system = GeneratorSystemService.GeneratorSystemService.get_instance()
-
+TEMPLATE_1_PATH = os.path.join(os.getcwd(), 'Frontend', 'template1')
 
 ##todo: add email and domain where needed
 
 # Service for uploading file
-class FileUploadResource(Resource):
+class UploadFilesAndData(Resource):
     def post(self):
-        if 'file' not in request.files:
-            return jsonify({'error': 'No file part'}), 400
-        file = request.files['file']
-        if file.filename == '':
-            return jsonify({'error': 'No selected file'}), 400
-        filename = os.path.join(UPLOAD_FOLDER, file.filename)
-        file.save(filename)
-        return jsonify({'message': 'File uploaded successfully', 'file_path': filename})
+        try:
+            # Get the data from the frontend (domain, website_name, content for each component)
+            domain = request.form['domain']
+            website_name = request.form['website_name']
+            about_us_content = request.form.get('aboutus_content')
+            contact_us_content = request.form.get('contactus_content')
+
+            # Prepare the directory for the domain
+            website_folder = os.path.join(GENERATED_WEBSITES_FOLDER, domain)
+            os.makedirs(website_folder, exist_ok=True)
+
+            # Save site data (content) to siteData.json
+            site_data = {
+                "domain": domain,
+                "website_name": website_name,
+                "aboutus_content": about_us_content,
+                "contactus_content": contact_us_content
+            }
+            with open(os.path.join(website_folder, 'siteData.json'), 'w') as json_file:
+                json.dump(site_data, json_file)
+
+            # Handle dynamic file uploads for each component (Publications, Participants)
+            files = request.files
+            for component in files:
+                file = files[component]
+                if file:
+                    # Save each file with the component's name (e.g., "Publications.xlsx")
+                    file_path = os.path.join(website_folder, f"{component}.xlsx")
+                    file.save(file_path)
+
+            return jsonify({'message': 'Files and data uploaded successfully!'})
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"})
+
 
 # Service for generating a website from templates
 class GenerateWebsiteResource(Resource):
     def post(self):
-        try:
-            # Get data from the frontend (e.g., title, description, components)
-            data = request.json
-            title = data.get('title', 'Untitled Website')
-            description = data.get('description', '')
-            components = data.get('components', [])
+        try:  
+            if not os.path.exists(TEMPLATE_1_PATH):
+                return jsonify({"error": f"Path {TEMPLATE_1_PATH} does not exist."})
 
-            # Create a new folder for the generated website
-            website_folder = os.path.join(GENERATED_WEBSITES_FOLDER, title.replace(' ', '_'))
-            os.makedirs(website_folder, exist_ok=True)
-
-            # Save dynamic data (title, description, components) in a JSON file
-            site_data = {
-                "title": title,
-                "description": description,
-                "components": components
-            }
-
-            # Save the data to a JSON file for later use
-            with open(os.path.join(website_folder, 'siteData.json'), 'w') as json_file:
-                json.dump(site_data, json_file)
-
-            return jsonify({"websiteLink": f"/view/{title.replace(' ', '_')}/index.html"}), 200
-
+            command = ['start', 'cmd', '/K', 'npm', 'start']  # Command to open a new terminal and run npm start
+            process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH, shell=True)
+    
+            return jsonify({"message": "Website generated successfully!"})
+        
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
-
-# Serve the generated website with dynamic data
-class ViewWebsite(Resource):
-    def get(self, folder_name):
-        try:
-            website_folder = os.path.join(GENERATED_WEBSITES_FOLDER, folder_name)
-            if os.path.exists(website_folder):
-                # Read the site data (e.g., title, description, components)
-                with open(os.path.join(website_folder, 'siteData.json'), 'r') as json_file:
-                    site_data = json.load(json_file)
-
-                # Serve React app template (index.html) with injected dynamic data
-                return render_template('index.html', site_data=site_data)
-            return jsonify({"error": "Website not found"}), 404
-        except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
-
+            return jsonify({"error": f"An error occurred: {str(e)}"})
+        
 
 class ChooseDomain(Resource):
     def post(self):
@@ -104,7 +100,7 @@ class ChooseDomain(Resource):
         try:
             response = generator_system.change_website_domain(user_id, domain, old_domain)
             if response.is_success():
-                return jsonify({"message": "Domain updated successfully", "domain": domain}), 200
+                return jsonify({"message": "Domain updated successfully", "domain": domain})
 
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
@@ -129,9 +125,10 @@ class ChooseComponents(Resource):
         try:
             response = generator_system.add_components_to_site(user_id, domain, selected_components)
             if response.is_success():
-                return jsonify({"message": "Components selected", "components": selected_components}), 200
+                return jsonify({"message": "Components selected", "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}"})
 
 # Handles the template selection for the lab website
 class ChooseTemplate(Resource):
@@ -148,7 +145,8 @@ class ChooseTemplate(Resource):
         try:
             response = generator_system.change_website_template(user_id, domain, selected_template)
             if response.is_success():
-                return jsonify({"message": "Template selected", "template": selected_template}), 200
+                return jsonify({"message": "Template selected", "template": selected_template})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -168,27 +166,33 @@ class ChooseName(Resource):
         try:
             response = generator_system.change_website_name(user_id, website_name, domain)
             if response.is_success():
-                return jsonify({"message": "Website name set", "website_name": website_name}), 200
+                return jsonify({"message": "Website name set", "website_name": website_name})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}"})
 
 
 # Handles user login with email and password
 class Login(Resource):
     def post(self):
         parser = reqparse.RequestParser()
+        parser.add_argument('email', type=str, required=True, help="email is required")
         parser.add_argument('user_id', type=str, required=True, help="User id is required")
+
         args = parser.parse_args()
 
         email = args['email']
         user_id = args['user_id']
+    
 
         try:
-            response = generator_system.login(email,user_id)
+            response = generator_system.login(email, user_id)
+            
             if response.is_success():
-                return jsonify({"message": "User logged out successfully"}), 200
+                return jsonify({"message": "User logged in successfully","response" : "true" })
+            return jsonify({"message": response.get_message(),"response" : "false" })
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}","response" : "false"})
 
 # Handles user logout
 class Logout(Resource):
@@ -202,9 +206,10 @@ class Logout(Resource):
         try:
             response = generator_system.logout(user_id)
             if response.is_success():
-                return jsonify({"message": "User logged out successfully"}), 200
+                return jsonify({"message": "User logged out successfully","response" : "true"})
+            return jsonify({"message": response.get_message(),"response" : "false" })
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}","response" : "false"})
 
 
 class StartCustomSite(Resource):
@@ -216,18 +221,24 @@ class StartCustomSite(Resource):
         parser.add_argument('user_id', type=str, required=True, help="User id is required")
         parser.add_argument('website_name', type=str, required=True, help="Website name is required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        parser.add_argument('components', type=str, required=True, help="components is required")
+        parser.add_argument('template', type=str, required=True, help="template is required")
         args = parser.parse_args()
 
         user_id = args['user_id']
         website_name = args['website_name']
         domain = args['domain']
+        components = args['components'].split(", ")  # Split the string back into a list
+        template = args['template']
+        print(components)
         try:
-            response = generator_system.create_website(user_id, website_name, domain)
+            response = generator_system.create_website(user_id, website_name, domain,components,template)
             if response.is_success():
-                return jsonify({"message": f"Custom site '{website_name}' started successfully", "websiteLink": f"/view/{website_name.replace(' ', '_')}/index.html"}), 200
+                return jsonify({"message": f"Custom site '{website_name}' started successfully", "websiteLink": f"/view/{website_name.replace(' ', '_')}/index.html","response": "true"})
+            return jsonify({"message": response.get_message(),"response": "false"})
 
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}"})
 
 # Service to fetch all lab websites
 class GetAllLabWebsites(Resource):
@@ -281,10 +292,11 @@ class EnterGeneratorSystem(Resource):
                 return jsonify({
                     "user_id": user_id,
                     "message": "New user entered the system successfully"
-                }), 200
+                })
+            else:
+                return jsonify({"error": "An internal server error occurred"})
         except Exception as e:
             # Log the exception (consider integrating a logging library)
-            print(f"Unexpected error: {e}")
             return jsonify({"error": "An internal server error occurred"}), 500
 
 class GetCustomSite(Resource):
@@ -302,20 +314,20 @@ class GetCustomSite(Resource):
             if response.is_success():
                 #the returned value is website name, template, components
                 website_data = response.get_data()
-                return jsonify(website_data)
+                return jsonify({'data': website_data,"response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
 
 # Add the resources to API
-api.add_resource(FileUploadResource, '/api/uploadFile')
+api.add_resource(UploadFilesAndData, '/api/uploadFile')
 api.add_resource(GenerateWebsiteResource, '/api/generateWebsite')
 api.add_resource(ChooseComponents, '/api/chooseComponents')
 api.add_resource(ChooseTemplate, '/api/chooseTemplate')
 api.add_resource(ChooseName, '/api/chooseName')
 api.add_resource(Login, '/api/Login')
 api.add_resource(Logout, '/api/Logout')
-api.add_resource(ViewWebsite, '/view/<folder_name>')
 api.add_resource(ChooseDomain, '/api/chooseDomain')
 api.add_resource(StartCustomSite, '/api/startCustomSite')  # New endpoint to start custom site
 api.add_resource(GetAllCustomWebsites, '/api/getCustomWebsites')

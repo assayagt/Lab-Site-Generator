@@ -7,8 +7,13 @@ import logOutIcon from "../../images/logout.svg";
 import myWebsitesIcon from "../../images/my_website.svg";
 import accountIcon from "../../images/account_avatar.svg";
 import LoginPopup from '../Popups/LoginPopup'; 
+import { useWebsite } from "../../Context/WebsiteContext";
+
+
+
 function Header(props) {
-  const { isLoggedIn, userEmail, login, logout } = useAuth();
+  const {logout } = useAuth();
+  const { resetWebsiteData} = useWebsite();
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const navigate = useNavigate();
 
@@ -16,8 +21,17 @@ function Header(props) {
     setShowLoginPopup(true);  
   };
 
-  const handleLogout = () => {
-    logout();  
+  const handleLogout = async() => {
+    let data= await logout();  
+    if(data===true){
+      resetWebsiteData();
+      sessionStorage.clear();
+      navigate("/");
+      // window.location.reload();
+    }
+    else{
+      console.log("sad");
+    }
   };
 
   const doSomething = () => {
@@ -36,12 +50,12 @@ function Header(props) {
             <div className="hidden-box">
             <div className="personal_menu">
                 <div className="icon_photo">
-                    {isLoggedIn?<img src ={accountIcon} alt= "icon" onClick={onIconClick}></img>:
+                    {!sessionStorage.getItem('isLoggedIn')?<img src ={accountIcon} alt= "icon" onClick={onIconClick}></img>:
                     <img src ={accountIcon} alt= "icon" ></img>
                     }
                 </div>
                 <hr className="hr_line" />
-                {isLoggedIn ? (
+                {sessionStorage.getItem('isLoggedIn') ? (
                 <div className="choose_item">
                     <button className ="my_sites_button" onClick={doSomething}>
                         <img className = "my_sites_icon "src ={myWebsitesIcon} alt= "logout"></img>

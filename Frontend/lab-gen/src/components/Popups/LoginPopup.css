@@ -35,3 +35,11 @@
   .close-popup:hover {
     color: red;
   }
+
+  .error{
+    color: red;
+  }
+
+  .no_error{
+    visibility:hidden;
+  }
