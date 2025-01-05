@@ -1,0 +1,22 @@
+.contact_page{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+}
+
+.page_title{
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.contact_info{
+    background-color: #D9D9D9;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    justify-content:center;
+    border-radius: 20px;
+}

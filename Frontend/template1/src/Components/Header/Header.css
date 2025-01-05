@@ -1,7 +1,7 @@
 .header{
   display: flex;
   flex-direction: row;
-  margin: 20px;
+  margin: 15px;
   align-items: center;
   gap:20px
 }
@@ -19,7 +19,7 @@
   flex-direction: row;
   background-color: #D9D9D9;
   border-radius: 30px;
-  width: 450px;
+  width: 500px;
   height: 20px; /* Height of navbar */
   padding: 10px;
   overflow-x: scroll; /* Allow horizontal scrolling */
@@ -43,7 +43,11 @@
   gap: 40px;
   color: rgb(64, 64, 64);
 }
-
+.navbar-item-button{
+  font-size: 17px;
+  cursor: pointer;
+  color: rgb(64, 64, 64);
+}
 /* Hover effect for items */
 
 .navbar-item-button{
@@ -54,4 +58,131 @@
 .navbar-item-button:hover {
   color: black;
 
+}
+.icon_photo{
+  height: 40px;
+  width: 40px;
+}
+
+.menu {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  position: absolute;
+  right: 0;
+  margin-right: 15px;
+  background-image: url("../../images/account_avatar.svg");
+
+}
+.hidden-box {
+  display: none;  /* Initially hidden */
+  position: absolute;
+  left: -100%;
+  background-color: white;
+  padding: 20px;
+  width: 150px; /* Adjust width as needed */
+  border-radius: 10px; /* Rounded corners to match the shape of the menu */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
+  transform: translateX(-70%) translateY(10px); /* Adjust horizontally */
+  z-index: 1;
+}
+.menu:hover .hidden-box {
+  display: block;
+
+}
+.personal_menu{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap:10px;
+}
+
+
+.hr_line{
+  height: 1px;
+  width: 100%;
+  background-color: gray;
+}
+
+.choose_item{
+  width: 100%;
+}
+
+.logout_button{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap:10px;
+  background-color: transparent;
+  border-color: transparent;
+  font-size: 14px;
+  border-radius: 10px;
+  width:100%;
+  justify-content: center;
+  padding: 10px;
+
+}
+
+.logout_button:hover{
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
+}
+
+.my_sites_button{
+display: flex;
+flex-direction: row;
+align-items: center;
+gap:10px;
+background-color: transparent;
+border-color: transparent;
+font-size: 14px;
+border-radius: 10px;
+width:100%;
+justify-content: center;
+padding: 10px;
+
+}
+
+.my_sites_button:hover{
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
+}
+
+.login_button{
+display: flex;
+flex-direction: row;
+align-items: center;
+gap:10px;
+background-color: transparent;
+border-color: transparent;
+font-size: 14px;
+border-radius: 10px;
+width:100%;
+justify-content: center;
+padding: 10px;
+}
+
+.login_button:hover{
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
+}
+
+.my_sites_icon{
+width: 18px;
+height: 18px;
+}
+
+
+.notification-icon {
+  
+  display: inline-block;
+}
+
+.notification-dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  border: 2px solid white; /* Matches the background */
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
 }
