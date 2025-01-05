@@ -87,10 +87,19 @@ const PublicationPage = ({ publications }) => {
         {paginatedPublications.map((pub) => (
           <div key={pub.paper_id} className="publication-item">
             <h2>{pub.title}</h2>
-            <p><strong>Authors:</strong> {pub.authors}</p>
-            <p><strong>Year:</strong> {pub.publication_year}</p>
-            <p className="description"><strong>Description:</strong> {pub.description}</p>
-            <a href={pub.publication_link} target="_blank" rel="noopener noreferrer">Read More</a>
+            <div className = "publication-item-info">
+                <div className='video'></div>
+                <div>
+                    <p><strong>Authors:</strong> {pub.authors}</p>
+                    <p><strong>Year:</strong> {pub.publication_year}</p>
+                    <p className="description"><strong>Description:</strong> {pub.description}</p>
+                    <div className='links'>
+                        <div className="git">Git</div>
+                        <div className="presentation">Presentation</div>
+                        <a href={pub.publication_link} target="_blank" rel="noopener noreferrer">Read More</a>
+                    </div>
+                </div>
+            </div>
           </div>
         ))}
       </div>
