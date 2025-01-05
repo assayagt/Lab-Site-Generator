@@ -39,37 +39,41 @@ const AccountPage = () => {
     <div className="account-page">
       <Sidebar activeSection={activeSection} onSectionChange={handleSectionChange} />
       <div className="main-content">
-        {activeSection === 'personal-info' && (
-          <div id="personal-info" className="personal-info">
+      {activeSection === 'personal-info' && (
+          <form id="personal-info" className="personal-info" onSubmit={(e) => { e.preventDefault(); alert('Form Submitted'); }}>
             <h2>Personal Information</h2>
             <div className="info">
               <img src="default-photo.jpg" alt="User" className="user-photo" />
               <div className="details">
-                <p>
-                  <strong>Bio:</strong> Lorem ipsum dolor sit amet.
-                  <button onClick={() => alert('Edit Bio')}>Edit</button>
-                </p>
-                <p>
-                  <strong>Email:</strong> user@example.com
-                  <button onClick={() => alert('Edit Email')}>Edit</button>
-                </p>
-                <p>
-                  <strong>Secondary Email:</strong> secondary@example.com
-                  <button onClick={() => alert('Edit Secondary Email')}>Edit</button>
-                </p>
-                <p>
-                  <strong>Degree:</strong> Bachelor of Science
-                  <button onClick={() => alert('Edit Degree')}>Edit</button>
-                </p>
-                <p>
-                  <strong>LinkedIn:</strong> linkedin.com/in/username
-                  <button onClick={() => alert('Edit LinkedIn')}>Edit</button>
-                </p>
+                <label>
+                  <strong>Bio:</strong>
+                  <textarea defaultValue="Lorem ipsum dolor sit amet." />
+                </label>
+
+                <label>
+                  <strong>Email:</strong>
+                  <input type="email" defaultValue="user@example.com" />
+                </label>
+
+                <label>
+                  <strong>Secondary Email:</strong>
+                  <input type="email" defaultValue="secondary@example.com" />
+                </label>
+
+                <label>
+                  <strong>Degree:</strong>
+                  <input type="text" defaultValue="Bachelor of Science" />
+                </label>
+
+                <label>
+                  <strong>LinkedIn:</strong>
+                  <input type="url" defaultValue="linkedin.com/in/username" />
+                </label>
               </div>
             </div>
-          </div>
+            <button type="submit">Save Changes</button>
+          </form>
         )}
-
         {activeSection === 'my-publications' && (
           <div id="my-publications" className="my-publications">
             <h2>My Publications</h2>
