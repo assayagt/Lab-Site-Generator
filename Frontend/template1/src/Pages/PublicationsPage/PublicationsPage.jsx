@@ -14,8 +14,9 @@ const PublicationPage = ({ publications }) => {
     setAvailableYears(years);
 
     const authors = Array.from(
-      new Set(publications.flatMap((pub) => pub.authors.split(', ').map((author) => author.trim())))
-    );
+        new Set(publications.flatMap((pub) => pub.authors.split(', ').map((author) => author.trim())))
+      ).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+      setAvailableAuthors(authors);
     setAvailableAuthors(authors);
   }, [publications]);
 

@@ -12,8 +12,8 @@ function App() {
   const components = [
     "Home",
     "Participants",
-    "Contact Us",
-    "Publications"
+    "Publications",
+    "Contact Us"
   ];
   return (
     <Router>
