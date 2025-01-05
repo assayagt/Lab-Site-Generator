@@ -62,9 +62,9 @@ const PublicationPage = ({ publications }) => {
     <div className="publication-page">
       <h1>Publications</h1>
       <div className="filters">
-        <label>
+        <label className='specific-filter'>
           Filter by Year:
-          <select value={yearFilter} onChange={handleYearChange}>
+          <select className='allOptions' value={yearFilter} onChange={handleYearChange}>
             <option value="">All Years</option>
             {availableYears.map((year) => (
               <option key={year} value={year}>
@@ -73,9 +73,9 @@ const PublicationPage = ({ publications }) => {
             ))}
           </select>
         </label>
-        <label>
+        <label className='specific-filter'>
           Filter by Author:
-          <select value={authorFilter} onChange={handleAuthorChange}>
+          <select className='allOptions' value={authorFilter} onChange={handleAuthorChange}>
             <option value="">All Authors</option>
             {availableAuthors.map((author) => (
               <option key={author} value={author}>

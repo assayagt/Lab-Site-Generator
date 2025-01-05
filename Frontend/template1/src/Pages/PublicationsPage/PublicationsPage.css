@@ -1,3 +1,19 @@
+.filters{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+.specific-filter{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: baseline;
+}
+.allOptions{
+    background-color: transparent;
+    padding: 5px;
+    border-radius: 10px;
+}
 .description{
     max-height: 100px; /* Set your desired height */
     overflow-y: auto; /* Enable vertical scrolling */
