@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './AccountPage.css';
 import accountIcon from "../../images/account_avatar.svg";
 import cameraIcon from "../../images/camera_icon.svg";
+import publicationsData from "../../publications.json";
 
 const AccountPage = () => {
   const [activeSection, setActiveSection] = useState('personal-info'); // Track the active section
@@ -9,10 +10,8 @@ const AccountPage = () => {
     { id: 1, message: 'New publication approval', status: 'pending' },
     { id: 2, message: 'Profile update required', status: 'pending' },
   ]);
-  const [publications, setPublications] = useState([
-    { id: 1, title: 'Publication 1', content: 'Lorem ipsum dolor sit amet.' },
-    { id: 2, title: 'Publication 2', content: 'Consectetur adipiscing elit.' },
-  ]);
+  const [publications, setPublications] = useState(publicationsData);
+  const [uploadedPhoto, setUploadedPhoto] = useState(accountIcon);
 
   const handleSectionChange = (section) => {
     setActiveSection(section);
@@ -44,7 +43,11 @@ const AccountPage = () => {
     fileInput.onchange = (e) => {
       const file = e.target.files[0];
       if (file) {
-        alert(`Uploaded: ${file.name}`);
+        const reader = new FileReader();
+        reader.onload = () => {
+          setUploadedPhoto(reader.result);
+        };
+        reader.readAsDataURL(file);
       }
     };
     fileInput.click();
@@ -63,12 +66,11 @@ const AccountPage = () => {
             <h2>Personal Information</h2>
             <div className="info">
               <div className='user-photo-div'>
-                <img src={accountIcon} alt="User" className="user-photo" />
+                <img src={uploadedPhoto} alt="User" className="user-photo" />
                 <div className="camera-icon" onClick={handleUploadPhoto}>
                   <img src={cameraIcon} alt="Upload" />
                 </div>
                 <button className="save-photo" onClick={handleSavePhoto}>Save Photo</button>
-
               </div>
               <div className="details">
                 <label className='detail-bio'>
@@ -103,19 +105,32 @@ const AccountPage = () => {
         {activeSection === 'my-publications' && (
           <div id="my-publications" className="my-publications">
             <h2>My Publications</h2>
-            <ul>
               {publications.map((publication) => (
-                <li key={publication.id}>
-                  <div>
+                <div key={publication.id} className='publication-item'>
+                  <from className='publication-form'>
                     <strong>{publication.title}</strong>
-                  </div>
-                  <p>{publication.content}</p>
-                  <button onClick={() => handleEditPublication(publication.id)}>
-                    Edit
-                  </button>
-                </li>
+                    <div>
+                      {publication.publication_year}
+                    </div>
+                    <label className='detail-bio'>
+                      <strong>Git-Hub:</strong>
+                      <input className="text-detail" type="url" defaultValue="github//" />
+                    </label>
+                    <label className='detail-bio'>
+                      <strong>Presentation:</strong>
+                      <input className="text-detail" type="url" defaultValue="github//" />
+                    </label>
+                    <label className='detail-bio'>
+                      <strong>Video:</strong>
+                      <input className="text-detail" type="url" defaultValue="youtubr" />
+                    </label>
+                    <button  className= "save-publications" type="submit">Save Changes</button>
+                  </from>
+                  
+                  
+                </div>
               ))}
-            </ul>
+          
           </div>
         )}
 

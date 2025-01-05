@@ -181,3 +181,14 @@
   height: 20px;
 
 }
+.publication-form{
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+}
+
+.save-publications{
+  width: max-content;
+  padding: 8px;
+  border-radius: 20px;
+}
