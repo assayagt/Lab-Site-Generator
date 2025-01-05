@@ -1,16 +1,16 @@
-import React, { useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import React, { useRef, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Header.css";
 import Logo from "../../images/brain.svg";
 import accountIcon from "../../images/account_avatar.svg";
 
-
 function Header(props) {
-  
   const navbarRef = useRef(null); 
   const navigate = useNavigate();
 
-  let scrollAnimationFrame = null; 
+  const [hasNotifications, setHasNotifications] = useState(false); // State for notifications
+
+  let scrollAnimationFrame = null;
 
   const smoothScroll = (direction) => {
     const navbar = navbarRef.current;
@@ -31,11 +31,11 @@ function Header(props) {
       }
     };
 
-    scrollStep(); // Start scrolling
+    scrollStep();
   };
 
   const handleMouseEnter = (e) => {
-    const { left, right, width } = navbarRef.current.getBoundingClientRect();
+    const { left, right } = navbarRef.current.getBoundingClientRect();
     const center = (left + right) / 2; // Calculate the center of the navbar
     const mouseX = e.clientX;
 
@@ -52,61 +52,87 @@ function Header(props) {
       navigate("/"); 
     } else if (item === "Participants") {
       navigate("/Participants"); 
-    }
-    else if (item === "Contact Us") {
+    } else if (item === "Contact Us") {
       navigate("/ContactUs"); 
     }
   };
 
+  // Simulate fetching notifications
+  useEffect(() => {
+    // // Simulate an API call or notification check
+    // const timer = setTimeout(() => {
+    //   setHasNotifications(!hasNotifications); // Set to true when there are notifications
+    // }, 2000);
+
+    // return () => clearTimeout(timer);
+  }, [hasNotifications]);
+
   return (
     <div className="header">
-      <img className="header_logo" src={Logo} alt="logoItem"></img>
+      <img className="header_logo" src={Logo} alt="logoItem" />
       <div className="header_title">{props.title}</div>
       <div className="navbar" ref={navbarRef} onMouseMove={handleMouseEnter}>
-        {props.components.filter(item => item !== "About Us").map((item, index, filteredArray) => (
-          <div className="navbar-item" key={item.id || index}> {/* Use index if there's no id */}
-            <button onClick={()=>handleClick(item)} className="navbar-item-button" >
-              {item}
-            </button>
-            {/* Add | only for items that are not the last item */}
-            {index !== filteredArray.length - 1 && <div>|</div>}
-          </div>
+        {props.components
+          .filter((item) => item !== "About Us")
+          .map((item, index, filteredArray) => (
+            <div className="navbar-item" key={item.id || index}>
+              <button
+                onClick={() => handleClick(item)}
+                className="navbar-item-button"
+              >
+                {item}
+              </button>
+              {index !== filteredArray.length - 1 && <div>|</div>}
+            </div>
           ))}
       </div>
       <div className="icon_photo">
-      <div className="menu">
-                  <div className="hidden-box">
-                  <div className="personal_menu">
-                      <div className="icon_photo">
-                          {!sessionStorage.getItem('isLoggedIn')?<img src ={accountIcon} alt= "icon" onClick={console.log("j")}></img>:
-                          <img src ={accountIcon} alt= "icon" ></img>
-                          }
-                      </div>
-                      <hr className="hr_line" />
-                      {sessionStorage.getItem('isLoggedIn') ? (
-                      <div className="choose_item">
-                          <button className ="my_sites_button" onClick={console.log("j")}>
-                              My Account
-                          </button> 
-                          <button className ="logout_button" onClick={console.log("j")}>
-                              {/* <img src ={} alt= "logout"></img> */}
-                              Logout
-                          </button>
-                      </div>
-      
-                      ) : ( <div className="choose_item">
-                          <button className ="login_button"onClick={console.log("j")}>Login</button>
-                          </div>
-                      )}
-                      </div>
-                  </div>
+        
+        <div className="menu">
+        {hasNotifications && <div className="notification-dot"></div>}
+          <div className="hidden-box">
+            <div className="personal_menu">
+              
+              <div className="icon_photo">
+               
+                  <img
+                    src={accountIcon}
+                    alt="icon"
+                    onClick={() => console.log("Account clicked")}
+                  />
+                
+              </div>
+              <hr className="hr_line" />
+              {sessionStorage.getItem("isLoggedIn") ? (
+                <div className="choose_item">
+                  <button
+                    className="my_sites_button"
+                    onClick={() => console.log("My Account clicked")}
+                  >
+                    My Account
+                  </button>
+                  <button
+                    className="logout_button"
+                    onClick={() => console.log("Logout clicked")}
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <div className="choose_item">
+                  <button
+                    className="login_button"
+                    onClick={() => console.log("Login clicked")}
+                  >
+                    Login
+                  </button>
+                </div>
+              )}
             </div>
-
-      </div>  
-    </div>                
-                          
-                      
-       
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
