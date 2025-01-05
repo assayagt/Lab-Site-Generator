@@ -14,6 +14,7 @@ const AccountPage = () => {
   const [uploadedPhoto, setUploadedPhoto] = useState(accountIcon);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleSectionChange = (section) => {
     setActiveSection(section);
@@ -55,14 +56,19 @@ const AccountPage = () => {
     fileInput.click();
   };
 
+  const filteredPublications = publications.filter((pub) =>
+    pub.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const handleSavePhoto = () => {
     alert('Photo saved successfully!');
   };
-  const totalPages = Math.ceil(publications.length / itemsPerPage);
-  const paginatedPublications = publications.slice(
+  const totalPages = Math.ceil(filteredPublications.length / itemsPerPage);
+  const paginatedPublications = filteredPublications.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -124,6 +130,14 @@ const AccountPage = () => {
         {activeSection === 'my-publications' && (
           <div id="my-publications" className="my-publications">
             <h2>My Publications</h2>
+            <input
+              type="text"
+              placeholder="Search by title"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+
               {paginatedPublications.map((publication) => (
                 <div key={publication.id} className='publication-item'>
                   <from className='publication-form'>
