@@ -44,7 +44,10 @@ const AccountPage = () => {
           <form id="personal-info" className="personal-info" onSubmit={(e) => { e.preventDefault(); alert('Form Submitted'); }}>
             <h2>Personal Information</h2>
             <div className="info">
-              <img src={accountIcon} alt="User" className="user-photo" />
+              <div className='user-photo-div'>
+                <img src={accountIcon} alt="User" className="user-photo" />
+                <div>Save photo</div>
+              </div>
               <div className="details">
                 <label className='detail-bio'>
                   <strong>Bio:</strong>
