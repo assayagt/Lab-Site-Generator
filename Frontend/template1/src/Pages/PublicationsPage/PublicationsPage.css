@@ -1,0 +1,14 @@
+.description {
+    display: block;
+    max-height: 100px;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+}
+
+.publication-page{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: 30px 30px 30px 30px;
+}

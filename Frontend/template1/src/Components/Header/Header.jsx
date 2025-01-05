@@ -55,6 +55,9 @@ function Header(props) {
     } else if (item === "Contact Us") {
       navigate("/ContactUs"); 
     }
+   else if (item === "Publications") {
+    navigate("/Publications"); 
+  }
   };
 
   // Simulate fetching notifications

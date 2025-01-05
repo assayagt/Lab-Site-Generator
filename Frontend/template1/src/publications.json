@@ -1,0 +1,695 @@
+[
+    {
+        "paper_id": 0,
+        "title": "Research challenges and opportunities in multi-agent path finding and multi-agent pickup and delivery problems",
+        "authors": "Oren Salzman, Roni Stern",
+        "publication_year": 2020,
+        "description": "Recent years have shown a large increase in applications and research of problems that include moving a fleet of physical robots. One particular application that is currently a multi-billion industry led by tech giants such as Amazon robotics and Alibaba is warehouse robots. In this application, a large number of robots operate autonomously in the warehouse picking up, carrying, and putting down the inventory pods. In this paper, we outline several key research challenges and opportunities that manifest in this warehouse application. The first challenge, known as the Multi-Agent Path Finding (MAPF) problem, is the problem of finding a non-colliding path for each agent. While this problem has been well-studied in recent years, we outline several open questions, including understanding the actual hardness of the problem, learning the warehouse to improve online computations, and distributing the problem. The second challenge is known as the Multi-Agent Package and Delivery (MAPD) problem, which is the problem of moving packages in the warehouse. This problem has received some attention, but with limited theoretical understanding or exploitation of the incoming stream of requests. Finally, we highlight a third, often overlooked challenge, which is the challenge of designing the warehouse in a way that will allow efficient solutions of the two above challenges.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:5Ul4iDaHHb8C"
+    },
+    {
+        "paper_id": 1,
+        "title": "Robust multi-agent path finding and executing",
+        "authors": "Dor Atzmon, Roni Stern, Ariel Felner, Glenn Wagner, Roman Bart\u00e1k, Neng-Fa Zhou",
+        "publication_year": 2020,
+        "description": "Multi-agent path-finding (MAPF) is the problem of finding a plan for moving a set of agents from their initial locations to their goals without collisions. Following this plan, however, may not be possible due to unexpected events that delay some of the agents. In this work, we propose a holistic solution for MAPF that is robust to such unexpected delays. First, we introduce the notion of a k-robust MAPF plan, which is a plan that can be executed even if a limited number (k) of delays occur. We propose sufficient and required conditions for finding a k-robust plan, and show how to convert several MAPF solvers to find such plans. Then, we propose several robust execution policies. An execution policy is a policy for agents executing a MAPF plan. An execution policy is robust if following it guarantees that the agents reach their goals even if they encounter unexpected delays. Several classes of such robust execution policies are proposed and evaluated experimentally. Finally, we present robust execution policies for cases where communication between the agents may also be delayed. We performed an extensive experimental evaluation in which we compared different algorithms for finding robust MAPF plans, compared different ro-bust execution policies, and studied the interplay between having a robust plan and the performance when using a robust execution policy.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:sSrBHYA8nusC"
+    },
+    {
+        "paper_id": 2,
+        "title": "Probabilistic robust multi-agent path finding",
+        "authors": "Dor Atzmon, Roni Stern, Ariel Felner, Nathan R Sturtevant, Sven Koenig",
+        "publication_year": 2020,
+        "description": "In a multi-agent path finding (MAPF) problem, the task is to move a set of agents to their goal locations without conflicts. In the real world, unexpected events may delay some of the agents. In this paper, we therefore study the problem of finding a p-robust solution to a given MAPF problem, which is a solution that succeeds with probability at least p, even though unexpected delays may occur. We propose two methods for verifying that given solutions are p-robust. We also introduce an optimal CBS-based algorithm, called pR-CBS, and a fast suboptimal algorithm, called pR-GCBS, for finding such solutions. Our experiments show that a p-robust solution reduces the number of conflicts compared to optimal, non-robust solutions.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:8AbLer7MMksC"
+    },
+    {
+        "paper_id": 3,
+        "title": "Algorithm selection for optimal multi-agent pathfinding",
+        "authors": "Omri Kaduri, Eli Boyarski, Roni Stern",
+        "publication_year": 2020,
+        "description": "The challenge of finding an optimal solution to a multi-agent path finding (MAPF) problem has attracted significant academic and industrial interest in recent years. While the problem is NP-Hard, modern optimal MAPF algorithms can scale to solve problems with hundreds of agents. Nevertheless, no single optimal MAPF algorithm dominates all benchmarks problems, and there are no clear, provable, guidelines for when each algorithm should be used. To address this, we present the first successful Algorithm Selection (AS) model for optimal MAPF. We propose two approaches for learning an AS model. The first approach uses a standard supervised learning algorithm with a set of handcrafted MAPF-specific features. The second approach, casts a MAPF problem to an image and applies a deep Convolutional Neural Network to classify it. We evaluate both approaches over a large dataset and show that using an AS model to select which algorithm to use for each instance results in solving more problems and in a shorter runtime compared to the state of the art.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:eflP2zaiRacC"
+    },
+    {
+        "paper_id": 4,
+        "title": "Revisiting bounded-suboptimal safe interval path planning",
+        "authors": "Konstantin Yakovlev, Anton Andreychuk, Roni Stern",
+        "publication_year": 2020,
+        "description": "Safe-interval path planning (SIPP) is a powerful algorithm for finding a path in the presence of dynamic obstacles. SIPP returns provably optimal solutions. However, in many practical applications of SIPP such as path planning for robots, one would like to trade-off optimality for shorter planning time. In this paper we explore different ways to build a bounded-suboptimal SIPP and discuss their pros and cons. We compare the different bounded-suboptimal versions of SIPP experimentally. While there is no universal winner, the results provide insights into when each method should be used.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:BrmTIyaxlBUC"
+    },
+    {
+        "paper_id": 5,
+        "title": "Solving the longest simple path problem with heuristic search",
+        "authors": "Yossi Cohen, Roni Stern, Ariel Felner",
+        "publication_year": 2020,
+        "description": "Prior approaches for finding the longest simple path (LSP) in a graph used constraints solvers and genetic algorithms. In this work, we solve the LSP problem with heuristic search. We first introduce several methods for pruning dominated path prefixes. Then, we propose several admissible heuristic functions for this problem. Experimental results demonstrate the large impact of the proposed heuristics and pruning rules.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:eJXPG6dFmWUC"
+    },
+    {
+        "paper_id": 6,
+        "title": "Bidding in spades",
+        "authors": "Gal Cohensius, Reshef Meir, Nadav Oved, Roni Stern",
+        "publication_year": 2020,
+        "description": "We present a Spades bidding algorithm that is superior to recreational human players and to publicly available bots. Like in Bridge, the game of Spades is composed of two independent phases, bidding and playing. This paper focuses on the bidding algorithm, since this phase holds a precise challenge: based on the input, choose the bid that maximizes the agent\u2019s winning probability. Our Bidding-in-Spades (BIS) algorithm heuristically determines the bidding strategy by comparing the expected utility of each possible bid. A major challenge is how to estimate these expected utilities. To this end, we propose a set of domain-specific heuristics, and then correct them via machine learning using data from real-world players. The BIS algorithm we present can be attached to any playing algorithm. It beats rule-based bidding bots when all use the same playing component. When combined with a rule-based playing\u00a0\u2026",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:B3FOqHPlNUQC"
+    },
+    {
+        "paper_id": 7,
+        "title": "A unifying framework for formal theories of novelty: Framework, examples and discussion",
+        "authors": "Terrance E Boult, Przemyslaw A Grabowicz, Derek S Prijatelj, Roni Stern, L Holder, Joshua Alspector, Mohsen Jafarzadeh, Touqeer Ahmad, Akshay Raj Dhamija, Chunchun Li, Steve Cruz, Abhinav Shrivastava, Carl Vondrick, Walter J Scheirer",
+        "publication_year": 2020,
+        "description": "Managing inputs that are novel, unknown, or out-of-distribution is critical as an agent moves from the lab to the open world. Novelty-related problems include being tolerant to novel perturbations of the normal input, detecting when the input includes novel items, and adapting to novel inputs. While significant research has been undertaken in these areas, a noticeable gap exists in the lack of a formalized definition of novelty that transcends problem domains. As a team of researchers spanning multiple research groups and different domains, we have seen, first hand, the difficulties that arise from ill-specified novelty problems, as well as inconsistent definitions and terminology. Therefore, we present the first unified framework for formal theories of novelty and use the framework to formally define a family of novelty types. Our framework can be applied across a wide range of domains, from symbolic AI to reinforcement learning, and beyond to open world image recognition. Thus, it can be used to help kick-start new research efforts and accelerate ongoing work on these important novelty-related problems. This extended version of our AAAI 2021 paper included more details and examples in multiple domains.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:HE397vMXCloC"
+    },
+    {
+        "paper_id": 8,
+        "title": "Model-Based Novelty Adaptation for Open-World AI",
+        "authors": "Matthew Klenk, Wiktor Piotrowski, Roni Stern, Shiwali Mohan, Johan de Kleer",
+        "publication_year": 2020,
+        "description": "To be able to function in an open-world, a system must be able to adapt to novel situations. We consider this problem in the context of the popular Angry Birds game and outline our system design to address it. Our system, called Hypothesis-Guided Model Revision over Multiple Aligned Representations (HYDRA), adopts a model-based approach to respond to novelty. Central to our design is the use of mixed continuous-discrete planning formalism, namely PDDL+[Fox and Long, 2006], to model the Science Birds domain. With this model, HYDRA employs a domainindependent planner to play the game, and modelbased diagnosis to diagnose and repair the model when novelties are introduced. We also report a case study demonstrating how HYDRA adapts its domain theory to changing dynamics in ballistic flight.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:Mojj43d5GZwC"
+    },
+    {
+        "paper_id": 9,
+        "title": "Batch repair actions for automated troubleshooting",
+        "authors": "Hilla Shinitzky, Roni Stern",
+        "publication_year": 2020,
+        "description": "Repairing a set of components as a  batch  is often cheaper than repairing each of them separately. A primary reason for this is that initiating a repair action and testing the system after performing a repair action often incurs non-negligible overhead. However, most troubleshooting algorithms proposed to date do not consider the option of performing  batch repair actions . In this work we close this gap, and address the combinatorial problem of choosing which batch repair action to perform so as to minimize the overall repair costs. We call this problem the  Batch Repair Problem  (BRP) and formalize it. Then, we propose several approaches for solving it. The first seeks to choose to repair the set of components that are most likely to be faulty. The second estimates the cost wasted by repairing a given set of components, and tried to find the set of components that minimizes these costs. The third approach models BRP as a\u00a0\u2026",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:geHnlv5EZngC"
+    },
+    {
+        "paper_id": 10,
+        "title": "Combined model-based approach and data driven prediction for troubleshooting faults in physical systems",
+        "authors": "Meir Kalech, Roni Stern, Netanel Hasidi",
+        "publication_year": 2020,
+        "description": "A method for diagnosing and troubleshooting failures of components of a physical system with low troubleshooting cost, according to which for each component in the system, a Model-Based Diagnosis (MBD) is used for computing the probability of causing a system failure, based on currently observed system behavior or on knowledge about the sys tem's structure. Then the probability of causing a system failure is computed, based on its age and its survival curves. Then, it is determined whether a faulty component C should be fixed or replaced by minimizing future troubleshooting costs, being the costs of the process of diagnosing and repairing an observed failure.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:dshw04ExmUIC"
+    },
+    {
+        "paper_id": 11,
+        "title": "Diagnosing software system exploits",
+        "authors": "Amir Elmishali, Roni Stern, Meir Kalech",
+        "publication_year": 2020,
+        "description": "Software vulnerabilities are bugs in a program that an attacker can exploit to make the program deviate from its specification. An attacker exploits a vulnerability by crafting input that causes the program to behave incorrectly. Such an input is called an exploit. This article deals with diagnosing exploits, i.e., given an exploit, the task is to return the vulnerability that allowed it. We show that existing software diagnosis algorithms are ill-suited for this problem, and introduce two novel techniques for adapting them to this problem. This includes manipulating an automated testing tool to generate additional inputs that are similar to the given exploit, and tracing below the desired granularity level to improve diagnostic accuracy. Experimental evaluation on real exploits from four open-source projects shows that our algorithm significantly reduces diagnostic efforts.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:1qzjygNMrQYC"
+    },
+    {
+        "paper_id": 12,
+        "title": "The Cold-Start Problem in Software Fault Prediction",
+        "authors": "Inbal Roshanski, Meir Kalech, Roni Stern, Amir Elmishali",
+        "publication_year": 2020,
+        "description": "Software is an integral part of our lives today. Unfortunately, the more sophisticated and complicated software becomes, the greater the chance of failures. Predicting the probability of software components being faulty can help maintaining the software effectiveness. A key factor to the success of prediction algorithms is the amount and quality of historical data of the project collected by the version control and issue tracker tools. However, for new projects, for example, there is no historical data to learn from. This is known as the cold-start problem. Previous work proposed cross-project software fault prediction models, where fault prediction models of other projects are used to determine whether new project\u2019s components are faulty or not. In this paper we suggest a novel component-sensitive cross-project software fault prediction approach (OSCAR). OSCAR proceeds in two steps. First, it separately classifies each\u00a0\u2026",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:vRqMK49ujn8C"
+    },
+    {
+        "paper_id": 13,
+        "title": "AI for Software Quality Assurance Blue Sky Ideas Talk",
+        "authors": "Meir Kalech, Roni Stern",
+        "publication_year": 2020,
+        "description": "Modern software systems are highly complex and often have multiple dependencies on external parts such as other processes or services. This poses new challenges and exacerbate existing challenges in different aspects of software Quality Assurance (QA) including testing, debugging and repair. The goal of this talk is to present a novel AI paradigm for software QA (AI4QA). A quality assessment AI agent uses machine-learning techniques to predict where coding errors are likely to occur. Then a test generation AI agent considers the error predictions to direct automated test generation. Then a test execution AI agent executes tests, that are passed to the root-cause analysis AI agent, which applies automatic debugging algorithms. The candidate root causes are passed to a code repair AI agent that tries to create a patch for correcting the isolated error.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:D_sINldO8mEC"
+    },
+    {
+        "paper_id": 14,
+        "title": "System and method for identifying contacts of a target user in a social network",
+        "authors": "Rami Puzis, Roni Stern, Lior Rokach, Yuval Elovici, Tal Beja, Ariel Felner, Zahy Bnaya, Liron Samama",
+        "publication_year": 2020,
+        "description": "(57) ABSTRACT When using Web intelligence (\u201cWebint\u201d) to collect infor mation regarding a target social network user, one of the most valuable pieces of information is the target user's List-Of-Friends (LOF). In some cases, however, the LOF of the target user is not accessible in his profile. Herein are described methods and systems for identifying the LOF of a target user. An analysis system crawls the profiles of social network users, other than the target user, and reconstructs the LOF of the target user from the crawled profiles.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:KxtntwgDAa4C"
+    },
+    {
+        "paper_id": 15,
+        "title": "Privacy preserving planning in stochastic environments",
+        "authors": "Guy Shani, Roni Stern, Tommy Hefner",
+        "publication_year": 2020,
+        "description": "Collaborative privacy preserving planning (cppp) has gained much attention in the past decade. To date, cppp has focused on domains with deterministic action effects. In this paper, we extend cppp to domains with stochastic action effects. We show how such environments can be modeled as an mdp. We then focus on the popular Real-Time Dynamic Programming (RTDP) algorithm for computing value functions for mdps, extending it to the stochastic cppp setting. We provide two versions of RTDP: a complete version identical to executing centralized RTDP, and an approximate version that sends significantly fewer messages and computes competitive policies in practice. We experiment on domains adapted from the deterministic cppp literature.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:VOx2b1Wkg3QC"
+    },
+    {
+        "paper_id": 16,
+        "title": "PROCEEDINGS INTERNATIONAL CONFERENCE ON AUTOMATED PLANNING AND SCHEDULING, ICAPS",
+        "authors": "K Yakovlev, A Andreychuk, R Stern, P Danzinger, T Geibinger, F Mischek, N Musliu",
+        "publication_year": 2020,
+        "description": "Description not available",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:eq2jaN3J8jMC"
+    },
+    {
+        "paper_id": 17,
+        "title": "Towards a unifying framework for formal theories of novelty",
+        "authors": "Terrance Boult, Przemyslaw Grabowicz, Derek Prijatelj, Roni Stern, Lawrence Holder, Joshua Alspector, Mohsen M Jafarzadeh, Toqueer Ahmad, Akshay Dhamija, Chunchun Li, Steve Cruz, Abhinav Shrivastava, Carl Vondrick, Scheirer Walter",
+        "publication_year": 2021,
+        "description": "Managing inputs that are novel, unknown, or out-of-distribution is critical as an agent moves from the lab to the open world. Novelty-related problems include being tolerant to novel perturbations of the normal input, detecting when the input includes novel items, and adapting to novel inputs. While significant research has been undertaken in these areas, a noticeable gap exists in the lack of a formalized definition of novelty that transcends problem domains. As a team of researchers spanning multiple research groups and different domains, we have seen, first hand, the difficulties that arise from ill-specified novelty problems, as well as inconsistent definitions and terminology. Therefore, we present the first unified framework for formal theories of novelty and use the framework to formally define a family of novelty types. Our framework can be applied across a wide range of domains, from symbolic AI to reinforcement learning, and beyond to open world image recognition. Thus, it can be used to help kick-start new research efforts and accelerate ongoing work on these important novelty-related problems.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:WA5NYHcadZ8C"
+    },
+    {
+        "paper_id": 18,
+        "title": "Improving continuous-time conflict based search",
+        "authors": "Anton Andreychuk, Konstantin Yakovlev, Eli Boyarski, Roni Stern",
+        "publication_year": 2021,
+        "description": "Conflict-Based Search (CBS) is a powerful algorithmic framework for optimally solving classical multi-agent path finding (MAPF) problems, where time is discretized into the time steps. Continuous-time CBS (CCBS) is a recently proposed version of CBS that guarantees optimal solutions without the need to discretize time. However, the scalability of CCBS is limited because it does not include any known improvements of CBS. In this paper, we begin to close this gap and explore how to adapt successful CBS improvements, namely, prioritizing conflicts (PC), disjoint splitting (DS), and high-level heuristics, to the continuous time setting of CCBS. These adaptions are not trivial, and require careful handling of different types of constraints, applying a generalized version of the Safe interval path planning (SIPP) algorithm, and extending the notion of cardinal conflicts. We evaluate the effect of the suggested enhancements by running experiments both on general graphs and 2^ k-neighborhood grids. CCBS with these improvements significantly outperforms vanilla CCBS, solving problems with almost twice as many agents in some cases and pushing the limits of multi-agent path finding in continuous-time domains.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:wbdj-CoPYUoC"
+    },
+    {
+        "paper_id": 19,
+        "title": "Safe learning of lifted action models",
+        "authors": "Brendan Juba, Hai S Le, Roni Stern",
+        "publication_year": 2021,
+        "description": "Creating a domain model, even for classical, domain-independent planning, is a notoriously hard knowledge-engineering task. A natural approach to solve this problem is to learn a domain model from observations. However, model learning approaches frequently do not provide safety guarantees: the learned model may assume actions are applicable when they are not, and may incorrectly capture actions' effects. This may result in generating plans that will fail when executed. In some domains such failures are not acceptable, due to the cost of failure or inability to replan online after failure. In such settings, all learning must be done offline, based on some observations collected, e.g., by some other agents or a human. Through this learning, the task is to generate a plan that is guaranteed to be successful. This is called the model-free planning problem. Prior work proposed an algorithm for solving the model-free planning problem in classical planning. However, they were limited to learning grounded domains, and thus they could not scale. We generalize this prior work and propose the first safe model-free planning algorithm for lifted domains. We prove the correctness of our approach, and provide a statistical analysis showing that the number of trajectories needed to solve future problems with high probability is linear in the potential size of the domain model. We also present experiments on twelve IPC domains showing that our approach is able to learn the real action model in all cases with at most two trajectories.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:kRWSkSYxWN8C"
+    },
+    {
+        "paper_id": 20,
+        "title": "Safe multi-agent pathfinding with time uncertainty",
+        "authors": "Tomer Shahar, Shashank Shekhar, Dor Atzmon, Abdallah Saffidine, Brendan Juba, Roni Stern",
+        "publication_year": 2021,
+        "description": "In many real-world scenarios, the time it takes for a mobile agent, eg, a robot, to move from one location to another may vary due to exogenous events and be difficult to predict accurately. Planning in such scenarios is challenging, especially in the context of Multi-Agent Pathfinding (MAPF), where the goal is to find paths to multiple agents and temporal coordination is necessary to avoid collisions. In this work, we consider a MAPF problem with this form of time uncertainty, where we are only given upper and lower bounds on the time it takes each agent to move. The objective is to find a safe solution, which is a solution that can be executed by all agents and is guaranteed to avoid collisions. We propose two complete and optimal algorithms for finding safe solutions based on well-known MAPF algorithms, namely, A* with Operator Decomposition (A*+ OD) and Conflict-Based Search (CBS). Experimentally, we observe that on several standard MAPF grids the CBS-based algorithm performs better. We also explore the option of online replanning in this context, ie, modifying the agents' plans during execution, to reduce the overall execution cost. We consider two online settings:(a) when an agent can sense the current time and its current location, and (b) when the agents can also communicate seamlessly during execution. For each setting, we propose a replanning algorithm and analyze its behavior theoretically and empirically. Our experimental evaluation confirms that indeed online replanning in both settings can significantly reduce solution cost.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:XiVPGOgt02cC"
+    },
+    {
+        "paper_id": 21,
+        "title": "Experimental evaluation of classical multi agent path finding algorithms",
+        "authors": "Omri Kaduri, Eli Boyarski, Roni Stern",
+        "publication_year": 2021,
+        "description": "Modern optimal multi-agent path finding (MAPF) algorithms can scale to solve problems with hundreds of agents. To facilitate comparison between these algorithms, a benchmark of MAPF problems was recently proposed. We report a comprehensive evaluation of a diverse set of state-of-the-art optimal MAPF algorithms over the entire benchmark. The results show that in terms of coverage, the recently proposed LazyCBS algorithm outperforms all others significantly, but it is usually not the fastest algorithm. This suggests algorithm selection methods can be beneficial. Then, we characterize different setups for algorithm selection in MAPF, and evaluate simple baselines for each setup. Finally, we propose an extension of the existing MAPF benchmark in the form of different ways to distribute the agents\u2019 source and target locations.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:_B80troHkn4C"
+    },
+    {
+        "paper_id": 22,
+        "title": "Minimal cardinality diagnosis in problems with multiple observations",
+        "authors": "Meir Kalech, Roni Stern, Ester Lazebnik",
+        "publication_year": 2021,
+        "description": "Model-Based Diagnosis (MBD) is a well-known approach to diagnosis in medical domains. In this approach, the behavior of a system is modeled and used to identify faulty components, i.e., once a symptom of abnormal behavior is observed, an inference algorithm is run on the system model and returns possible explanations. Such explanations are referred to as diagnoses. A diagnosis is an assumption about which set of components are faulty and have caused the abnormal behavior. In this work, we focus on the case where multiple observations are available to the diagnoser, collected at different times, such that some of these observations exhibit symptoms of abnormal behavior. MBD with multiple observations is challenging because some components may fail intermittently, i.e., behave abnormally in one observation and behave normally in another, while other components may fail all the time (non-intermittently). Inspired by recent success in solving classical diagnosis problems using Boolean satisfiability (SAT) solvers, we describe two SAT-based approaches to solve this MBD with multiple observations problem. The first approach compiles the problem to a single SAT formula, and the second approach solves each observation independently and then merges them together. We compare these two approaches experimentally on a standard diagnosis benchmark and analyze their pros and cons.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:olpn-zPbct0C"
+    },
+    {
+        "paper_id": 23,
+        "title": "Prioritized test generation guided by software fault prediction",
+        "authors": "Eran Hershkovich, Roni Stern, Rui Abreu, Amir Elmishali",
+        "publication_year": 2021,
+        "description": "Writing and running software unit tests is one of the fundamental techniques used to maintain software quality. However, this process is rather costly and time consuming. Thus, much effort has been devoted to generating unit tests automatically. The common objective of test generation algorithms is to maximize code coverage. However, maximizing coverage is not necessarily correlated with identifying faults [1]. In this work, we propose a novel approach for test generation aiming at generating a small set of tests that cover the software components that are likely to contain bugs. To identify which components are more likely to contain bugs, we train a software fault prediction model using machine learning techniques. We implemented this approach in practice in a tool called QUADRANT, and demonstrate its effectiveness on five real-world, open-source projects. Results show the benefit of using QUADRANT, where\u00a0\u2026",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:AXPGKjj_ei8C"
+    },
+    {
+        "paper_id": 24,
+        "title": "Heuristic search for one-to-many shortest path queries",
+        "authors": "Roni Stern, Meir Goldenberg, Abdallah Saffidine, Ariel Felner",
+        "publication_year": 2021,
+        "description": "In this paper we study the One-to-Many Shortest Path Problem (OMSPP), which is the problem of solving  k  shortest path problems that share the same start node. This problem has been studied in the context of routing in road networks. While past work on routing relied on pre-processing the network, which is assumed to be provided explicitly. We explore how OMSPP can be solved with heuristic search techniques, allowing the searched graph to be given either explicitly or implicitly. Two fundamental heuristic search approaches are analyzed: searching for the  k  goals one at a time, or searching for all  k  goals as one compound goal. The former approach, denoted k\u00d7 A \u2217 , is simpler to implement, but can be computationally inefficient, as it may expand a node multiple times, by the different searches. The latter approach, denoted kA \u2217 , can resolve this potential inefficiency, but implementing it raises\u00a0\u2026",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:dTyEYWd-f8wC"
+    },
+    {
+        "paper_id": 25,
+        "title": "Playing Angry Birds with a Domain-Independent PDDL+ Planner",
+        "authors": "Wiktor Piotrowski, Roni Stern, Matthew Klenk, Alexandre Perez, Shiwali Mohan, Johan de Kleer, Jacob Le",
+        "publication_year": 2021,
+        "description": "This demo paper presents the first system for playing the popular Angry Birds game using a domain-independent planner. Our system models Angry Birds levels using PDDL+, a planning language for mixed discrete/continuous domains. It uses a domain-independent PDDL+ planner to generate plans and executes them. In this demo paper, we present the system's PDDL+ model for this domain, identify key design decisions that reduce the problem complexity, and compare the performance of our system to model-specific methods for this domain. The results show that our system's performance is on par with other domain-specific systems for Angry Birds, suggesting the applicability of domain-independent planning to this benchmark AI challenge.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:tkaPQYYpVKoC"
+    },
+    {
+        "paper_id": 26,
+        "title": "Searching for class models",
+        "authors": "Maxim Bragilovski, Yifat Makias, Moran Shamshila, Roni Stern, Arnon Sturm",
+        "publication_year": 2021,
+        "description": "Models in model-based development play a major role and serve as the main design artifacts, in particular class models. As there are difficulties in developing high-quality models, different repositories of models are established to address that challenge, so developers would have a reference model. Following the existence of such repositories, there is a need for tools that can retrieve similar high-quality models. To search for models in these repositories, we\u00a0propose a greedy algorithm that matches the developer\u2019s intention by considering semantic similarity, structure similarity, and type similarity. The initial evaluation indicates that the algorithm achieved high performance in finding the relevant class model fragments. Though additional examination is required, the sought algorithm can be easily adapted to other modeling languages for searching models and their encapsulated knowledge.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:eMMeJKvmdy0C"
+    },
+    {
+        "paper_id": 27,
+        "title": "Different Forms of Optimality in Multi-Agent Problems",
+        "authors": "Dor ATZMON, Roni STERN, Ariel FELNER",
+        "publication_year": 2021,
+        "description": "Path Finding (PF) is the problem of finding a path for an agent on a given graph. Multi-Agent Path Finding (MAPF) extends PF to the case of multiple agents. In MAPF, a path for each agent is needed (a plan) such that the agents do not conflict, eg, two or more agents cannot be located at the same location at the same time. Finding the lowest cost solution (optimal solution) for MAPF is NP-hard. However, some algorithms are capable of solving MAPF optimally for many agents. One such notable algorithm is the Conflict-Based Search algorithm (CBS). MAPF has many real-life applications, including robotics, traffic control, digital entertainment, and video games. This thesis extends MAPF and explores different forms of optimality in multi-agent problems. It is divided into three parts, all related to MAPF. The first part of this thesis (Chapter 2) examines robust solutions for MAPF. That is, a holistic solution for MAPF that is robust to unexpected delays. First, the notion of a k-robust MAPF plan is introduced, which is a plan that can be executed even if a limited number (k) of delays for each agent occur. We show how to convert several MAPF solvers, including CBS, to find such plans. Then, we propose several robust execution policies for agents executing a MAPF plan. Following such a policy guarantees that the agents reach their goals even if they encounter unexpected delays. We also present robust execution policies for cases where communication between the agents may also be delayed. Finally, we study the problem of finding a p-robust solution to MAPF, which is a solution that succeeds with probability at least p, even though unlimited unexpected\u00a0\u2026",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:WqliGbK-hY8C"
+    },
+    {
+        "paper_id": 28,
+        "title": "Studying Online Multi-Agent Path Finding",
+        "authors": "Jonathan Morag, Roni Stern, Ariel Felner, Dor Atzmon, Eli Boyarski",
+        "publication_year": 2021,
+        "description": "Multi-agent path finding (MAPF) is the problem of planning a set of non-conflicting plans on a graph, for a set of agents. Online MAPF extends MAPF by considering a more realistic problem in which new agents may appear over time. While planning, an online solver does not know whether and which agents will join in the future. Therefore, in online problems the notion of snapshot-optimal was defined, where only current knowledge is considered. The quality of such a solution may be weaker than the quality of a solution to an equivalent offline MAPF problem (offline-optimality), where the solver is preinformed of all the agents that will appear in the future. In this paper we explore, theoretically and empirically, the quality of snapshot-optimal solutions compared to offline-optimal solutions.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:PELIpwtuRlgC"
+    },
+    {
+        "paper_id": 29,
+        "title": "Partial disclosure of private dependencies in privacy preserving planning",
+        "authors": "Rotem Lev Lehman, Guy Shani, Roni Stern",
+        "publication_year": 2021,
+        "description": "In collaborative privacy preserving planning (CPPP), a group of agents jointly creates a plan to achieve a set of goals while preserving each others' privacy. During planning, agents often reveal the private dependencies between their public actions to other agents, that is, which public action facilitates the preconditions of another public action. Previous work in CPPP does not limit the disclosure of such dependencies. In this paper, we explicitly limit the amount of disclosed dependencies, allowing agents to publish only a part of their private dependencies. We investigate different strategies for deciding which dependencies to publish, and how they affect the ability to find solutions. We evaluate the ability of two solvers -- distribute forward search and centralized planning based on a single-agent projection -- to produce plans under this constraint. Experiments over standard CPPP domains show that the proposed dependency-sharing strategies enable generating plans while sharing only a small fraction of all private dependencies.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:V3AGJWp-ZtQC"
+    },
+    {
+        "paper_id": 30,
+        "title": "Anomaly detection for aggregated data using multi-graph autoencoder",
+        "authors": "Tomer Meirman, Roni Stern, Gilad Katz",
+        "publication_year": 2021,
+        "description": "In data systems, activities or events are continuously collected in the field to trace their proper executions. Logging, which means recording sequences of events, can be used for analyzing system failures and malfunctions, and identifying the causes and locations of such issues. In our research we focus on creating an Anomaly detection models for system logs. The task of anomaly detection is identifying unexpected events in dataset, which differ from the normal behavior. Anomaly detection models also assist in data systems analysis tasks. Modern systems may produce such a large amount of events monitoring every individual event is not feasible. In such cases, the events are often aggregated over a fixed period of time, reporting the number of times every event has occurred in that time period. This aggregation facilitates scaling, but requires a different approach for anomaly detection. In this research, we present a thorough analysis of the aggregated data and the relationships between aggregated events. Based on the initial phase of our research we present graphs representations of our aggregated dataset, which represent the different relationships between aggregated instances in the same context. Using the graph representation, we propose Multiple-graphs autoencoder MGAE, a novel convolutional graphs-autoencoder model which exploits the relationships of the aggregated instances in our unique dataset. MGAE outperforms standard graph-autoencoder models and the different experiments. With our novel MGAE we present 60% decrease in reconstruction error in comparison to standard graph autoencoder, which is expressed in\u00a0\u2026",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:t6usbXjVLHcC"
+    },
+    {
+        "paper_id": 31,
+        "title": "Model-based knowledge searching",
+        "authors": "Maxim Bragilovski, Yifat Makias, Moran Shamshila, Roni Stern, Arnon Sturm",
+        "publication_year": 2021,
+        "description": "As knowledge increases tremendously each and every day, there is a need for means to manage and organize it, so as to utilize it when needed. For example, for finding solutions to technical/engineering problems. An alternative for achieving this goal is through knowledge mapping that aims at indexing the knowledge. Nevertheless, searching for knowledge in such maps is still a challenge. In this paper, we propose an algorithm for knowledge searching over maps created by ME-MAP, a mapping approach we developed. The algorithm is a greedy one that aims at maximizing the similarity between a query and existing knowledge encapsulated in ME-maps. We evaluate the efficiency of the algorithm in comparison to an expert judgment. The evaluation indicates that the algorithm achieved high performance within a bounded time. Though additional examination is required, the sought algorithm can be\u00a0\u2026",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:JoZmwDi-zQgC"
+    },
+    {
+        "paper_id": 32,
+        "title": "Optimality in online multi-agent path finding",
+        "authors": "Jonathan Morag, Roni Stern, Ariel Felner, Dor Atzmon, Eli Boyarski",
+        "publication_year": 2021,
+        "description": "Multi-agent path finding (MAPF) is the problem of planning a set of non-conflicting paths on a graph, for a set of agents. Online MAPF extends MAPF by considering a realistic problem in which new agents may appear over time. While planning, an online solver does not know of agents that will join in the future. Therefore, the quality of a solution to an online MAPF problem may be lower than the quality of a solution to an equivalent offline MAPF problem, where the solver is preinformed of all the agents that will appear in the future. We examine the matter of optimality in classic online MAPF, as well as two variants of the problem. In the first variant, rerouting an agent is associated with a cost (COR). In the second variant, agents are assigned different priorities. We show how properties of online MAPF affect solution quality in these three different settings, and present the trade-offs involved with each setting.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:5ugPr518TE4C"
+    },
+    {
+        "paper_id": 33,
+        "title": "Multi-agent Path Finding Under Time Uncertainty",
+        "authors": "Tomer Shahar, Shashank Shekhar, Dor Atzmon, Abdallah Saffidine, Brendan Juba, Roni Stern",
+        "publication_year": 2021,
+        "description": "\u2022 Definition of MAPF-TU, safety, and different optimality criteria\u2022 Safe and Optimal MAPF-TU algorithms: A*+ ODTU, CBSTU\u2022 Online replanning algorithms for cases where\u2022 Agents can sense their location and replan\u2022 Agents can also communicate with each other\u2022 Experimental Evaluation\u2022 Learning technique to obtain duration ranges from data",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:nrtMV_XWKgEC"
+    },
+    {
+        "paper_id": 34,
+        "title": "Minimal Cardinality Diagnosis in Problems with Multiple Observations. Diagnostics 2021, 11, 780",
+        "authors": "M Kalech, R Stern, E Lezebnik",
+        "publication_year": 2021,
+        "description": "Model-Based Diagnosis (MBD) is a well-known approach to diagnosis in medical domains. In this approach, the behavior of a system is modeled and used to identify faulty components, ie, once a symptom of abnormal behavior is observed, an inference algorithm is run on the system model and returns possible explanations. Such explanations are referred to as diagnoses. A diagnosis is an assumption about which set of components are faulty and have caused the abnormal behavior. In this work, we focus on the case where multiple observations are available to the diagnoser, collected at different times, such that some of these observations exhibit symptoms of abnormal behavior. MBD with multiple observations is challenging because some components may fail intermittently, ie, behave abnormally in one observation and behave normally in another, while other components may fail all the time (non-intermittently). Inspired by recent success in solving classical diagnosis problems using Boolean satisfiability (SAT) solvers, we describe two SAT-based approaches to solve this MBD with multiple observations problem. The first approach compiles the problem to a single SAT formula, and the second approach solves each observation independently and then merges them together. We compare these two approaches experimentally on a standard diagnosis benchmark and analyze their pros and cons.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:7T2F9Uy0os0C"
+    },
+    {
+        "paper_id": 35,
+        "title": "Multi-agent pathfinding with continuous time",
+        "authors": "Anton Andreychuk, Konstantin Yakovlev, Pavel Surynek, Dor Atzmon, Roni Stern",
+        "publication_year": 2022,
+        "description": "Multi-Agent Pathfinding (MAPF) is the problem of finding paths for multiple agents such that each agent reaches its goal and the agents do not collide. In recent years, variants of MAPF have risen in a wide range of real-world applications such as warehouse management and autonomous vehicles. Optimizing common MAPF objectives, such as minimizing sum-of-costs or makespan, is computationally intractable, but state-of-the-art algorithms are able to solve optimally problems with dozens of agents. However, most MAPF algorithms assume that (1) time is discretized into time steps and (2) the duration of every action is one time step. These simplifying assumptions limit the applicability of MAPF algorithms in real-world applications and raise non-trivial questions such as how to discretize time in an effective manner. We propose two novel MAPF algorithms for finding optimal solutions that do not rely on any time\u00a0\u2026",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:JV2RwH3_ST0C"
+    },
+    {
+        "paper_id": 36,
+        "title": "Learning Probably Approximately Complete and Safe Action Models for Stochastic Worlds",
+        "authors": "Brendan Juba, Roni Stern",
+        "publication_year": 2022,
+        "description": "We consider the problem of learning action models for planning in unknown stochastic environments that can be defined using the Probabilistic Planning Domain Description Language (PPDDL). As input, we are given a set of previously executed trajectories, and the main challenge is to learn an action model that has a similar goal achievement probability to the policies used to create these trajectories. To this end, we introduce a variant of PPDDL in which there is uncertainty about the transition probabilities, specified by an interval for each factor that contains the respective true transition probabilities. Then, we present SAM+, an algorithm that learns such an imprecise-PPDDL environment model. SAM+ has a polynomial time and sample complexity, and guarantees that with high probability, the true environment is indeed captured by the defined intervals. We prove that the action model SAM+ outputs has a goal achievement probability that is almost as good or better than that of the policies used to produced the training trajectories. Then, we show how to produce a PPDDL model based on this imprecise-PPDDL model that has similar properties.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:LjlpjdlvIbIC"
+    },
+    {
+        "paper_id": 37,
+        "title": "An impact-driven approach to predict user stories instability",
+        "authors": "Yarden Levy, Roni Stern, Arnon Sturm, Argaman Mordoch, Yuval Bitan",
+        "publication_year": 2022,
+        "description": "A common way to describe requirements in Agile software development is through  user stories , which are short descriptions of desired functionality. Nevertheless, there are no widely accepted quantitative metrics to evaluate user stories. We propose a novel metric to evaluate user stories called  instability , which measures the number of changes made to a user story after it was assigned to a developer to be implemented in the near future. A user story with a high instability score suggests that it was not detailed and coherent enough to be implemented. The instability of a user story can be automatically extracted from industry-standard issue tracking systems such as Jira by performing retrospective analysis over user stories that were fully implemented. We propose a method for creating prediction models that can identify user stories that will have high instability even before they have been assigned to a developer\u00a0\u2026",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:ye4kPcJQO24C"
+    },
+    {
+        "paper_id": 38,
+        "title": "Model-based adaptation to novelty for open-world AI",
+        "authors": "Roni Stern, Wiktor Piotrowski, Matthew Klenk, Johan de Kleer, Alexandre Perez, Jacob Le, Shiwali Mohan",
+        "publication_year": 2022,
+        "description": "Most model-based agents are ill-equipped to handle novel situations in which their model of the environment no longer sufficiently represents the world. We introduce HYDRA, an architecture for a model-based agent operating in open-world, mixed continuous-discrete environments that detects and effectively adapts to novelties encountered during performance. HYDRA does so by using a compositional model of the environment and employing a range of AI techniques including domainindependent automated planning, anomaly detection, model-based diagnosis, and heuristic search. We also present a design for a HYDRA agent that uses PDDL+, a rich domain-independent planning domain description language, to define its compositional model. An empirical evaluation on the well-known balancing cartpole problem, a standard Reinforcement Learning (RL) benchmark, demonstrates that our PDDL+-based HYDRA agent is able to quickly and effectively detect and adapt to some classes of novelties, outperforming an off-the-shelf deep q-network (DQN) agent.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:PR6Y55bgFSsC"
+    },
+    {
+        "paper_id": 39,
+        "title": "Online multi-agent path finding: New results",
+        "authors": "Jonathan Morag, Ariel Felner, Roni Stern, Dor Atzmon, Eli Boyarski",
+        "publication_year": 2022,
+        "description": "Online MAPF extends the classical Multi-Agent Path Finding problem (MAPF) by considering a more realistic problem in which new agents may appear over time. As online solvers are not aware of which agents will join in the future, the notion of snapshot-optimal was defined, where only current knowledge is considered. In this paper, we perform an extensive comparison between oracle-optimal solutions (where the solver is preinformed of future agents), snapshot-optimal solutions, and suboptimal solutions obtained by prioritised planning.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:Fu2w8maKXqMC"
+    },
+    {
+        "paper_id": 40,
+        "title": "An Online Approach for Multi-Agent Path Finding Under Movement Uncertainty",
+        "authors": "Elad Levy, Guy Shani, Roni Stern",
+        "publication_year": 2022,
+        "description": "In this work, we address the problem of finding paths for multiple agents while avoiding collisions between them, where agents' actions have stochastic outcomes. The objective is to create a joint policy for all agents that minimize the expected sum of costs of getting all agents to their goals, while guaranteeing that collisions never occur. Unlike previous work on multi-agent pathfinding (MAPF), the stochastic outcomes are not limited to delays, and thus the set of locations each agent may end up at can be very large. Consequently, offline planning is prohibitively expensive since collisions between agents may occur in many locations and time steps, while avoiding them is a hard constraint. Instead, we propose a suboptimal online approach in which each agent follows its individually-optimal policy until it detected potential collisions in the future. Then, the potentially conflicting agents create a joint policy for resolving the potential collision. We evaluated this policy experimentally on existing an MAPF benchmark, modified to include stochasticity. The results show that we are able to find high quality solutions for non-trivial grids with up to 12 agents, significantly surpassing several baseline approaches.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:UHK10RUVsp4C"
+    },
+    {
+        "paper_id": 41,
+        "title": "Privacy preserving planning in multi-agent stochastic environments",
+        "authors": "Tommy Hefner, Guy Shani, Roni Stern",
+        "publication_year": 2022,
+        "description": "Collaborative privacy preserving planning ( cppp ) gained much attention in the past decade.  cppp  aims to create solutions for multi agent planning problems where cooperation is required to achieve an efficient solution, without exposing information that the agent considers private in the process. To date,  cppp  has focused on domains with deterministic action effects. However, in real-world problems action effects are often non-deterministic, and actions can have multiple possible effects with varying probabilities. In this paper, we introduce Stochastic  cppp  ( scppp ), which is an extension of  cppp  to domains with stochastic action effects. We show how  scppp  can be modeled as a Markov decision process ( mdp ) and how the  value-iteration  algorithm can be adapted to solve it. This adaptation requires extending  value-iteration  to support multiple agents and privacy. Then, we present two adaptions of the real-time\u00a0\u2026",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:N5tVd3kTz84C"
+    },
+    {
+        "paper_id": 42,
+        "title": "Migrating Techniques from Search-Based Multi-Agent Path Finding Solvers to SAT-Based Approach",
+        "authors": "Pavel Surynek, Roni Stern, Eli Boyarski, Ariel Felner",
+        "publication_year": 2022,
+        "description": "In the multi-agent path finding problem (MAPF) we are given a set of agents each with respective start and goal positions. The task is to find paths for all agents while avoiding collisions, aiming to minimize a given objective function. Many MAPF solvers were introduced in the past decade for optimizing two specific objective functions: sum-of-costs and makespan. Two prominent categories of solvers can be distinguished: search-based solvers and compilation-based solvers. Search-based solvers were developed and tested for the sum-of-costs objective, while the most prominent compilation-based solvers that are built around Boolean satisfiability (SAT) were designed for the makespan objective. Very little is known on the performance and relevance of solvers from the compilation-based approach on the sum-of-costs objective. In this paper, we start to close the gap between these cost functions in the compilation-based approach. Our main contribution is a new SAT-based MAPF solver called MDD-SAT, that is directly aimed to optimally solve the MAPF problem under the sum-of-costs objective function. Using both a lower bound on the sum-of-costs and an upper bound on the makespan, MDD-SAT is able to generate a reasonable number of Boolean variables in our SAT encoding. We then further improve the encoding by borrowing ideas from ICTS, a search-based solver. In addition, we show that concepts applicable in search-based solvers like ICTS and ICBS are applicable in the SAT-based approach as well. Specifically, we integrate independence detection, a generic technique for decomposing an MAPF instance into independent\u00a0\u2026",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:5awf1xo2G04C"
+    },
+    {
+        "paper_id": 43,
+        "title": "Collaborative Multi-Agent Planning with Black-Box Agents by Learning Action Models",
+        "authors": "Argaman Mordoch, Daniel Portnoy, Roni Stern, Brendan Juba",
+        "publication_year": 2022,
+        "description": "We explore the problem of generating a plan for a team of heterogeneous collaborative agents without knowing their capabilities, but having access to observations of previously executed of plans. To plan for such \u201cblack-box\u201d collaborative agents, we present the Planning using Offline Learning (POL) framework. POL compiles the given observations into trajectories of a single \u201csuper\u201d agent, and uses an action model learning algorithm to learn the capabilities of that \u201csuper\u201d agent. We implemented POL for Multi-agent STRIPS (MASTRIPS) domains, and show that when using the Safe Action Model (SAM) learning algorithm, it is guaranteed to be sound and have a probabilistic form of completeness. Empirically, we evaluate POL over a standard MA-STRIPS benchmark. The results show that an almost perfect action model was learned for all agents with only a few trajectories in most cases. Finally, we discuss how POL and SAM learning can be extended to handle observations with concurrent and possibly conflicting actions.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:ZuybSZzF8UAC"
+    },
+    {
+        "paper_id": 44,
+        "title": "An Example of the SAM+ Algorithm for Learning Action Models for Stochastic Worlds",
+        "authors": "Brendan Juba, Roni Stern",
+        "publication_year": 2022,
+        "description": "In this technical report, we provide a complete example of running the SAM+ algorithm, an algorithm for learning stochastic planning action models, on a simplified PPDDL version of the Coffee problem. We provide a very brief description of the SAM+ algorithm and detailed description of our simplified version of the Coffee domain, and then describe the results of running it on the simplified Coffee domain.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:VL0QpB8kHFEC"
+    },
+    {
+        "paper_id": 45,
+        "title": "Reducing disclosed dependencies in privacy preserving planning",
+        "authors": "Rotem Lev Lehman, Guy Shani, Roni Stern",
+        "publication_year": 2022,
+        "description": "In collaborative privacy preserving planning ( cppp ), a group of agents jointly creates a plan to achieve a set of goals while preserving each others\u2019 privacy. In state of the art  cppp  algorithms, the agents avoid explicitly sharing the value of private state variables. However, they may implicitly reveal  dependencies  between actions, that is, which action facilitates achieving the preconditions of another action. Previous work in  cppp  did not limit the disclosure of such dependencies. In this paper, we explicitly limit the amount of disclosed dependencies, allowing agents to publish only some of the dependencies between their actions. We investigate different strategies for deciding which dependencies to publish, and how they affect the ability to find solutions. We evaluate the ability of two solvers\u00a0\u2014\u00a0distribute forward search and centralized planning based on a single-agent projection\u00a0\u2014\u00a0to produce plans under this constraint\u00a0\u2026",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:NJ774b8OgUMC"
+    },
+    {
+        "paper_id": 46,
+        "title": "Safe Learning and Repairing of Numeric Action Models for Planning",
+        "authors": "Argaman Aloni Mordoch, Brendan Juba, Roni Stern",
+        "publication_year": 2022,
+        "description": "Automated planners often require a model of the acting agent\u2019s actions, given in some planning domain description language. Yet obtaining such an action model is a notoriously hard task. This task is even harder in mission-critical domains, in which a trial-and-error approach for learning how to act is not an option. In such domains, the action model used to generate plans must be safe, in the sense that plans generated with it must be applicable and achieve their goals. The challenge of learning safe action models for planning has been recently addressed for domains in which states are sufficiently described with Boolean variables. In this work, we go beyond this limitation and propose the Numeric Safe Action Model (N-SAM) learning algorithm. N-SAM runs in time that is polynomial in the number of observations and, under certain conditions, is guaranteed to return safe action models. Experimental results show that N-SAM is able to quickly learn a safe action model that can solve the majority of problems in a given domain. Finally, we describe an application of N-SAM to to repair action models that are observed to be incorrect.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:kzcrU_BdoSEC"
+    },
+    {
+        "paper_id": 47,
+        "title": "A System for Lifelong, Resilient, Job Shop Planning based on Learning Machine Capabilities from Operational Data",
+        "authors": "Roni Stern, Wiktor Piotrowski, Lara S Crawford, Michael Youngblood",
+        "publication_year": 2022,
+        "description": "We describe the design of a system that learns the capabilities of machines in the factory from available operational data, and uses the learned capability model to plan how to allocate jobs to machines over time. The described system is designed to be resilient to faults and machine performance degradation by including a component that detects such abnormal behaviors, diagnoses their root cause, and adapt the machines\u2019 capability models accordingly. These system abilities allow the factory to continue to operate and utilize machines whose performance has been degraded, thereby increasing the factory\u2019s overall utilization. In this paper, we describe a reference implementation of such a system based on two publicly available datasets from different factory types: an ion milling factory and a CnC machining factory.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:hkOj_22Ku90C"
+    },
+    {
+        "paper_id": 48,
+        "title": "Pursuit Planning with Spatial Action Abstraction",
+        "authors": "Eran Hershkovich, Dor Atzmon, Guy Shani, Roni Stern",
+        "publication_year": 2022,
+        "description": "The Pursuit-Evasion (PE) problem is a well-known problem in which an agent\u2013the Pursuer\u2013attempts to catch another agent\u2013the Evader\u2013before it reaches some target destination. We explore a variant of the PE problem called PE with Fixed Evader plans (PE-FEP), in which an external opponent modeling tool provides a distribution over the plans the Evader agent may select. This PE variant, which is motivated by real-life problems, is particularly challenging for existing PE algorithms when the agents operate in a large-scale 3D grid. In this paper, we explore how techniques from the automated planning literature can be adapted and extended to effectively solve PE-FEP. We propose three ways to model PE-FEP as a Markov Decision Process (MDP): two modeling that approximate the problem and one that fully describes the problem. To solve this large MDP, we employ the well-known Real-Time Dynamic Programming (RTDP) algorithm and develop heuristics to initialize it for each of our MDP modeling scheme. Then, we propose novel techniques for automatically generating abstract, higher-level, actions and show how to use it inside the RTDP framework. Experimental results on large grids with up to 3\u00b7 106 cells, and with sets of up to 30 possible Evader plans, show that our algorithms can scale gracefully with the size of the grid and number of Evader plans.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:1yQoGdGgb4wC"
+    },
+    {
+        "paper_id": 49,
+        "title": "Learning safe numeric action models",
+        "authors": "Argaman Mordoch, Brendan Juba, Roni Stern",
+        "publication_year": 2023,
+        "description": "Powerful domain-independent planners have been developed to solve various types of planning problems. These planners often require a model of the acting agent's actions, given in some planning domain description language. Yet obtaining such an action model is a notoriously hard task. This task is even more challenging in mission-critical domains, where a trial-and-error approach to learning how to act is not an option. In such domains, the action model used to generate plans must be safe, in the sense that plans generated with it must be applicable and achieve their goals. Learning safe action models for planning has been recently explored for domains in which states are sufficiently described with Boolean variables. In this work, we go beyond this limitation and propose the NSAM algorithm. NSAM runs in time that is polynomial in the number of observations and, under certain conditions, is guaranteed to return safe action models. We analyze its worst-case sample complexity, which may be intractable for some domains. Empirically, however, NSAM can quickly learn a safe action model that can solve most problems in the domain.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:uJ-U7cs_P_0C"
+    },
+    {
+        "paper_id": 50,
+        "title": "Greedy priority-based search for suboptimal multi-agent path finding",
+        "authors": "Shao-Hung Chan, Roni Stern, Ariel Felner, Sven Koenig",
+        "publication_year": 2023,
+        "description": "Multi-Agent Path Finding (MAPF) is the problem of finding collision-free paths, one for each agent, in a shared environment, while minimizing their sum of travel times. Since solving MAPF optimally is NP-hard, researchers have explored algorithms that solve MAPF suboptimally but efficiently. Priority-Based Search (PBS) is the leading algorithm for this purpose. It finds paths for individual agents, one at a time, and resolves collisions by assigning priorities to the colliding agents and replanning their paths during its search. However, PBS becomes ineffective for MAPF instances with high densities of agents and obstacles. Therefore, we introduce Greedy PBS (GPBS), which uses greedy strategies to speed up PBS by minimizing the number of collisions between agents. We then propose techniques that speed up GPBS further, namely partial expansions, target reasoning, induced constraints, and soft restarts. We show that GPBS with all these improvements has a higher success rate than the state-of-the-art suboptimal algorithm for a 1-minute runtime limit, especially for MAPF instances with small maps and dense obstacles.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:t7zJ5fGR-2UC"
+    },
+    {
+        "paper_id": 51,
+        "title": "Heuristic search for physics-based problems: angry birds in PDDL+",
+        "authors": "Wiktor Piotrowski, Yoni Sher, Sachin Grover, Roni Stern, Shiwali Mohan",
+        "publication_year": 2023,
+        "description": "This paper studies how a domain-independent planner and combinatorial search can be employed to play AngryBirds, a well established AI challenge problem. To model the game, we use PDDL+, a planning language for mixed discrete/continuous domains that supports durative processes and exogenous events. The paper describes the PDDL+ model and identifies key design decisions that reduce the problem complexity. In addition, we propose several domain-specific enhancements including heuristics and a search technique similar to preferred operators. Together, they alleviate the complexity of combinatorial search. We evaluate our approach by comparing its performance with dedicated domain-specific solvers on a range of Angry Birds levels. The results show that our performance is on par with these domain-specific approaches in most levels, even without using our domain-specific search enhancements.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:evX43VCCuoAC"
+    },
+    {
+        "paper_id": 52,
+        "title": "Multi agent path finding under obstacle uncertainty",
+        "authors": "Bar Shofer, Guy Shani, Roni Stern",
+        "publication_year": 2023,
+        "description": "In multi-agent path finding (MAPF), several agents must move from their current positions to their target positions without colliding. Prior work on MAPF commonly assumed perfect knowledge of the environment. We consider a MAPF setting where this is not the case, and the planner does not know a-priori whether some positions are blocked or not. To sense whether such a position is traversable, an agent must move close to it and adapt its behavior accordingly. In this work we focus on solving this type of MAPF problem, for cases where planning is centralized but cannot be done during execution. In this setting, a solution can be formulated as a plan tree for each agent, branching on the observations. We propose algorithms for finding such plans trees for two modes of executions: centralized, where the agents share information concerning observed obstacles during execution, a decentralized, where such communication is not allowed. The proposed algorithms are complete and can be configured to optimize solution cost, measured for either the best case or the worst case. We implemented these algorithms and provide experimental results demonstrating how our approach scales with respect to the number of agents and the number of positions we are uncertain about. The results show that our algorithms can solve non-trivial problems, but also highlight that this type of MAPF problems is significantly harder than classical MAPF.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:z_wVstp3MssC"
+    },
+    {
+        "paper_id": 53,
+        "title": "Learning to operate in open worlds by adapting planning models",
+        "authors": "Wiktor Piotrowski, Roni Stern, Yoni Sher, Jacob Le, Matthew Klenk, Johan deKleer, Shiwali Mohan",
+        "publication_year": 2023,
+        "description": "Planning agents are ill-equipped to act in novel situations in which their domain model no longer accurately represents the world. We introduce an approach for such agents operating in open worlds that detects the presence of novelties and effectively adapts their domain models and consequent action selection. It uses observations of action execution and measures their divergence from what is expected, according to the environment model, to infer existence of a novelty. Then, it revises the model through a heuristics-guided search over model changes. We report empirical evaluations on the CartPole problem, a standard Reinforcement Learning (RL) benchmark. The results show that our approach can deal with a class of novelties very quickly and in an interpretable fashion.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:2KloaMYe4IUC"
+    },
+    {
+        "paper_id": 54,
+        "title": "Synthesizing priority planning formulae for multi-agent pathfinding",
+        "authors": "Shuwei Wang, Vadim Bulitko, Taoan Huang, Sven Koenig, Roni Stern",
+        "publication_year": 2023,
+        "description": "Prioritized planning is a popular approach to multi-agent pathfinding. It prioritizes the agents and then repeatedly invokes a single-agent pathfinding algorithm for each agent such that it avoids the paths of higher-priority agents. Performance of prioritized planning depends critically on cleverly ordering the agents. Such an ordering is provided by a priority function. Recent work successfully used machine learning to automatically produce such a priority function given good orderings as the training data. In this paper we explore a different technique for synthesizing priority functions, namely program synthesis in the space of arithmetic formulae. We synthesize priority functions expressed as arithmetic formulae over a set of meaningful problem features via a genetic search in the space induced by a context-free grammar. Furthermore we regularize the fitness function by formula length to synthesize short, human-readable formulae. Such readability is an advantage over previous numeric machine-learning methods and may help explain the importance of features and how to combine them into a good priority function for a given domain. Moreover, our experimental results show that our formula-based priority functions outperform existing machine-learning methods on the standard benchmarks in terms of success rate, run time and solution quality without using more training data.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:0KyAp5RtaNEC"
+    },
+    {
+        "paper_id": 55,
+        "title": "Adapting to Planning Failures in Lifelong Multi-Agent Path Finding",
+        "authors": "Jonathan Morag, Roni Stern, Ariel Felner",
+        "publication_year": 2023,
+        "description": "Multi-Agent Path Finding (MAPF) is the problem of finding collision-free paths for multiple agents operating in the same environment. In Lifelong MAPF (LMAPF), these agents continuously receive new destinations, and the task is to constantly update their paths while optimizing for a high throughput over time. Therefore, many MAPF sub-problems must be solved over time in order to solve a single LMAPF problem. LMAPF problems manifest in real-world applications, such as automated warehouses, where strict responsiveness requirements limit the amount of time allocated to planning. MAPF algorithms occasionally fail to produce a plan within the allotted time. We propose a system design for LMAPF that is robust to such planning failures. Then, we explore different approaches to avoid planning failures, reduce their severity, and handle them when they occur. In particular, we describe and analyze different Fail Policies that are applied when planning failures occur and ensure collisions and unnecessary degradation of throughput are avoided. To our knowledge, while such Fail Policies are used in practice in the industry, they have yet to be researched academically.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:VLnqNzywnoUC"
+    },
+    {
+        "paper_id": 56,
+        "title": "Multi-Agent Planning and Diagnosis with Commonsense Reasoning",
+        "authors": "Tran Cao Son, William Yeoh, Roni Stern, Meir Kalech",
+        "publication_year": 2023,
+        "description": "In multi-agent systems, multi-agent planning and diagnosis are two key subfields \u2013 multi-agent planning approaches identify plans for the agents to execute in order to reach their goals, and multi-agent diagnosis approaches identify root causes for faults when they occur, typically by using information from the multi-agent planning model as well as the resulting multi-agent plan. However, when a plan fails during execution, the cause can often be related to some commonsense information that is neither explicitly encoded in the planning nor diagnosis problems. As such existing diagnosis approaches fail to accurately identify the root causes in such situations.    To remedy this limitation, we extend the Multi-Agent STRIPS problem (a common multi-agent planning framework) to a Commonsense Multi-Agent STRIPS model, which includes commonsense fluents and axioms that may affect the classical planning problem\u00a0\u2026",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:zLWjf1WUPmwC"
+    },
+    {
+        "paper_id": 57,
+        "title": "Distributed spectrum-based fault localization",
+        "authors": "Avraham Natan, Roni Stern, Meir Kalech",
+        "publication_year": 2023,
+        "description": "Spectrum-Based Fault Localization (SFL) is a popular approach for diagnosing faulty systems. SFL algorithms are inherently centralized, where observations are collected and analyzed by a single diagnoser. Applying SFL to diagnose distributed systems is challenging, especially when communication is costly and there are privacy concerns. We propose two SFL-based algorithms that are designed for distributed systems: one for diagnosing a single faulty component and one for diagnosing multiple faults. We analyze these algorithms theoretically and empirically. Our analysis shows that the distributed SFL algorithms we developed output identical diagnoses to centralized SFL while preserving privacy.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:j8SEvjWlNXcC"
+    },
+    {
+        "paper_id": 58,
+        "title": "Enhancing Numeric-SAM for Learning with Few Observations",
+        "authors": "Argaman Mordoch, Shahaf S Shperberg, Roni Stern, Berndan Juba",
+        "publication_year": 2023,
+        "description": "A significant challenge in applying planning technology to real-world problems lies in obtaining a planning model that accurately represents the problem's dynamics. Numeric Safe Action Models Learning (N-SAM) is a recently proposed algorithm that addresses this challenge. It is an algorithm designed to learn the preconditions and effects of actions from observations in domains that may involve both discrete and continuous state variables. N-SAM has several attractive properties. It runs in polynomial time and is guaranteed to output an action model that is safe, in the sense that plans generated by it are applicable and will achieve their intended goals. To preserve this safety guarantee, N-SAM must observe a substantial number of examples for each action before it is included in the learned action model. We address this limitation of N-SAM and propose N-SAM*, an enhanced version of N-SAM that always returns an action model where every observed action is applicable at least in some state, even if it was only observed once. N-SAM* does so without compromising the safety of the returned action model. We prove that N-SAM* is optimal in terms of sample complexity compared to any other algorithm that guarantees safety. An empirical study on a set of benchmark domains shows that the action models returned by N-SAM* enable solving significantly more problems compared to the action models returned by N-SAM.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:EkHepimYqZsC"
+    },
+    {
+        "paper_id": 59,
+        "title": "Blame Attribution for Multi-Agent Pathfinding Execution Failures",
+        "authors": "Avraham Natan, Roni Stern, Meir Kalech",
+        "publication_year": 2023,
+        "description": "When executing large Multi-Agent Path Finding (MAPF) scenarios, faulty events can occur over time and contribute to the overall degraded system performance. This raises the problem of how to attribute blame over the set of faulty events. The first contribution of this paper is to define this problem and propose the well-known Shapley value for solving it. The second contribution is an efficient approach for approximating Shapley values that is inspired by diagnosis concepts.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:-_dYPAW6P2MC"
+    },
+    {
+        "paper_id": 60,
+        "title": "Model Learning to Solve Minecraft Tasks",
+        "authors": "Yarin Benyamin, Argaman Mordoch, Shahaf S Shperberg, Roni Stern",
+        "publication_year": 2023,
+        "description": "Minecraft is a sandbox game that offers a rich and complex environment for AI research.  Its design allows defining diverse tasks and challenges for AI agents, such as gathering resources and crafting items.  Previous works have applied both Reinforcement Learning (RL) and Automated Planning methods to accomplish different tasks in Minecraft.  RL methods usually require a large number of interactions with the environment, while planning methods requires a model of the domain to be available. Creating planning domain models for Minecraft tasks is arduous.  Algorithms for learning a domain model from observations exist, yet have mostly been used on planning benchmarks.  In this work, we explore the use of such algorithms for solving Minecraft tasks.  We focus on the task of crafting a wooden pogo stick and explore different ways to represent states in this domain. Then, propose an agent that learns domain models from observations --- either generated by an expert or collected online --- and uses them with an off-the-shelf domain-independent planner.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:9Nmd_mFXekcC"
+    },
+    {
+        "paper_id": 61,
+        "title": "Method and system for autonomous production device modeling for job planning in a production environment",
+        "authors": "Lara Crawford, Roni Zvi Stern, Wiktor Piotrowski, Gregory Michael Youngblood",
+        "publication_year": 2023,
+        "description": "2022-04-22 Assigned to PALO ALTO RESEARCH CENTER INCORPORATED reassignment PALO ALTO RESEARCH CENTER INCORPORATED ASSIGNMENT OF ASSIGNORS INTEREST (SEE DOCUMENT FOR DETAILS). Assignors: PIOTROWSKI, WIKTOR, STERN, RONI ZVI, CRAWFORD, LARA, YOUNGBLOOD, GREGORY MICHAEL",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:uc_IGeMz5qoC"
+    },
+    {
+        "paper_id": 62,
+        "title": "A domain-independent agent architecture for adaptive operation in evolving open worlds",
+        "authors": "Shiwali Mohan, Wiktor Piotrowski, Roni Stern, Sachin Grover, Sookyung Kim, Jacob Le, Yoni Sher, Johan de Kleer",
+        "publication_year": 2024,
+        "description": "Model-based reasoning agents are ill-equipped to act in novel situations in which their model of the environment no longer sufficiently represents the world. We propose HYDRA, a framework for designing model-based agents operating in mixed discrete-continuous worlds that can autonomously detect when the environment has evolved from its canonical setup, understand how it has evolved, and adapt the agents' models to perform effectively. HYDRA is based upon PDDL+, a rich modeling language for planning in mixed, discrete-continuous environments. It augments the planning module with visual reasoning, task selection, and action execution modules for closed-loop interaction with complex environments. HYDRA implements a novel meta-reasoning process that enables the agent to monitor its own behavior from a variety of aspects. The process employs a diverse set of computational methods to maintain\u00a0\u2026",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:fEOibwPWpKIC"
+    },
+    {
+        "paper_id": 63,
+        "title": "Learning Safe Action Models with Partial Observability",
+        "authors": "Hai S Le, Brendan Juba, Roni Stern",
+        "publication_year": 2024,
+        "description": "A common approach for solving planning problems is to model them in a formal language such as the Planning Domain Definition Language (PDDL), and then use an appropriate PDDL planner. Several algorithms for learning PDDL models from observations have been proposed but plans created with these learned models may not be sound. We propose two algorithms for learning PDDL models that are guaranteed to be safe to use even when given observations that include partially observable states. We analyze these algorithms theoretically, characterizing the sample complexity each algorithm requires to guarantee probabilistic completeness. We also show experimentally that our algorithms are often better than FAMA, a state-of-the-art PDDL learning algorithm.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:ipzZ9siozwsC"
+    },
+    {
+        "paper_id": 64,
+        "title": "Safe learning of pddl domains with conditional effects",
+        "authors": "Argaman Mordoch, Enrico Scala, Roni Stern, Brendan Juba",
+        "publication_year": 2024,
+        "description": "Powerful domain-independent planners have been developed to solve various types of planning problems. These planners often require a model of the acting agent's actions, given in some planning domain description language. Manually designing such an action model is a notoriously challenging task. An alternative is to automatically learn action models from observation. Such an action model is called safe if every plan created with it is consistent with the real, unknown action model. Algorithms for learning such safe action models exist, yet they cannot handle domains with conditional or universal effects, which are common constructs in many planning problems. We prove that learning non-trivial safe action models with conditional effects may require an exponential number of samples. Then, we identify reasonable assumptions under which such learning is tractable and propose Conditional-SAM, the first algorithm capable of doing so. We analyze Conditional-SAM theoretically and evaluate it experimentally. Our results show that the action models learned by Conditional-SAM can be used to solve perfectly most of the test set problems in most of the experimented domains.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:XD-gHx7UXLsC"
+    },
+    {
+        "paper_id": 65,
+        "title": "How do I find reusable models?",
+        "authors": "Maxim Bragilovski, Roni Stern, Arnon Sturm",
+        "publication_year": 2024,
+        "description": "Models play a major role in model-based development and serve as the main artifacts that stakeholders aim to achieve. As it is difficult to develop good-quality models, repositories of models start emerging for reuse purposes. Yet, these repositories face several challenges, such as model representation, scalability, heterogeneity, and how to search for models. In this paper, we aim to address the challenge of querying model repositories by proposing a generic search framework that looks for models that match the intention of the user. The framework is based on a greedy search approach using a similarity function that considers type similarity, structure similarity, and label similarity. We evaluate the framework\u2019s efficiency on different model types: UML class diagrams, Human Know-How, and ME maps. We further compare it with existing alternatives. The evaluation indicates that the framework achieved high\u00a0\u2026",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:35r97b3x0nAC"
+    },
+    {
+        "paper_id": 66,
+        "title": "CGA: Corridor Generating Algorithm for Multi-Agent Environments",
+        "authors": "Arseniy Pertzovsky, Roni Stern, Roie Zivan",
+        "publication_year": 2024,
+        "description": "In this work, we consider path planning for a team of mobile agents where one agent must reach a given target as soon as possible and the others must accommodate to avoid collisions. We call this practical problem the Single-Agent Corridor Generating (SACG) problem and explore several algorithms for solving it. We propose two baseline algorithms based on existing Multi-Agent Path Finding (MAPF) algorithms and outline their limitations. Then, we present the Corridor Generating Algorithm (CGA), a fast and complete algorithm for solving SACG. CGA performs well compared to the baseline approaches. In addition, we show how CGA can be generalized to address the lifelong version of MAPF, where new goals appear over time.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:ILKRHgRFtOwC"
+    },
+    {
+        "paper_id": 67,
+        "title": "Optimal and Bounded Suboptimal Any-Angle Multi-agent Pathfinding",
+        "authors": "Konstantin Yakovlev, Anton Andreychuk, Roni Stern",
+        "publication_year": 2024,
+        "description": "Multi-agent pathfinding (MAPF) is the problem of finding a set of conflict-free paths for a set of agents. We explore how to solve MAPF problems when each agent can move between any pair of possible locations as long as traversing the line segment connecting them does not lead to a collision with the obstacles. This is known as any-angle pathfinding. We present the first optimal any-angle multi-agent pathfinding algorithm. Our planner is based on the Continuous Conflict-based Search (CCBS) algorithm and an optimal any-angle variant of the Safe Interval Path Planning (TO-AA-SIPP). The straightforward combination of those, however, scales poorly. To mitigate this, we adapt two techniques from classical MAPF to the any-angle setting, namely Disjoint Splitting and Multi-Constraints. Experimental results on different combinations of these techniques show they enable solving over 30% more problems than the vanilla combination of CCBS and TO-AA-SIPP. In addition, we present a bounded-suboptimal variant of our algorithm, that enables trading runtime for solution cost in a controlled manner.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:URolC5Kub84C"
+    },
+    {
+        "paper_id": 68,
+        "title": "Safe Learning of PDDL Domains with Conditional Effects--Extended Version",
+        "authors": "Argaman Mordoch, Enrico Scala, Roni Stern, Brendan Juba",
+        "publication_year": 2024,
+        "description": "Powerful domain-independent planners have been developed to solve various types of planning problems. These planners often require a model of the acting agent's actions, given in some planning domain description language. Manually designing such an action model is a notoriously challenging task. An alternative is to automatically learn action models from observation. Such an action model is called safe if every plan created with it is consistent with the real, unknown action model. Algorithms for learning such safe action models exist, yet they cannot handle domains with conditional or universal effects, which are common constructs in many planning problems. We prove that learning non-trivial safe action models with conditional effects may require an exponential number of samples. Then, we identify reasonable assumptions under which such learning is tractable and propose SAM Learning of Conditional Effects (Conditional-SAM), the first algorithm capable of doing so. We analyze Conditional-SAM theoretically and evaluate it experimentally. Our results show that the action models learned by Conditional-SAM can be used to solve perfectly most of the test set problems in most of the experimented domains.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:epqYDVWIO7EC"
+    },
+    {
+        "paper_id": 69,
+        "title": "Transient Multi-Agent Path Finding for Lifelong Navigation in Dense Environments",
+        "authors": "Jonathan Morag, Noy Gabay, Roni Stern",
+        "publication_year": 2024,
+        "description": "Multi-Agent Path Finding (MAPF) deals with finding conflict-free paths for a set of agents from an initial configuration to a given target configuration. The Lifelong MAPF (LMAPF) problem is a well-studied online version of MAPF in which an agent receives a new target when it reaches its current target. The common approach for solving LMAPF is to treat it as a sequence of MAPF problems, periodically replanning from the agents' current configurations to their current targets. A significant drawback in this approach is that in MAPF the agents must reach a configuration in which all agents are at their targets simultaneously, which is needlessly restrictive for LMAPF. Techniques have been proposed to indirectly mitigate this drawback. We describe cases where these mitigation techniques fail. As an alternative, we propose to solve LMAPF problems by solving a sequence of modified MAPF problems, in which the objective is for each agent to eventually visit its target, but not necessarily for all agents to do so simultaneously. We refer to this MAPF variant as Transient MAPF (TMAPF) and propose several algorithms for solving it based on existing MAPF algorithms. A limited experimental evaluation identifies some cases where using a TMAPF algorithm instead of a MAPF algorithm with an LMAPF framework can improve the system throughput significantly.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:EYYDruWGBe4C"
+    },
+    {
+        "paper_id": 70,
+        "title": "Online Planning for Multi Agent Path Finding in Inaccurate Maps",
+        "authors": "Nir Malka, Guy Shani, Roni Stern",
+        "publication_year": 2024,
+        "description": "In multi-agent path finding (MAPF), agents navigate to their target positions without conflict within an environment, typically represented as a graph. Traditionally, the input graph is assumed to be accurate. We investigate MAPF scenarios where the input graph may be inaccurate, containing non-existent edges or missing edges present in the environment. Agents can verify the existence or non-existence of an edge only by moving close to it. To navigate such maps, we propose an online approach where planning and execution are interleaved. As agents gather new information about the environment over time, they replan accordingly. To minimize replanning efforts, we developed methods to identify and replan only for agents affected by observed changes. To scale to larger problems, we defer conflicts resolution expected only in the distant future and adapt single-agent path-finding algorithms to account for map\u00a0\u2026",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:hMsQuOkrut0C"
+    },
+    {
+        "paper_id": 71,
+        "title": "Centralized Stochastic Multi-agent Pathfinding Under Partial Observability",
+        "authors": "Guy Shani, Roni Stern, Itay Raveh, Inon Katz",
+        "publication_year": 2024,
+        "description": "Multi-Agent Pathfinding (MAPF) is the problem of finding paths for multiple agents where each agent aims to reach a given goal location without conflicting with the other agents. In MAPF applications with physical robots, we can expect the agents to have stochastic behavior and imperfect localization. Planning for such centrally-controlled agents can be viewed as a special case of Partially Observable Markov Decision Process (POMDP), but off-the-shelf POMDP solvers cannot scale to plan for even a very small number of agents, due to the exponentially large size of the state and action spaces. Instead, we propose the Online Prioritized Planning (OPP) approach, where each agent computes and follows its individually-optimal policy until a potential conflict is detected. OPP resolves detected potential conflicts by replanning online for a subset of the agents so as to avoid positions that are potentially occupied by\u00a0\u2026",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:BwyfMAYsbu0C"
+    },
+    {
+        "paper_id": 72,
+        "title": "Algorithm Selection for Optimal Multi-Agent Path Finding via Graph Embedding",
+        "authors": "Carmel Shabalin, Omri Kaduri, Roni Stern",
+        "publication_year": 2024,
+        "description": "Multi-agent path finding (MAPF) is the problem of finding paths for multiple agents such that they do not collide. This problem manifests in numerous real-world applications such as controlling transportation robots in automated warehouses, moving characters in video games, and coordinating self-driving cars in intersections. Finding optimal solutions to MAPF is NP-Hard, yet modern optimal solvers can scale to hundreds of agents and even thousands in some cases. Different solvers employ different approaches, and there is no single state-of-the-art approach for all problems. Furthermore, there are no clear, provable, guidelines for choosing when each optimal MAPF solver to use. Prior work employed Algorithm Selection (AS) techniques to learn such guidelines from past data. A major challenge when employing AS for choosing an optimal MAPF algorithm is how to encode the given MAPF problem. Prior work either used hand-crafted features or an image representation of the problem. We explore graph-based encodings of the MAPF problem and show how they can be used on-the-fly with a modern graph embedding algorithm called FEATHER. Then, we show how this encoding can be effectively joined with existing encodings, resulting in a novel AS method we call MAPF Algorithm selection via Graph embedding (MAG). An extensive experimental evaluation of MAG on several MAPF algorithm selection tasks reveals that it is either on-par or significantly better than existing methods.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:4MWp96NkSFoC"
+    },
+    {
+        "paper_id": 73,
+        "title": "Prioritised Planning with Guarantees",
+        "authors": "Jonathan Morag, Yue Zhang, Daniel Koyfman, Zhe Chen, Ariel Felner, Daniel Harabor, Roni Stern",
+        "publication_year": 2024,
+        "description": "Prioritised Planning (PP) is a family of incomplete and sub-optimal algorithms for multi-agent and multi-robot navigation. In PP, agents compute collision-free paths in a fixed order, one at a time. Although fast and usually effective, PP can still fail, leaving users without explanation or recourse. In this work, we give a theoretical and empirical basis for better understanding the underlying problem solved by PP, which we call Priority Constrained MAPF (PC-MAPF). We first investigate the complexity of PC-MAPF and show that the decision problem is NP-hard. We then develop Priority Constrained Search (PCS), a new algorithm that is both complete and optimal with respect to a fixed priority ordering. We experiment with PCS in a range of settings, including comparisons with existing PP baselines, and we give first-known results for optimal PC-MAPF on a popular benchmark set.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:BUYA1_V_uYcC"
+    },
+    {
+        "paper_id": 74,
+        "title": "Crafting a Pogo Stick in Minecraft with Heuristic Search",
+        "authors": "Yarin Benyamin, Argaman Mordoch, Shahaf Shperberg, Wiktor Piotrowski, Roni Stern",
+        "publication_year": 2024,
+        "description": "Minecraft is a widely popular video game renowned for its intricate environment. The game's open-ended design allows the creation of unique tasks and challenges for the agents, providing a broad spectrum for researchers to experiment with different AI techniques and applications. Indeed, various Minecraft tasks have been posed as an AI challenge. Most AI research on Minecraft focused on either applying Reinforcement Learning (RL) to solve the problem, learning an action model for planning, or modeling the problem for a domain-independent planner. In this work, we focus on the combinatorial search aspect of solving the Craft Wooden Pogo task within the Polycraft World AI Lab (PAL) Minecraft environment. PAL is an interface to Minecraft that provides an API for AI agents to interact with Minecraft's environment and send commands to the main character. PAL supports symbolic observations of the current state, making it ideal for planning algorithms, which require a symbolic model of the environment for problem-solving. Other Minecraft research frameworks such as MineRL, provide a visual, pixel-based representation of the game.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:AvfA0Oy_GE0C"
+    },
+    {
+        "paper_id": 75,
+        "title": "Diagnosing Non-Intermittent Anomalies in Reinforcement Learning Policy Executions (Short Paper)",
+        "authors": "Avraham Natan, Roni Stern, Meir Kalech",
+        "publication_year": 2024,
+        "description": "Reinforcement learning (RL) algorithms output policies specifying which action an agent should take in a given state. However, faults can sometimes arise during policy execution due to internal faults in the agent. As a result, actions may have unexpected effects. In this work, we aim to diagnose such faults and infer their root cause. We consider two types of diagnosis problems. In the first, which we call RLDXw, we assume we only know what a normal execution looks like. In the second, called RLDXs, we assume we have models for the faulty behavior of a component, which we call fault modes. The solution to RLDXw is a time step at which a fault occurred for the first time. The solution to RLDXs is more informative, represented as a fault mode according to which the RL task was executed. Solving those problems is useful in practice to facilitate efficient repair of faulty agents, since it can focus the repair efforts on specific actions. We formally define RLDXw and RLDXs and design two algorithms called WFMa and SFMa for solving them. We evaluate our algorithms on a benchmark of RL domains and discuss their strengths and limitations. When the number of the observed states increases, both WFMa and SFMa report a decrease in runtime (up to significantly 6.5 times faster). Additionally, the runtime of SFMa increases linearly with the increase in candidate fault modes.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:L7CI7m0gUJcC"
+    },
+    {
+        "paper_id": 76,
+        "title": "Diagnosing Multi-Agent STRIPS Plans",
+        "authors": "Avraham Natan, Roni Stern, Meir Kalech, William Yeoh, Tran Cao Son",
+        "publication_year": 2024,
+        "description": "The increasing use of multi-agent systems demands that many challenges be addressed. One such challenge is diagnosing failed multi-agent plan executions, sometimes in system setups where the different agents are not willing to disclose their private actions. One formalism for generating multi-agent plans is the well-known MA-STRIPS formalism. While there have been approaches for delivering as robust plans as possible, we focus on the plan execution stage. Specifically, we address the problem of diagnosing plans that failed their execution. We propose a Model-Based Diagnosis approach to solve this problem. Given an MA-STRIPS problem, a plan that solves it, and an observation that indicates execution failure, we define the MA-STRIPS diagnosis problem. We compile that problem into a boolean satisfiability problem (SAT) and then use an off-the-shelf SAT solver to obtain candidate diagnoses. We further expand this approach to address privacy by proposing a distributed algorithm that can find these same diagnoses in a decentralized manner. Additionally, we propose an enhancement to the distributed algorithm that uses information generated during the diagnosis process to provide significant speedups. We found that the improved algorithm runs more than 10 times faster than the basic decentralized version and, in one case, runs faster than the centralized algorithm.",
+        "approved": false,
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:vbGhcppDl1QC"
+    }
+]

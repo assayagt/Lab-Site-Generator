@@ -5,7 +5,8 @@ import ParticipantsPage from "./Pages/ParticipantsPage/ParticipantsPage"
 import ContactUsPage from './Pages/ContactUsPage/ContactUsPage';
 import Header from './Components/Header/Header';
 import AccountPage from './Pages/AccountPage/AccountPage';
-
+import PublicationsPage from './Pages/PublicationsPage/PublicationsPage';
+import publications from "./publications.json"
 function App() {
 
   const components = [
@@ -30,6 +31,10 @@ function App() {
            <Route
                 path="/Account"
                 element= {<AccountPage/>}
+              />
+              <Route
+                path="/Publications"
+                element= {<PublicationsPage publications={publications}/>}
               />
             </Routes>
     </Router>
