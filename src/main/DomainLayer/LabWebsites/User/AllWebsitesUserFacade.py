@@ -24,14 +24,29 @@ class AllWebsitesUserFacade:
             raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST.value)
 
     def logout(self, domain, userId):
+        self.error_if_domain_not_exist(domain)
         userFacade = self.getUserFacadeByDomain(domain)
         userFacade.logout(userId)
+
+    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name):
+        userFacade = self.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(manager_userId)
+        userFacade.error_if_user_not_logged_in(manager_userId)
+        userFacade.error_if_user_is_not_manager_or_site_creator(manager_userId)
+        userFacade.approve_registration_request(requested_email, requested_full_name)
+
+    def reject_registration_request(self, domain, manager_userId, requested_email):
+        userFacade = self.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(manager_userId)
+        userFacade.error_if_user_not_logged_in(manager_userId)
+        userFacade.error_if_user_is_not_manager_or_site_creator(manager_userId)
+        userFacade.reject_registration_request(requested_email)
 
     def create_new_site_manager_from_labWebsite(self, nominator_manager_userId, nominated_manager_email, domain):
         userFacade = self.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(nominator_manager_userId)
         userFacade.error_if_user_not_logged_in(nominator_manager_userId)
-        userFacade.error_if_user_is_not_manager(nominator_manager_userId)
+        userFacade.error_if_user_is_not_manager_or_site_creator(nominator_manager_userId)
         userFacade.error_if_labMember_notExist(nominated_manager_email)
         nominated_manager_fullName = userFacade.getLabMemberByEmail(nominated_manager_email).get_fullName()
         userFacade.create_new_site_manager(nominated_manager_email, nominated_manager_fullName)
@@ -40,7 +55,7 @@ class AllWebsitesUserFacade:
         userFacade = self.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(manager_userId)
         userFacade.error_if_user_not_logged_in(manager_userId)
-        userFacade.error_if_user_is_not_manager(manager_userId)
+        userFacade.error_if_user_is_not_manager_or_site_creator(manager_userId)
         userFacade.register_new_LabMember(email_to_register, lab_member_fullName)
 
     def create_new_site_manager_from_generator(self, nominated_manager_email, domain):
@@ -58,7 +73,7 @@ class AllWebsitesUserFacade:
         userFacade = self.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(manager_userId)
         userFacade.error_if_user_not_logged_in(manager_userId)
-        userFacade.error_if_user_is_not_manager(manager_userId)
+        userFacade.error_if_user_is_not_manager_or_site_creator(manager_userId)
         userFacade.error_if_member_is_not_labMember_or_manager(member_email)
         userFacade.define_member_as_alumni(member_email)
 
@@ -66,7 +81,7 @@ class AllWebsitesUserFacade:
         userFacade = self.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(manager_userId)
         userFacade.error_if_user_not_logged_in(manager_userId)
-        userFacade.error_if_user_is_not_manager(manager_userId)
+        userFacade.error_if_user_is_not_manager_or_site_creator(manager_userId)
         userFacade.remove_manager_permissions(manager_toRemove_email)
 
     def getMemberEmailByName(self, author, domain):

@@ -76,3 +76,12 @@ class BridgeToTests(ABC):
     def remove_manager_permission(self, manager_user_id, manager_to_remove_email, domain):
         """Remove administrative permissions from a lab manager."""
         pass
+
+    @abstractmethod
+    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name):
+        """Approve a registration request."""
+        pass
+
+    def reject_registration_request(self, domain, manager_userId, requested_email):
+        """Reject a registration request."""
+        pass

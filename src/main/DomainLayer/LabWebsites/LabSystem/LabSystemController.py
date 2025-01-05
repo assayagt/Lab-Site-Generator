@@ -53,14 +53,24 @@ class LabSystemController:
         userFacade.error_if_user_notExist(userId)
         member = userFacade.get_member_by_email(email)
         if member is None:
+            # check if registration request already sent to managers:
+            userFacade.error_if_email_is_in_requests_and_wait_approval(email)
+            # error if registration request already sent to managers and rejected:
+            userFacade.error_if_email_is_in_requests_and_rejected(email)
+            # send registration request to all LabManagers:
             self.send_registration_notification_to_all_LabManagers(domain, email)
+            # keep the email in the requests list, so next time the user will login, a registration request wont be sent again:
+            userFacade.add_email_to_requests(email)
+            raise Exception(ExceptionsEnum.USER_NOT_REGISTERED.value)
         else:
             userFacade.login(userId, email)
 
     def send_registration_notification_to_all_LabManagers(self, domain, requestedEmail):
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         managers = userFacade.getManagers()
-        for managerEmail in managers:
+        siteCreator = userFacade.getSiteCreator()
+        recipients = {**managers, **siteCreator}
+        for managerEmail in recipients:
             self.notificationsFacade.send_registration_request_notification(requestedEmail, managerEmail)
 
     def logout(self, domain, userId):
@@ -68,6 +78,18 @@ class LabSystemController:
         Logout user from a specific website
         """
         self.allWebsitesUserFacade.logout(domain, userId)
+
+    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name):
+        """
+        Approve registration request of a specific email, by a lab manager
+        """
+        self.allWebsitesUserFacade.approve_registration_request(domain, manager_userId, requested_email, requested_full_name)
+
+    def reject_registration_request(self, domain, manager_userId, requested_email):
+        """
+        Reject registration request of a specific email, by a lab manager
+        """
+        self.allWebsitesUserFacade.reject_registration_request(domain, manager_userId, requested_email)
 
     def create_new_site_manager_from_labWebsite(self, nominator_manager_userId, domain, nominated_manager_email):
         """
