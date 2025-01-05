@@ -92,13 +92,11 @@ function Header(props) {
         {hasNotifications && <div className="notification-dot"></div>}
           <div className="hidden-box">
             <div className="personal_menu">
-              
               <div className="icon_photo">
-               
                   <img
                     src={accountIcon}
                     alt="icon"
-                    onClick={() => console.log("Account clicked")}
+                    onClick={() => navigate("Account")}
                   />
                 
               </div>
