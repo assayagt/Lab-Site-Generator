@@ -92,7 +92,7 @@ const PublicationPage = ({ publications }) => {
                 <div>
                     <p><strong>Authors:</strong> {pub.authors}</p>
                     <p><strong>Year:</strong> {pub.publication_year}</p>
-                    <p className="description"><strong>Description:</strong> {pub.description}</p>
+                    <p className="description">{pub.description}</p>
                     <div className='links'>
                         <div className="git">Git</div>
                         <div className="presentation">Presentation</div>

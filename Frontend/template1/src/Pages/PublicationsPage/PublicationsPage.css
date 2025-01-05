@@ -1,9 +1,8 @@
-.description {
-    display: block;
-    max-height: 100px;
-    white-space: normal;
-    overflow: hidden;
-    text-overflow: ellipsis; 
+.description{
+    max-height: 100px; /* Set your desired height */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding: 10px; /* Optional: Add padding for better readability */
+    border-radius: 5px; /* Optional: Rounded corners */
 }
 
 .publication-page{
@@ -46,3 +45,24 @@
     display: flex;
     justify-content: center; /* Centers content horizontally */
 }
+
+
+
+/* Custom scrollbar styling */
+.description::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+  }
+  
+  .description::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Background color of the track */
+    border-radius: 5px; /* Optional: Rounded corners */
+  }
+  
+  .description::-webkit-scrollbar-thumb {
+    background: #888; /* Color of the scrollbar handle */
+    border-radius: 5px; /* Optional: Rounded corners */
+  }
+  
+  .description::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Darker color on hover */
+  }
