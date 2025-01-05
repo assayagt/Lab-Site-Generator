@@ -27,3 +27,6 @@ class ExceptionsEnum(Enum):
     REGISTRATION_EMAIL_ALREADY_SENT_TO_MANAGER = "Attention! You are not registered to this lab website, a registration request has already been sent to the site manager and wait approval"
     REGISTRATION_REQUEST_REJECTED_BY_MANAGER = "Attention! Your registration request has been rejected by the site manager, so you can't login to the lab website"
     DECISION_ALREADY_MADE_FOR_THIS_REGISTRATION_REQUEST = "A decision has already been made for this registration request by one of the lab managers"
+    INVALID_LINKEDIN_LINK = "Invalid LinkedIn link provided"
+    INVALID_FULL_NAME = "Invalid full name provided"
+    INVALID_DEGREE = "Invalid degree provided"

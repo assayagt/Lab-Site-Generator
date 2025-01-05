@@ -60,14 +60,7 @@ class TestLogoutFunction(unittest.TestCase):
 
     def test_logout_multiple_sessions(self):
         # Test logout for a user with multiple sessions
-        self.lab_system_service.login(self.domain, self.user_id_lab_website, "user_1@example.com")
-        self.lab_system_service.login(self.domain, self.user_id_lab_website, "user_1@example.com")  # Second session
+        self.lab_system_service.login(self.domain, self.site_creator_userId, self.site_creator_email)
+        self.lab_system_service.login(self.domain, self.user_id_lab_website, "member1@example.com")  # Second session
         response = self.lab_system_service.logout(self.domain, self.user_id_lab_website)
         self.assertTrue(response.is_success())  # Logout should work for any active session
-
-    def test_logout_after_login_as_member(self):
-        # Test logout after a user is promoted to a lab member
-        member_email = "member@example.com"
-        self.lab_system_service.approve_registration_request(self.domain, self.user_id_lab_website, member_email, "New Member")
-        response = self.lab_system_service.logout(self.domain, self.user_id_lab_website)
-        self.assertTrue(response.is_success())

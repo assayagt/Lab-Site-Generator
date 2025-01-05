@@ -177,10 +177,11 @@ class LabSystemController:
 
     def add_publication_manually(self, userId, publicationDTO, domain, authors_emails):
         """A Lab Member updates the website with new research publications"""
+        self.allWebsitesUserFacade.error_if_domain_not_exist(domain)
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
-        userFacade.error_if_user_is_not_labMember_manager_creator(userId, domain)
+        userFacade.error_if_user_is_not_labMember_manager_creator(userId)
         self.websiteFacade.create_new_publication(domain, publicationDTO, authors_emails)
 
     def get_all_approved_publication(self, domain):
@@ -219,7 +220,7 @@ class LabSystemController:
 
     def get_all_lab_managers(self, domain):
         """notice! this function returns all managers including site creator!"""
-        return self.get_all_lab_managers(domain)
+        return self.allWebsitesUserFacade.get_all_lab_managers(domain)
 
     def set_secondEmail_by_member(self, userid, secondEmail, domain):
         self.allWebsitesUserFacade.set_secondEmail_by_member(userid, secondEmail, domain)

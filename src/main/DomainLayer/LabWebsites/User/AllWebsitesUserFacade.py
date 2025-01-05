@@ -56,6 +56,7 @@ class AllWebsitesUserFacade:
         userFacade.error_if_user_notExist(manager_userId)
         userFacade.error_if_user_not_logged_in(manager_userId)
         userFacade.error_if_user_is_not_manager_or_site_creator(manager_userId)
+        userFacade.error_if_email_is_not_valid(email_to_register)
         userFacade.register_new_LabMember(email_to_register, lab_member_fullName)
 
     def create_new_site_manager_from_generator(self, nominated_manager_email, domain):
@@ -74,6 +75,7 @@ class AllWebsitesUserFacade:
         userFacade.error_if_user_notExist(manager_userId)
         userFacade.error_if_user_not_logged_in(manager_userId)
         userFacade.error_if_user_is_not_manager_or_site_creator(manager_userId)
+        userFacade.error_if_trying_to_define_site_creator_as_alumni(member_email)
         userFacade.error_if_member_is_not_labMember_or_manager(member_email)
         userFacade.define_member_as_alumni(member_email)
 
@@ -108,6 +110,7 @@ class AllWebsitesUserFacade:
         userFacade.error_if_user_notExist(userid)
         userFacade.error_if_user_not_logged_in(userid)
         userFacade.error_if_user_is_not_labMember_manager_creator(userid)
+        userFacade.error_if_email_is_not_valid(secondEmail)
         email = userFacade.get_email_by_userId(userid)
         userFacade.set_secondEmail_by_member(email, secondEmail)
 
@@ -116,6 +119,7 @@ class AllWebsitesUserFacade:
         userFacade.error_if_user_notExist(userid)
         userFacade.error_if_user_not_logged_in(userid)
         userFacade.error_if_user_is_not_labMember_manager_creator(userid)
+        userFacade.error_if_linkedin_link_not_valid(linkedin_link)
         email = userFacade.get_email_by_userId(userid)
         userFacade.set_linkedin_link_by_member(email, linkedin_link)
 
@@ -132,6 +136,8 @@ class AllWebsitesUserFacade:
         userFacade.error_if_user_notExist(userid)
         userFacade.error_if_user_not_logged_in(userid)
         userFacade.error_if_user_is_not_labMember_manager_creator(userid)
+        if not fullName:
+            raise Exception(ExceptionsEnum.INVALID_FULL_NAME.value)
         email = userFacade.get_email_by_userId(userid)
         userFacade.set_fullName_by_member(email, fullName)
 
@@ -140,6 +146,7 @@ class AllWebsitesUserFacade:
         userFacade.error_if_user_notExist(userid)
         userFacade.error_if_user_not_logged_in(userid)
         userFacade.error_if_user_is_not_labMember_manager_creator(userid)
+        userFacade.error_if_degree_not_valid(degree)
         email = userFacade.get_email_by_userId(userid)
         userFacade.set_degree_by_member(email, degree)
 
