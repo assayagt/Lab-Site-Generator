@@ -34,11 +34,11 @@
     gap: 30px;
     align-items:center;
 }
-.video{
+/* .video{
     border: 1px solid #000000; 
     width: 200%;
     height: 80px;
-}
+} */
 .links{
     display: flex;
     flex-direction: row;

@@ -564,7 +564,8 @@
         "publication_year": 2024,
         "description": "Model-based reasoning agents are ill-equipped to act in novel situations in which their model of the environment no longer sufficiently represents the world. We propose HYDRA, a framework for designing model-based agents operating in mixed discrete-continuous worlds that can autonomously detect when the environment has evolved from its canonical setup, understand how it has evolved, and adapt the agents' models to perform effectively. HYDRA is based upon PDDL+, a rich modeling language for planning in mixed, discrete-continuous environments. It augments the planning module with visual reasoning, task selection, and action execution modules for closed-loop interaction with complex environments. HYDRA implements a novel meta-reasoning process that enables the agent to monitor its own behavior from a variety of aspects. The process employs a diverse set of computational methods to maintain\u00a0\u2026",
         "approved": false,
-        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:fEOibwPWpKIC"
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:fEOibwPWpKIC",
+        "video": "https://www.youtube.com/embed/J7BXAv6-70g"
     },
     {
         "paper_id": 63,
@@ -573,7 +574,8 @@
         "publication_year": 2024,
         "description": "A common approach for solving planning problems is to model them in a formal language such as the Planning Domain Definition Language (PDDL), and then use an appropriate PDDL planner. Several algorithms for learning PDDL models from observations have been proposed but plans created with these learned models may not be sound. We propose two algorithms for learning PDDL models that are guaranteed to be safe to use even when given observations that include partially observable states. We analyze these algorithms theoretically, characterizing the sample complexity each algorithm requires to guarantee probabilistic completeness. We also show experimentally that our algorithms are often better than FAMA, a state-of-the-art PDDL learning algorithm.",
         "approved": false,
-        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:ipzZ9siozwsC"
+        "publication_link": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:ipzZ9siozwsC",
+         "video": "https://drive.google.com/file/d/17MP-M-j7_x4d0K7Hd6cWtCDgJmLmbQQv/preview"
     },
     {
         "paper_id": 64,
