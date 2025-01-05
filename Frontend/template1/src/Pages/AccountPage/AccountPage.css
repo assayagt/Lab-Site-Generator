@@ -203,4 +203,36 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-left: 20px;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  padding: 5px 10px;
+  width: 100%;
+  max-width: 400px; /* Adjust the width as needed */
+  margin-bottom: 20px; /* Spacing below the search bar */
+  background-color: #f9f9f9;
+}
+
+.search-bar .search-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.search-bar .search-input {
+  border: none;
+  outline: none;
+  flex: 1; /* Takes up the remaining space */
+  background-color: transparent;
+  font-size: 16px;
+  color: #333;
+}
+
+.search-bar .search-input::placeholder {
+  color: #aaa;
 }

@@ -3,6 +3,7 @@ import './AccountPage.css';
 import accountIcon from "../../images/account_avatar.svg";
 import cameraIcon from "../../images/camera_icon.svg";
 import publicationsData from "../../publications.json";
+import searchIcon from "../../images/search_icon.svg";
 
 const AccountPage = () => {
   const [activeSection, setActiveSection] = useState('personal-info'); // Track the active section
@@ -130,13 +131,16 @@ const AccountPage = () => {
         {activeSection === 'my-publications' && (
           <div id="my-publications" className="my-publications">
             <h2>My Publications</h2>
-            <input
-              type="text"
-              placeholder="Search by title"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-            />
+            <div className="search-bar">
+              <img src={searchIcon} alt="Search" className="search-icon" />
+              <input
+                type="text"
+                placeholder="Search by title"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+              />
+            </div>
 
               {paginatedPublications.map((publication) => (
                 <div key={publication.id} className='publication-item'>
