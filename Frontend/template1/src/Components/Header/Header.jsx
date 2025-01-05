@@ -74,7 +74,34 @@ function Header(props) {
           ))}
       </div>
       <div className="icon_photo">
-      <img src ={accountIcon} alt= "icon" onClick={console.log("something")}></img>
+      <div className="menu">
+                  <div className="hidden-box">
+                  <div className="personal_menu">
+                      <div className="icon_photo">
+                          {!sessionStorage.getItem('isLoggedIn')?<img src ={accountIcon} alt= "icon" onClick={console.log("j")}></img>:
+                          <img src ={accountIcon} alt= "icon" ></img>
+                          }
+                      </div>
+                      <hr className="hr_line" />
+                      {sessionStorage.getItem('isLoggedIn') ? (
+                      <div className="choose_item">
+                          <button className ="my_sites_button" onClick={console.log("j")}>
+                              My Account
+                          </button> 
+                          <button className ="logout_button" onClick={console.log("j")}>
+                              {/* <img src ={} alt= "logout"></img> */}
+                              Logout
+                          </button>
+                      </div>
+      
+                      ) : ( <div className="choose_item">
+                          <button className ="login_button"onClick={console.log("j")}>Login</button>
+                          </div>
+                      )}
+                      </div>
+                  </div>
+            </div>
+
       </div>  
     </div>                
                           
