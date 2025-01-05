@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './AccountPage.css';
 import accountIcon from "../../images/account_avatar.svg";
+import cameraIcon from "../../images/camera_icon.svg";
 
 const AccountPage = () => {
   const [activeSection, setActiveSection] = useState('personal-info'); // Track the active section
@@ -36,17 +37,38 @@ const AccountPage = () => {
     }
   };
 
+  const handleUploadPhoto = () => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        alert(`Uploaded: ${file.name}`);
+      }
+    };
+    fileInput.click();
+  };
+
+  const handleSavePhoto = () => {
+    alert('Photo saved successfully!');
+  };
+
   return (
     <div className="account-page">
       <Sidebar activeSection={activeSection} onSectionChange={handleSectionChange} />
       <div className="main-content">
-      {activeSection === 'personal-info' && (
+        {activeSection === 'personal-info' && (
           <form id="personal-info" className="personal-info" onSubmit={(e) => { e.preventDefault(); alert('Form Submitted'); }}>
             <h2>Personal Information</h2>
             <div className="info">
               <div className='user-photo-div'>
                 <img src={accountIcon} alt="User" className="user-photo" />
-                <div>Save photo</div>
+                <div className="camera-icon" onClick={handleUploadPhoto}>
+                  <img src={cameraIcon} alt="Upload" />
+                </div>
+                <button className="save-photo" onClick={handleSavePhoto}>Save Photo</button>
+
               </div>
               <div className="details">
                 <label className='detail-bio'>
