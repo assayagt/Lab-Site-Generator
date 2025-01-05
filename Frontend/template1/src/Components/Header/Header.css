@@ -1,7 +1,7 @@
 .header{
   display: flex;
   flex-direction: row;
-  margin: 20px;
+  margin: 15px;
   align-items: center;
   gap:20px
 }
@@ -54,4 +54,11 @@
 .navbar-item-button:hover {
   color: black;
 
+}
+.icon_photo{
+  height: 43px;
+  width: 43px;
+  right:0;
+  position: absolute;
+  margin-right: 20px;
 }

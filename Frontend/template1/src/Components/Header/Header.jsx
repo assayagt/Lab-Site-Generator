@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "./Header.css";
 import Logo from "../../images/brain.svg";
-
+import accountIcon from "../../images/account_avatar.svg";
 
 
 function Header(props) {
@@ -53,6 +53,9 @@ function Header(props) {
     } else if (item === "Participants") {
       navigate("/Participants"); 
     }
+    else if (item === "Contact Us") {
+      navigate("/ContactUs"); 
+    }
   };
 
   return (
@@ -60,17 +63,23 @@ function Header(props) {
       <img className="header_logo" src={Logo} alt="logoItem"></img>
       <div className="header_title">{props.title}</div>
       <div className="navbar" ref={navbarRef} onMouseMove={handleMouseEnter}>
-      {props.components.filter(item => item !== "About Us").map((item, index, filteredArray) => (
-        <div className="navbar-item" key={item.id || index}> {/* Use index if there's no id */}
-          <button onClick={()=>handleClick(item)} className="navbar-item-button" >
-            {item}
-          </button>
-          {/* Add | only for items that are not the last item */}
-          {index !== filteredArray.length - 1 && <div>|</div>}
-        </div>
-        ))}
+        {props.components.filter(item => item !== "About Us").map((item, index, filteredArray) => (
+          <div className="navbar-item" key={item.id || index}> {/* Use index if there's no id */}
+            <button onClick={()=>handleClick(item)} className="navbar-item-button" >
+              {item}
+            </button>
+            {/* Add | only for items that are not the last item */}
+            {index !== filteredArray.length - 1 && <div>|</div>}
+          </div>
+          ))}
       </div>
-    </div>
+      <div className="icon_photo">
+      <img src ={accountIcon} alt= "icon" onClick={console.log("something")}></img>
+      </div>  
+    </div>                
+                          
+                      
+       
   );
 }
 
