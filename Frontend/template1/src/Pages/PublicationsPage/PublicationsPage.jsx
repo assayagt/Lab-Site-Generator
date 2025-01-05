@@ -10,7 +10,7 @@ const PublicationPage = ({ publications }) => {
   const itemsPerPage = 5;
 
   useEffect(() => {
-    const years = Array.from(new Set(publications.map((pub) => pub.publication_year)));
+    const years = Array.from(new Set(publications.map((pub) => pub.publication_year))).sort((a, b) => b - a);
     setAvailableYears(years);
 
     const authors = Array.from(
@@ -30,14 +30,15 @@ const PublicationPage = ({ publications }) => {
     setCurrentPage(1); // Reset to first page
   };
 
-  const filteredPublications = publications.filter((pub) => {
+  const filteredPublications = publications
+  .filter((pub) => {
     const matchesYear = yearFilter ? pub.publication_year.toString() === yearFilter : true;
     const matchesAuthor = authorFilter
       ? pub.authors.toLowerCase().includes(authorFilter.toLowerCase())
       : true;
     return matchesYear && matchesAuthor;
-  });
-
+  })
+  .sort((a, b) => b.publication_year - a.publication_year);
   const paginatedPublications = filteredPublications.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
