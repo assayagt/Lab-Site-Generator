@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import ParticipantsPage from "./Pages/ParticipantsPage/ParticipantsPage"
 import ContactUsPage from './Pages/ContactUsPage/ContactUsPage';
 import Header from './Components/Header/Header';
+import AccountPage from './Pages/AccountPage/AccountPage';
 
 function App() {
 
@@ -26,7 +27,10 @@ function App() {
                 path="/ContactUs"
                 element= {<ContactUsPage address = "Ben Gurion University of the Negev" email ="roni@bgu.ac.il" phone="+972 523456789"/>}
               />
-           
+           <Route
+                path="/Account"
+                element= {<AccountPage/>}
+              />
             </Routes>
     </Router>
 
