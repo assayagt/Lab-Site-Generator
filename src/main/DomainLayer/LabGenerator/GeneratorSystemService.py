@@ -87,10 +87,10 @@ class GeneratorSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def register_new_LabMember_from_generator(self, manager_userId, email_to_register, lab_member_fullName, domain):
+    def register_new_LabMember_from_generator(self, manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain):
         """Register a new lab member through GeneratorSystemController."""
         try:
-            self.generator_system_controller.register_new_LabMember_from_generator(manager_userId, email_to_register, lab_member_fullName, domain)
+            self.generator_system_controller.register_new_LabMember_from_generator(manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain)
             return Response(email_to_register, "Lab member registered successfully")
         except Exception as e:
             return Response(None, str(e))

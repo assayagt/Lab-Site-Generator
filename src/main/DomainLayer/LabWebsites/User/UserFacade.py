@@ -25,12 +25,12 @@ class UserFacade:
             UserFacade._singleton_instance = UserFacade()
         return UserFacade._singleton_instance
 
-    def create_new_site_manager(self, nominated_manager_email, nominated_manager_fullName):
+    def create_new_site_manager(self, nominated_manager_email, nominated_manager_fullName, nominated_manager_degree):
         if nominated_manager_email in self.members:
             member = self.getLabMemberByEmail(nominated_manager_email)
             del self.members[nominated_manager_email]
         else:
-            member = LabMember(nominated_manager_email, nominated_manager_fullName)
+            member = LabMember(nominated_manager_email, nominated_manager_fullName, nominated_manager_degree)
         self.managers[nominated_manager_email] = member
         if nominated_manager_email in self.emails_requests_to_register:
             del self.emails_requests_to_register[nominated_manager_email]
@@ -66,18 +66,18 @@ class UserFacade:
         if re.match(email_regex, email) is None:
             raise Exception(ExceptionsEnum.INVALID_EMAIL_FORMAT.value)
 
-    def register_new_LabMember(self, email, fullName):
+    def register_new_LabMember(self, email, fullName, degree):
         member = self.get_member_by_email(email)
         if member is not None:
             raise Exception(ExceptionsEnum.EMAIL_IS_ALREADY_ASSOCIATED_WITH_A_MEMBER.value)
-        member = LabMember(email, fullName)
+        member = LabMember(email, fullName, degree)
         self.members[email] = member
         if email in self.emails_requests_to_register:
             del self.emails_requests_to_register[email]
 
-    def approve_registration_request(self, email, fullName):
+    def approve_registration_request(self, email, fullName, degree):
         if email in self.emails_requests_to_register and self.emails_requests_to_register[email] == RegistrationStatus.PENDING.value:
-            self.register_new_LabMember(email, fullName)
+            self.register_new_LabMember(email, fullName, degree)
         else:
             raise Exception(ExceptionsEnum.DECISION_ALREADY_MADE_FOR_THIS_REGISTRATION_REQUEST.value)
 
@@ -219,8 +219,8 @@ class UserFacade:
     def getAlumnis(self):
         return self.alumnis
 
-    def set_site_creator(self, creator_email, creator_fullName):
-        member = LabMember(creator_email, creator_fullName)
+    def set_site_creator(self, creator_email, creator_fullName, creator_degree):
+        member = LabMember(creator_email, creator_fullName, creator_degree)
         self.siteCreator[creator_email] = member
 
     def set_secondEmail_by_member(self, email, secondEmail):

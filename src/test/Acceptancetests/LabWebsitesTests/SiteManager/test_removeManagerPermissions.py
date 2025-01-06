@@ -1,6 +1,7 @@
 import unittest
 
 from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
+from src.main.DomainLayer.LabWebsites.User.Degree import Degree
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.test.Acceptancetests.LabGeneratorTests.ProxyToTests import ProxyToTest
 from src.test.Acceptancetests.LabWebsitesTests.ProxyToTests import ProxyToTests
@@ -29,9 +30,9 @@ class TestRemoveManagerPermission(unittest.TestCase):
                                                      self.template)
         self.generator_system_service.create_new_lab_website(
             self.domain,
-            {"member1@example.com": "Member One"},
-            {self.manager1_email: "Manager One", self.manager2_email: "Manager Two"},
-            {"email": self.lab_creator_email, "full_name": self.lab_creator_name}
+            {"member1@example.com": {"full_name":"Member One", "degree": Degree.BSC}},
+            {self.manager1_email: {"full_name":"Manager One", "degree":Degree.MSC}, self.manager2_email: {"full_name":"Manager Two", "degree": Degree.MSC}},
+            {"email": self.lab_creator_email, "full_name": self.lab_creator_name, "degree": Degree.PHD}
         )
 
         # Simulate a lab manager login

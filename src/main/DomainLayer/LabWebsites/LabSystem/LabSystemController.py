@@ -29,18 +29,30 @@ class LabSystemController:
 
     def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator):
         """
-        Create a new lab website with the given domain, lab members, lab managers, and site creator
+        Create a new lab website with the given domain, lab members, lab managers, and site creator.
+        Each lab member, lab manager, and site creator now includes a degree field.
         """
         self.websiteFacade.create_new_website(domain)
         self.allWebsitesUserFacade.add_new_webstie_userFacade(domain)
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        for lab_member_email, lab_member_full_name in lab_members.items():
-            userFacade.register_new_LabMember(lab_member_email, lab_member_full_name)
-        for lab_manager_email, lab_manager_full_name in lab_managers.items():
-            userFacade.create_new_site_manager(lab_manager_email, lab_manager_full_name)
+
+        # Add lab members
+        for lab_member_email, lab_member_details in lab_members.items():
+            full_name = lab_member_details["full_name"]
+            degree = lab_member_details["degree"]
+            userFacade.register_new_LabMember(lab_member_email, full_name, degree)
+
+        # Add lab managers
+        for lab_manager_email, lab_manager_details in lab_managers.items():
+            full_name = lab_manager_details["full_name"]
+            degree = lab_manager_details["degree"]
+            userFacade.create_new_site_manager(lab_manager_email, full_name, degree)
+
+        # Set site creator
         site_creator_email = site_creator.get("email")
         site_creator_full_name = site_creator.get("full_name")
-        userFacade.set_site_creator(site_creator_email, site_creator_full_name)
+        site_creator_degree = site_creator.get("degree")
+        userFacade.set_site_creator(site_creator_email, site_creator_full_name, site_creator_degree)
 
     def login(self, domain, userId, email):
         """
@@ -79,11 +91,11 @@ class LabSystemController:
         """
         self.allWebsitesUserFacade.logout(domain, userId)
 
-    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name):
+    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name, requested_degree):
         """
         Approve registration request of a specific email, by a lab manager
         """
-        self.allWebsitesUserFacade.approve_registration_request(domain, manager_userId, requested_email, requested_full_name)
+        self.allWebsitesUserFacade.approve_registration_request(domain, manager_userId, requested_email, requested_full_name, requested_degree)
 
     def reject_registration_request(self, domain, manager_userId, requested_email):
         """
@@ -99,13 +111,14 @@ class LabSystemController:
         """
         self.allWebsitesUserFacade.create_new_site_manager_from_labWebsite(nominator_manager_userId, nominated_manager_email, domain)
 
-    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName, domain):
+    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain):
+
         """
         Define a new lab member in a specific website, directly from the lab website.
         The given email_to_register must not be associated with a member(manager/lab member/creator..) of the given website.
         This operation can be done only by lab manager
         """
-        self.allWebsitesUserFacade.register_new_LabMember_from_labWebsite(manager_userId, email_to_register, lab_member_fullName, domain)
+        self.allWebsitesUserFacade.register_new_LabMember_from_labWebsite(manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain)
 
     def create_new_site_manager_from_generator(self, domain, nominated_manager_email):
         """
@@ -114,12 +127,12 @@ class LabSystemController:
         """
         self.allWebsitesUserFacade.create_new_site_manager_from_generator(nominated_manager_email, domain)
 
-    def register_new_LabMember_from_generator(self, email_to_register, lab_member_fullName, domain):
+    def register_new_LabMember_from_generator(self, email_to_register, lab_member_fullName,lab_member_degree, domain):
         """
         Define a new lab member in a specific website, from generator site.
         The given email_to_register must not be associated with a member(manager/lab member/creator..) of the given website.
         """
-        self.allWebsitesUserFacade.register_new_LabMember_from_generator(email_to_register, lab_member_fullName, domain)
+        self.allWebsitesUserFacade.register_new_LabMember_from_generator(email_to_register, lab_member_fullName, lab_member_degree, domain)
 
     def crawl_for_publications(self):
         """

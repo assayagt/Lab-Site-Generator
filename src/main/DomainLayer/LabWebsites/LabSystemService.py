@@ -137,10 +137,10 @@ class LabSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name):
+    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name, requested_degree):
         """Approve a registration request."""
         try:
-            self.lab_system_controller.approve_registration_request(domain, manager_userId, requested_email, requested_full_name)
+            self.lab_system_controller.approve_registration_request(domain, manager_userId, requested_email, requested_full_name, requested_degree)
             return Response(True, "Registration request approved successfully")
         except Exception as e:
             return Response(None, str(e))
@@ -177,10 +177,10 @@ class LabSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName, domain):
+    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain):
         """Register a new lab member."""
         try:
-            self.lab_system_controller.register_new_LabMember_from_labWebsite(manager_userId, email_to_register, lab_member_fullName, domain)
+            self.lab_system_controller.register_new_LabMember_from_labWebsite(manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain)
             return Response(True, "Lab member registered successfully")
         except Exception as e:
             return Response(None, str(e))
