@@ -3,6 +3,7 @@ import unittest
 from selenium.webdriver.common.devtools.v85.browser import set_window_bounds
 
 from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
+from src.main.DomainLayer.LabWebsites.User.Degree import Degree
 from src.test.Acceptancetests.LabWebsitesTests.ProxyToTests import ProxyToTests
 from src.test.Acceptancetests.LabGeneratorTests.ProxyToTests import ProxyToTest
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
@@ -25,10 +26,10 @@ class TestLoginFunction(unittest.TestCase):
         self.generator_system_service.create_website(self.user_id, self.website_name, self.domain, self.components, self.template)
 
         # Add lab members and managers
-        self.site_creator_email = "someMail@gmail.com" #TODO: maybe need to change this email: it receives emails!!
-        self.lab_members = {"member1@example.com": "Member One", "member2@example.com": "Member Two"}
+        self.site_creator_email = "someMail@example.com" #TODO: maybe need to change this email: it receives emails!!
+        self.lab_members = {"member1@example.com": {"full_name": "Member One", "degree": Degree.BSC}, "member2@example.com": {"full_name":"Member Two", "degree": Degree.MSC}}
         self.lab_managers = {}
-        self.site_creator = {"email": self.site_creator_email, "full_name": "Site Creator"}
+        self.site_creator = {"email": self.site_creator_email, "full_name": "Site Creator", "degree": Degree.PHD}
         self.generator_system_service.create_new_lab_website(self.domain, self.lab_members, self.lab_managers, self.site_creator)
 
         self.user_id_lab_website = self.lab_system_service.enter_lab_website(self.domain).get_data()
@@ -86,7 +87,7 @@ class TestLoginFunction(unittest.TestCase):
 
         # Simulate approval by managers
         self.lab_system_service.login(self.domain, self.site_creator_userId, self.site_creator_email)
-        self.lab_system_service.approve_registration_request(self.domain, self.site_creator_userId, non_member_email, "Non Member")
+        self.lab_system_service.approve_registration_request(self.domain, self.site_creator_userId, non_member_email, "Non Member", Degree.BSC)
 
         # Attempt login again
         response = self.lab_system_service.login(self.domain, self.user_id_lab_website, non_member_email)

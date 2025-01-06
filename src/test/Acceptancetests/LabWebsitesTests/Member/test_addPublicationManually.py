@@ -1,4 +1,6 @@
 import unittest
+
+from src.main.DomainLayer.LabWebsites.User.Degree import Degree
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
 
 from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
@@ -24,7 +26,7 @@ class TestAddPublicationManually(unittest.TestCase):
         self.labMember1_email = "member1@example.com"
         self.labMember1_name = "Member One"
         self.lab_managers = {
-            "manager1@example.com": "Manager One",
+            "manager1@example.com": {"full_name": "Manager One", "degree": Degree.PHD},
         }
         self.website_name = "Lab Website"
         self.components = ["Homepage", "Contact Us", "Research"]
@@ -32,8 +34,8 @@ class TestAddPublicationManually(unittest.TestCase):
         self.generator_system_service.create_website(self.user_id, self.website_name, self.domain, self.components,
                                                      self.template)
         self.generator_system_service.create_new_lab_website(
-            self.domain, {self.labMember1_email: self.labMember1_name}, self.lab_managers,
-            {"email": self.site_creator_email, "full_name": "Site Creator"}
+            self.domain, {self.labMember1_email: {"full_name":self.labMember1_name, "degree": Degree.PHD}}, self.lab_managers,
+            {"email": self.site_creator_email, "full_name": "Site Creator", "degree": Degree.PHD}
         )
 
         # Simulate a lab member login

@@ -1,4 +1,6 @@
 import unittest
+
+from src.main.DomainLayer.LabWebsites.User.Degree import Degree
 from src.test.Acceptancetests.LabGeneratorTests.ProxyToTests import ProxyToTest
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
@@ -22,9 +24,9 @@ class TestCreateNewSiteManager(unittest.TestCase):
         self.template = Template.BASIC
         self.lab_member1_email = "member1@example.com"
         self.lab_member2_email = "member2@example.com"
-        self.lab_members = {self.lab_member1_email: "Member One", self.lab_member2_email: "Member Two"}
-        self.lab_managers = {"manager1@example.com": "Manager One"}
-        self.site_creator = {"email": "creator@example.com", "full_name": "Site Creator"}
+        self.lab_members = {self.lab_member1_email: {"full_name": "Member One", "degree": Degree.PHD}, self.lab_member2_email: {"full_name": "Member Two", "degree": Degree.MSC}}
+        self.lab_managers = {"manager1@example.com": {"full_name": "Manager One", "degree": Degree.PHD}}
+        self.site_creator = {"email": "creator@example.com", "full_name": "Site Creator", "degree": Degree.PHD}
 
         self.generator_system_service.create_website(self.user_id, "Lab Website", self.domain, self.components, self.template)
 

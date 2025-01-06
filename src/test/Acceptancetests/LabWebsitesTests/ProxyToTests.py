@@ -85,9 +85,9 @@ class ProxyToTests(BridgeToTests):
             return self.real_service_adapter.remove_manager_permission(manager_user_id, manager_to_remove_email, domain)
         return Response(None, "Not Implemented yet")
 
-    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name):
+    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name, requested_degree):
         if self.real_service_adapter:
-            return self.real_service_adapter.approve_registration_request(domain, manager_userId, requested_email, requested_full_name)
+            return self.real_service_adapter.approve_registration_request(domain, manager_userId, requested_email, requested_full_name, requested_degree)
         return Response(None, "Not Implemented yet")
 
     def reject_registration_request(self, domain, manager_userId, requested_email):
@@ -110,9 +110,9 @@ class ProxyToTests(BridgeToTests):
             return self.real_service_adapter.get_all_lab_members(domain)
         return Response(None, "Not Implemented yet")
 
-    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName, domain):
+    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain):
         if self.real_service_adapter:
-            return self.real_service_adapter.register_new_LabMember_from_labWebsite(manager_userId, email_to_register, lab_member_fullName, domain)
+            return self.real_service_adapter.register_new_LabMember_from_labWebsite(manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain)
         return Response(None, "Not Implemented yet")
 
     def get_all_alumnis(self, domain):

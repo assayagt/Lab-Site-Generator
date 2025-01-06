@@ -43,7 +43,7 @@ class BridgeToTests(ABC):
         """Create a new site manager."""
         pass
 
-    def register_new_LabMember_from_generator(self, manager_userId, email_to_register, lab_member_fullName, domain):
+    def register_new_LabMember_from_generator(self, manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain):
         """Register a new lab member."""
         pass
 

@@ -51,8 +51,8 @@ class RealToTests(BridgeToTests):
     def remove_manager_permission(self, manager_user_id, manager_to_remove_email, domain):
         return self.lab_system_service.remove_manager_permission(manager_user_id, manager_to_remove_email, domain)
 
-    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name):
-        return self.lab_system_service.approve_registration_request(domain, manager_userId, requested_email, requested_full_name)
+    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name, requested_degree):
+        return self.lab_system_service.approve_registration_request(domain, manager_userId, requested_email, requested_full_name, requested_degree)
 
     def reject_registration_request(self, domain, manager_userId, requested_email):
         return self.lab_system_service.reject_registration_request(domain, manager_userId, requested_email)
@@ -66,8 +66,8 @@ class RealToTests(BridgeToTests):
     def get_all_lab_members(self, domain):
         return self.lab_system_service.get_all_lab_members(domain)
 
-    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName, domain):
-        return self.lab_system_service.register_new_LabMember_from_labWebsite(manager_userId, email_to_register, lab_member_fullName, domain)
+    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain):
+        return self.lab_system_service.register_new_LabMember_from_labWebsite(manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain)
 
     def get_all_alumnis(self, domain):
         return self.lab_system_service.get_all_alumnis(domain)

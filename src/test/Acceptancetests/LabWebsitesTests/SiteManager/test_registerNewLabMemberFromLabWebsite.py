@@ -2,6 +2,7 @@ import unittest
 from http.client import responses
 
 from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
+from src.main.DomainLayer.LabWebsites.User.Degree import Degree
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.main.Util.Response import Response
 from src.test.Acceptancetests.LabGeneratorTests.ProxyToTests import ProxyToTest
@@ -24,12 +25,12 @@ class TestRegisterNewLabMemberFromLabWebsite(unittest.TestCase):
         self.labMember1_name = "Member One"
         self.labMember2_email = "member2@example.com"
         self.lab_members = {
-            self.labMember1_email: self.labMember1_name,
-            self.labMember2_email: "Member Two"
+            self.labMember1_email: {"full_name":self.labMember1_name, "degree": Degree.PHD},
+            self.labMember2_email: {"full_name":"Member Two", "degree": Degree.MSC}
         }
         self.nominator_manager_email = "manager1@example.com"
         self.lab_managers = {
-            self.nominator_manager_email: "Manager One",
+            self.nominator_manager_email: {"full_name":"Manager One", "degree": Degree.PHD},
         }
 
         self.website_name = "Lab Website"
@@ -39,7 +40,7 @@ class TestRegisterNewLabMemberFromLabWebsite(unittest.TestCase):
                                                      self.template)
 
         self.generator_system_service.create_new_lab_website(
-            self.domain, self.lab_members, self.lab_managers, {"email": self.site_creator_email, "full_name": "Site Creator"}
+            self.domain, self.lab_members, self.lab_managers, {"email": self.site_creator_email, "full_name": "Site Creator", "degree": Degree.PHD}
         )
 
         # Simulate a lab manager login
@@ -57,10 +58,10 @@ class TestRegisterNewLabMemberFromLabWebsite(unittest.TestCase):
         """
         email_to_register = "new_member@example.com"
         full_name = "New Member"
-
+        degree = Degree.BSC
         # Perform the operation
         response = self.lab_system_service.register_new_LabMember_from_labWebsite(
-            self.manager_userId, email_to_register, full_name, self.domain
+            self.manager_userId, email_to_register, full_name, degree, self.domain
         )
         self.assertTrue(response.is_success())
 
@@ -77,10 +78,11 @@ class TestRegisterNewLabMemberFromLabWebsite(unittest.TestCase):
 
         email_to_register = "new_member@example.com"
         full_name = "New Member"
+        degree = Degree.BSC
 
         # Attempt to perform the operation
         response = self.lab_system_service.register_new_LabMember_from_labWebsite(
-            self.member1_userId, email_to_register, full_name, self.domain
+            self.member1_userId, email_to_register, full_name, degree, self.domain
         )
 
         # Validate the exception
@@ -93,10 +95,11 @@ class TestRegisterNewLabMemberFromLabWebsite(unittest.TestCase):
         """
         email_to_register = self.labMember1_email
         full_name = "Duplicated Member"
+        degree = Degree.BSC
 
         # Attempt to perform the operation
         response = self.lab_system_service.register_new_LabMember_from_labWebsite(
-            self.manager_userId, email_to_register, full_name, self.domain
+            self.manager_userId, email_to_register, full_name, degree, self.domain
         )
 
         # Validate the exception
@@ -112,10 +115,11 @@ class TestRegisterNewLabMemberFromLabWebsite(unittest.TestCase):
 
         email_to_register = "new_member@example.com"
         full_name = "New Member"
+        degree = Degree.BSC
 
         # Attempt to perform the operation
         response = self.lab_system_service.register_new_LabMember_from_labWebsite(
-            self.manager_userId, email_to_register, full_name, self.domain
+            self.manager_userId, email_to_register, full_name, degree, self.domain
         )
 
         # Validate the exception
@@ -128,12 +132,30 @@ class TestRegisterNewLabMemberFromLabWebsite(unittest.TestCase):
         """
         email_to_register = "invalid_email"
         full_name = "Invalid Email Member"
+        degree = Degree.BSC
 
         # Attempt to perform the operation
         response = self.lab_system_service.register_new_LabMember_from_labWebsite(
-            self.manager_userId, email_to_register, full_name, self.domain
+            self.manager_userId, email_to_register, full_name, degree, self.domain
         )
 
         # Validate the exception
         self.assertFalse(response.is_success())
         self.assertEqual(response.get_message(), ExceptionsEnum.INVALID_EMAIL_FORMAT.value)
+
+    def test_register_new_lab_member_failure_invalid_degree(self):
+        """
+        Test that an invalid degree raises an error during registration.
+        """
+        email_to_register = "new_member@example.com"
+        full_name = "New Member"
+        degree = "Invalid"
+
+        # Attempt to perform the operation
+        response = self.lab_system_service.register_new_LabMember_from_labWebsite(
+            self.manager_userId, email_to_register, full_name, degree, self.domain
+        )
+
+        # Validate the exception
+        self.assertFalse(response.is_success())
+        self.assertEqual(response.get_message(), ExceptionsEnum.INVALID_DEGREE.value)

@@ -78,7 +78,7 @@ class BridgeToTests(ABC):
         pass
 
     @abstractmethod
-    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name):
+    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name, requested_degree):
         """Approve a registration request."""
         pass
 
@@ -98,7 +98,7 @@ class BridgeToTests(ABC):
         """Get all lab members."""
         pass
 
-    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName, domain):
+    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain):
         """Register a new lab member from a lab website."""
         pass
 
