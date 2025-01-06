@@ -9,7 +9,7 @@ class Degree(Enum):
     POSTDOC = "Postdoctoral"
 
 class LabMember(State):
-    def __init__(self, email, fullName, secondEmail=None, linkedin_link=None, media=None, user_id=None, degree=None, bio=None):
+    def __init__(self, email, fullName, degree, secondEmail=None, linkedin_link=None, media=None, user_id=None, bio=None):
         self.email = email
         self.secondEmail = secondEmail
         self.linkedin_link = linkedin_link

@@ -137,10 +137,10 @@ class LabSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name):
+    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name, requested_degree):
         """Approve a registration request."""
         try:
-            self.lab_system_controller.approve_registration_request(domain, manager_userId, requested_email, requested_full_name)
+            self.lab_system_controller.approve_registration_request(domain, manager_userId, requested_email, requested_full_name, requested_degree)
             return Response(True, "Registration request approved successfully")
         except Exception as e:
             return Response(None, str(e))
@@ -150,5 +150,87 @@ class LabSystemService:
         try:
             self.lab_system_controller.reject_registration_request(domain, manager_userId, requested_email)
             return Response(True, "Registration request rejected successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def create_new_site_manager_from_labWebsite(self, nominator_manager_userId, domain, nominated_manager_email):
+        """Create a new site manager."""
+        try:
+            self.lab_system_controller.create_new_site_manager_from_labWebsite(nominator_manager_userId, domain, nominated_manager_email)
+            return Response(True, "Site manager created successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def get_all_lab_managers(self, domain):
+        """Get all lab managers."""
+        try:
+            lab_managers = self.lab_system_controller.get_all_lab_managers(domain)
+            return Response(lab_managers, "Retrieved all lab managers successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def get_all_lab_members(self, domain):
+        """Get all lab members."""
+        try:
+            lab_members = self.lab_system_controller.get_all_lab_members(domain)
+            return Response(lab_members, "Retrieved all lab members successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain):
+        """Register a new lab member."""
+        try:
+            self.lab_system_controller.register_new_LabMember_from_labWebsite(manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain)
+            return Response(True, "Lab member registered successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def get_all_alumnis(self, domain):
+        """Get all alumnis."""
+        try:
+            alumnis = self.lab_system_controller.get_all_alumnis(domain)
+            return Response(alumnis, "Retrieved all alumnis successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def set_secondEmail_by_member(self, userid, secondEmail, domain):
+        try:
+            self.lab_system_controller.set_secondEmail_by_member(userid, secondEmail, domain)
+            return Response(True, "Second email added successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def set_linkedin_link_by_member(self, userid, linkedin_link, domain):
+        try:
+            self.lab_system_controller.set_linkedin_link_by_member(userid, linkedin_link, domain)
+            return Response(True, "LinkedIn link added successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def set_fullName_by_member(self, userid, fullName, domain):
+        try:
+            self.lab_system_controller.set_fullName_by_member(userid, fullName, domain)
+            return Response(True, "Full name added successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def set_degree_by_member(self, userid, degree, domain):
+        try:
+            self.lab_system_controller.set_degree_by_member(userid, degree, domain)
+            return Response(True, "Degree added successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def set_bio_by_member(self, userid, bio, domain):
+        try:
+            self.lab_system_controller.set_bio_by_member(userid, bio, domain)
+            return Response(True, "Bio added successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def set_media_by_member(self, userid, media, domain):
+        try:
+            self.lab_system_controller.set_media_by_member(userid, media, domain)
+            return Response(True, "Media added successfully")
         except Exception as e:
             return Response(None, str(e))

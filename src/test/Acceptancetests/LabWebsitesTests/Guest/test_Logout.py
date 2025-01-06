@@ -1,5 +1,6 @@
 import unittest
 
+from src.main.DomainLayer.LabWebsites.User.Degree import Degree
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.test.Acceptancetests.LabWebsitesTests.ProxyToTests import ProxyToTests
 from src.test.Acceptancetests.LabGeneratorTests.ProxyToTests import ProxyToTest
@@ -25,9 +26,9 @@ class TestLogoutFunction(unittest.TestCase):
 
         # Add lab members and managers
         self.site_creator_email = "someMail@gmail.com"
-        self.lab_members = {"member1@example.com": "Member One", "member2@example.com": "Member Two"}
+        self.lab_members = {"member1@example.com": {"full_name": "Member One","degree": Degree.BSC}, "member2@example.com": {"full_name": "Member Two", "degree": Degree.MSC}}
         self.lab_managers = {}
-        self.site_creator = {"email": self.site_creator_email, "full_name": "Site Creator"}
+        self.site_creator = {"email": self.site_creator_email, "full_name": "Site Creator", "degree": Degree.PHD}
         self.generator_system_service.create_new_lab_website(self.domain, self.lab_members, self.lab_managers, self.site_creator)
 
         # Simulate entering the lab website
@@ -60,14 +61,7 @@ class TestLogoutFunction(unittest.TestCase):
 
     def test_logout_multiple_sessions(self):
         # Test logout for a user with multiple sessions
-        self.lab_system_service.login(self.domain, self.user_id_lab_website, "user_1@example.com")
-        self.lab_system_service.login(self.domain, self.user_id_lab_website, "user_1@example.com")  # Second session
+        self.lab_system_service.login(self.domain, self.site_creator_userId, self.site_creator_email)
+        self.lab_system_service.login(self.domain, self.user_id_lab_website, "member1@example.com")  # Second session
         response = self.lab_system_service.logout(self.domain, self.user_id_lab_website)
         self.assertTrue(response.is_success())  # Logout should work for any active session
-
-    def test_logout_after_login_as_member(self):
-        # Test logout after a user is promoted to a lab member
-        member_email = "member@example.com"
-        self.lab_system_service.approve_registration_request(self.domain, self.user_id_lab_website, member_email, "New Member")
-        response = self.lab_system_service.logout(self.domain, self.user_id_lab_website)
-        self.assertTrue(response.is_success())

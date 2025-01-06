@@ -55,9 +55,9 @@ class ProxyToTest(BridgeToTests):
             return self.real_service_adapter.create_new_site_manager(nominator_manager_userId, nominated_manager_email, domain)
         return Response(None, "Not Implemented yet")
 
-    def register_new_LabMember_from_generator(self, manager_userId, email_to_register, lab_member_fullName, domain):
+    def register_new_LabMember_from_generator(self, manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain):
         if self.real_service_adapter:
-            return self.real_service_adapter.register_new_LabMember_from_generator(manager_userId, email_to_register, lab_member_fullName, domain)
+            return self.real_service_adapter.register_new_LabMember_from_generator(manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain)
         return Response(None, "Not Implemented yet")
 
     def login(self, user_id, email):

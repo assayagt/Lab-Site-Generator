@@ -51,8 +51,41 @@ class RealToTests(BridgeToTests):
     def remove_manager_permission(self, manager_user_id, manager_to_remove_email, domain):
         return self.lab_system_service.remove_manager_permission(manager_user_id, manager_to_remove_email, domain)
 
-    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name):
-        return self.lab_system_service.approve_registration_request(domain, manager_userId, requested_email, requested_full_name)
+    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name, requested_degree):
+        return self.lab_system_service.approve_registration_request(domain, manager_userId, requested_email, requested_full_name, requested_degree)
 
     def reject_registration_request(self, domain, manager_userId, requested_email):
         return self.lab_system_service.reject_registration_request(domain, manager_userId, requested_email)
+
+    def create_new_site_manager_from_labWebsite(self, nominator_manager_userId, domain, nominated_manager_email):
+        return self.lab_system_service.create_new_site_manager_from_labWebsite(nominator_manager_userId, domain, nominated_manager_email)
+
+    def get_all_lab_managers(self, domain):
+        return self.lab_system_service.get_all_lab_managers(domain)
+
+    def get_all_lab_members(self, domain):
+        return self.lab_system_service.get_all_lab_members(domain)
+
+    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain):
+        return self.lab_system_service.register_new_LabMember_from_labWebsite(manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain)
+
+    def get_all_alumnis(self, domain):
+        return self.lab_system_service.get_all_alumnis(domain)
+
+    def set_secondEmail_by_member(self, userid, secondEmail, domain):
+        return self.lab_system_service.set_secondEmail_by_member(userid, secondEmail, domain)
+
+    def set_linkedin_link_by_member(self, userid, linkedin_link, domain):
+        return self.lab_system_service.set_linkedin_link_by_member(userid, linkedin_link, domain)
+
+    def set_fullName_by_member(self, userid, fullName, domain):
+        return self.lab_system_service.set_fullName_by_member(userid, fullName, domain)
+
+    def set_degree_by_member(self, userid, degree, domain):
+        return self.lab_system_service.set_degree_by_member(userid, degree, domain)
+
+    def set_bio_by_member(self, userid, bio, domain):
+        return self.lab_system_service.set_bio_by_member(userid, bio, domain)
+
+    def set_media_by_member(self, userid, media, domain):
+        return self.lab_system_service.set_media_by_member(userid, media, domain)

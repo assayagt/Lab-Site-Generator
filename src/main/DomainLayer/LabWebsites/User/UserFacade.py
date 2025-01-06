@@ -1,9 +1,11 @@
 import uuid
+import re
 
 from src.main.DomainLayer.LabWebsites.User.LabMember import LabMember
 from src.main.DomainLayer.LabWebsites.User.RegistrationStatus import RegistrationStatus
 from src.main.DomainLayer.LabWebsites.User.User import User
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
+from src.main.DomainLayer.LabWebsites.User.Degree import Degree
 
 
 class UserFacade:
@@ -23,12 +25,12 @@ class UserFacade:
             UserFacade._singleton_instance = UserFacade()
         return UserFacade._singleton_instance
 
-    def create_new_site_manager(self, nominated_manager_email, nominated_manager_fullName):
+    def create_new_site_manager(self, nominated_manager_email, nominated_manager_fullName, nominated_manager_degree):
         if nominated_manager_email in self.members:
             member = self.getLabMemberByEmail(nominated_manager_email)
             del self.members[nominated_manager_email]
         else:
-            member = LabMember(nominated_manager_email, nominated_manager_fullName)
+            member = LabMember(nominated_manager_email, nominated_manager_fullName, nominated_manager_degree)
         self.managers[nominated_manager_email] = member
         if nominated_manager_email in self.emails_requests_to_register:
             del self.emails_requests_to_register[nominated_manager_email]
@@ -53,18 +55,29 @@ class UserFacade:
         if email not in self.members:
             raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MEMBER.value)
 
-    def register_new_LabMember(self, email, fullName):
+    def error_if_email_is_not_valid(self, email):
+        """
+        Validate the email format using a regular expression.
+        Raise an error if the email is not valid.
+        """
+        email_regex = (
+            r"^(?!.*\.\.)(?!.*\.$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        )
+        if re.match(email_regex, email) is None:
+            raise Exception(ExceptionsEnum.INVALID_EMAIL_FORMAT.value)
+
+    def register_new_LabMember(self, email, fullName, degree):
         member = self.get_member_by_email(email)
         if member is not None:
             raise Exception(ExceptionsEnum.EMAIL_IS_ALREADY_ASSOCIATED_WITH_A_MEMBER.value)
-        member = LabMember(email, fullName)
+        member = LabMember(email, fullName, degree)
         self.members[email] = member
         if email in self.emails_requests_to_register:
             del self.emails_requests_to_register[email]
 
-    def approve_registration_request(self, email, fullName):
+    def approve_registration_request(self, email, fullName, degree):
         if email in self.emails_requests_to_register and self.emails_requests_to_register[email] == RegistrationStatus.PENDING.value:
-            self.register_new_LabMember(email, fullName)
+            self.register_new_LabMember(email, fullName, degree)
         else:
             raise Exception(ExceptionsEnum.DECISION_ALREADY_MADE_FOR_THIS_REGISTRATION_REQUEST.value)
 
@@ -114,17 +127,17 @@ class UserFacade:
     def error_if_user_not_logged_in(self, userId):
         user = self.get_user_by_id(userId)
         if not user.is_member():
-            raise Exception(ExceptionsEnum.USER_IS_NOT_MEMBER)
+            raise Exception(ExceptionsEnum.USER_IS_NOT_MEMBER.value)
 
     def error_if_user_is_not_manager(self, userId):
         email = self.get_email_by_userId(userId)
         if email not in self.managers:
-            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER)
+            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER.value)
 
     def error_if_user_is_not_manager_or_site_creator(self, userId):
         email = self.get_email_by_userId(userId)
         if email not in self.managers and email not in self.siteCreator:
-            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER_OR_CREATOR)
+            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER_OR_CREATOR.value)
 
     def get_member_by_email(self, email):
         """Retrieve an active Member object by email."""
@@ -165,16 +178,18 @@ class UserFacade:
 
     def error_if_member_is_not_labMember_or_manager(self, email):
         if email not in self.members and email not in self.managers:
-            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MEMBER_OR_LAB_MANAGER)
+            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MEMBER_OR_LAB_MANAGER.value)
 
     def error_if_user_is_not_labMember_manager_creator(self, userId):
         email = self.get_email_by_userId(userId)
         if email not in self.members and email not in self.managers and email not in self.siteCreator:
-            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MEMBER_OR_LAB_MANAGER_OR_CREATOR)
+            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MEMBER_OR_LAB_MANAGER_OR_CREATOR.value)
+
+    def error_if_trying_to_define_site_creator_as_alumni(self, email):
+        if email in self.siteCreator:
+            raise Exception(ExceptionsEnum.SITE_CREATOR_CANT_BE_ALUMNI.value)
 
     def define_member_as_alumni(self, email):
-        if email in self.siteCreator:
-            raise Exception(ExceptionsEnum.SITE_CREATOR_CANT_BE_ALUMNI)
         member = self.get_member_by_email(email)
         self.alumnis[email] = member
         self.delete_member_by_email(email)
@@ -184,7 +199,7 @@ class UserFacade:
 
     def remove_manager_permissions(self, email):
         if email not in self.managers:
-            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER)
+            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER.value)
         manager = self.get_manager_by_email(email)
         self.members[email] = manager
         del self.managers[email]
@@ -204,8 +219,8 @@ class UserFacade:
     def getAlumnis(self):
         return self.alumnis
 
-    def set_site_creator(self, creator_email, creator_fullName):
-        member = LabMember(creator_email, creator_fullName)
+    def set_site_creator(self, creator_email, creator_fullName, creator_degree):
+        member = LabMember(creator_email, creator_fullName, creator_degree)
         self.siteCreator[creator_email] = member
 
     def set_secondEmail_by_member(self, email, secondEmail):
@@ -222,11 +237,22 @@ class UserFacade:
 
     def set_fullName_by_member(self,email, fullName):
         member = self.get_member_by_email(email)
-        member.set_fullName_by_member(fullName)
+        member.set_fullName(fullName)
 
     def set_degree_by_member(self,email, degree):
         member = self.get_member_by_email(email)
         member.set_degree(degree)
+
+    def error_if_degree_not_valid(self, degree):
+        if isinstance(degree, str):
+            valid_degrees = {d.value for d in Degree}
+            if degree not in valid_degrees:
+                raise Exception(ExceptionsEnum.INVALID_DEGREE.value)
+        elif isinstance(degree, Degree):
+            if degree not in Degree:
+                raise Exception(ExceptionsEnum.INVALID_DEGREE.value)
+        else:
+            raise Exception(ExceptionsEnum.INVALID_DEGREE.value)
 
     def set_bio_by_member(self,email, bio):
         member = self.get_member_by_email(email)
@@ -237,3 +263,17 @@ class UserFacade:
         user = User(user_id=user_id)
         self.users[user_id] = user
         return user_id
+
+    import re
+    from src.main.Util.ExceptionsEnum import ExceptionsEnum
+
+    def error_if_linkedin_link_not_valid(self, linkedin_link):
+        """
+        Validates if the given LinkedIn link is in the correct format.
+        """
+        # Define a regex pattern for valid LinkedIn profile URLs
+        linkedin_pattern = re.compile(
+            r"^https://(www\.)?linkedin\.com/in/[\w\-]+/?$"
+        )
+        if not linkedin_pattern.match(linkedin_link):
+            raise ValueError(ExceptionsEnum.INVALID_LINKEDIN_LINK.value)
