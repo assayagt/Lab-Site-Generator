@@ -90,13 +90,14 @@ const PublicationPage = ({ publications }) => {
           <div key={pub.paper_id} className="publication-item">
             <h2>{pub.title}</h2>
             <div className = "publication-item-info">
+            {pub.video &&
             <iframe className='video'
               src={pub.video}
               title={pub.title}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
                 >     </iframe>
-                
+            }
                 <div>
                     <p><strong>Authors:</strong> {pub.authors}</p>
                     <p><strong>Year:</strong> {pub.publication_year}</p>

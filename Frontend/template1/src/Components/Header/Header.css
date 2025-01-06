@@ -23,6 +23,7 @@
   height: 20px; /* Height of navbar */
   padding: 10px;
   overflow-x: scroll; /* Allow horizontal scrolling */
+  overflow-y: hidden;
   white-space: nowrap; /* Prevent items from wrapping */
   position: relative; /* For positioning the items */
   transition: transform 3s ease; /* Smooth scrolling transition */
