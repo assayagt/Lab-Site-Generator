@@ -86,3 +86,6 @@ class RealToTests(BridgeToTests):
 
     def set_bio_by_member(self, userid, bio, domain):
         return self.lab_system_service.set_bio_by_member(userid, bio, domain)
+
+    def set_media_by_member(self, userid, media, domain):
+        return self.lab_system_service.set_media_by_member(userid, media, domain)

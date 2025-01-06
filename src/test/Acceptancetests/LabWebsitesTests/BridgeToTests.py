@@ -125,3 +125,7 @@ class BridgeToTests(ABC):
     def set_bio_by_member(self, userid, bio, domain):
         """Set bio for a member."""
         pass
+
+    def set_media_by_member(self, userid, media, domain):
+        """Set media for a member."""
+        pass
