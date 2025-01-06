@@ -227,3 +227,10 @@ class LabSystemService:
             return Response(True, "Bio added successfully")
         except Exception as e:
             return Response(None, str(e))
+
+    def set_media_by_member(self, userid, media, domain):
+        try:
+            self.lab_system_controller.set_media_by_member(userid, media, domain)
+            return Response(True, "Media added successfully")
+        except Exception as e:
+            return Response(None, str(e))
