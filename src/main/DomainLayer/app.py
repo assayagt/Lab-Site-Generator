@@ -494,6 +494,13 @@ api.add_resource(SetPublicationVideoLink, '/api/setPublicationVideoLink')
 api.add_resource(SetPublicationGitLink, '/api/setPublicationGitLink')
 api.add_resource(SetPublicationPttxLink, '/api/setPublicationPttxLink')
 
+##TODO: get publications for memeber
+##TODO: approve/disaprove registration
+## get all lab managers and memebers
+##get_all_alumnis
+##allseters
+##allnames
+
 
 # Add the resources to API
 api.add_resource(UploadFilesAndData, '/api/uploadFile')
@@ -512,6 +519,12 @@ api.add_resource(GetCustomSite, '/api/getCustomSite')
 
 ##TODO: add members
 ##TODO: add managers
+##TODO: add managers
+##TODO: getCustomWebsites
+##TODO: getCustomWebsote 
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
