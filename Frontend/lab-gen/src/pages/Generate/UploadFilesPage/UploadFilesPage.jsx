@@ -319,7 +319,43 @@ const UploadFilesPage = () => {
       }
     </div>
   );
-  
+
+
+  const MediaForm = () => (
+    <div className="file-upload-item">
+      <div className="file-upload_title">Media </div>
+      <div>
+        Logo
+                     <input
+                       className="downloadTemplate"
+                       type="file"
+                       onChange={(e) => handleFileChange(e, 'Publications')}
+                     />
+                     <button
+                       className="downloadTemplate"
+                       onClick={() => handleSubmit('Publications')}
+                     >
+                       Save
+                     </button>
+                   </div>
+                   <div>
+        Home Page photo
+                     <input
+                       className="downloadTemplate"
+                       type="file"
+                       onChange={(e) => handleFileChange(e, 'Publications')}
+                     />
+                     <button
+                       className="downloadTemplate"
+                       onClick={() => handleSubmit('Publications')}
+                     >
+                       Save
+                     </button>
+                   </div>
+    </div>
+  );
+
+
   return (
 
     <div className="container">
@@ -329,6 +365,7 @@ const UploadFilesPage = () => {
         <li onClick={() => handleNavClick('ContactUs')}>Contact Us</li>
         {!websiteData.generated && ( <li onClick={() => handleNavClick('Publications')}>Publications</li>)}
         <li onClick={() => handleNavClick('Participants')}>Participants</li>
+        <li onClick={() => handleNavClick('Media')}>Media</li>
       </ul>
     </div>
     <div className="main-content">
@@ -336,6 +373,7 @@ const UploadFilesPage = () => {
       {selectedComponent === 'ContactUs' && <ContactUsForm />}
       {selectedComponent === 'Publications' && <PublicationsForm />}
       {selectedComponent === 'Participants' && <ParticipantsForm />}
+      {selectedComponent === 'Media' && <MediaForm />}
     </div>
   </div>
   );
