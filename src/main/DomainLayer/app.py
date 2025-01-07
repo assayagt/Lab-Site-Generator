@@ -69,11 +69,27 @@ class UploadFilesAndData(Resource):
 class GenerateWebsiteResource(Resource):
     def post(self):
         try:  
+            parser = reqparse.RequestParser()
+            parser.add_argument('domain', type=str, required=True, help="Domain is required")
+            args = parser.parse_args()
+            domain = args['domain']
+
+            TEMPLATE_1_PATH = '/path/to/your/templates'
+            excel_file_path = os.path.join(TEMPLATE_1_PATH, 'lab_members.xlsx')
+            lab_members, lab_managers, siteCreator = read_lab_info(excel_file_path)
+            
+            if lab_members is None:
+                return jsonify({"error": f"An error occurred: {lab_managers}"})
+            
+
             if not os.path.exists(TEMPLATE_1_PATH):
                 return jsonify({"error": f"Path {TEMPLATE_1_PATH} does not exist."})
 
-
-            ##TODO: take all the xlxs files and make them as dictionaries
+            
+           
+            response = generator_system.create_new_lab_website(domain,lab_members,lab_managers,siteCreator)
+            if response.is_success():
+                return jsonify({"message": "Domain updated successfully", "domain": domain})
             ##TODO: call generate site
             command = ['start', 'cmd', '/K', 'npm', 'start']  # Command to open a new terminal and run npm start
             process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH, shell=True)
@@ -501,3 +517,48 @@ api.add_resource(GetCustomSite, '/api/getCustomSite')
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+def read_lab_info(excel_path):
+    # Check if the file exists
+    if not os.path.exists(excel_path):
+        return None, None, "Excel file does not exist."
+
+    try:
+        # Load the Excel file
+        df = pd.read_excel(excel_path)
+
+        # Assuming columns are named 'Full Name', 'Email', 'Degree', 'Manager', 'Site Creator'
+        lab_members = {}
+        lab_managers = {}
+        site_creator = None
+        
+        site_creator_count = df['Site Creator'].sum()  # Assuming this column contains boolean True for the site creator
+
+        if site_creator_count != 1:
+            return None, None, "There must be exactly one site creator."
+
+        for index, row in df.iterrows():
+            person_info = {
+                "full_name": row['Full Name'],
+                "degree": row['Degree']
+            }
+            # Add to lab_members dictionary
+            lab_members[row['Email']] = person_info
+            
+            # Check if the person is a manager
+            if row['Manager']:  # Assuming this column contains boolean values
+                lab_managers[row['Email']] = person_info
+
+            # Identify the site creator
+            if row['Site Creator']:
+                site_creator = {
+                    "email": row['Email'],
+                    "full_name": row['Full Name'],
+                    "degree": row['Degree']
+                }
+
+        return lab_members, lab_managers, site_creator
+
+    except Exception as e:
+        return None, None, str(e)
