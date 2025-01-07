@@ -108,6 +108,16 @@ class UserFacade:
         # If no match is found, return None
         return None
 
+    def get_member_names(self):
+        member_names = []
+        for email, member in self.members.items():
+            member_names.append(member.get_fullName())
+        for email, manager in self.managers.items():
+            member_names.append(manager.get_fullName())
+        for email, site_creator in self.siteCreator.items():
+            member_names.append(site_creator.get_fullName())
+        return member_names
+
     def login(self, userId, email):
         """Handle login logic after retrieving user info."""
         user = self.get_user_by_id(userId)
