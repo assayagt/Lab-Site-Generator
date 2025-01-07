@@ -20,6 +20,52 @@ const UploadFilesPage = () => {
     participantsFile: null,
   });
 
+
+  const [participants, setParticipants] = useState([
+    { fullName: "Dr. Alice Johnson", degree: "PhD", isLabManager: true },
+    { fullName: "Prof. Brian Smith", degree: "PhD", isLabManager: false },
+    { fullName: "Dr. Carmen Li", degree: "MD", isLabManager: false },
+    { fullName: "Prof. David Wright", degree: "PhD", isLabManager: false },
+    { fullName: "Ms. Emily Davis", degree: "MSc", isLabManager: true }
+  ]);
+
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newParticipant, setNewParticipant] = useState({
+    fullName: '',
+    degree: '',
+    isLabManager: false
+  });
+
+  const toggleLabManager = index => {
+    const newParticipants = participants.map((participant, idx) => {
+      if (idx === index) {
+        return { ...participant, isLabManager: !participant.isLabManager };
+      }
+      return participant;
+    });
+    setParticipants(newParticipants);
+  };
+
+  const handleInputChangepart = (e) => {
+    const { name, value, type, checked } = e.target;
+    setNewParticipant(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  const addParticipant = () => {
+    if (newParticipant.fullName && newParticipant.degree) {
+      setParticipants([...participants, newParticipant]);
+      setNewParticipant({ fullName: '', degree: '', isLabManager: false });
+      setShowAddForm(false);
+    } else {
+      alert("Please fill all fields.");
+    }
+  };
+
+
+
   useEffect(() => {
     if (sessionStorage.getItem('isLoggedIn') !== 'true') {
       navigate('/');
@@ -191,8 +237,62 @@ const UploadFilesPage = () => {
 
                  {component === 'Participants' && (websiteData.generated) && (
                     <div>
-                      hello
-                    </div>
+                    <table className="participants-table">
+                      <thead>
+                        <tr>
+                          <th>Full Name</th>
+                          <th>Degree</th>
+                          <th>Manager</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {participants.map((participant, index) => (
+                          <tr key={index}>
+                            <td>{participant.fullName}</td>
+                            <td>{participant.degree}</td>
+                            <td>
+                              <input
+                                type="checkbox"
+                                checked={participant.isLabManager}
+                                onChange={() => toggleLabManager(index)}
+                              />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    {showAddForm ? (
+                      <div>
+                        <input
+                          type="text"
+                          placeholder="Full Name"
+                          name="fullName"
+                          value={newParticipant.fullName}
+                          onChange={handleInputChangepart}
+                        />
+                        <input
+                          type="text"
+                          placeholder="Degree"
+                          name="degree"
+                          value={newParticipant.degree}
+                          onChange={handleInputChangepart}
+                        />
+                        <label>
+                          Manager
+                          <input
+                            type="checkbox"
+                            name="isLabManager"
+                            checked={newParticipant.isLabManager}
+                            onChange={handleInputChangepart}
+                          />
+                        </label>
+                        <button onClick={addParticipant}>Save</button>
+                        <button onClick={() => setShowAddForm(false)}>Cancel</button>
+                      </div>
+                    ) : (
+                      <button onClick={() => setShowAddForm(true)}>+ Add Participant</button>
+                    )}
+                  </div>
                  )
                     }           
                 {(component !== 'About Us' && component !== 'Contact Us' && websiteData.generated===false)  && (

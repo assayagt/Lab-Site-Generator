@@ -86,3 +86,39 @@
   border-color: #a9caeb;
   font-size: 16px;
 }
+
+
+.participants-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.participants-table th, .participants-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.participants-table th {
+  background-color: #f4f4f4;
+}
+
+.participants-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.participants-table tr:hover {
+  background-color: #eef;
+}
+
+
+input[type="text"], input[type="checkbox"] {
+  margin: 5px;
+  padding: 5px;
+}
+
+button {
+  margin: 5px;
+  padding: 5px;
+}
