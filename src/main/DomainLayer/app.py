@@ -487,6 +487,270 @@ class SetPublicationPttxLink(Resource):
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 
+class AddLabMember(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User ID of the manager adding the member is required")
+        parser.add_argument('email', type=str, required=True, help="Email of the new member is required")
+        parser.add_argument('full_name', type=str, required=True, help="Full name of the new member is required")
+        parser.add_argument('degree', type=str, required=True, help="Degree of the new member is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain of the lab is required")
+        args = parser.parse_args()
+
+        try:
+            response = generator_system.register_new_LabMember_from_labWebsite(args['user_id'], args['email'], args['full_name'], args['degree'], args['domain'])
+            if response.is_success():
+                return jsonify({"message": "Lab member added successfully"})
+            return jsonify({"message": response.get_message()})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+        
+class AddLabManager(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User ID of the nominating manager is required")
+        parser.add_argument('email', type=str, required=True, help="Email of the new manager is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain of the lab is required")
+        args = parser.parse_args()
+
+        try:
+            response = generator_system.create_new_site_manager_from_labWebsite(args['user_id'], args['domain'], args['email'])
+            if response.is_success():
+                return jsonify({"message": "Lab manager added successfully"})
+            return jsonify({"message": response.get_message()})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class GetAllCustomWebsites(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User id is required")
+        args = parser.parse_args()
+
+        user_id = args['user_id']
+
+        try :
+            response = generator_system.get_custom_websites(user_id)
+            if response.is_success():
+                websites = response.get_data() # Return map of <domain, site name>
+                return jsonify({"websites": websites})
+            return jsonify({"message": response.get_message()})
+        except Exception as e :
+            return jsonify({"error": f"An error occurred: {str(e)}"})
+        
+    class GetCustomSite(Resource):
+        def get(self):
+            parser = reqparse.RequestParser()
+            parser.add_argument('user_id', type=str, required=True, help="User id is required")
+            parser.add_argument('domain', type=str, required=True, help="Domain is required")
+            args = parser.parse_args()
+
+            user_id = args['user_id']
+            domain = args['domain']
+
+            try :
+                response = generator_system.get_custom_website(user_id, domain)
+                if response.is_success():
+                    website_data = response.get_data() # Returned value is website name, template, components
+                    return jsonify({'data': website_data})
+                return jsonify({"message": response.get_message()})
+            except Exception as e:
+                return jsonify({"error": f"An error occurred: {str(e)}"})
+            
+        
+
+
+class GetMemberPublications(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('domain', required=True, help="Domain is required.")
+        parser.add_argument('email', required=True, help="Member email is required.")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.get_all_approved_publications_of_member(args['domain'], args['email'])
+            if response.is_success():
+                return jsonify({"publications": response.get_data()})
+            return jsonify({"error": response.get_message()})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class ApproveRegistration(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('domain', required=True, help="Domain is required.")
+        parser.add_argument('manager_userId', required=True, help="Manager User ID is required.")
+        parser.add_argument('requested_email', required=True, help="Requested user email is required.")
+        parser.add_argument('requested_full_name', required=True)
+        parser.add_argument('requested_degree', required=True)
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.approve_registration_request(args['domain'], args['manager_userId'], args['requested_email'], args['requested_full_name'], args['requested_degree'])
+            if response.is_success():
+                return jsonify({"message": "Registration approved successfully."})
+            return jsonify({"error": response.get_message()})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class RejectRegistration(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('domain', required=True, help="Domain is required.")
+        parser.add_argument('manager_userId', required=True, help="Manager User ID is required.")
+        parser.add_argument('requested_email', required=True, help="Requested user email is required.")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.reject_registration_request(args['domain'], args['manager_userId'], args['requested_email'])
+            if response.is_success():
+                return jsonify({"message": "Registration rejected successfully."})
+            return jsonify({"error": response.get_message()})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+        
+
+class GetAllLabManagers(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('domain', required=True, help="Domain is required.")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.get_all_lab_managers(args['domain'])
+            if response.is_success():
+                return jsonify({"managers": response.get_data()})
+            return jsonify({"error": response.get_message()})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class GetAllLabMembers(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('domain', required=True, help="Domain is required.")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.get_all_lab_members(args['domain'])
+            if response.is_success():
+                return jsonify({"members": response.get_data()})
+            return jsonify({"error": response.get_message()})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+
+class GetAllAlumni(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('domain', required=True, help="Domain is required.")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.get_all_alumnis(args['domain'])
+            if response.is_success():
+                return jsonify({"alumni": response.get_data()})
+            return jsonify({"error": response.get_message()})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+
+class SetSecondEmail(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('userid', required=True, help="User ID is required")
+        parser.add_argument('secondEmail', required=True, help="Second email is required")
+        parser.add_argument('domain', required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response = generator_system.set_secondEmail_by_member(args['userid'], args['secondEmail'], args['domain'])
+            if response.is_success():
+                return jsonify({"message": "Second email added successfully"})
+            return jsonify({"message": response.get_message()})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class SetLinkedInLink(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('userid', required=True, help="User ID is required")
+        parser.add_argument('linkedin_link', required=True, help="LinkedIn link is required")
+        parser.add_argument('domain', required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response = generator_system.set_linkedin_link_by_member(args['userid'], args['linkedin_link'], args['domain'])
+            if response.is_success():
+                return jsonify({"message": "LinkedIn link added successfully"})
+            return jsonify({"message": response.get_message()})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class SetFullName(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('userid', required=True, help="User ID is required")
+        parser.add_argument('fullName', required=True, help="Full name is required")
+        parser.add_argument('domain', required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response = generator_system.set_fullName_by_member(args['userid'], args['fullName'], args['domain'])
+            if response.is_success():
+                return jsonify({"message": "Full name updated successfully"})
+            return jsonify({"message": response.get_message()})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class SetDegree(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('userid', required=True, help="User ID is required")
+        parser.add_argument('degree', required=True, help="Degree is required")
+        parser.add_argument('domain', required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response = generator_system.set_degree_by_member(args['userid'], args['degree'], args['domain'])
+            if response.is_success():
+                return jsonify({"message": "Degree updated successfully"})
+            return jsonify({"message": response.get_message()})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class SetBio(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('userid', required=True, help="User ID is required")
+        parser.add_argument('bio', required=True, help="Bio is required")
+        parser.add_argument('domain', required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response = generator_system.set_bio_by_member(args['userid'], args['bio'], args['domain'])
+            if response.is_success():
+                return jsonify({"message": "Bio updated successfully"})
+            return jsonify({"message": response.get_message()})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class SetMedia(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('userid', required=True, help="User ID is required")
+        parser.add_argument('media', required=True, help="Media link is required")
+        parser.add_argument('domain', required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response = generator_system.set_media_by_member(args['userid'], args['media'], args['domain'])
+            if response.is_success():
+                return jsonify({"message": "Media updated successfully"})
+            return jsonify({"message": response.get_message()})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+
 # Add resources to the API of lab
 api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')
 api.add_resource(LoginWebsite, '/api/loginWebsite')
@@ -497,12 +761,9 @@ api.add_resource(SetPublicationVideoLink, '/api/setPublicationVideoLink')
 api.add_resource(SetPublicationGitLink, '/api/setPublicationGitLink')
 api.add_resource(SetPublicationPttxLink, '/api/setPublicationPttxLink')
 
-##TODO: get publications for memeber
-##TODO: approve/disaprove registration
-## get all lab managers and memebers
-##get_all_alumnis
-##allseters
-##allnames
+
+##TODO: add al set functions
+
 
 
 # Add the resources to API
@@ -520,13 +781,25 @@ api.add_resource(GetAllLabWebsites, '/api/getAllLabWebsites')
 api.add_resource(EnterGeneratorSystem, '/api/enterGeneratorSystem')
 api.add_resource(GetCustomSite, '/api/getCustomSite')
 
-##TODO: add members
-##TODO: add managers
-##TODO: add managers
-##TODO: getCustomWebsites
-##TODO: getCustomWebsote 
 
 
+api.add_resource(GetMemberPublications, '/api/getMemberPublications')
+api.add_resource(ApproveRegistration, '/api/approveRegistration')
+api.add_resource(RejectRegistration, '/api/rejectRegistration')
+api.add_resource(GetAllLabManagers, '/api/getAllLabManagers')
+api.add_resource(GetAllLabMembers, '/api/getAllLabMembers')
+api.add_resource(GetAllAlumni, '/api/getAllAlumni')
+api.add_resource(AddLabMember, '/api/addLabMember')
+api.add_resource(AddLabManager, '/api/addLabManager')
+api.add_resource(GetAllCustomWebsites, '/api/getCustomWebsites')
+api.add_resource(GetAllLabWebsites, '/api/getWebsites')
+api.add_resource(GetCustomSite, '/api/getCustomSite')
+api.add_resource(SetSecondEmail, '/api/setSecondEmail')
+api.add_resource(SetLinkedInLink, '/api/setLinkedInLink')
+api.add_resource(SetFullName, '/api/setFullName')
+api.add_resource(SetDegree, '/api/setDegree')
+api.add_resource(SetBio, '/api/setBio')
+api.add_resource(SetMedia, '/api/setMedia')
 
 
 if __name__ == '__main__':
