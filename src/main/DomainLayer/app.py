@@ -46,7 +46,7 @@ class UploadFilesAndData(Resource):
                 "domain": domain,
                 "website_name": website_name,
                 "aboutus_content": about_us_content,
-                "contactus_content": contact_us_content
+                "contactus_content": contact_us_content,
             }
             with open(os.path.join(website_folder, 'siteData.json'), 'w') as json_file:
                 json.dump(site_data, json_file)
@@ -72,6 +72,9 @@ class GenerateWebsiteResource(Resource):
             if not os.path.exists(TEMPLATE_1_PATH):
                 return jsonify({"error": f"Path {TEMPLATE_1_PATH} does not exist."})
 
+
+            ##TODO: take all the xlxs files and make them as dictionaries
+            ##TODO: call generate site
             command = ['start', 'cmd', '/K', 'npm', 'start']  # Command to open a new terminal and run npm start
             process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH, shell=True)
     
@@ -492,6 +495,9 @@ api.add_resource(GetAllCustomWebsites, '/api/getCustomWebsites')
 api.add_resource(GetAllLabWebsites, '/api/getAllLabWebsites')
 api.add_resource(EnterGeneratorSystem, '/api/enterGeneratorSystem')
 api.add_resource(GetCustomSite, '/api/getCustomSite')
+
+##TODO: add members
+##TODO: add managers
 
 if __name__ == '__main__':
     app.run(debug=True)
