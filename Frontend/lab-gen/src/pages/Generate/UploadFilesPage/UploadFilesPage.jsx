@@ -121,7 +121,9 @@ const UploadFilesPage = () => {
           First, download the template, fill it in, and upload it.
         </div>
         <div className="upload_files_main">
-          {websiteData.components.map((component) => (
+        {websiteData.components
+            .filter(component => websiteData.generated ? component !== 'Publications' : true)
+            .map((component) => (
             <div key={component} className="file-upload-section">
               <div className="file-upload-item">
                 <div className="file-upload_title">{component}</div>
@@ -142,7 +144,7 @@ const UploadFilesPage = () => {
                         Save
                       </button>
                     </div>
-                  ) : component !== 'Contact Us' ? (
+                  ) : (component !== 'Contact Us' && websiteData.generated===false) ? (
                     <button
                       className="downloadTemplate"
                       onClick={() => handleDownload(component)}
@@ -187,7 +189,13 @@ const UploadFilesPage = () => {
                   </div>
                 )}
 
-                {(component !== 'About Us' && component !== 'Contact Us') && (
+                 {component === 'Participants' && (websiteData.generated) && (
+                    <div>
+                      hello
+                    </div>
+                 )
+                    }           
+                {(component !== 'About Us' && component !== 'Contact Us' && websiteData.generated===false)  && (
                   <div>
                     <input
                       className="downloadTemplate"
