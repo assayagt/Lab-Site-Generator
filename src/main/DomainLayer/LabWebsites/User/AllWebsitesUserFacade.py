@@ -166,4 +166,6 @@ class AllWebsitesUserFacade:
     def add_user_to_website(self, domain):
         return self.getUserFacadeByDomain(domain).add_user()
 
+    def get_all_members_names(self, domain):
+        return self.getUserFacadeByDomain(domain).get_member_names()
 

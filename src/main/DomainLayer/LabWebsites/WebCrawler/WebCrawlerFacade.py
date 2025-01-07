@@ -1,3 +1,6 @@
+from src.main.DomainLayer.LabWebsites.WebCrawler.GoogleScholarWebCrawler import GoogleScholarWebCrawler
+
+
 class WebCrawlerFacade:
     _instance = None
 
@@ -9,7 +12,7 @@ class WebCrawlerFacade:
 
     def __init__(self):
         if not self._initialized:
-            self.web_crawlers = []  # Holds all WebCrawler instances
+            self.web_crawlers = [GoogleScholarWebCrawler()]  # Holds all WebCrawler instances
             self._initialized = True
 
 
