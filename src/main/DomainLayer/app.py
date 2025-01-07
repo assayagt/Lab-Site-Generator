@@ -31,7 +31,7 @@ TEMPLATE_1_PATH = os.path.join(os.getcwd(), 'Frontend', 'template1')
 class UploadFilesAndData(Resource):
     def post(self):
         try:
-            # Get the data from the frontend (domain, website_name, content for each component)
+            # Get the data from the frontend
             domain = request.form['domain']
             website_name = request.form['website_name']
             about_us_content = request.form.get('aboutus_content')
@@ -41,7 +41,7 @@ class UploadFilesAndData(Resource):
             website_folder = os.path.join(GENERATED_WEBSITES_FOLDER, domain)
             os.makedirs(website_folder, exist_ok=True)
 
-            # Save site data (content) to siteData.json
+            # Save site data to siteData.json
             site_data = {
                 "domain": domain,
                 "website_name": website_name,
@@ -49,21 +49,24 @@ class UploadFilesAndData(Resource):
                 "contactus_content": contact_us_content,
             }
             with open(os.path.join(website_folder, 'siteData.json'), 'w') as json_file:
-                json.dump(site_data, json_file)
+                json.dump(site_data, json_file, indent=4)
 
-            # Handle dynamic file uploads for each component (Publications, Participants)
+            # Handle file uploads for each component
             files = request.files
             for component in files:
                 file = files[component]
                 if file:
-                    # Save each file with the component's name (e.g., "Publications.xlsx")
-                    file_path = os.path.join(website_folder, f"{component}.xlsx")
+                    if component == 'logo':
+                        file_path = os.path.join(website_folder, "logo.png")  # Assuming logo is always a .png
+                    elif component == 'homepage_photo':
+                        file_path = os.path.join(website_folder, "homepage_photo.jpg")  # Assuming photo is always a .jpg
+                    else:
+                        file_path = os.path.join(website_folder, f"{component}.xlsx")  # Default case for other files
                     file.save(file_path)
 
             return jsonify({'message': 'Files and data uploaded successfully!'})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
-
 
 # Service for generating a website from templates
 class GenerateWebsiteResource(Resource):
