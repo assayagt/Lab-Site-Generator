@@ -79,3 +79,6 @@ class Website:
     def final_approve_publication(self, paper_id):
         publication = self.get_publication_by_paper_id(paper_id)
         publication.approved = True
+
+    def get_domain(self):
+        return self.domain
