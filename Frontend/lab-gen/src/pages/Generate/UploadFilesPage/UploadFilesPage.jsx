@@ -154,6 +154,7 @@ const UploadFilesPage = () => {
     try {
       const response = await fetch('http://127.0.0.1:5000/api/generateWebsite', {
         method: 'POST',
+        body: websiteData.domain,
       });
       const data = await response.json();
       if (response.ok) {
@@ -367,6 +368,9 @@ const UploadFilesPage = () => {
         <li onClick={() => handleNavClick('Participants')}>Participants</li>
         <li onClick={() => handleNavClick('Media')}>Media</li>
       </ul>
+      <div>
+             <button onClick={handleGenerate}>Generate</button>
+       </div>
     </div>
     <div className="main-content">
       {selectedComponent === 'AboutUs' && <AboutUsForm />}
