@@ -231,31 +231,6 @@ const UploadFilesPage = () => {
                       </div>
   );
   
-  const PublicationsForm = () => (
-    <div className="file-upload-item">
-      <div className="file-upload_title">Publications</div>
-      <button
-         className="downloadTemplate"
-                   onClick={() => handleDownload('Publications')}
-                   >
-                     Download Template
-                   </button>
-                   <div>
-                     <input
-                       className="downloadTemplate"
-                       type="file"
-                       onChange={(e) => handleFileChange(e, 'Publications')}
-                     />
-                     <button
-                       className="downloadTemplate"
-                       onClick={() => handleSubmit('Publications')}
-                     >
-                       Save
-                     </button>
-                   </div>
-    </div>
-  );
-  
   const ParticipantsForm = () => (
     <div className="file-upload-item">
       <div className="file-upload_title">Participants</div>
@@ -375,7 +350,6 @@ const UploadFilesPage = () => {
     <div className="main-content">
       {selectedComponent === 'AboutUs' && <AboutUsForm />}
       {selectedComponent === 'ContactUs' && <ContactUsForm />}
-      {selectedComponent === 'Publications' && <PublicationsForm />}
       {selectedComponent === 'Participants' && <ParticipantsForm />}
       {selectedComponent === 'Media' && <MediaForm />}
     </div>
