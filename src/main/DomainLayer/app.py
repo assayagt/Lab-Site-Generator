@@ -46,7 +46,7 @@ class UploadFilesAndData(Resource):
                 "domain": domain,
                 "website_name": website_name,
                 "aboutus_content": about_us_content,
-                "contactus_content": contact_us_content
+                "contactus_content": contact_us_content,
             }
             with open(os.path.join(website_folder, 'siteData.json'), 'w') as json_file:
                 json.dump(site_data, json_file)
@@ -72,6 +72,9 @@ class GenerateWebsiteResource(Resource):
             if not os.path.exists(TEMPLATE_1_PATH):
                 return jsonify({"error": f"Path {TEMPLATE_1_PATH} does not exist."})
 
+
+            ##TODO: take all the xlxs files and make them as dictionaries
+            ##TODO: call generate site
             command = ['start', 'cmd', '/K', 'npm', 'start']  # Command to open a new terminal and run npm start
             process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH, shell=True)
     
@@ -318,6 +321,164 @@ class GetCustomSite(Resource):
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
+        
+
+
+class EnterLabWebsite(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        domain = args['domain']
+        try:
+            response = lab_system_service.enter_lab_website(domain)
+            if response.is_success():
+                return jsonify({"message": response.get_message(), "user_id": response.get_data()})
+            return jsonify({"message": response.get_message()}), 400
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+class LoginWebsite(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        parser.add_argument('user_id', type=str, required=True, help="User ID is required")
+        parser.add_argument('email', type=str, required=True, help="Email is required")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.login(args['domain'], args['user_id'], args['email'])
+            if response.is_success():
+                return jsonify({"message": response.get_message()})
+            return jsonify({"message": response.get_message()}), 400
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+        
+class LogoutWebsite(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        parser.add_argument('user_id', type=str, required=True, help="User ID is required")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.logout(args['domain'], args['user_id'])
+            if response.is_success():
+                return jsonify({"message": response.get_message()})
+            return jsonify({"message": response.get_message()}), 400
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+        
+class GetApprovedPublications(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.get_all_approved_publications(args['domain'])
+            if response.is_success():
+                return jsonify({"publications": response.get_data()})
+            return jsonify({"message": response.get_message()}), 400
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+class AddPublication(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User ID is required")
+        parser.add_argument('publication_dto', type=dict, location='json', required=True, help="Publication data is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        parser.add_argument('authors_emails', type=list, location='json', required=True, help="Authors' emails are required")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.add_publication_manually(
+                args['user_id'], args['publication_dto'], args['domain'], args['authors_emails']
+            )
+            if response.is_success():
+                return jsonify({"message": response.get_message()})
+            return jsonify({"message": response.get_message()}), 400
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+class SetPublicationVideoLink(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User ID is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        parser.add_argument('publication_id', type=str, required=True, help="Publication ID is required")
+        parser.add_argument('video_link', type=str, required=False, help="Video link")
+        args = parser.parse_args()
+
+        try:
+            
+            response = lab_system_service.set_publication_video_link(
+                    args['user_id'], args['domain'], args['publication_id'], args['video_link']
+                )
+         
+            if response.is_success():
+                return jsonify({"message": response.get_message()})
+            return jsonify({"message": response.get_message()}), 400
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+        
+
+class SetPublicationGitLink(Resource):
+        def post(self):
+            parser = reqparse.RequestParser()
+            parser.add_argument('user_id', type=str, required=True, help="User ID is required")
+            parser.add_argument('domain', type=str, required=True, help="Domain is required")
+            parser.add_argument('publication_id', type=str, required=True, help="Publication ID is required")
+            parser.add_argument('git_link', type=str, required=False, help="Git link")
+            args = parser.parse_args()
+
+            try:
+               
+                response = lab_system_service.set_publication_git_link(
+                    args['user_id'], args['domain'], args['publication_id'], args['git_link']
+                )
+        
+                if response.is_success():
+                    return jsonify({"message": response.get_message()})
+                return jsonify({"message": response.get_message()}), 400
+            except Exception as e:
+                return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+class SetPublicationPttxLink(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User ID is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        parser.add_argument('publication_id', type=str, required=True, help="Publication ID is required")
+    
+        parser.add_argument('presentation_link', type=str, required=False, help="Presentation link")
+        args = parser.parse_args()
+
+        try:
+           
+           
+            response = lab_system_service.set_publication_presentation_link(
+                    args['user_id'], args['domain'], args['publication_id'], args['presentation_link']
+                )
+            
+            if response.is_success():
+                return jsonify({"message": response.get_message()})
+            return jsonify({"message": response.get_message()}), 400
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+
+# Add resources to the API of lab
+api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')
+api.add_resource(LoginWebsite, '/api/loginWebsite')
+api.add_resource(LogoutWebsite, '/api/logoutWebsite')
+api.add_resource(GetApprovedPublications, '/api/getApprovedPublications')
+api.add_resource(AddPublication, '/api/addPublication')
+api.add_resource(SetPublicationVideoLink, '/api/setPublicationVideoLink')
+api.add_resource(SetPublicationGitLink, '/api/setPublicationGitLink')
+api.add_resource(SetPublicationPttxLink, '/api/setPublicationPttxLink')
 
 
 # Add the resources to API
@@ -334,6 +495,9 @@ api.add_resource(GetAllCustomWebsites, '/api/getCustomWebsites')
 api.add_resource(GetAllLabWebsites, '/api/getAllLabWebsites')
 api.add_resource(EnterGeneratorSystem, '/api/enterGeneratorSystem')
 api.add_resource(GetCustomSite, '/api/getCustomSite')
+
+##TODO: add members
+##TODO: add managers
 
 if __name__ == '__main__':
     app.run(debug=True)

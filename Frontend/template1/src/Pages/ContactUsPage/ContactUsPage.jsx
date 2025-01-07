@@ -38,7 +38,8 @@ function ContactUsPage(props) {
           <strong>Address:</strong> {props.address}
         </div>
         <div>
-          <strong>Email:</strong> {props.email}
+          <strong>Email:</strong> {                
+            <a href={`mailto:${props.email}`} className="email-link">{props.email}</a>}
         </div>
         <div>
           <strong>Phone:</strong> {props.phone}

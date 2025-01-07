@@ -19,17 +19,30 @@
   .notifications {
     margin-bottom: 20px;
   }
+
+  .personal-info{
+    margin-left: 20px;
+    border-radius: 10px;
+    padding: 20px;
+    padding-left: 30px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  }
+.info{
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+}
   
   .user-photo {
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    margin-right: 20px;
   }
   
   .details {
-    display: inline-block;
-    vertical-align: top;
+    display: flex;
+    flex-direction: column;
   }
   
   button {
@@ -85,7 +98,7 @@
   }
   
   .sidebar button.active {
-    background-color: #007bff;
+    background-color: #7bb3f0;
     color: white;
     font-weight: bold;
   }
@@ -101,4 +114,125 @@
   .notifications.active {
     display: block;
   }
+
+  .detail-bio{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+    padding: 10px;
+  }
+
+  .text-detail{
+    width: 200px;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid transparent;
+  }
   
+
+ .save-changes{
+    padding: 10px;
+    border-radius: 20px;
+    right: 0;
+    position: relative;
+    cursor: pointer;
+ }
+ .save-changes:hover{
+  
+}
+
+.user-photo-div{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 5px;
+  position: relative;
+  width: 100px; /* Adjust as needed */
+  height: 100px; /* Adjust as needed */
+}
+
+.save-photo{
+  border: none;
+  cursor: pointer;
+
+}
+
+.save-photo:hover{
+  text-decoration: underline;
+
+}
+
+.camera-icon {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  background: white;
+  border-radius: 50%;
+  padding: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.camera-icon img {
+  width: 20px; /* Adjust icon size */
+  height: 20px;
+
+}
+.publication-form{
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+}
+
+.save-publications{
+  width: max-content;
+  padding: 8px;
+  border-radius: 20px;
+}
+
+.publication-item{
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.my-publications{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-left: 20px;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  padding: 5px 10px;
+  width: 100%;
+  max-width: 400px; /* Adjust the width as needed */
+  margin-bottom: 20px; /* Spacing below the search bar */
+  background-color: #f9f9f9;
+}
+
+.search-bar .search-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.search-bar .search-input {
+  border: none;
+  outline: none;
+  flex: 1; /* Takes up the remaining space */
+  background-color: transparent;
+  font-size: 16px;
+  color: #333;
+}
+
+.search-bar .search-input::placeholder {
+  color: #aaa;
+}
