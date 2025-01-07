@@ -113,12 +113,47 @@
 }
 
 
-input[type="text"], input[type="checkbox"] {
-  margin: 5px;
-  padding: 5px;
+
+
+
+.container {
+  display: flex;
+  height: 100vh;
 }
 
-button {
-  margin: 5px;
-  padding: 5px;
+.sidebar {
+  width: 200px;
+  background-color: #f4f4f4;
+  padding: 20px;
+  overflow: auto; /* Enables scrolling if many items */
 }
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  padding: 10px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  background-color: #ddd;
+}
+
+.sidebar ul li:hover {
+  background-color: #ccc;
+}
+
+.sidebar ul li.active {
+  background-color: #bbb;
+  font-weight: bold;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto; /* Scrollable content */
+}
+
+
+

@@ -21,6 +21,14 @@ const UploadFilesPage = () => {
   });
 
 
+
+  const [selectedComponent, setSelectedComponent] = useState('AboutUs');  // Default to About Us
+
+  const handleNavClick = (componentName) => {
+    setSelectedComponent(componentName);
+  };
+
+
   const [participants, setParticipants] = useState([
     { fullName: "Dr. Alice Johnson", degree: "PhD", isLabManager: true },
     { fullName: "Prof. Brian Smith", degree: "PhD", isLabManager: false },
@@ -159,168 +167,342 @@ const UploadFilesPage = () => {
     }
   };
 
-  return (
-    <div>
-      <div className="upload_files_page">
-        <h2 className="upload_title">Upload Files for Each Component</h2>
-        <div className="upload_instruction">
-          First, download the template, fill it in, and upload it.
-        </div>
-        <div className="upload_files_main">
-        {websiteData.components
-            .filter(component => websiteData.generated ? component !== 'Publications' : true)
-            .map((component) => (
-            <div key={component} className="file-upload-section">
-              <div className="file-upload-item">
-                <div className="file-upload_title">{component}</div>
-                <div>
-                  {component === 'About Us' ? (
-                    <div className="about_contact_section">
-                      <input
-                        className="about_contact_input"
-                        name="AboutUs"
-                        placeholder={`Enter content for ${component}`}
-                        value={formData.AboutUs}
-                        onChange={handleInputChange}
-                      />
-                      <button
-                        className="about_contact_button"
-                        onClick={() => handleSubmit(component)}
-                      >
-                        Save
-                      </button>
-                    </div>
-                  ) : (component !== 'Contact Us' && websiteData.generated===false) ? (
-                    <button
-                      className="downloadTemplate"
-                      onClick={() => handleDownload(component)}
-                    >
-                      Download Template
-                    </button>
-                  ) : (
-                    <div> </div> // This block is for Contact Us
-                  )}
-                </div>
 
-                {component === 'Contact Us' && (
-                  <div className="contact_us_section">
-                    <input
-                      className="contact_us_input"
-                      name="email"
-                      placeholder="Enter your email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                    />
-                    <input
-                      className="contact_us_input"
-                      name="phoneNumber"
-                      placeholder="Enter your phone number"
-                      value={formData.phoneNumber}
-                      onChange={handleInputChange}
-                    />
-                    <input
-                      className="contact_us_input"
-                      name="address"
-                      placeholder="Enter your address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                    />
-                  
-                    <button
-                      className="about_contact_button"
-                      onClick={() => handleSubmit(component)}
-                    >
-                      Save
-                    </button>
-                  </div>
-                )}
 
-                 {component === 'Participants' && (websiteData.generated) && (
-                    <div>
-                    <table className="participants-table">
-                      <thead>
-                        <tr>
-                          <th>Full Name</th>
-                          <th>Degree</th>
-                          <th>Manager</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {participants.map((participant, index) => (
-                          <tr key={index}>
-                            <td>{participant.fullName}</td>
-                            <td>{participant.degree}</td>
-                            <td>
-                              <input
-                                type="checkbox"
-                                checked={participant.isLabManager}
-                                onChange={() => toggleLabManager(index)}
-                              />
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                    {showAddForm ? (
-                      <div>
-                        <input
-                          type="text"
-                          placeholder="Full Name"
-                          name="fullName"
-                          value={newParticipant.fullName}
-                          onChange={handleInputChangepart}
-                        />
-                        <input
-                          type="text"
-                          placeholder="Degree"
-                          name="degree"
-                          value={newParticipant.degree}
-                          onChange={handleInputChangepart}
-                        />
-                        <label>
-                          Manager
+
+
+
+  const AboutUsForm = () => (
+    <div className="file-upload-item">
+      <div className="file-upload_title">About Us</div>
+        <div className="about_contact_section">
                           <input
-                            type="checkbox"
-                            name="isLabManager"
-                            checked={newParticipant.isLabManager}
-                            onChange={handleInputChangepart}
+                            className="about_contact_input"
+                            name="AboutUs"
+                            placeholder={`Enter content for About Us`}
+                            value={formData.AboutUs}
+                            onChange={handleInputChange}
                           />
-                        </label>
-                        <button onClick={addParticipant}>Save</button>
-                        <button onClick={() => setShowAddForm(false)}>Cancel</button>
-                      </div>
-                    ) : (
-                      <button onClick={() => setShowAddForm(true)}>+ Add Participant</button>
-                    )}
-                  </div>
-                 )
-                    }           
-                {(component !== 'About Us' && component !== 'Contact Us' && websiteData.generated===false)  && (
-                  <div>
-                    <input
-                      className="downloadTemplate"
-                      type="file"
-                      onChange={(e) => handleFileChange(e, component)}
-                    />
-                    <button
-                      className="downloadTemplate"
-                      onClick={() => handleSubmit(component)}
-                    >
-                      Save
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-
-          <div>
-            <button onClick={handleGenerate}>Generate</button>
-          </div>
+                          <button
+                            className="about_contact_button"
+                            onClick={() => handleSubmit('About Us')}
+                          >
+                            Save
+                          </button>
         </div>
-      </div>
+    </div>
+    
+  );
+  
+  const ContactUsForm = () => (
+    <div className="file-upload-item">
+      <div className="file-upload_title">Contact us</div>
+        <div className="contact_us_section">
+                        <input
+                          className="contact_us_input"
+                          name="email"
+                          placeholder="Enter your email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                        />
+                        <input
+                          className="contact_us_input"
+                          name="phoneNumber"
+                          placeholder="Enter your phone number"
+                          value={formData.phoneNumber}
+                          onChange={handleInputChange}
+                        />
+                        <input
+                          className="contact_us_input"
+                          name="address"
+                          placeholder="Enter your address"
+                          value={formData.address}
+                          onChange={handleInputChange}
+                        />
+                      
+                        <button
+                          className="about_contact_button"
+                          onClick={() => handleSubmit('Contact Us')}
+                        >
+                          Save
+                        </button>
+                      </div>
+                      </div>
+  );
+  
+  const PublicationsForm = () => (
+    <div className="file-upload-item">
+      <div className="file-upload_title">Publications</div>
+      <button
+         className="downloadTemplate"
+                   onClick={() => handleDownload('Publications')}
+                   >
+                     Download Template
+                   </button>
+                   <div>
+                     <input
+                       className="downloadTemplate"
+                       type="file"
+                       onChange={(e) => handleFileChange(e, 'Publications')}
+                     />
+                     <button
+                       className="downloadTemplate"
+                       onClick={() => handleSubmit('Publications')}
+                     >
+                       Save
+                     </button>
+                   </div>
     </div>
   );
+  
+  const ParticipantsForm = () => (
+    <div className="file-upload-item">
+      <div className="file-upload_title">Participants</div>
+      {websiteData.generated &&
+      (<div>
+                         <table className="participants-table">
+                           <thead>
+                             <tr>
+                               <th>Full Name</th>
+                               <th>Degree</th>
+                               <th>Manager</th>
+                             </tr>
+                           </thead>
+                           <tbody>
+                             {participants.map((participant, index) => (
+                               <tr key={index}>
+                                 <td>{participant.fullName}</td>
+                                 <td>{participant.degree}</td>
+                                 <td>
+                                   <input
+                                     type="checkbox"
+                                     checked={participant.isLabManager}
+                                     onChange={() => toggleLabManager(index)}
+                                 />
+                                 </td>
+                               </tr>
+                             ))}
+                           </tbody>
+                         </table>
+                         {showAddForm ? (
+                           <div>
+                             <input
+                               type="text"
+                               placeholder="Full Name"
+                               name="fullName"
+                               value={newParticipant.fullName}
+                               onChange={handleInputChangepart}
+                             />
+                             <input
+                               type="text"
+                               placeholder="Degree"
+                               name="degree"
+                               value={newParticipant.degree}
+                               onChange={handleInputChangepart}
+                             />
+                           <label>
+                               Manager
+                               <input
+                               type="checkbox"
+                                 name="isLabManager"
+                                 checked={newParticipant.isLabManager}
+                                 onChange={handleInputChangepart}
+                              />
+                             </label>
+                             <button onClick={addParticipant}>Save</button>
+                             <button onClick={() => setShowAddForm(false)}>Cancel</button>
+                           </div>
+                       ) : (
+                           <button onClick={() => setShowAddForm(true)}>+ Add Participant</button>
+                         )}
+                       </div>)
+      }
+    </div>
+  );
+  
+  return (
+
+    <div className="container">
+    <div className="sidebar">
+      <ul>
+        <li onClick={() => handleNavClick('AboutUs')}>About Us</li>
+        <li onClick={() => handleNavClick('ContactUs')}>Contact Us</li>
+        {!websiteData.generated && ( <li onClick={() => handleNavClick('Publications')}>Publications</li>)}
+        <li onClick={() => handleNavClick('Participants')}>Participants</li>
+      </ul>
+    </div>
+    <div className="main-content">
+      {selectedComponent === 'AboutUs' && <AboutUsForm />}
+      {selectedComponent === 'ContactUs' && <ContactUsForm />}
+      {selectedComponent === 'Publications' && <PublicationsForm />}
+      {selectedComponent === 'Participants' && <ParticipantsForm />}
+    </div>
+  </div>
+  );
+
+
+  
+    // <div>
+    //   <div className="upload_files_page">
+    //     <h2 className="upload_title">Upload Files for Each Component</h2>
+    //     <div className="upload_instruction">
+    //       First, download the template, fill it in, and upload it.
+    //     </div>
+    //     <div className="upload_files_main">
+    //     {websiteData.components
+    //         .filter(component => websiteData.generated ? component !== 'Publications' : true)
+    //         .map((component) => (
+    //         <div key={component} className="file-upload-section">
+    //           <div className="file-upload-item">
+    //             <div className="file-upload_title">{component}</div>
+    //             <div>
+    //               {component === 'About Us' ? (
+    //                 <div className="about_contact_section">
+    //                   <input
+    //                     className="about_contact_input"
+    //                     name="AboutUs"
+    //                     placeholder={`Enter content for ${component}`}
+    //                     value={formData.AboutUs}
+    //                     onChange={handleInputChange}
+    //                   />
+    //                   <button
+    //                     className="about_contact_button"
+    //                     onClick={() => handleSubmit(component)}
+    //                   >
+    //                     Save
+    //                   </button>
+    //                 </div>
+    //               ) : (component !== 'Contact Us' && websiteData.generated===false) ? (
+    //                 <button
+    //                   className="downloadTemplate"
+    //                   onClick={() => handleDownload(component)}
+    //                 >
+    //                   Download Template
+    //                 </button>
+    //               ) : (
+    //                 <div> </div> // This block is for Contact Us
+    //               )}
+    //             </div>
+
+    //             {component === 'Contact Us' && (
+    //               <div className="contact_us_section">
+    //                 <input
+    //                   className="contact_us_input"
+    //                   name="email"
+    //                   placeholder="Enter your email"
+    //                   value={formData.email}
+    //                   onChange={handleInputChange}
+    //                 />
+    //                 <input
+    //                   className="contact_us_input"
+    //                   name="phoneNumber"
+    //                   placeholder="Enter your phone number"
+    //                   value={formData.phoneNumber}
+    //                   onChange={handleInputChange}
+    //                 />
+    //                 <input
+    //                   className="contact_us_input"
+    //                   name="address"
+    //                   placeholder="Enter your address"
+    //                   value={formData.address}
+    //                   onChange={handleInputChange}
+    //                 />
+                  
+    //                 <button
+    //                   className="about_contact_button"
+    //                   onClick={() => handleSubmit(component)}
+    //                 >
+    //                   Save
+    //                 </button>
+    //               </div>
+    //             )}
+
+    //              {component === 'Participants' && (websiteData.generated) && (
+    //                 <div>
+    //                 <table className="participants-table">
+    //                   <thead>
+    //                     <tr>
+    //                       <th>Full Name</th>
+    //                       <th>Degree</th>
+    //                       <th>Manager</th>
+    //                     </tr>
+    //                   </thead>
+    //                   <tbody>
+    //                     {participants.map((participant, index) => (
+    //                       <tr key={index}>
+    //                         <td>{participant.fullName}</td>
+    //                         <td>{participant.degree}</td>
+    //                         <td>
+    //                           <input
+    //                             type="checkbox"
+    //                             checked={participant.isLabManager}
+    //                             onChange={() => toggleLabManager(index)}
+    //                           />
+    //                         </td>
+    //                       </tr>
+    //                     ))}
+    //                   </tbody>
+    //                 </table>
+    //                 {showAddForm ? (
+    //                   <div>
+    //                     <input
+    //                       type="text"
+    //                       placeholder="Full Name"
+    //                       name="fullName"
+    //                       value={newParticipant.fullName}
+    //                       onChange={handleInputChangepart}
+    //                     />
+    //                     <input
+    //                       type="text"
+    //                       placeholder="Degree"
+    //                       name="degree"
+    //                       value={newParticipant.degree}
+    //                       onChange={handleInputChangepart}
+    //                     />
+    //                     <label>
+    //                       Manager
+    //                       <input
+    //                         type="checkbox"
+    //                         name="isLabManager"
+    //                         checked={newParticipant.isLabManager}
+    //                         onChange={handleInputChangepart}
+    //                       />
+    //                     </label>
+    //                     <button onClick={addParticipant}>Save</button>
+    //                     <button onClick={() => setShowAddForm(false)}>Cancel</button>
+    //                   </div>
+    //                 ) : (
+    //                   <button onClick={() => setShowAddForm(true)}>+ Add Participant</button>
+    //                 )}
+    //               </div>
+    //              )
+    //                 }           
+    //             {(component !== 'About Us' && component !== 'Contact Us' && websiteData.generated===false)  && (
+    //               <div>
+    //                 <input
+    //                   className="downloadTemplate"
+    //                   type="file"
+    //                   onChange={(e) => handleFileChange(e, component)}
+    //                 />
+    //                 <button
+    //                   className="downloadTemplate"
+    //                   onClick={() => handleSubmit(component)}
+    //                 >
+    //                   Save
+    //                 </button>
+    //               </div>
+    //             )}
+    //           </div>
+    //         </div>
+    //       ))}
+
+    //       <div>
+    //         <button onClick={handleGenerate}>Generate</button>
+    //       </div>
+    //     </div>
+    //   </div>
+    // </div>
+  //);
 };
 
 export default UploadFilesPage;
