@@ -169,3 +169,6 @@ class AllWebsitesUserFacade:
     def get_all_members_names(self, domain):
         return self.getUserFacadeByDomain(domain).get_member_names()
 
+    def get_pending_registration_emails(self, domain):
+        return self.getUserFacadeByDomain(domain).get_pending_registration_emails()
+
