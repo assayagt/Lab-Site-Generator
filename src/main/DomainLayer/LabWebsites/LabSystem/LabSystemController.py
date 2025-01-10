@@ -311,3 +311,8 @@ class LabSystemController:
         '''
         return self.allWebsitesUserFacade.get_all_members_names(domain)
 
+    def get_pending_registration_emails(self, userid, domain):
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userid)
+        userFacade.error_if_user_not_logged_in(userid)
+        return self.allWebsitesUserFacade.get_pending_registration_emails(domain)
