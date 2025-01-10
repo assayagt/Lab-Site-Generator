@@ -234,3 +234,5 @@ class LabSystemService:
             return Response(True, "Media added successfully")
         except Exception as e:
             return Response(None, str(e))
+
+    def

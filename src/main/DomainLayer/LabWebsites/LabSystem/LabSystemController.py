@@ -144,7 +144,7 @@ class LabSystemController:
 
         # for each website, send to the webCrawler facade the members and current year to fetch publications
         for website in websites:
-            members_names = self.allWebsitesUserFacade.get_all_members_names(website.get_domain())
+            members_names = self.allWebsitesUserFacade.get_active_members_names(website.get_domain())
             websitePublications = self.webCrawlerFacade.fetch_publications(members_names, datetime.now().year)
 
             # check for each publication that is not already in website members publications
@@ -305,5 +305,9 @@ class LabSystemController:
             self.websiteFacade.set_publication_presentation_link(domain, publication_id, presentation_link)
             #TODO: in the future, send notification to lab manager for approve
 
-
+    def get_all_members_names(self, domain):
+        '''
+        returns all lab members + managers + site creator + alumnis names
+        '''
+        return self.allWebsitesUserFacade.get_all_members_names(domain)
 
