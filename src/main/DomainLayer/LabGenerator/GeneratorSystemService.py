@@ -87,6 +87,20 @@ class GeneratorSystemService:
         except Exception as e:
             return Response(None, str(e))
 
+    def remove_site_manager_from_generator(self, nominator_manager_userId, manager_toRemove_email, domain):
+        """
+        Remove a manager from a specific website, from generator site.
+        nomintator_manager_userId is the user that removes the manager.
+        The given removed_manager_email must be associated with a manager of the given website.
+        The permissions of the lab creator cannot be removed, it must always remain a Lab Manager
+        """
+        try:
+            self.generator_system_controller.remove_site_manager_from_generator(nominator_manager_userId,
+                                                                                manager_toRemove_email, domain)
+            return Response(manager_toRemove_email, "Site manager removed successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
     def register_new_LabMember_from_generator(self, manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain):
         """Register a new lab member through GeneratorSystemController."""
         try:
@@ -120,19 +134,12 @@ class GeneratorSystemService:
             return Response(None, str(e))
 
 
-    def get_custom_websites(self, user_id):
-        """Get all lab websites through GeneratorSystemController."""
+    def get_all_custom_websites_of_manager(self, user_id):
+        """Get all custom website details through GeneratorSystemController for specific manager (both generated and not generated sites).
+        The details contain the domain, site name, and generated status"""
         try:
-            websites = self.generator_system_controller.get_custom_websites(user_id)
-            return Response(websites, "Successfully retrieved lab websites")
-        except Exception as e:
-            return Response(None, str(e))
-
-    def get_lab_websites(self, user_id):
-        """Get a lab website through GeneratorSystemController."""
-        try:
-            websites = self.generator_system_controller.get_lab_websites(user_id)
-            return Response(websites, "Successfully retrieved lab website")
+            websites = self.generator_system_controller.get_all_custom_websites_of_manager(user_id)
+            return Response(websites, "Successfully retrieved custom websites")
         except Exception as e:
             return Response(None, str(e))
 
@@ -145,7 +152,7 @@ class GeneratorSystemService:
             return Response(None, str(e))
 
     def get_custom_website(self, user_id, domain):
-        """Get a custom website through GeneratorSystemController."""
+        """ Get a custom website dto for specific manager and domain, through GeneratorSystemController."""
         try:
             website = self.generator_system_controller.get_custom_website(user_id, domain)
             return Response({

@@ -81,10 +81,13 @@ class SiteCustomFacade:
         site = self.sites[old_domain]
         site.remove_component(component)
 
-    def get_custom_websites(self):
-        """Get all lab websites. return map of domain and site name"""
-
-        return {site.domain: site.name for site in self.sites}
+    def get_custom_websites(self, domains):
+        """Get details of custom websites with the given domains. return map of domain, site name, and generated status"""
+        custom_sites_details = {}
+        for domain in domains:
+            site = self.sites[domain]
+            custom_sites_details[domain] = {"site_name": site.name, "generated": site.generated}
+        return custom_sites_details
 
     def set_custom_site_as_generated(self, domain):
         """Sets a custom site as generated."""
@@ -98,14 +101,9 @@ class SiteCustomFacade:
         self.sites.clear()
        
     def get_site_by_domain(self, domain):
-        """Get site by domain."""
-        try:
-            #return siteCustomDTO object
-            site = self.sites[domain]
-            site_custom_dto = SiteCustomDTO.from_site_custom(site)
-            return site_custom_dto
-        except IndexError:
-            raise Exception("Error: Site index out of range")
-        except Exception as e:
-            raise Exception(f"Unexpected error: {e}")
+        """Get site by domain, return siteCustomDTO object"""
+        site = self.sites[domain]
+        site_custom_dto = SiteCustomDTO.from_site_custom(site)
+        return site_custom_dto
+
 

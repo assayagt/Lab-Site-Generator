@@ -10,8 +10,7 @@ class UserFacade:
 
     def __init__(self):
         self.users = {}
-        self.members_sites = {} # sites that was already generated <email, [domains]>
-        self.members_customSites = {} # sites that was created by the user <email, <Member, [domains]>>
+        self.members_customSites = {} # sites that was created by the user <email, <Member, [domains]>> (both generated and not generated)
 
     @staticmethod
     def get_instance():
@@ -20,25 +19,18 @@ class UserFacade:
         return UserFacade._singleton_instance
 
     def create_new_site_manager(self, email, domain):
-        #first check if key in self.members_sites
-        if email not in self.members_sites:
-            self.members_sites[email] = []
         #check if key in self.members_customSites
         if email not in self.members_customSites:
             member = Member(email=email)
             self.members_customSites[email] = {"member": member, "domains": []}
-        #add domain to the user's sites
-        if domain not in self.members_sites[email]:
-            self.members_sites[email].append(domain)
         if domain not in self.members_customSites[email]["domains"]:
             self.members_customSites[email]["domains"].append(domain)
 
-    def change_site_domain(self, old_domain, new_domain):
-        # Update domains in self.members_sites
-        for email, domains in self.members_sites.items():
-            if old_domain in domains:
-                domains[domains.index(old_domain)] = new_domain
+    def create_new_site_managers(self, lab_managers_emails, domain):
+        for email in lab_managers_emails:
+            self.create_new_site_manager(email, domain)
 
+    def change_site_domain(self, old_domain, new_domain):
         # Update domains in self.members_customSites
         for email, data in self.members_customSites.items():
             if old_domain in data["domains"]:
@@ -47,7 +39,7 @@ class UserFacade:
     def error_if_user_is_not_site_manager(self, userId, domain):
         email = self.get_email_by_userId(userId)
         #check if domain is one of the sites that the user is a manager of
-        if domain not in self.members_sites[email] and domain not in self.members_customSites[email]["domains"]:
+        if domain not in self.members_customSites[email]["domains"]:
             raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER.value)
 
     def error_if_email_is_not_valid(self, email):
@@ -69,7 +61,6 @@ class UserFacade:
             member.set_user_id(userId)
         else:
             member = Member(user_id=userId, email=email)
-            self.members_sites[email] = []
             self.members_customSites[email] = {"member": member, "domains": []}
         user.login(member)
 
@@ -112,12 +103,25 @@ class UserFacade:
 
     def get_lab_websites(self, user_id):
         """Get all lab websites."""
-        return self.members_sites[self.get_email_by_userId(user_id)]
+        email = self.get_email_by_userId(user_id)
+        return self.members_customSites[email]["domains"]
 
     def reset_system(self):
         """
         Resets the entire system by clearing all users, members, and site-related data.
         """
         self.users.clear()
-        self.members_sites.clear()
         self.members_customSites.clear()
+
+    def remove_site_manager(self, manager_toRemove_email, domain):
+        #remove domain from the removed_manager_email
+        if manager_toRemove_email in self.members_customSites:
+            if domain in self.members_customSites[manager_toRemove_email]["domains"]:
+                self.members_customSites[manager_toRemove_email]["domains"].remove(domain)
+            else:
+                raise Exception(ExceptionsEnum.USER_IS_NOT_MANAGER_OF_THE_GIVEN_DOMAIN.value)
+        else:
+            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER.value)
+        #remove the removed_manager_email if it has no domains
+        if not self.members_customSites[manager_toRemove_email]["domains"]:
+            self.members_customSites.pop(manager_toRemove_email)
