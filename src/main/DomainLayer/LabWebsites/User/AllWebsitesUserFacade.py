@@ -166,8 +166,12 @@ class AllWebsitesUserFacade:
     def add_user_to_website(self, domain):
         return self.getUserFacadeByDomain(domain).add_user()
 
+    def get_active_members_names(self, domain):
+        return self.getUserFacadeByDomain(domain).get_active_members_names()
+
     def get_all_members_names(self, domain):
-        return self.getUserFacadeByDomain(domain).get_member_names()
+        '''returns all lab members + managers + site creator + alumnis names'''
+        return self.getUserFacadeByDomain(domain).get_all_members_names()
 
     def get_pending_registration_emails(self, domain):
         return self.getUserFacadeByDomain(domain).get_pending_registration_emails()
