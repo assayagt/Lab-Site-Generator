@@ -172,3 +172,7 @@ class AllWebsitesUserFacade:
     def get_all_members_names(self, domain):
         '''returns all lab members + managers + site creator + alumnis names'''
         return self.getUserFacadeByDomain(domain).get_all_members_names()
+
+    def get_pending_registration_emails(self, domain):
+        return self.getUserFacadeByDomain(domain).get_pending_registration_emails()
+
