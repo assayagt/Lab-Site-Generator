@@ -235,4 +235,12 @@ class LabSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def
+    def get_all_members_names(self, domain):
+        '''
+        returns all lab members + managers + site creator + alumnis names
+        '''
+        try:
+            members_names = self.lab_system_controller.get_all_members_names(domain)
+            return Response(members_names, "Retrieved all members names successfully")
+        except Exception as e:
+            return Response(None, str(e))
