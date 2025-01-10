@@ -353,7 +353,6 @@ class GetCustomSite(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
-<<<<<<< Updated upstream
 class GetHomepageDetails(Resource):
     def get(self):
         try:
@@ -379,9 +378,6 @@ class GetHomepageDetails(Resource):
 
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
-        
-=======
->>>>>>> Stashed changes
 
 
 class EnterLabWebsite(Resource):
