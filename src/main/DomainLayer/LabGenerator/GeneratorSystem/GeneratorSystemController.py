@@ -44,6 +44,8 @@ class GeneratorSystemController:
         """
         self.site_custom_facade.error_if_domain_not_exist(domain)
         self.site_custom_facade.set_custom_site_as_generated(domain)
+        lab_managers_emails = list(lab_managers.keys())
+        self.user_facade.create_new_site_managers(lab_managers_emails, domain)
         self.labSystem.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
 
     def change_website_name(self, user_id, new_name, domain):
@@ -89,6 +91,19 @@ class GeneratorSystemController:
         self.user_facade.create_new_site_manager(nominated_manager_email, domain)
         self.labSystem.create_new_site_manager_from_generator(domain, nominated_manager_email)
 
+    def remove_site_manager_from_generator(self, nominator_manager_userId, manager_toRemove_email, domain):
+        """
+        Remove a manager from a specific website, from generator site.
+        nomintator_manager_userId is the user that removes the manager.
+        The given removed_manager_email must be associated with a manager of the given website.
+        The permissions of the lab creator cannot be removed, it must always remain a Lab Manager
+        """
+        self.user_facade.error_if_user_notExist(nominator_manager_userId)
+        self.user_facade.error_if_user_not_logged_in(nominator_manager_userId)
+        self.user_facade.error_if_user_is_not_site_manager(nominator_manager_userId, domain)
+        self.user_facade.remove_site_manager(manager_toRemove_email, domain)
+        self.labSystem.remove_manager_permission(nominator_manager_userId, manager_toRemove_email, domain)
+
     def register_new_LabMember_from_generator(self, manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain):
         """
         Define a new lab member in a specific website, from generator site.
@@ -123,17 +138,20 @@ class GeneratorSystemController:
         """Enter the generator system."""
         return self.user_facade.add_user()
 
-    def get_custom_websites(self, user_id):
-        """Get all lab websites."""
+    def get_all_custom_websites_of_manager(self, user_id):
+        """Get all custom website details for specific manager (both generated and not generated sites).
+        The details contain the domain, site name, and generated status."""
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
-        return self.site_custom_facade.get_custom_websites()
+        domains = self.user_facade.get_lab_websites(user_id)
+        return self.site_custom_facade.get_custom_websites(domains)
 
-    def get_lab_websites(self, user_id):
-        """Get all lab websites."""
+    def get_custom_website(self, user_id, domain):
+        """Get a custom website dto for specific manager and domain."""
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
-        return self.user_facade.get_lab_websites(user_id)
+        self.user_facade.error_if_user_is_not_site_manager(user_id, domain)
+        return self.site_custom_facade.get_site_by_domain(domain)
 
     def reset_system(self):
         """
@@ -142,9 +160,5 @@ class GeneratorSystemController:
         self.user_facade.reset_system()
         self.site_custom_facade.reset_system()
 
-    def get_custom_website(self, user_id, domain):
-        """Get a custom website."""
-        self.user_facade.error_if_user_notExist(user_id)
-        self.user_facade.error_if_user_not_logged_in(user_id)
-        return self.site_custom_facade.get_site_by_domain(domain)
+
 
