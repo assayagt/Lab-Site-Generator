@@ -1,7 +1,9 @@
 class Website:
-    def __init__(self, domain):
+    def __init__(self, domain, contact_info=None, about_us=None):
         self.members_publications = {}
         self.domain = domain
+        self.contact_info = contact_info
+        self.about_us = about_us
 
     def create_publication(self, publicationDTO, authors_emails):
         # get new publicationDTO and add it to the dictionary
@@ -82,3 +84,9 @@ class Website:
 
     def get_domain(self):
         return self.domain
+
+    def get_about_us(self):
+        return self.about_us
+
+    def set_about_us(self, about_us_text):
+        self.about_us = about_us_text
