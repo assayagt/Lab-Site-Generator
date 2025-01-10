@@ -162,7 +162,7 @@ class LabSystemService:
             return Response(None, str(e))
 
     def get_all_lab_managers(self, domain):
-        """Get all lab managers."""
+        """Get all lab managers, including the site creator."""
         try:
             lab_managers = self.lab_system_controller.get_all_lab_managers(domain)
             return Response(lab_managers, "Retrieved all lab managers successfully")
@@ -232,5 +232,12 @@ class LabSystemService:
         try:
             self.lab_system_controller.set_media_by_member(userid, media, domain)
             return Response(True, "Media added successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def get_pending_registration_emails(self, userid, domain):
+        try:
+            pending_registration_emails = self.lab_system_controller.get_pending_registration_emails(userid, domain)
+            return Response(pending_registration_emails, "Retrieved all pending registration emails successfully")
         except Exception as e:
             return Response(None, str(e))

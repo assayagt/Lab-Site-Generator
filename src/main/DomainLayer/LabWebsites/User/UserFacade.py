@@ -287,3 +287,8 @@ class UserFacade:
         )
         if not linkedin_pattern.match(linkedin_link):
             raise ValueError(ExceptionsEnum.INVALID_LINKEDIN_LINK.value)
+
+
+    def get_pending_registration_emails(self):
+        # Get all the emails that are in the registration requests list and that their value is RegistrationStatus.PENDING.value
+        return [email for email, status in self.emails_requests_to_register.items() if status == RegistrationStatus.PENDING.value]
