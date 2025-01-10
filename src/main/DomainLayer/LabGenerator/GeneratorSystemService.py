@@ -149,10 +149,12 @@ class GeneratorSystemService:
         try:
             website = self.generator_system_controller.get_custom_website(user_id, domain)
             return Response({
-                    "domain": domain,
-                    "name": website.get_name(),
-                    "components": website.get_components(),
-                    "template": website.get_template()
-                }, "Successfully retrieved custom website")
+                "domain": domain,
+                "name": website.get_name(),
+                "components": website.get_components(),
+                "template": website.get_template(),
+                "logo": website.logo,  # Include the logo
+                "home_picture": website.home_picture  # Include the home picture
+            }, "Successfully retrieved custom website")
         except Exception as e:
             return Response(None, str(e))

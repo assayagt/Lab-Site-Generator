@@ -321,6 +321,32 @@ class GetCustomSite(Resource):
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
+
+class GetHomepageDetails(Resource):
+    def get(self):
+        try:
+            parser = reqparse.RequestParser()
+            parser.add_argument('domain', type=str, required=True, help="Domain is required")
+            args = parser.parse_args()
+
+            domain = args['domain']
+
+            # Fetch the site data from the siteData.json file
+            response_1 = generator_system.get_custom_website(domain)
+            if response_1.is_success():
+                # the returned value is website name, template, components
+                response_2 = lab_system_service.get_about_us(domain)
+                if response_2.is_success():
+                    website_data = response_1.get_data()
+                    about_us_data = response_2.get_data()
+                    website_data['about_us'] = about_us_data
+                    return jsonify({'data': website_data, "response": "true"})
+
+                return jsonify({"message": response_2.get_message(), "response": "false"})
+            return jsonify({"message": response_1.get_message(), "response": "false"})
+
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"})
         
 
 
