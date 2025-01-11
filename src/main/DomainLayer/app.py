@@ -324,8 +324,8 @@ class GetAllCustomWebsitesOfManager(Resource):
             if response.is_success():
                 websites = response.get_data() #rertun map of {domain: {site name, generated status}}
                 # Store the user ID in the session for tracking
-                return jsonify({"websites": websites}), 200
-
+                return jsonify({"websites": websites , "response": "true"})
+            return jsonify({"message": response.get_message(),"response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -341,6 +341,7 @@ class EnterGeneratorSystem(Resource):
                 return jsonify({
                     "user_id": user_id,
                     "message": "New user entered the system successfully"
+                    
                 })
             else:
                 return jsonify({"error": "An internal server error occurred"})
@@ -406,8 +407,8 @@ class EnterLabWebsite(Resource):
         try:
             response = lab_system_service.enter_lab_website(domain)
             if response.is_success():
-                return jsonify({"message": response.get_message(), "user_id": response.get_data()})
-            return jsonify({"message": response.get_message()}), 400
+                return jsonify({"message": response.get_message(), "user_id": response.get_data() , "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"}), 400
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -422,8 +423,8 @@ class LoginWebsite(Resource):
         try:
             response = lab_system_service.login(args['domain'], args['user_id'], args['email'])
             if response.is_success():
-                return jsonify({"message": response.get_message()})
-            return jsonify({"message": response.get_message()}), 400
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
         
@@ -437,8 +438,8 @@ class LogoutWebsite(Resource):
         try:
             response = lab_system_service.logout(args['domain'], args['user_id'])
             if response.is_success():
-                return jsonify({"message": response.get_message()})
-            return jsonify({"message": response.get_message()}), 400
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
         
@@ -451,8 +452,8 @@ class GetApprovedPublications(Resource):
         try:
             response = lab_system_service.get_all_approved_publications(args['domain'])
             if response.is_success():
-                return jsonify({"publications": response.get_data()})
-            return jsonify({"message": response.get_message()}), 400
+                return jsonify({"publications": response.get_data(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -470,8 +471,8 @@ class AddPublication(Resource):
                 args['user_id'], args['publication_dto'], args['domain'], args['authors_emails']
             )
             if response.is_success():
-                return jsonify({"message": response.get_message()})
-            return jsonify({"message": response.get_message()}), 400
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message() , "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -491,8 +492,8 @@ class SetPublicationVideoLink(Resource):
                 )
          
             if response.is_success():
-                return jsonify({"message": response.get_message()})
-            return jsonify({"message": response.get_message()}), 400
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "true"}), 400
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
         
@@ -513,8 +514,8 @@ class SetPublicationGitLink(Resource):
                 )
         
                 if response.is_success():
-                    return jsonify({"message": response.get_message()})
-                return jsonify({"message": response.get_message()}), 400
+                    return jsonify({"message": response.get_message(), "response": "true"})
+                return jsonify({"message": response.get_message(), "response": "false"})
             except Exception as e:
                 return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -536,8 +537,8 @@ class SetPublicationPttxLink(Resource):
                 )
             
             if response.is_success():
-                return jsonify({"message": response.get_message()})
-            return jsonify({"message": response.get_message()}), 400
+                    return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -555,8 +556,8 @@ class AddLabMember(Resource):
         try:
             response = generator_system.register_new_LabMember_from_labWebsite(args['user_id'], args['email'], args['full_name'], args['degree'], args['domain'])
             if response.is_success():
-                return jsonify({"message": "Lab member added successfully"})
-            return jsonify({"message": response.get_message()})
+                    return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
         
@@ -571,8 +572,8 @@ class AddLabManager(Resource):
         try:
             response = generator_system.create_new_site_manager_from_labWebsite(args['user_id'], args['domain'], args['email'])
             if response.is_success():
-                return jsonify({"message": "Lab manager added successfully"})
-            return jsonify({"message": response.get_message()})
+                return jsonify({"message": "Lab manager added successfully", "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
 
@@ -588,8 +589,8 @@ class GetAllCustomWebsites(Resource):
             response = generator_system.get_custom_websites(user_id)
             if response.is_success():
                 websites = response.get_data() # Return map of <domain, site name>
-                return jsonify({"websites": websites})
-            return jsonify({"message": response.get_message()})
+                return jsonify({"websites": websites, "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e :
             return jsonify({"error": f"An error occurred: {str(e)}"})
         
@@ -607,8 +608,8 @@ class GetAllCustomWebsites(Resource):
                 response = generator_system.get_custom_website(user_id, domain)
                 if response.is_success():
                     website_data = response.get_data() # Returned value is website name, template, components
-                    return jsonify({'data': website_data})
-                return jsonify({"message": response.get_message()})
+                    return jsonify({'data': website_data, "response": "true"})
+                return jsonify({"message": response.get_message(), "response": "false"})
             except Exception as e:
                 return jsonify({"error": f"An error occurred: {str(e)}"})
             
@@ -625,8 +626,8 @@ class GetMemberPublications(Resource):
         try:
             response = lab_system_service.get_all_approved_publications_of_member(args['domain'], args['email'])
             if response.is_success():
-                return jsonify({"publications": response.get_data()})
-            return jsonify({"error": response.get_message()})
+                return jsonify({"publications": response.get_data(), "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
 
@@ -643,8 +644,8 @@ class ApproveRegistration(Resource):
         try:
             response = lab_system_service.approve_registration_request(args['domain'], args['manager_userId'], args['requested_email'], args['requested_full_name'], args['requested_degree'])
             if response.is_success():
-                return jsonify({"message": "Registration approved successfully."})
-            return jsonify({"error": response.get_message()})
+                return jsonify({"message": "Registration approved successfully.", "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
 
@@ -659,8 +660,8 @@ class RejectRegistration(Resource):
         try:
             response = lab_system_service.reject_registration_request(args['domain'], args['manager_userId'], args['requested_email'])
             if response.is_success():
-                return jsonify({"message": "Registration rejected successfully."})
-            return jsonify({"error": response.get_message()})
+                return jsonify({"message": "Registration rejected successfully.", "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
         
@@ -674,8 +675,8 @@ class GetAllLabManagers(Resource):
         try:
             response = lab_system_service.get_all_lab_managers(args['domain'])
             if response.is_success():
-                return jsonify({"managers": response.get_data()})
-            return jsonify({"error": response.get_message()})
+                return jsonify({"managers": response.get_data(), "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
 
@@ -688,8 +689,8 @@ class GetAllLabMembers(Resource):
         try:
             response = lab_system_service.get_all_lab_members(args['domain'])
             if response.is_success():
-                return jsonify({"members": response.get_data()})
-            return jsonify({"error": response.get_message()})
+                return jsonify({"members": response.get_data(), "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
 
@@ -703,8 +704,8 @@ class GetAllAlumni(Resource):
         try:
             response = lab_system_service.get_all_alumnis(args['domain'])
             if response.is_success():
-                return jsonify({"alumni": response.get_data()})
-            return jsonify({"error": response.get_message()})
+                return jsonify({"alumni": response.get_data(), "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
 
@@ -720,8 +721,8 @@ class SetSecondEmail(Resource):
         try:
             response = generator_system.set_secondEmail_by_member(args['userid'], args['secondEmail'], args['domain'])
             if response.is_success():
-                return jsonify({"message": "Second email added successfully"})
-            return jsonify({"message": response.get_message()})
+                return jsonify({"message": "Second email added successfully", "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
 
@@ -736,8 +737,8 @@ class SetLinkedInLink(Resource):
         try:
             response = generator_system.set_linkedin_link_by_member(args['userid'], args['linkedin_link'], args['domain'])
             if response.is_success():
-                return jsonify({"message": "LinkedIn link added successfully"})
-            return jsonify({"message": response.get_message()})
+                return jsonify({"message": "LinkedIn link added successfully", "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
 
@@ -752,8 +753,8 @@ class SetFullName(Resource):
         try:
             response = generator_system.set_fullName_by_member(args['userid'], args['fullName'], args['domain'])
             if response.is_success():
-                return jsonify({"message": "Full name updated successfully"})
-            return jsonify({"message": response.get_message()})
+                return jsonify({"message": "Full name updated successfully", "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
 
@@ -768,8 +769,8 @@ class SetDegree(Resource):
         try:
             response = generator_system.set_degree_by_member(args['userid'], args['degree'], args['domain'])
             if response.is_success():
-                return jsonify({"message": "Degree updated successfully"})
-            return jsonify({"message": response.get_message()})
+                return jsonify({"message": "Degree updated successfully", "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
 
@@ -784,8 +785,8 @@ class SetBio(Resource):
         try:
             response = generator_system.set_bio_by_member(args['userid'], args['bio'], args['domain'])
             if response.is_success():
-                return jsonify({"message": "Bio updated successfully"})
-            return jsonify({"message": response.get_message()})
+                return jsonify({"message": "Bio updated successfully", "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
 
@@ -800,8 +801,8 @@ class SetMedia(Resource):
         try:
             response = generator_system.set_media_by_member(args['userid'], args['media'], args['domain'])
             if response.is_success():
-                return jsonify({"message": "Media updated successfully"})
-            return jsonify({"message": response.get_message()})
+                return jsonify({"message": "Media updated successfully", "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
 
@@ -830,7 +831,7 @@ api.add_resource(ChooseName, '/api/chooseName')
 api.add_resource(Login, '/api/Login')
 api.add_resource(Logout, '/api/Logout')
 api.add_resource(ChooseDomain, '/api/chooseDomain')
-api.add_resource(StartCustomSite, '/api/startCustomSite')  # New endpoint to start custom site
+api.add_resource(StartCustomSite, '/api/startCustomSite')  
 api.add_resource(GetAllCustomWebsites, '/api/getCustomWebsites')
 # api.add_resource(GetAllLabWebsites, '/api/getAllLabWebsites')
 api.add_resource(EnterGeneratorSystem, '/api/enterGeneratorSystem')
