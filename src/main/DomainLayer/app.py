@@ -191,6 +191,55 @@ class ChooseName(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
+class CreateNewSiteManagerFromGenerator(Resource):
+    """
+    Define and add new manager to a specific website, from generator site.
+    The given nominated_manager_email must be associated with a Lab Member of the given website.
+    """
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('nominator_manager_userId', type=str, required=True, help="Nominator manager user id is required")
+        parser.add_argument('nominated_manager_email', type=str, required=True, help="Nominated manager email is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        nominator_manager_userId = args['nominator_manager_userId']
+        nominated_manager_email = args['nominated_manager_email']
+        domain = args['domain']
+        try:
+            response = generator_system.create_new_site_manager(nominator_manager_userId, nominated_manager_email, domain)
+            if response.is_success():
+                return jsonify({"message": "New site manager created", "manager_email": nominated_manager_email})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"})
+
+    def remove_site_manager_from_generator(self, nominator_manager_userId, manager_toRemove_email, domain):
+
+class RemoveSiteManagerFromGenerator(Resource):
+    """
+    Remove a manager from a specific website, from generator site.
+    nomintator_manager_userId is the user that removes the manager.
+    The given removed_manager_email must be associated with a manager of the given website.
+    The permissions of the lab creator cannot be removed, it must always remain a Lab Manager
+    """
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('nominator_manager_userId', type=str, required=True, help="Nominator manager user id is required")
+        parser.add_argument('manager_toRemove_email', type=str, required=True, help="Manager to remove email is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        nominator_manager_userId = args['nominator_manager_userId']
+        manager_toRemove_email = args['manager_toRemove_email']
+        domain = args['domain']
+        try:
+            response = generator_system.remove_site_manager_from_generator(nominator_manager_userId, manager_toRemove_email, domain)
+            if response.is_success():
+                return jsonify({"message": "Site manager removed", "manager_email": manager_toRemove_email})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"})
 
 # Handles user login with email and password
 class Login(Resource):
@@ -260,30 +309,11 @@ class StartCustomSite(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
-# Service to fetch all lab websites
-class GetAllLabWebsites(Resource):
-    def get(self):
-        """Fetch all lab websites."""
-        parser = reqparse.RequestParser()
-        parser.add_argument('user_id', type=str, required=True, help="User id is required")
-        args = parser.parse_args()
-
-        user_id = args['user_id']
-
-        try:
-            response = generator_system.get_lab_websites(user_id)
-            if response.is_success():
-                websites = response.get_data()  # rertun list of <domain>
-                # Store the user ID in the session for tracking
-                return jsonify({"websites": websites}), 200
-
-        except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
-
 # Service to fetch all custom websites
-class GetAllCustomWebsites(Resource):
+class GetAllCustomWebsitesOfManager(Resource):
     def get(self):
-        """Fetch all lab websites."""
+        """Fetch all custom website details for specific manager (both generated and not generated sites).
+        The details contain the domain, site name, and generated status"""
         try:
             parser = reqparse.RequestParser()
             parser.add_argument('user_id', type=str, required=True, help="User id is required")
@@ -291,9 +321,9 @@ class GetAllCustomWebsites(Resource):
 
             user_id = args['user_id']
 
-            response = generator_system.get_custom_websites(user_id)
+            response = generator_system.get_all_custom_websites_of_manager(user_id)
             if response.is_success():
-                websites = response.get_data() #rertun map of <domain, site name>
+                websites = response.get_data() #rertun map of {domain: {site name, generated status}}
                 # Store the user ID in the session for tracking
                 return jsonify({"websites": websites}), 200
 
@@ -320,6 +350,7 @@ class EnterGeneratorSystem(Resource):
             return jsonify({"error": "An internal server error occurred"}), 500
 
 class GetCustomSite(Resource):
+    """ Get a custom website dto for specific manager and domain"""
     def get(self):
         try:
             parser = reqparse.RequestParser()
@@ -338,7 +369,32 @@ class GetCustomSite(Resource):
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
-        
+
+class GetHomepageDetails(Resource):
+    def get(self):
+        try:
+            parser = reqparse.RequestParser()
+            parser.add_argument('domain', type=str, required=True, help="Domain is required")
+            args = parser.parse_args()
+
+            domain = args['domain']
+
+            # Fetch the site data from the siteData.json file
+            response_1 = generator_system.get_custom_website(domain)
+            if response_1.is_success():
+                # the returned value is website name, template, components
+                response_2 = lab_system_service.get_about_us(domain)
+                if response_2.is_success():
+                    website_data = response_1.get_data()
+                    about_us_data = response_2.get_data()
+                    website_data['about_us'] = about_us_data
+                    return jsonify({'data': website_data, "response": "true"})
+
+                return jsonify({"message": response_2.get_message(), "response": "false"})
+            return jsonify({"message": response_1.get_message(), "response": "false"})
+
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"})
 
 
 class EnterLabWebsite(Resource):

@@ -30,3 +30,4 @@ class ExceptionsEnum(Enum):
     INVALID_LINKEDIN_LINK = "Invalid LinkedIn link provided"
     INVALID_FULL_NAME = "Invalid full name provided"
     INVALID_DEGREE = "Invalid degree provided"
+    USER_IS_NOT_MANAGER_OF_THE_GIVEN_DOMAIN = "User is not a manager of the given domain"

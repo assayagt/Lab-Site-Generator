@@ -108,14 +108,39 @@ class UserFacade:
         # If no match is found, return None
         return None
 
-    def get_member_names(self):
-        member_names = []
+    def get_lab_members_names(self):
+        lab_member_names = []
         for email, member in self.members.items():
-            member_names.append(member.get_fullName())
+            lab_member_names.append(member.get_fullName())
+        return lab_member_names
+
+    def get_managers_names(self):
+        manager_names = []
         for email, manager in self.managers.items():
-            member_names.append(manager.get_fullName())
+            manager_names.append(manager.get_fullName())
+        return manager_names
+
+    def get_site_creator_name(self):
         for email, site_creator in self.siteCreator.items():
-            member_names.append(site_creator.get_fullName())
+            return site_creator.get_fullName()
+
+    def get_alumnis_names(self):
+        alumni_names = []
+        for email, alumni in self.alumnis.items():
+            alumni_names.append(alumni.get_fullName())
+        return alumni_names
+
+    def get_all_members_names(self):
+        member_names = []
+        member_names.extend(self.get_active_members_names())
+        member_names.extend(self.get_alumnis_names())
+        return member_names
+
+    def get_active_members_names(self):
+        member_names = []
+        member_names.extend(self.get_lab_members_names())
+        member_names.extend(self.get_managers_names())
+        member_names.extend(self.get_site_creator_name())
         return member_names
 
     def login(self, userId, email):
@@ -287,3 +312,8 @@ class UserFacade:
         )
         if not linkedin_pattern.match(linkedin_link):
             raise ValueError(ExceptionsEnum.INVALID_LINKEDIN_LINK.value)
+
+
+    def get_pending_registration_emails(self):
+        # Get all the emails that are in the registration requests list and that their value is RegistrationStatus.PENDING.value
+        return [email for email, status in self.emails_requests_to_register.items() if status == RegistrationStatus.PENDING.value]
