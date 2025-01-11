@@ -214,7 +214,6 @@ class CreateNewSiteManagerFromGenerator(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
-    def remove_site_manager_from_generator(self, nominator_manager_userId, manager_toRemove_email, domain):
 
 class RemoveSiteManagerFromGenerator(Resource):
     """
@@ -833,7 +832,7 @@ api.add_resource(Logout, '/api/Logout')
 api.add_resource(ChooseDomain, '/api/chooseDomain')
 api.add_resource(StartCustomSite, '/api/startCustomSite')  # New endpoint to start custom site
 api.add_resource(GetAllCustomWebsites, '/api/getCustomWebsites')
-api.add_resource(GetAllLabWebsites, '/api/getAllLabWebsites')
+# api.add_resource(GetAllLabWebsites, '/api/getAllLabWebsites')
 api.add_resource(EnterGeneratorSystem, '/api/enterGeneratorSystem')
 api.add_resource(GetCustomSite, '/api/getCustomSite')
 
@@ -848,7 +847,7 @@ api.add_resource(GetAllAlumni, '/api/getAllAlumni')
 api.add_resource(AddLabMember, '/api/addLabMember')
 api.add_resource(AddLabManager, '/api/addLabManager')
 api.add_resource(GetAllCustomWebsites, '/api/getCustomWebsites')
-api.add_resource(GetAllLabWebsites, '/api/getWebsites')
+# api.add_resource(GetAllLabWebsites, '/api/getWebsites')
 api.add_resource(GetCustomSite, '/api/getCustomSite')
 api.add_resource(SetSecondEmail, '/api/setSecondEmail')
 api.add_resource(SetLinkedInLink, '/api/setLinkedInLink')
@@ -856,6 +855,9 @@ api.add_resource(SetFullName, '/api/setFullName')
 api.add_resource(SetDegree, '/api/setDegree')
 api.add_resource(SetBio, '/api/setBio')
 api.add_resource(SetMedia, '/api/setMedia')
+api.add_resource( GetHomepageDetails, '/api/getHomepageDetails')
+api.add_resource( RemoveSiteManagerFromGenerator, '/api/removeSiteManager')
+
 
 
 if __name__ == '__main__':
