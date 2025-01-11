@@ -73,9 +73,17 @@ function Header(props) {
     if (login(email)) {
       setShowLogin(false); // Close the modal on successful login
       setLoginError(""); // Clear any previous errors
+      
     } else {
       setLoginError("Login failed. Please check your username and try again."); // Set error message
     }
+    setEmail("");
+  };
+
+  const handleLogout = () => {
+    logout(); // Call the logout function from context
+    console.log("Logout clicked");
+    navigate("/"); // Optionally redirect user to the homepage or login page
   };
 
   return (
@@ -108,7 +116,7 @@ function Header(props) {
                   <button className="my_sites_button" onClick={() => console.log("My Account clicked")}>
                     My Account
                   </button>
-                  <button className="logout_button" onClick={() => console.log("Logout clicked")}>
+                  <button className="logout_button" onClick={() => handleLogout()}>
                     Logout
                   </button>
                 </div>
