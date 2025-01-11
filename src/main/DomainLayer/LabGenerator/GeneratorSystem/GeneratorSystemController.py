@@ -1,3 +1,5 @@
+import os
+
 from src.main.DomainLayer.LabGenerator.SiteCustom.SiteCustomFacade import SiteCustomFacade, Template
 from src.main.DomainLayer.LabGenerator.User.UserFacade import UserFacade
 from src.main.DomainLayer.LabWebsites.LabSystem.LabSystemController import LabSystemController
@@ -47,6 +49,56 @@ class GeneratorSystemController:
         lab_managers_emails = list(lab_managers.keys())
         self.user_facade.create_new_site_managers(lab_managers_emails, domain)
         self.labSystem.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
+        self.set_site_logo_on_site_creation(domain)
+        self.set_site_home_picture_on_site_creation(domain)
+
+    def set_site_about_us_on_creation_from_generator(self, domain, about_us):
+        """
+        Set the about us section on lab website creation. This function should be called after create_new_lab_website.
+        """
+        self.labSystem.set_site_about_us_on_creation_from_generator(domain, about_us)
+
+    def set_site_contact_info_on_creation_from_generator(self, domain, contact_info_dto):
+        """
+        Set the contact us section on lab website creation. This function should be called after create_new_lab_website.
+        """
+        self.labSystem.set_site_contact_info_on_creation_from_generator(domain, contact_info_dto)
+
+    def set_site_logo_on_site_creation(self, domain):
+        """
+        Set the site logo on lab website creation.
+        """
+        self.site_custom_facade.error_if_domain_not_exist(domain)
+        logo_path = os.path.join(domain, "logo")
+        logo = logo_path if os.path.exists(logo_path) else None
+        self.site_custom_facade.set_logo(domain, logo)
+
+    def change_site_logo_by_manager(self, user_id, domain):
+        """
+        Change the site logo by the manager.
+        """
+        self.user_facade.error_if_user_notExist(user_id)
+        self.user_facade.error_if_user_not_logged_in(user_id)
+        self.user_facade.error_if_user_is_not_site_manager(user_id, domain)
+        self.set_site_logo_on_site_creation(domain)
+
+    def set_site_home_picture_on_site_creation(self, domain):
+        """
+        Set the site home picture on lab website creation.
+        """
+        self.site_custom_facade.error_if_domain_not_exist(domain)
+        home_picture_path = os.path.join(domain, "home_picture")
+        home_picture = home_picture_path if os.path.exists(home_picture_path) else None
+        self.site_custom_facade.set_home_picture(domain, home_picture)
+
+    def change_site_home_picture_by_manager(self, user_id, domain):
+        """
+        Change the site home picture by the manager.
+        """
+        self.user_facade.error_if_user_notExist(user_id)
+        self.user_facade.error_if_user_not_logged_in(user_id)
+        self.user_facade.error_if_user_is_not_site_manager(user_id, domain)
+        self.set_site_home_picture_on_site_creation(domain)
 
     def change_website_name(self, user_id, new_name, domain):
         """Change website details using SiteCustomFacade."""
