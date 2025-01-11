@@ -3,14 +3,16 @@ import { useNavigate } from "react-router-dom";
 import "./Header.css";
 import Logo from "../../images/brain.svg";
 import accountIcon from "../../images/account_avatar.svg";
+import { useAuth } from "../../Context/AuthContext";
 
 function Header(props) {
   const navbarRef = useRef(null);
   const navigate = useNavigate();
-
+  const { login, logout } = useAuth();
   const [hasNotifications, setHasNotifications] = useState(false); // State for notifications
-  const [showLogin, setShowLogin] = useState(false); // State to toggle login popup
-  const [username, setUsername] = useState(""); // Username input state
+  const [showLogin, setShowLogin] = useState(false);
+  const [email, setEmail] = useState("");
+  const [loginError, setLoginError] = useState(""); // State to store login error messages
 
   let scrollAnimationFrame = null;
 
@@ -66,11 +68,14 @@ function Header(props) {
     setShowLogin(true); // Show login popup
   };
 
-  const handleLogin = (e) => {
+   const handleLogin = (e) => {
     e.preventDefault();
-    console.log("Performing login for:", username);
-    // You would typically handle login here, such as calling an API
-    setShowLogin(false); // Close the modal after login
+    if (login(email)) {
+      setShowLogin(false); // Close the modal on successful login
+      setLoginError(""); // Clear any previous errors
+    } else {
+      setLoginError("Login failed. Please check your username and try again."); // Set error message
+    }
   };
 
   return (
@@ -124,8 +129,9 @@ function Header(props) {
           <div className="login-content">
             <div className="close-button" onClick={() => setShowLogin(false)}>X</div>
             <h2>Login</h2>
+            {loginError && <div className="login-error">{loginError}</div>} {/* Display login error if present */}
             <form onSubmit={handleLogin}>
-              <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+              <input type="text" placeholder="Username" value={email} onChange={(e) => setEmail(e.target.value)} />
               <button type="submit">Login</button>
             </form>
           </div>

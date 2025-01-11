@@ -7,6 +7,7 @@ import Header from './Components/Header/Header';
 import AccountPage from './Pages/AccountPage/AccountPage';
 import PublicationsPage from './Pages/PublicationsPage/PublicationsPage';
 import publications from "./publications.json"
+import { AuthProvider } from './Context/AuthContext';
 function App() {
 
   const components = [
@@ -16,7 +17,8 @@ function App() {
     "Contact Us"
   ];
   return (
-    <Router>
+    <AuthProvider>
+        <Router>
             <Header components={components} title="SPL"></Header>
             <Routes>
               <Route path="/" element={<HomePage/>} />
@@ -38,6 +40,8 @@ function App() {
               />
             </Routes>
     </Router>
+    </AuthProvider>
+    
 
     
   );
