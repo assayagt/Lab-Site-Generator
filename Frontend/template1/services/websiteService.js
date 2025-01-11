@@ -3,6 +3,7 @@ import axios from "axios";
 const baseApiUrl = "http://127.0.0.1:5000/api/";
 
 export const addLabMember = async (userId, email, fullName, degree, domain) => {
+    let data;
     try {
         const response = await axios.post(`${baseApiUrl}addLabMember`, {
             user_id: userId,
@@ -11,37 +12,43 @@ export const addLabMember = async (userId, email, fullName, degree, domain) => {
             degree,
             domain
         });
-        return response.data.message;
+        data = response.data;
     } catch (error) {
         console.error("Error adding lab member:", error);
         return null;
     }
+    return data;
 };
 
 export const addLabManager = async (userId, email, domain) => {
+    let data;
     try {
         const response = await axios.post(`${baseApiUrl}addLabManager`, {
             user_id: userId,
             email,
             domain
         });
-        return response.data.message;
+        data = response.data;
+       
     } catch (error) {
         console.error("Error adding lab manager:", error);
         return null;
     }
+    return data;
 };
 
 
 
-export const approveRegistration = async (data) => {
+export const approveRegistration = async (data) => { 
+    let data2;
     try {
         const response = await axios.post(`${baseApiUrl}approveRegistration`, data);
-        return response.data.message;
+        data2 = response.data.message;
     } catch (error) {
         console.error("Error approving registration:", error);
         return null;
     }
+    return data2;
 };
 
 export const rejectRegistration = async (data) => {
@@ -56,6 +63,7 @@ export const rejectRegistration = async (data) => {
 
 export const getAllLabManagers = async (domain) => {
     try {
+        let data;
         const response = await axios.get(`${baseApiUrl}getAllLabManagers`, { params: { domain } });
         return response.data.managers;
     } catch (error) {
@@ -171,16 +179,104 @@ export const setMediaByMember = async (userId, media, domain) => {
 
 
 
-export const fetchAllLabWebsites = async (userId) => {
+
+export const getApprovedPublications = async (domain) => {
     try {
-        const response = await axios.get(`${baseApiUrl}getAllLabWebsites`, {
-            params: { user_id: userId }
-        });
-        return response.data.websites;
+        const response = await axios.get(`${baseApiUrl}getApprovedPublications`, { params: { domain } });
+        return response.data.publications;
     } catch (error) {
-        console.error("Error fetching all lab websites:", error);
+        console.error("Error getting approved publications:", error);
         return [];
     }
 };
 
+export const addPublication = async (data) => {
+    try {
+        const response = await axios.post(`${baseApiUrl}addPublication`, data);
+        return response.data.message;
+    } catch (error) {
+        console.error("Error adding publication:", error);
+        return null;
+    }
+};
 
+export const setPublicationVideoLink = async (userId, domain, publicationId, videoLink) => {
+    try {
+        const response = await axios.post(`${baseApiUrl}setPublicationVideoLink`, {
+            user_id: userId,
+            domain,
+            publication_id: publicationId,
+            video_link: videoLink
+        });
+        return response.data.message;
+    } catch (error) {
+        console.error("Error setting publication video link:", error);
+        return null;
+    }
+};
+
+export const setPublicationGitLink = async (userId, domain, publicationId, gitLink) => {
+    try {
+        const response = await axios.post(`${baseApiUrl}setPublicationGitLink`, {
+            user_id: userId,
+            domain,
+            publication_id: publicationId,
+            git_link: gitLink
+        });
+        return response.data.message;
+    } catch (error) {
+        console.error("Error setting publication Git link:", error);
+        return null;
+    }
+};
+
+export const setPublicationPttxLink = async (userId, domain, publicationId, presentationLink) => {
+    try {
+        const response = await axios.post(`${baseApiUrl}setPublicationPttxLink`, {
+            user_id: userId,
+            domain,
+            publication_id: publicationId,
+            presentation_link: presentationLink
+        });
+        return response.data.message;
+    } catch (error) {
+        console.error("Error setting publication presentation link:", error);
+        return null;
+    }
+};
+
+
+
+export const getHomepageDetails = async (domain) => {
+    try {
+        const response = await axios.get(`${baseApiUrl}getHomepageDetails`, { params: { domain } });
+        return response.data.data;
+    } catch (error) {
+        console.error("Error getting homepage details:", error);
+        return null;
+    }
+};
+
+export const removeSiteManager = async (userId, managerEmail, domain) => {
+    try {
+        const response = await axios.post(`${baseApiUrl}removeSiteManager`, {
+            nominator_manager_userId: userId,
+            manager_toRemove_email: managerEmail,
+            domain
+        });
+        return response.data.message;
+    } catch (error) {
+        console.error("Error removing site manager:", error);
+        return null;
+    }
+};
+
+export const getMemberPublications = async (domain, email) => {
+    try {
+        const response = await axios.get(`${baseApiUrl}getMemberPublications`, { params: { domain, email } });
+        return response.data.publications;
+    } catch (error) {
+        console.error("Error getting member publications:", error);
+        return [];
+    }
+};

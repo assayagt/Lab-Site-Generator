@@ -808,9 +808,9 @@ class SetMedia(Resource):
 
 
 # Add resources to the API of lab
-api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')
-api.add_resource(LoginWebsite, '/api/loginWebsite')
-api.add_resource(LogoutWebsite, '/api/logoutWebsite')
+api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')#
+api.add_resource(LoginWebsite, '/api/loginWebsite')#
+api.add_resource(LogoutWebsite, '/api/logoutWebsite')#
 api.add_resource(GetApprovedPublications, '/api/getApprovedPublications')
 api.add_resource(AddPublication, '/api/addPublication')
 api.add_resource(SetPublicationVideoLink, '/api/setPublicationVideoLink')
@@ -818,44 +818,43 @@ api.add_resource(SetPublicationGitLink, '/api/setPublicationGitLink')
 api.add_resource(SetPublicationPttxLink, '/api/setPublicationPttxLink')
 
 
-##TODO: add al set functions
 
 
 
 # Add the resources to API
-api.add_resource(UploadFilesAndData, '/api/uploadFile')
-api.add_resource(GenerateWebsiteResource, '/api/generateWebsite')
-api.add_resource(ChooseComponents, '/api/chooseComponents')
-api.add_resource(ChooseTemplate, '/api/chooseTemplate')
-api.add_resource(ChooseName, '/api/chooseName')
-api.add_resource(Login, '/api/Login')
-api.add_resource(Logout, '/api/Logout')
-api.add_resource(ChooseDomain, '/api/chooseDomain')
-api.add_resource(StartCustomSite, '/api/startCustomSite')  
+api.add_resource(UploadFilesAndData, '/api/uploadFile')#
+api.add_resource(GenerateWebsiteResource, '/api/generateWebsite')#
+api.add_resource(ChooseComponents, '/api/chooseComponents')#
+api.add_resource(ChooseTemplate, '/api/chooseTemplate')#
+api.add_resource(ChooseName, '/api/chooseName')#
+api.add_resource(Login, '/api/Login')#
+api.add_resource(Logout, '/api/Logout')#
+api.add_resource(ChooseDomain, '/api/chooseDomain')#
+api.add_resource(StartCustomSite, '/api/startCustomSite')  #
 api.add_resource(GetAllCustomWebsites, '/api/getCustomWebsites')
 # api.add_resource(GetAllLabWebsites, '/api/getAllLabWebsites')
-api.add_resource(EnterGeneratorSystem, '/api/enterGeneratorSystem')
+api.add_resource(EnterGeneratorSystem, '/api/enterGeneratorSystem')#
 api.add_resource(GetCustomSite, '/api/getCustomSite')
 
 
 
 api.add_resource(GetMemberPublications, '/api/getMemberPublications')
-api.add_resource(ApproveRegistration, '/api/approveRegistration')
-api.add_resource(RejectRegistration, '/api/rejectRegistration')
-api.add_resource(GetAllLabManagers, '/api/getAllLabManagers')
-api.add_resource(GetAllLabMembers, '/api/getAllLabMembers')
-api.add_resource(GetAllAlumni, '/api/getAllAlumni')
-api.add_resource(AddLabMember, '/api/addLabMember')
-api.add_resource(AddLabManager, '/api/addLabManager')
-api.add_resource(GetAllCustomWebsites, '/api/getCustomWebsites')
+api.add_resource(ApproveRegistration, '/api/approveRegistration') #
+api.add_resource(RejectRegistration, '/api/rejectRegistration') #
+api.add_resource(GetAllLabManagers, '/api/getAllLabManagers')#
+api.add_resource(GetAllLabMembers, '/api/getAllLabMembers')#
+api.add_resource(GetAllAlumni, '/api/getAllAlumni')#
+api.add_resource(AddLabMember, '/api/addLabMember') #
+api.add_resource(AddLabManager, '/api/addLabManager')#
+# api.add_resource(GetAllCustomWebsites, '/api/getCustomWebsites')
 # api.add_resource(GetAllLabWebsites, '/api/getWebsites')
-api.add_resource(GetCustomSite, '/api/getCustomSite')
-api.add_resource(SetSecondEmail, '/api/setSecondEmail')
-api.add_resource(SetLinkedInLink, '/api/setLinkedInLink')
-api.add_resource(SetFullName, '/api/setFullName')
-api.add_resource(SetDegree, '/api/setDegree')
-api.add_resource(SetBio, '/api/setBio')
-api.add_resource(SetMedia, '/api/setMedia')
+# api.add_resource(GetCustomSite, '/api/getCustomSite')
+api.add_resource(SetSecondEmail, '/api/setSecondEmail')#
+api.add_resource(SetLinkedInLink, '/api/setLinkedInLink')#
+api.add_resource(SetFullName, '/api/setFullName')#
+api.add_resource(SetDegree, '/api/setDegree')#
+api.add_resource(SetBio, '/api/setBio')#
+api.add_resource(SetMedia, '/api/setMedia')#
 api.add_resource( GetHomepageDetails, '/api/getHomepageDetails')
 api.add_resource( RemoveSiteManagerFromGenerator, '/api/removeSiteManager')
 
