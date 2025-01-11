@@ -5,10 +5,12 @@ import Logo from "../../images/brain.svg";
 import accountIcon from "../../images/account_avatar.svg";
 
 function Header(props) {
-  const navbarRef = useRef(null); 
+  const navbarRef = useRef(null);
   const navigate = useNavigate();
 
   const [hasNotifications, setHasNotifications] = useState(false); // State for notifications
+  const [showLogin, setShowLogin] = useState(false); // State to toggle login popup
+  const [username, setUsername] = useState(""); // Username input state
 
   let scrollAnimationFrame = null;
 
@@ -49,26 +51,27 @@ function Header(props) {
 
   const handleClick = (item) => {
     if (item === "Home") {
-      navigate("/"); 
+      navigate("/");
     } else if (item === "Participants") {
-      navigate("/Participants"); 
+      navigate("/Participants");
     } else if (item === "Contact Us") {
-      navigate("/ContactUs"); 
+      navigate("/ContactUs");
+    } else if (item === "Publications") {
+      navigate("/Publications");
     }
-   else if (item === "Publications") {
-    navigate("/Publications"); 
-  }
   };
 
-  // Simulate fetching notifications
-  useEffect(() => {
-    // // Simulate an API call or notification check
-    // const timer = setTimeout(() => {
-    //   setHasNotifications(!hasNotifications); // Set to true when there are notifications
-    // }, 2000);
+  const handleLoginClick = () => {
+    console.log("Login clicked");
+    setShowLogin(true); // Show login popup
+  };
 
-    // return () => clearTimeout(timer);
-  }, [hasNotifications]);
+  const handleLogin = (e) => {
+    e.preventDefault();
+    console.log("Performing login for:", username);
+    // You would typically handle login here, such as calling an API
+    setShowLogin(false); // Close the modal after login
+  };
 
   return (
     <div className="header">
@@ -79,10 +82,7 @@ function Header(props) {
           .filter((item) => item !== "About Us")
           .map((item, index, filteredArray) => (
             <div className="navbar-item" key={item.id || index}>
-              <button
-                onClick={() => handleClick(item)}
-                className="navbar-item-button"
-              >
+              <button onClick={() => handleClick(item)} className="navbar-item-button">
                 {item}
               </button>
               {index !== filteredArray.length - 1 && <div>|</div>}
@@ -90,41 +90,26 @@ function Header(props) {
           ))}
       </div>
       <div className="icon_photo">
-        
         <div className="menu">
-        {hasNotifications && <div className="notification-dot"></div>}
+          {hasNotifications && <div className="notification-dot"></div>}
           <div className="hidden-box">
             <div className="personal_menu">
               <div className="icon_photo">
-                  <img
-                    src={accountIcon}
-                    alt="icon"
-                    onClick={() => navigate("Account")}
-                  />
-                
+                <img src={accountIcon} alt="icon" onClick={() => navigate("Account")} />
               </div>
               <hr className="hr_line" />
               {sessionStorage.getItem("isLoggedIn") ? (
                 <div className="choose_item">
-                  <button
-                    className="my_sites_button"
-                    onClick={() => console.log("My Account clicked")}
-                  >
+                  <button className="my_sites_button" onClick={() => console.log("My Account clicked")}>
                     My Account
                   </button>
-                  <button
-                    className="logout_button"
-                    onClick={() => console.log("Logout clicked")}
-                  >
+                  <button className="logout_button" onClick={() => console.log("Logout clicked")}>
                     Logout
                   </button>
                 </div>
               ) : (
                 <div className="choose_item">
-                  <button
-                    className="login_button"
-                    onClick={() => console.log("Login clicked")}
-                  >
+                  <button className="login_button" onClick={handleLoginClick}>
                     Login
                   </button>
                 </div>
@@ -133,6 +118,19 @@ function Header(props) {
           </div>
         </div>
       </div>
+
+      {showLogin && (
+        <div className="login-modal">
+          <div className="login-content">
+            <div className="close-button" onClick={() => setShowLogin(false)}>X</div>
+            <h2>Login</h2>
+            <form onSubmit={handleLogin}>
+              <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+              <button type="submit">Login</button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
