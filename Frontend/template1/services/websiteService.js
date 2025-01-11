@@ -247,15 +247,6 @@ export const setPublicationPttxLink = async (userId, domain, publicationId, pres
 
 
 
-export const getHomepageDetails = async (domain) => {
-    try {
-        const response = await axios.get(`${baseApiUrl}getHomepageDetails`, { params: { domain } });
-        return response.data.data;
-    } catch (error) {
-        console.error("Error getting homepage details:", error);
-        return null;
-    }
-};
 
 export const removeSiteManager = async (userId, managerEmail, domain) => {
     try {
@@ -278,5 +269,16 @@ export const getMemberPublications = async (domain, email) => {
     } catch (error) {
         console.error("Error getting member publications:", error);
         return [];
+    }
+};
+
+
+export const getHomepageDetails = async (domain) => {
+    try {
+        const response = await axios.get(`${baseApiUrl}getHomepageDetails`, { params: { domain } });
+        return response.data.data;  // Assuming the backend sends the data in a property named 'data'
+    } catch (error) {
+        console.error("Error getting homepage details:", error);
+        return null;
     }
 };
