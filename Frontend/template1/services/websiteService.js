@@ -32,25 +32,7 @@ export const addLabManager = async (userId, email, domain) => {
     }
 };
 
-export const getCustomWebsites = async (userId) => {
-    try {
-        const response = await axios.get(`${baseApiUrl}getCustomWebsites`, { params: { user_id: userId } });
-        return response.data.websites;
-    } catch (error) {
-        console.error("Error fetching custom websites:", error);
-        return [];
-    }
-};
 
-export const getCustomSite = async (userId, domain) => {
-    try {
-        const response = await axios.get(`${baseApiUrl}getCustomSite`, { params: { user_id: userId, domain } });
-        return response.data.data;
-    } catch (error) {
-        console.error("Error fetching custom site details:", error);
-        return null;
-    }
-};
 
 export const approveRegistration = async (data) => {
     try {
@@ -200,3 +182,5 @@ export const fetchAllLabWebsites = async (userId) => {
         return [];
     }
 };
+
+
