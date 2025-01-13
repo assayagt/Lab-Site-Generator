@@ -71,19 +71,18 @@ function Header(props) {
    const handleLogin = (e) => {
     e.preventDefault();
     if (login(email)) {
-      setShowLogin(false); // Close the modal on successful login
-      setLoginError(""); // Clear any previous errors
-      
+      setShowLogin(false); 
+      setLoginError(""); 
     } else {
-      setLoginError("Login failed. Please check your username and try again."); // Set error message
+      setLoginError("Login failed. Please check your username and try again."); 
     }
     setEmail("");
   };
 
   const handleLogout = () => {
-    logout(); // Call the logout function from context
+    logout(); 
     console.log("Logout clicked");
-    navigate("/"); // Optionally redirect user to the homepage or login page
+    navigate("/"); 
   };
 
   return (
