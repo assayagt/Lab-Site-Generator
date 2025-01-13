@@ -81,3 +81,15 @@ class WebsiteFacade:
         if website is None:
             raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
         website.final_approve_publication(publication_id)
+
+    def set_site_about_us(self, domain, about_us):
+        website = self.get_website(domain)
+        if website is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        website.set_about_us(about_us)
+
+    def set_site_contact_info(self, domain, contact_info_dto):
+        website = self.get_website(domain)
+        if website is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        website.set_contact_info(contact_info_dto)

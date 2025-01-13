@@ -106,4 +106,12 @@ class SiteCustomFacade:
         site_custom_dto = SiteCustomDTO.from_site_custom(site)
         return site_custom_dto
 
+    def set_logo(self, domain, logo):
+        """Set logo to site"""
+        site = self.sites[domain]
+        site.set_logo(logo)
 
+    def set_home_picture(self, domain, home_picture):
+        """Set home picture to site"""
+        site = self.sites[domain]
+        site.set_home_picture(home_picture)

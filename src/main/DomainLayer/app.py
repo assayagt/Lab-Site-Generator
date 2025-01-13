@@ -5,8 +5,9 @@ import os
 from flask_cors import CORS
 import subprocess
 
-from src.main.DomainLayer.LabGenerator import GeneratorSystemService
-
+from src.main.DomainLayer.LabGenerator.GeneratorSystemService import GeneratorSystemService
+from src.main.DomainLayer.LabWebsites.LabSystemService import LabSystemService
+from src.main.DomainLayer.LabWebsites.Website.ContactInfo import ContactInfo
 
 # Create a Flask app
 app_secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -22,7 +23,9 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(GENERATED_WEBSITES_FOLDER, exist_ok=True)
 
 
-generator_system = GeneratorSystemService.GeneratorSystemService.get_instance()
+generator_system = GeneratorSystemService.get_instance()
+lab_system_service = LabSystemService.get_instance(generator_system.get_lab_system_controller())
+
 TEMPLATE_1_PATH = os.path.join(os.getcwd(), 'Frontend', 'template1')
 
 ##todo: add email and domain where needed
@@ -71,6 +74,23 @@ class UploadFilesAndData(Resource):
 # Service for generating a website from templates
 class GenerateWebsiteResource(Resource):
     def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        parser.add_argument('about_us', type=str, required=True, help="About us content is required")
+
+        #fetch the arguments needed for contact info
+        parser.add_argument('lab_address', type=str, required=True, help="Lab address is required")
+        parser.add_argument('lab_mail', type=str, required=True, help="Lab mail is required")
+        parser.add_argument('lab_phone_num', type=str, required=True, help="Lab phone number is required")
+        args = parser.parse_args()
+
+        domain = args['domain']
+        about_us = args['about_us']
+        lab_address = args['lab_address']
+        lab_mail = args['lab_mail']
+        lab_phone_num = args['lab_phone_num']
+        contact_info = ContactInfo(lab_address, lab_mail, lab_phone_num)
+
         try:  
             parser = reqparse.RequestParser()
             parser.add_argument('domain', type=str, required=True, help="Domain is required")
@@ -97,9 +117,17 @@ class GenerateWebsiteResource(Resource):
                 return jsonify({"message": "Website generated successfully!"})
             return jsonify({"error": f"An error occurred: {response.get_message()}"})
 
+            ##TODO: take all the xlxs files and make them as dictionaries
+            ##TODO: call generate site
+            ##TODO: call set_site_about_us_on_creation_from_generator
+            ##TODO: call set_site_contact_info_on_creation_from_generator
+            command = ['start', 'cmd', '/K', 'npm', 'start']  # Command to open a new terminal and run npm start
+            process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH, shell=True)
+
+            return jsonify({"message": "Website generated successfully!"})
+        
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
-        
 
 class ChooseDomain(Resource):
     def post(self):
@@ -279,6 +307,47 @@ class Logout(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}","response" : "false"})
 
+class ChangeSiteHomePictureByManager(Resource):
+    def post(self):
+        """
+        Change the home picture of a site by a manager.
+        """
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User id is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        user_id = args['user_id']
+        domain = args['domain']
+
+        try:
+            response = generator_system.change_site_home_picture_by_manager(user_id, domain)
+            if response.is_success():
+                return jsonify({"message": "Home picture changed successfully"})
+            return jsonify({"message": response.get_message()})
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"})
+
+class ChangeSiteLogoByManager(Resource):
+    def post(self):
+        """
+        Change the logo of a site by a manager.
+        """
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User id is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        user_id = args['user_id']
+        domain = args['domain']
+
+        try:
+            response = generator_system.change_site_logo_by_manager(user_id, domain)
+            if response.is_success():
+                return jsonify({"message": "Logo changed successfully"})
+            return jsonify({"message": response.get_message()})
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"})
 
 class StartCustomSite(Resource):
     def post(self):
@@ -831,9 +900,8 @@ api.add_resource(Login, '/api/Login')#
 api.add_resource(Logout, '/api/Logout')#
 api.add_resource(ChooseDomain, '/api/chooseDomain')#
 api.add_resource(StartCustomSite, '/api/startCustomSite')  #
-api.add_resource(GetAllCustomWebsites, '/api/getCustomWebsites')
-# api.add_resource(GetAllLabWebsites, '/api/getAllLabWebsites')
-api.add_resource(EnterGeneratorSystem, '/api/enterGeneratorSystem')#
+api.add_resource(GetAllCustomWebsitesOfManager, '/api/getCustomWebsites')
+# api.add_resource(EnterGeneratorSystem, '/api/enterGeneratorSystem')#
 api.add_resource(GetCustomSite, '/api/getCustomSite')
 
 

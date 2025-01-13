@@ -34,3 +34,9 @@ class SiteCustom:
 
     def set_generated(self):
         self.generated = True
+
+    def set_logo(self, logo):
+        self.logo = logo
+
+    def set_home_picture(self, home_picture):
+        self.home_picture = home_picture

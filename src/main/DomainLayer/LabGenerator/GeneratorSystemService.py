@@ -46,6 +46,38 @@ class GeneratorSystemService:
         except Exception as e:
             return Response(None, str(e))
 
+    def set_site_about_us_on_creation_from_generator(self, domain, about_us):
+        """Set site about us on creation from generator through GeneratorSystemController."""
+        try:
+            self.generator_system_controller.set_site_about_us_on_creation_from_generator(domain, about_us)
+            return Response(domain, "Site about us set successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def set_site_contact_info_on_creation_from_generator(self, domain, contact_info_dto):
+        """Set site contact us on creation from generator through GeneratorSystemController."""
+        try:
+            self.generator_system_controller.set_site_contact_info_on_creation_from_generator(domain, contact_info_dto)
+            return Response(domain, "Site contact us set successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def change_site_logo_by_manager(self, user_id, domain):
+        """Change the site logo by manager through GeneratorSystemController."""
+        try:
+            self.generator_system_controller.change_site_logo_by_manager(user_id, domain)
+            return Response(domain, "Site logo changed successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def change_site_home_picture_by_manager(self, user_id, domain):
+        """Change the site home picture by manager through GeneratorSystemController."""
+        try:
+            self.generator_system_controller.change_site_home_picture_by_manager(user_id, domain)
+            return Response(domain, "Site home picture changed successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
     def change_website_name(self, user_id, new_name, domain):
         """Change website name through GeneratorSystemController."""
         try:

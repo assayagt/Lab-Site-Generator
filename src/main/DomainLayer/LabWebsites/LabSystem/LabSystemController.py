@@ -316,3 +316,15 @@ class LabSystemController:
         userFacade.error_if_user_notExist(userid)
         userFacade.error_if_user_not_logged_in(userid)
         return self.allWebsitesUserFacade.get_pending_registration_emails(domain)
+
+    def set_site_about_us_on_creation_from_generator(self, domain, about_us):
+        """
+        Set the about us section of the website.
+        """
+        self.websiteFacade.set_site_about_us(domain, about_us)
+
+    def set_site_contact_info_on_creation_from_generator(self, domain, contact_info_dto):
+        """
+        Set the contact us section of the website.
+        """
+        self.websiteFacade.set_site_contact_info(domain, contact_info_dto)
