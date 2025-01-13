@@ -3,9 +3,11 @@ import participants from '../../participants.json'; // Replace with your correct
 import "./ParticipantsPage.css";
 
 const ParticipantsPage = () => {
-  const [selectedDegree, setSelectedDegree] = useState('All'); // Track selected degree filter
+  const [selectedDegree, setSelectedDegree] = useState('All');
+  const [participants, setParticipants] = useState([]); // State for combined participants
+  const [loading, setLoading] = useState(true); // Loading state
 
-  // Define the degree hierarchy
+  
   const degreeOrder = {
     "PhD": 1,
     "MSc": 2,
