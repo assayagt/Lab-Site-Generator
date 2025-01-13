@@ -875,7 +875,7 @@ api.add_resource(Logout, '/api/Logout')#
 api.add_resource(ChooseDomain, '/api/chooseDomain')#
 api.add_resource(StartCustomSite, '/api/startCustomSite')  #
 api.add_resource(GetAllCustomWebsitesOfManager, '/api/getCustomWebsites')
-# api.add_resource(EnterGeneratorSystem, '/api/enterGeneratorSystem')#
+api.add_resource(EnterGeneratorSystem, '/api/enterGeneratorSystem')#
 api.add_resource(GetCustomSite, '/api/getCustomSite')
 
 

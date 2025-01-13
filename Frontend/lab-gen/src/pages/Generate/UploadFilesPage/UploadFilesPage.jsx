@@ -4,29 +4,7 @@ import { useWebsite } from '../../../Context/WebsiteContext';
 import './UploadFilesPage.css';
 
 const UploadFilesPage = () => {
-  const navigate = useNavigate();
-  const { websiteData, setWebsite } = useWebsite();
-  const [formData, setFormData] = useState({
-    domain: websiteData.domain || '',
-    websiteName: websiteData.websiteName || '',
-    components: websiteData.components || [],
-    files: {},
-    AboutUs: '', // About Us content
-    ContactUs: '', // Contact Us content
-    email: '', // Added email state
-    phoneNumber: '', // Added phone number state
-    address: '',
-    publicationsFile: null,
-    participantsFile: null,
-  });
 
-
-
-  const [selectedComponent, setSelectedComponent] = useState('AboutUs');  // Default to About Us
-
-  const handleNavClick = (componentName) => {
-    setSelectedComponent(componentName);
-  };
 
 
   const [participants, setParticipants] = useState([
@@ -37,6 +15,23 @@ const UploadFilesPage = () => {
     { fullName: "Ms. Emily Davis", degree: "MSc", isLabManager: true }
   ]);
 
+
+
+
+
+  const navigate = useNavigate();
+  const { websiteData, setWebsite } = useWebsite();
+  const [formData, setFormData] = useState({
+    domain: websiteData.domain || '',
+    websiteName: websiteData.websiteName || '',
+    components: websiteData.components || [],
+    files: {},
+    publicationsFile: null,
+    participantsFile: null,
+    logo: null,
+    homepagePhoto: null,
+  });
+  const [selectedComponent, setSelectedComponent] = useState('AboutUs');  // Default to About Us
   const [showAddForm, setShowAddForm] = useState(false);
   const [newParticipant, setNewParticipant] = useState({
     fullName: '',
@@ -44,6 +39,33 @@ const UploadFilesPage = () => {
     isLabManager: false
   });
 
+  const [aboutUsContent, setAboutUsContent] = useState(() => {
+    return sessionStorage.getItem('AboutUs') || ''; // Load from sessionStorage initially
+  });
+
+  const [contactUsData, setContactUsData] = useState(() => {
+    const savedData = sessionStorage.getItem('ContactUs');
+    return savedData ? JSON.parse(savedData) : { email: '', phoneNumber: '', address: '' };
+  });
+
+
+  useEffect(() => {
+    if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+      navigate('/');
+    }
+  }, [navigate]);
+
+
+
+
+  const handleNavClick = (componentName) => {
+    setSelectedComponent(componentName);
+  };
+
+
+
+
+ 
   const toggleLabManager = index => {
     const newParticipants = participants.map((participant, idx) => {
       if (idx === index) {
@@ -54,7 +76,7 @@ const UploadFilesPage = () => {
     setParticipants(newParticipants);
   };
 
-  const handleInputChangepart = (e) => {
+  const handleInputChangeParticipant = (e) => {
     const { name, value, type, checked } = e.target;
     setNewParticipant(prev => ({
       ...prev,
@@ -73,33 +95,40 @@ const UploadFilesPage = () => {
   };
 
 
+  const handleAboutUsChange = (e) => {
+    setAboutUsContent(e.target.value);
+  };
 
-  useEffect(() => {
-    if (sessionStorage.getItem('isLoggedIn') !== 'true') {
-      navigate('/');
-    }
-  }, [navigate]);
+  const saveAboutUs = () => {
+    sessionStorage.setItem('AboutUs', aboutUsContent);
+    alert('About Us saved in session storage!');
+  };
 
-  const handleInputChange = (e) => {
+  const handleContactUsChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setContactUsData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleFileChange = (e, component) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData((prev) => ({
-        ...prev,
-        files: {
-          ...prev.files,
-          [component]: file,
-        },
-      }));
-    }
+  const saveContactUs = () => {
+    sessionStorage.setItem('ContactUs', JSON.stringify(contactUsData));
+    alert('Contact Us saved in session storage!');
   };
+
+  const handleFileChange = (e, component) => {
+  const file = e.target.files[0];
+  if (file) {
+    setFormData((prev) => ({
+      ...prev,
+      files: {
+        ...prev.files,
+        [component]: file,
+      },
+    }));
+  }
+};
 
   const handleDownload = (component) => {
     const link = document.createElement('a');
@@ -111,25 +140,13 @@ const UploadFilesPage = () => {
   const handleSubmit = async (component) => {
     const component_new = component.replace(" ", '').toLowerCase();
 
-    // if (!formData.files[component_new] && !formData[`${component_new}` && component_new !== 'contactus']) {
-    //   alert(`Please upload a file or provide content for ${component}`);
-    //   return;
-    // }
-
     const formDataToSend = new FormData();
     formDataToSend.append('domain', formData.domain);
     formDataToSend.append('website_name', formData.websiteName);
-    if (component === 'Contact Us') {
-      const contactUsData = {
-        phone: formData.phoneNumber,
-        address: formData.address,
-        email: formData.email,
-      };
-      formDataToSend.append('contactus_content', JSON.stringify(contactUsData)); // Send the contact data as a JSON string
-    }
+    
 
 
-    else if (formData.files[component_new]) {
+    if (formData.files[component_new]) {
       formDataToSend.append(component_new, formData.files[component_new]);
     }
 
@@ -171,64 +188,68 @@ const UploadFilesPage = () => {
 
 
 
-
-
   const AboutUsForm = () => (
     <div className="file-upload-item">
       <div className="file-upload_title">About Us</div>
-        <div className="about_contact_section">
-                          <input
-                            className="about_contact_input"
-                            name="AboutUs"
-                            placeholder={`Enter content for About Us`}
-                            value={formData.AboutUs}
-                            onChange={handleInputChange}
-                          />
-                          <button
-                            className="about_contact_button"
-                            onClick={() => handleSubmit('About Us')}
-                          >
-                            Save
-                          </button>
-        </div>
+      <div className="about_contact_section">
+        <input
+          className="about_contact_input"
+          name="AboutUs"
+          placeholder="Enter content for About Us"
+          value={aboutUsContent}
+          onChange={handleAboutUsChange}
+        />
+        <button
+          className="about_contact_button"
+          onClick={saveAboutUs}
+        >
+          Save
+        </button>
+      </div>
     </div>
-    
   );
   
   const ContactUsForm = () => (
     <div className="file-upload-item">
-      <div className="file-upload_title">Contact us</div>
-        <div className="contact_us_section">
-                        <input
-                          className="contact_us_input"
-                          name="email"
-                          placeholder="Enter your email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                        />
-                        <input
-                          className="contact_us_input"
-                          name="phoneNumber"
-                          placeholder="Enter your phone number"
-                          value={formData.phoneNumber}
-                          onChange={handleInputChange}
-                        />
-                        <input
-                          className="contact_us_input"
-                          name="address"
-                          placeholder="Enter your address"
-                          value={formData.address}
-                          onChange={handleInputChange}
-                        />
-                      
-                        <button
-                          className="about_contact_button"
-                          onClick={() => handleSubmit('Contact Us')}
-                        >
-                          Save
-                        </button>
-                      </div>
-                      </div>
+      <div className="file-upload_title">Contact Us</div>
+      <div className="contact_us_section">
+        <input
+          className="contact_us_input"
+          name="email"
+          placeholder="Enter your email"
+          value={contactUsData.email}
+          onChange={handleContactUsChange}
+        />
+        <input
+          className="contact_us_input"
+          name="phoneNumber"
+          placeholder="Enter your phone number"
+          value={contactUsData.phoneNumber}
+          onChange={handleContactUsChange}
+        />
+        <input
+          className="contact_us_input"
+          name="address"
+          placeholder="Enter your address"
+          value={contactUsData.address}
+          onChange={handleContactUsChange}
+        />
+        <button
+          className="about_contact_button"
+          onClick={() => {
+            const contactData = {
+              email: contactUsData.email,
+              phoneNumber: contactUsData.phoneNumber,
+              address: contactUsData.address,
+            };
+            sessionStorage.setItem('ContactUs', JSON.stringify(contactData));
+            alert('Contact Us saved in session storage!');
+          }}
+        >
+          Save
+        </button>
+      </div>
+    </div>
   );
   
   const ParticipantsForm = () => (
@@ -267,14 +288,14 @@ const UploadFilesPage = () => {
                                placeholder="Full Name"
                                name="fullName"
                                value={newParticipant.fullName}
-                               onChange={handleInputChangepart}
+                               onChange={handleInputChangeParticipant}
                              />
                              <input
                                type="text"
                                placeholder="Degree"
                                name="degree"
                                value={newParticipant.degree}
-                               onChange={handleInputChangepart}
+                               onChange={handleInputChangeParticipant}
                              />
                            <label>
                                Manager
@@ -282,7 +303,7 @@ const UploadFilesPage = () => {
                                type="checkbox"
                                  name="isLabManager"
                                  checked={newParticipant.isLabManager}
-                                 onChange={handleInputChangepart}
+                                 onChange={handleInputChangeParticipant}
                               />
                              </label>
                              <button onClick={addParticipant}>Save</button>
@@ -299,35 +320,37 @@ const UploadFilesPage = () => {
 
   const MediaForm = () => (
     <div className="file-upload-item">
-      <div className="file-upload_title">Media </div>
+      <div className="file-upload_title">Media</div>
       <div>
-        Logo
-                     <input
-                       className="downloadTemplate"
-                       type="file"
-                       onChange={(e) => handleFileChange(e, 'Publications')}
-                     />
-                     <button
-                       className="downloadTemplate"
-                       onClick={() => handleSubmit('Publications')}
-                     >
-                       Save
-                     </button>
-                   </div>
-                   <div>
-        Home Page photo
-                     <input
-                       className="downloadTemplate"
-                       type="file"
-                       onChange={(e) => handleFileChange(e, 'Publications')}
-                     />
-                     <button
-                       className="downloadTemplate"
-                       onClick={() => handleSubmit('Publications')}
-                     >
-                       Save
-                     </button>
-                   </div>
+        <div>
+          Logo
+          <input
+            className="media_input"
+            type="file"
+            onChange={(e) => handleFileChange(e, 'logo')}
+          />
+          <button
+            className="media_button"
+            onClick={() => handleSubmit('logo')}
+          >
+            Save
+          </button>
+        </div>
+        <div>
+          Home Page Photo
+          <input
+            className="media_input"
+            type="file"
+            onChange={(e) => handleFileChange(e, 'homepagePhoto')}
+          />
+          <button
+            className="media_button"
+            onClick={() => handleSubmit('homepagePhoto')}
+          >
+            Save
+          </button>
+        </div>
+      </div>
     </div>
   );
 
