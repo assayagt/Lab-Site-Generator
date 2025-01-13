@@ -23,7 +23,18 @@ function App() {
 
   useEffect(() => {
     const fetchHomepageDetails = async () => {
-      const domain = 'example.com'; // Replace with actual domain logic
+      let domain = window.location.hostname;
+      domain = domain.replace(/^https?:\/\//, '');
+
+      // Add "www." if missing
+      if (!domain.startsWith('www.')) {
+        domain = `www.${domain}`;
+      }
+
+      // Add ".com" if missing
+      if (!domain.endsWith('.com')) {
+        domain = `${domain}.com`;
+      }
   
       try {
         const data = await getHomepageDetails(domain);
