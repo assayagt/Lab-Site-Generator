@@ -9,36 +9,45 @@ import ContactUsPage from './Pages/ContactUsPage/ContactUsPage';
 import Header from './Components/Header/Header';
 import AccountPage from './Pages/AccountPage/AccountPage';
 import PublicationsPage from './Pages/PublicationsPage/PublicationsPage';
-import publications from "./publications.json"
+//import publications from "./publications.json"
 import { AuthProvider } from './Context/AuthContext';
 import { WebsiteProvider, useWebsite } from './Context/WebsiteContext';
-import { getHomepageDetails } from './api'; // Import API function
+import { getHomepageDetails,getApprovedPublications  } from  "./services/websiteService"
 
 function App() {
 
 
   const { websiteData, setWebsite } = useWebsite();
   const [loading, setLoading] = useState(true);
+  const [publications, setPublications] = useState([]); // State for fetched publications
 
   useEffect(() => {
     const fetchHomepageDetails = async () => {
-      const domain = 'example.com';
-      const data = await getHomepageDetails(domain);
+      const domain = 'example.com'; // Replace with actual domain logic
   
-      if (data.response === true) {
-        const mappedData = {
-          domain: data.data.siteDomain, 
-          websiteName: data.data.name, 
-          components: data.data.pageComponents,
-          template: data.data.templateType,
-          logo: data.data.logoPath, 
-          home_picture: data.data.homePageImage, 
-          about_us: data.data.about_us,
-        };
+      try {
+        const data = await getHomepageDetails(domain);
   
-        setWebsite(mappedData); 
+        if (data.response === true) {
+          const mappedData = {
+            domain: data.data.siteDomain, 
+            websiteName: data.data.name, 
+            components: data.data.pageComponents, 
+            template: data.data.templateType, 
+            logo: data.data.logoPath, 
+            home_picture: data.data.homePageImage, 
+            about_us: data.data.about_us, 
+          };
+  
+          setWebsite(mappedData); 
+            const approvedPublications = await getApprovedPublications(mappedData.domain);
+          setPublications(approvedPublications); 
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false); 
       }
-      setLoading(false); 
     };
   
     fetchHomepageDetails();
@@ -52,28 +61,30 @@ function App() {
 
   return (
     <AuthProvider>
+      <WebsiteProvider>
         <Router>
-            <Header components={components} title="SPL"></Header>
-            <Routes>
-              <Route path="/" element={<HomePage/>} />
-              <Route
-                path="/Participants"
-                element= {<ParticipantsPage />}
-              />
-              <Route
-                path="/ContactUs"
-                element= {<ContactUsPage address = "Ben Gurion University of the Negev" email ="roni@bgu.ac.il" phone="+972 523456789"/>}
-              />
-           <Route
-                path="/Account"
-                element= {<AccountPage/>}
-              />
-              <Route
-                path="/Publications"
-                element= {<PublicationsPage publications={publications}/>}
-              />
-            </Routes>
-    </Router>
+              <Header components={components} title={websiteData.websiteName}></Header>
+              <Routes>
+                <Route path="/" element={<HomePage/>} />
+                <Route
+                  path="/Participants"
+                  element= {<ParticipantsPage />}
+                />
+                <Route
+                  path="/ContactUs"
+                  element= {<ContactUsPage address = "Ben Gurion University of the Negev" email ="roni@bgu.ac.il" phone="+972 523456789"/>}
+                />
+            <Route
+                  path="/Account"
+                  element= {<AccountPage/>}
+                />
+                <Route
+                  path="/Publications"
+                  element= {<PublicationsPage publications={publications}/>}
+                />
+              </Routes>
+        </Router>
+      </WebsiteProvider>
     </AuthProvider>
     
 
