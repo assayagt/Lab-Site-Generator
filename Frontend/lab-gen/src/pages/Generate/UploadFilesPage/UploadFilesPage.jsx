@@ -170,7 +170,7 @@ const UploadFilesPage = () => {
   const handleGenerate = async () => {
     try {
       const response = await axios.post(`${baseApiUrl}generateWebsite`, {
-        user_id: sessionStorage.setItem("sid"),
+        user_id: sessionStorage.getItem("sid"),
         domain: formData.domain,
         about_us: aboutUsContent,
         lab_address: contactUsData.address,
