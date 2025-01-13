@@ -37,24 +37,10 @@ class UploadFilesAndData(Resource):
             # Get the data from the frontend
             domain = request.form['domain']
             website_name = request.form['website_name']
-            about_us_content = request.form.get('aboutus_content')
-            contact_us_content = request.form.get('contactus_content')
 
-            # Prepare the directory for the domain
             website_folder = os.path.join(GENERATED_WEBSITES_FOLDER, domain)
             os.makedirs(website_folder, exist_ok=True)
 
-            # Save site data to siteData.json
-            site_data = {
-                "domain": domain,
-                "website_name": website_name,
-                "aboutus_content": about_us_content,
-                "contactus_content": contact_us_content,
-            }
-            with open(os.path.join(website_folder, 'siteData.json'), 'w') as json_file:
-                json.dump(site_data, json_file, indent=4)
-
-            # Handle file uploads for each component
             files = request.files
             for component in files:
                 file = files[component]
@@ -104,11 +90,9 @@ class GenerateWebsiteResource(Resource):
             if lab_members is None:
                 return jsonify({"error": f"An error occurred: {lab_managers}"})
             
-
             if not os.path.exists(TEMPLATE_1_PATH):
                 return jsonify({"error": f"Path {TEMPLATE_1_PATH} does not exist."})
 
-            
            
             response = generator_system.create_new_lab_website(domain,lab_members,lab_managers,siteCreator)
             if response.is_success():
@@ -116,16 +100,6 @@ class GenerateWebsiteResource(Resource):
                 process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH, shell=True)
                 return jsonify({"message": "Website generated successfully!"})
             return jsonify({"error": f"An error occurred: {response.get_message()}"})
-
-            ##TODO: take all the xlxs files and make them as dictionaries
-            ##TODO: call generate site
-            ##TODO: call set_site_about_us_on_creation_from_generator
-            ##TODO: call set_site_contact_info_on_creation_from_generator
-            command = ['start', 'cmd', '/K', 'npm', 'start']  # Command to open a new terminal and run npm start
-            process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH, shell=True)
-
-            return jsonify({"message": "Website generated successfully!"})
-        
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
