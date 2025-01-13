@@ -178,9 +178,11 @@ const UploadFilesPage = () => {
         lab_phone_num:contactUsData.phoneNumber,
       });
       const data =  response.data;
-      if (response.ok) {
+      if (data.response==="true") {
         console.log(data.message);
         alert(data);
+        sessionStorage.removeItem("AboutUs");
+        sessionStorage.removeItem("ContactUs");
       } else {
         alert('Error: ' + data.error);
       }

@@ -98,8 +98,8 @@ class GenerateWebsiteResource(Resource):
             if response.is_success():
                 command = ['start', 'cmd', '/K', 'npm', 'start']  # Command to open a new terminal and run npm start
                 process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH, shell=True)
-                return jsonify({"message": "Website generated successfully!"})
-            return jsonify({"error": f"An error occurred: {response.get_message()}"})
+                return jsonify({"message": "Website generated successfully!", "response": "true"})
+            return jsonify({"error": f"An error occurred: {response.get_message()}", "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
