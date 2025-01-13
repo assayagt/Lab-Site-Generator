@@ -16,6 +16,9 @@ function App() {
     "Publications",
     "Contact Us"
   ];
+
+  
+
   return (
     <AuthProvider>
         <Router>

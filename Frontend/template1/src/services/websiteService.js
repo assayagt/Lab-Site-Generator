@@ -276,7 +276,7 @@ export const getMemberPublications = async (domain, email) => {
 export const getHomepageDetails = async (domain) => {
     try {
         const response = await axios.get(`${baseApiUrl}getHomepageDetails`, { params: { domain } });
-        return response.data.data;  // Assuming the backend sends the data in a property named 'data'
+        return response.data;  // Assuming the backend sends the data in a property named 'data'
     } catch (error) {
         console.error("Error getting homepage details:", error);
         return null;
