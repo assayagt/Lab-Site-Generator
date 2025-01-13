@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWebsite } from '../../../Context/WebsiteContext';
 import './UploadFilesPage.css';
+import axios from "axios";
 
+const baseApiUrl = "http://127.0.0.1:5000/api/";
 const UploadFilesPage = () => {
 
 
@@ -144,8 +146,6 @@ const UploadFilesPage = () => {
     formDataToSend.append('domain', formData.domain);
     formDataToSend.append('website_name', formData.websiteName);
     
-
-
     if (formData.files[component_new]) {
       formDataToSend.append(component_new, formData.files[component_new]);
     }
@@ -169,11 +169,15 @@ const UploadFilesPage = () => {
 
   const handleGenerate = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/generateWebsite', {
-        method: 'POST',
-        body: websiteData.domain,
+      const response = await axios.post(`${baseApiUrl}generateWebsite`, {
+        user_id: sessionStorage.setItem("sid"),
+        domain: formData.domain,
+        about_us: aboutUsContent,
+        lab_address: contactUsData.address,
+        lab_email:contactUsData.email,
+        lab_phone_num:contactUsData.phoneNumber,
       });
-      const data = await response.json();
+      const data =  response.data;
       if (response.ok) {
         console.log(data.message);
         alert(data);
@@ -184,7 +188,6 @@ const UploadFilesPage = () => {
       alert('Error: ' + error.message);
     }
   };
-
 
 
 

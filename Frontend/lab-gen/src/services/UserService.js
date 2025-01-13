@@ -53,16 +53,3 @@ export const SendLogout = async (
   
 
 
-
-
-// export const SendSignupVerification = async (email, verificationCode) => {
-//   try {
-//     const response = await axios.post(`${baseApiUrl}Verification`, {
-//       email: email,
-//       verification_code: verificationCode,
-//     });
-//     return response.data;
-//   } catch (err) {
-//     console.error("Error sending singup verification");
-//   }
-// };
