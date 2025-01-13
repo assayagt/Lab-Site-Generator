@@ -101,7 +101,7 @@ const ParticipantsPage = () => {
                 <div key={member.email} className="participant">
                   <div className="personal_photo"></div>
                   <div>
-                    <strong>{member.full_name}</strong>
+                    <strong>{member.fullName}</strong>
                     <p>{member.bio}</p>
                     <a href={`mailto:${member.email}`} className="email-link">
                       {member.email}
