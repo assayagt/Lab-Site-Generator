@@ -141,9 +141,16 @@ class GenerateWebsiteResource(Resource):
            
             response = generator_system.create_new_lab_website(domain,lab_members,lab_managers,siteCreator)
             if response.is_success():
-                command = ['start', 'cmd', '/K', 'npm', 'start']  # Command to open a new terminal and run npm start
-                process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH, shell=True)
-                return jsonify({"message": "Website generated successfully!", "response": "true"})
+                response2 = generator_system.set_site_about_us_on_creation_from_generator(domain, about_us)
+                if response2.is_success():
+                    response3 = generator_system.set_site_contact_info_on_creation_from_generator(domain,contact_info)
+                    if response3.is_success():
+                        command = ['start', 'cmd', '/K', 'npm', 'start']  # Command to open a new terminal and run npm start
+                        process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH, shell=True)
+                        return jsonify({"message": "Website generated successfully!", "response": "true"})
+                    return jsonify({"error": f"An error occurred: {response3.get_message()}", "response": "false"})
+
+                return jsonify({"error": f"An error occurred: {response2.get_message()}", "response": "false"})
             return jsonify({"error": f"An error occurred: {response.get_message()}", "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
