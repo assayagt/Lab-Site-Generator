@@ -141,7 +141,7 @@ class GeneratorSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def login(self,email, user_id):
+    def login(self, user_id, email):
         """Log in a user through GeneratorSystemController."""
         try:
             self.generator_system_controller.login(user_id, email)
@@ -194,6 +194,20 @@ class GeneratorSystemService:
                 "template": website.get_template(),
                 "logo": website.logo,  # Include the logo
                 "home_picture": website.home_picture  # Include the home picture
+            }, "Successfully retrieved custom website")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def get_site_by_domain(self, domain):
+        try:
+            website = self.generator_system_controller.get_site_by_domain(domain)
+            return Response({
+                "domain": domain,
+                "name": website.get_name(),
+                "components": website.get_components(),
+                "template": website.get_template(),
+                "logo": website.get_logo(),  # Include the logo
+                "home_picture": website.get_home_picture()  # Include the home picture
             }, "Successfully retrieved custom website")
         except Exception as e:
             return Response(None, str(e))

@@ -106,7 +106,7 @@ const AccountPage = () => {
 
                 <label className='detail-bio'>
                   <strong>Email:</strong>
-                  <input  className="text-detail" type="email" defaultValue="user@example.com" />
+                  <div className="text-detail" type="email">user@example.com</div>
                 </label>
 
                 <label className='detail-bio'>

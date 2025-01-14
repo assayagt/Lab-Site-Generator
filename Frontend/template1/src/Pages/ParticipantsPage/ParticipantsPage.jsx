@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import participants from '../../participants.json'; // Replace with your correct JSON file path
 import "./ParticipantsPage.css";
+import {getAllAlumni,getAllLabManagers,getAllLabMembers} from "../../services/websiteService";
 
 const ParticipantsPage = () => {
-  const [selectedDegree, setSelectedDegree] = useState('All'); // Track selected degree filter
+  const [selectedDegree, setSelectedDegree] = useState('All');
+  const [participants, setParticipants] = useState([]); // State for combined participants
+  const [loading, setLoading] = useState(true); // Loading state
 
-  // Define the degree hierarchy
+
   const degreeOrder = {
     "PhD": 1,
     "MSc": 2,
@@ -13,6 +16,54 @@ const ParticipantsPage = () => {
     "BSc": 4,
     "Alumni": 5,
   };
+
+
+    // Fetch participants data
+    useEffect(() => {
+      const fetchParticipants = async () => {
+        setLoading(true);
+  
+        try {
+          let domain = window.location.hostname; // Extract domain dynamically
+          domain = domain.replace(/^https?:\/\//, '');
+          domain= domain.replace(":3001",'')
+          console.log(domain);
+      // Add "www." if missing
+          if (!domain.startsWith('www.')) {
+            domain = `www.${domain}`;
+          }
+
+          // Add ".com" if missing
+          if (!domain.endsWith('.com')) {
+            domain = `${domain}.com`;
+          }
+          const [managers, members, alumni] = await Promise.all([
+            getAllLabManagers(domain),
+            getAllLabMembers(domain),
+            getAllAlumni(domain),
+          ]);
+  
+          const safeManagers = Array.isArray(managers) ? managers : [];
+          const safeMembers = Array.isArray(members) ? members : [];
+          const safeAlumni = Array.isArray(alumni) ? alumni : [];
+
+          // Combine all participants without modifying their structure
+          const combinedParticipants = [
+            ...safeManagers,
+            ...safeMembers,
+            ...safeAlumni,
+          ];
+  
+          setParticipants(combinedParticipants);
+        } catch (err) {
+          console.error('Error fetching participants:', err);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchParticipants();
+    }, []);
 
   const groupedParticipants = participants.reduce((acc, participant) => {
     const { degree } = participant;
@@ -30,6 +81,11 @@ const ParticipantsPage = () => {
     ? groupedParticipants
     : { [selectedDegree]: groupedParticipants[selectedDegree] };
 
+
+    if (loading) {
+      return <div>Loading...</div>;
+    }
+  
   return (
     <div className="participants-page">
       <h1>Participants</h1>
@@ -61,7 +117,7 @@ const ParticipantsPage = () => {
                 <div key={member.email} className="participant">
                   <div className="personal_photo"></div>
                   <div>
-                    <strong>{member.full_name}</strong>
+                    <strong>{member.fullName}</strong>
                     <p>{member.bio}</p>
                     <a href={`mailto:${member.email}`} className="email-link">
                       {member.email}

@@ -4,6 +4,8 @@ from flask_restful import Api, Resource, reqparse
 import os
 from flask_cors import CORS
 import subprocess
+import pandas as pd
+
 
 from src.main.DomainLayer.LabGenerator.GeneratorSystemService import GeneratorSystemService
 from src.main.DomainLayer.LabWebsites.LabSystemService import LabSystemService
@@ -28,45 +30,80 @@ lab_system_service = LabSystemService.get_instance(generator_system.get_lab_syst
 
 TEMPLATE_1_PATH = os.path.join(os.getcwd(), 'Frontend', 'template1')
 
-##todo: add email and domain where needed
-
 # Service for uploading file
+
+def read_lab_info(excel_path):
+    # Check if the file exists
+    if not os.path.exists(excel_path):
+        return None, None, "Excel file does not exist."
+
+    try:
+        # Load the Excel file
+        df = pd.read_csv(excel_path)
+
+        # Assuming columns are named 'Full Name', 'Email', 'Degree', 'Manager', 'Site Creator'
+        lab_members = {}
+        lab_managers = {}
+        site_creator = None
+        
+        site_creator_count = df['Site Creator'].sum()  # Assuming this column contains boolean True for the site creator
+
+        if site_creator_count != 1:
+            return None, None, "There must be exactly one site creator."
+
+        for index, row in df.iterrows():
+            person_info = {
+                "full_name": row['Full Name'],
+                "degree": row['Degree']
+            }
+            # Add to lab_members dictionary
+            lab_members[row['Email']] = person_info
+            
+            # Check if the person is a manager
+            if row['Manager']:  # Assuming this column contains boolean values
+                lab_managers[row['Email']] = person_info
+
+            # Identify the site creator
+            if row['Site Creator']:
+                site_creator = {
+                    "email": row['Email'],
+                    "full_name": row['Full Name'],
+                    "degree": row['Degree']
+                }
+
+        return lab_members, lab_managers, site_creator
+
+    except Exception as e:
+        return None, None, str(e)
+
+
 class UploadFilesAndData(Resource):
     def post(self):
         try:
-            # Get the data from the frontend (domain, website_name, content for each component)
+            # Get the data from the frontend
             domain = request.form['domain']
             website_name = request.form['website_name']
-            about_us_content = request.form.get('aboutus_content')
-            contact_us_content = request.form.get('contactus_content')
 
-            # Prepare the directory for the domain
             website_folder = os.path.join(GENERATED_WEBSITES_FOLDER, domain)
             os.makedirs(website_folder, exist_ok=True)
 
-            # Save site data (content) to siteData.json
-            site_data = {
-                "domain": domain,
-                "website_name": website_name,
-                "aboutus_content": about_us_content,
-                "contactus_content": contact_us_content,
-            }
-            with open(os.path.join(website_folder, 'siteData.json'), 'w') as json_file:
-                json.dump(site_data, json_file)
-
-            # Handle dynamic file uploads for each component (Publications, Participants)
             files = request.files
             for component in files:
                 file = files[component]
+                print(component)
                 if file:
-                    # Save each file with the component's name (e.g., "Publications.xlsx")
-                    file_path = os.path.join(website_folder, f"{component}.xlsx")
+                    if component == 'logo':
+                        file_path = os.path.join(website_folder, "logo.png")  # Assuming logo is always a .png
+                    elif component == 'homepage_photo':
+                        file_path = os.path.join(website_folder, "homepage_photo.jpg")  # Assuming photo is always a .jpg
+                    else:
+                        print("help")
+                        file_path = os.path.join(website_folder, f"{component}.csv")  # Default case for other files
                     file.save(file_path)
 
             return jsonify({'message': 'Files and data uploaded successfully!'})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
-
 
 # Service for generating a website from templates
 class GenerateWebsiteResource(Resource):
@@ -74,8 +111,6 @@ class GenerateWebsiteResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
         parser.add_argument('about_us', type=str, required=True, help="About us content is required")
-
-        #fetch the arguments needed for contact info
         parser.add_argument('lab_address', type=str, required=True, help="Lab address is required")
         parser.add_argument('lab_mail', type=str, required=True, help="Lab mail is required")
         parser.add_argument('lab_phone_num', type=str, required=True, help="Lab phone number is required")
@@ -87,20 +122,36 @@ class GenerateWebsiteResource(Resource):
         lab_mail = args['lab_mail']
         lab_phone_num = args['lab_phone_num']
         contact_info = ContactInfo(lab_address, lab_mail, lab_phone_num)
+        try: 
 
-        try:  
-            if not os.path.exists(TEMPLATE_1_PATH):
-                return jsonify({"error": f"Path {TEMPLATE_1_PATH} does not exist."})
+           
+            excel_file_path = os.path.join(GENERATED_WEBSITES_FOLDER, domain ,'participants.csv')
+            print(excel_file_path)
+            lab_members, lab_managers, siteCreator = read_lab_info(excel_file_path)
+            print(f"Lab Members: {lab_members}")
+            print(f"Lab Managers: {lab_managers}")
+            print(f"Site Creator: {siteCreator}")
 
-            ##TODO: take all the xlxs files and make them as dictionaries
-            ##TODO: call generate site
-            ##TODO: call set_site_about_us_on_creation_from_generator
-            ##TODO: call set_site_contact_info_on_creation_from_generator
-            command = ['start', 'cmd', '/K', 'npm', 'start']  # Command to open a new terminal and run npm start
-            process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH, shell=True)
+            if lab_members is None:
+                return jsonify({"error": f"An error occurred: {lab_managers}"})
+            
+            # if not os.path.exists(TEMPLATE_1_PATH):
+            #     return jsonify({"error": f"Path {TEMPLATE_1_PATH} does not exist."})
 
-            return jsonify({"message": "Website generated successfully!"})
-        
+           
+            response = generator_system.create_new_lab_website(domain,lab_members,lab_managers,siteCreator)
+            if response.is_success():
+                response2 = generator_system.set_site_about_us_on_creation_from_generator(domain, about_us)
+                if response2.is_success():
+                    response3 = generator_system.set_site_contact_info_on_creation_from_generator(domain,contact_info)
+                    if response3.is_success():
+                        command = ['start', 'cmd', '/K', 'npm', 'start']  # Command to open a new terminal and run npm start
+                        process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH, shell=True)
+                        return jsonify({"message": "Website generated successfully!", "response": "true"})
+                    return jsonify({"error": f"An error occurred: {response3.get_message()}", "response": "false"})
+
+                return jsonify({"error": f"An error occurred: {response2.get_message()}", "response": "false"})
+            return jsonify({"error": f"An error occurred: {response.get_message()}", "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
@@ -217,6 +268,7 @@ class CreateNewSiteManagerFromGenerator(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
+
 class RemoveSiteManagerFromGenerator(Resource):
     """
     Remove a manager from a specific website, from generator site.
@@ -256,7 +308,7 @@ class Login(Resource):
     
 
         try:
-            response = generator_system.login(email, user_id)
+            response = generator_system.login(user_id, email)
             
             if response.is_success():
                 return jsonify({"message": "User logged in successfully","response" : "true" })
@@ -367,8 +419,8 @@ class GetAllCustomWebsitesOfManager(Resource):
             if response.is_success():
                 websites = response.get_data() #rertun map of {domain: {site name, generated status}}
                 # Store the user ID in the session for tracking
-                return jsonify({"websites": websites}), 200
-
+                return jsonify({"websites": websites , "response": "true"})
+            return jsonify({"message": response.get_message(),"response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -384,6 +436,7 @@ class EnterGeneratorSystem(Resource):
                 return jsonify({
                     "user_id": user_id,
                     "message": "New user entered the system successfully"
+                    
                 })
             else:
                 return jsonify({"error": "An internal server error occurred"})
@@ -415,14 +468,10 @@ class GetCustomSite(Resource):
 class GetHomepageDetails(Resource):
     def get(self):
         try:
-            parser = reqparse.RequestParser()
-            parser.add_argument('domain', type=str, required=True, help="Domain is required")
-            args = parser.parse_args()
-
-            domain = args['domain']
-
+            domain = request.args.get('domain')
+            print(domain)
             # Fetch the site data from the siteData.json file
-            response_1 = generator_system.get_custom_website(domain)
+            response_1 = generator_system.get_site_by_domain(domain)
             if response_1.is_success():
                 # the returned value is website name, template, components
                 response_2 = lab_system_service.get_about_us(domain)
@@ -432,11 +481,12 @@ class GetHomepageDetails(Resource):
                     website_data['about_us'] = about_us_data
                     return jsonify({'data': website_data, "response": "true"})
 
-                return jsonify({"message": response_2.get_message(), "response": "false"})
-            return jsonify({"message": response_1.get_message(), "response": "false"})
+                return jsonify({"message1": response_2.get_message(), "response": "false"})
+            return jsonify({"message2": response_1.get_message(), "response": "false"})
 
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
+
 
 
 class EnterLabWebsite(Resource):
@@ -449,8 +499,8 @@ class EnterLabWebsite(Resource):
         try:
             response = lab_system_service.enter_lab_website(domain)
             if response.is_success():
-                return jsonify({"message": response.get_message(), "user_id": response.get_data()})
-            return jsonify({"message": response.get_message()}), 400
+                return jsonify({"message": response.get_message(), "user_id": response.get_data() , "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"}), 400
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -465,8 +515,8 @@ class LoginWebsite(Resource):
         try:
             response = lab_system_service.login(args['domain'], args['user_id'], args['email'])
             if response.is_success():
-                return jsonify({"message": response.get_message()})
-            return jsonify({"message": response.get_message()}), 400
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
         
@@ -480,8 +530,8 @@ class LogoutWebsite(Resource):
         try:
             response = lab_system_service.logout(args['domain'], args['user_id'])
             if response.is_success():
-                return jsonify({"message": response.get_message()})
-            return jsonify({"message": response.get_message()}), 400
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
         
@@ -494,8 +544,8 @@ class GetApprovedPublications(Resource):
         try:
             response = lab_system_service.get_all_approved_publications(args['domain'])
             if response.is_success():
-                return jsonify({"publications": response.get_data()})
-            return jsonify({"message": response.get_message()}), 400
+                return jsonify({"publications": response.get_data(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -513,8 +563,8 @@ class AddPublication(Resource):
                 args['user_id'], args['publication_dto'], args['domain'], args['authors_emails']
             )
             if response.is_success():
-                return jsonify({"message": response.get_message()})
-            return jsonify({"message": response.get_message()}), 400
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message() , "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -534,8 +584,8 @@ class SetPublicationVideoLink(Resource):
                 )
          
             if response.is_success():
-                return jsonify({"message": response.get_message()})
-            return jsonify({"message": response.get_message()}), 400
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "true"}), 400
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
         
@@ -556,8 +606,8 @@ class SetPublicationGitLink(Resource):
                 )
         
                 if response.is_success():
-                    return jsonify({"message": response.get_message()})
-                return jsonify({"message": response.get_message()}), 400
+                    return jsonify({"message": response.get_message(), "response": "true"})
+                return jsonify({"message": response.get_message(), "response": "false"})
             except Exception as e:
                 return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
@@ -579,16 +629,274 @@ class SetPublicationPttxLink(Resource):
                 )
             
             if response.is_success():
-                return jsonify({"message": response.get_message()})
-            return jsonify({"message": response.get_message()}), 400
+                    return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 
+class AddLabMember(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User ID of the manager adding the member is required")
+        parser.add_argument('email', type=str, required=True, help="Email of the new member is required")
+        parser.add_argument('full_name', type=str, required=True, help="Full name of the new member is required")
+        parser.add_argument('degree', type=str, required=True, help="Degree of the new member is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain of the lab is required")
+        args = parser.parse_args()
+
+        try:
+            response = generator_system.register_new_LabMember_from_labWebsite(args['user_id'], args['email'], args['full_name'], args['degree'], args['domain'])
+            if response.is_success():
+                    return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+        
+class AddLabManager(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User ID of the nominating manager is required")
+        parser.add_argument('email', type=str, required=True, help="Email of the new manager is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain of the lab is required")
+        args = parser.parse_args()
+
+        try:
+            response = generator_system.create_new_site_manager_from_labWebsite(args['user_id'], args['domain'], args['email'])
+            if response.is_success():
+                return jsonify({"message": "Lab manager added successfully", "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class GetAllCustomWebsites(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User id is required")
+        args = parser.parse_args()
+
+        user_id = args['user_id']
+
+        try :
+            response = generator_system.get_custom_websites(user_id)
+            if response.is_success():
+                websites = response.get_data() # Return map of <domain, site name>
+                return jsonify({"websites": websites, "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e :
+            return jsonify({"error": f"An error occurred: {str(e)}"})
+        
+    class GetCustomSite(Resource):
+        def get(self):
+            parser = reqparse.RequestParser()
+            parser.add_argument('user_id', type=str, required=True, help="User id is required")
+            parser.add_argument('domain', type=str, required=True, help="Domain is required")
+            args = parser.parse_args()
+
+            user_id = args['user_id']
+            domain = args['domain']
+
+            try :
+                response = generator_system.get_custom_website(user_id, domain)
+                if response.is_success():
+                    website_data = response.get_data() # Returned value is website name, template, components
+                    return jsonify({'data': website_data, "response": "true"})
+                return jsonify({"message": response.get_message(), "response": "false"})
+            except Exception as e:
+                return jsonify({"error": f"An error occurred: {str(e)}"})
+            
+        
+
+
+class GetMemberPublications(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('domain', required=True, help="Domain is required.")
+        parser.add_argument('email', required=True, help="Member email is required.")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.get_all_approved_publications_of_member(args['domain'], args['email'])
+            if response.is_success():
+                return jsonify({"publications": response.get_data(), "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class ApproveRegistration(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('domain', required=True, help="Domain is required.")
+        parser.add_argument('manager_userId', required=True, help="Manager User ID is required.")
+        parser.add_argument('requested_email', required=True, help="Requested user email is required.")
+        parser.add_argument('requested_full_name', required=True)
+        parser.add_argument('requested_degree', required=True)
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.approve_registration_request(args['domain'], args['manager_userId'], args['requested_email'], args['requested_full_name'], args['requested_degree'])
+            if response.is_success():
+                return jsonify({"message": "Registration approved successfully.", "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class RejectRegistration(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('domain', required=True, help="Domain is required.")
+        parser.add_argument('manager_userId', required=True, help="Manager User ID is required.")
+        parser.add_argument('requested_email', required=True, help="Requested user email is required.")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.reject_registration_request(args['domain'], args['manager_userId'], args['requested_email'])
+            if response.is_success():
+                return jsonify({"message": "Registration rejected successfully.", "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+        
+
+class GetAllLabManagers(Resource):
+    def get(self):
+        domain = request.args.get('domain')
+
+        try:
+            response = lab_system_service.get_all_lab_managers(domain)
+            if response.is_success():
+                return jsonify({"managers": response.get_data(), "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class GetAllLabMembers(Resource):
+    def get(self):
+        domain = request.args.get('domain')
+
+        try:
+            response = lab_system_service.get_all_lab_members(domain)
+            if response.is_success():
+                return jsonify({"members": response.get_data(), "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+
+class GetAllAlumni(Resource):
+    def get(self):
+        domain = request.args.get('domain')
+
+        try:
+            response = lab_system_service.get_all_alumnis(domain)
+            if response.is_success():
+                return jsonify({"alumni": response.get_data(), "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+
+class SetSecondEmail(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('userid', required=True, help="User ID is required")
+        parser.add_argument('secondEmail', required=True, help="Second email is required")
+        parser.add_argument('domain', required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response = generator_system.set_secondEmail_by_member(args['userid'], args['secondEmail'], args['domain'])
+            if response.is_success():
+                return jsonify({"message": "Second email added successfully", "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class SetLinkedInLink(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('userid', required=True, help="User ID is required")
+        parser.add_argument('linkedin_link', required=True, help="LinkedIn link is required")
+        parser.add_argument('domain', required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response = generator_system.set_linkedin_link_by_member(args['userid'], args['linkedin_link'], args['domain'])
+            if response.is_success():
+                return jsonify({"message": "LinkedIn link added successfully", "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class SetFullName(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('userid', required=True, help="User ID is required")
+        parser.add_argument('fullName', required=True, help="Full name is required")
+        parser.add_argument('domain', required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response = generator_system.set_fullName_by_member(args['userid'], args['fullName'], args['domain'])
+            if response.is_success():
+                return jsonify({"message": "Full name updated successfully", "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class SetDegree(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('userid', required=True, help="User ID is required")
+        parser.add_argument('degree', required=True, help="Degree is required")
+        parser.add_argument('domain', required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response = generator_system.set_degree_by_member(args['userid'], args['degree'], args['domain'])
+            if response.is_success():
+                return jsonify({"message": "Degree updated successfully", "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class SetBio(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('userid', required=True, help="User ID is required")
+        parser.add_argument('bio', required=True, help="Bio is required")
+        parser.add_argument('domain', required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response = generator_system.set_bio_by_member(args['userid'], args['bio'], args['domain'])
+            if response.is_success():
+                return jsonify({"message": "Bio updated successfully", "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class SetMedia(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('userid', required=True, help="User ID is required")
+        parser.add_argument('media', required=True, help="Media link is required")
+        parser.add_argument('domain', required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response = generator_system.set_media_by_member(args['userid'], args['media'], args['domain'])
+            if response.is_success():
+                return jsonify({"message": "Media updated successfully", "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+
 # Add resources to the API of lab
-api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')
-api.add_resource(LoginWebsite, '/api/loginWebsite')
-api.add_resource(LogoutWebsite, '/api/logoutWebsite')
+api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')#
+api.add_resource(LoginWebsite, '/api/loginWebsite')#
+api.add_resource(LogoutWebsite, '/api/logoutWebsite')#
 api.add_resource(GetApprovedPublications, '/api/getApprovedPublications')
 api.add_resource(AddPublication, '/api/addPublication')
 api.add_resource(SetPublicationVideoLink, '/api/setPublicationVideoLink')
@@ -596,22 +904,53 @@ api.add_resource(SetPublicationGitLink, '/api/setPublicationGitLink')
 api.add_resource(SetPublicationPttxLink, '/api/setPublicationPttxLink')
 
 
+
+
+
 # Add the resources to API
-api.add_resource(UploadFilesAndData, '/api/uploadFile')
-api.add_resource(GenerateWebsiteResource, '/api/generateWebsite')
-api.add_resource(ChooseComponents, '/api/chooseComponents')
-api.add_resource(ChooseTemplate, '/api/chooseTemplate')
-api.add_resource(ChooseName, '/api/chooseName')
-api.add_resource(Login, '/api/Login')
-api.add_resource(Logout, '/api/Logout')
-api.add_resource(ChooseDomain, '/api/chooseDomain')
-api.add_resource(StartCustomSite, '/api/startCustomSite')  # New endpoint to start custom site
+api.add_resource(UploadFilesAndData, '/api/uploadFile')#
+api.add_resource(GenerateWebsiteResource, '/api/generateWebsite')#
+api.add_resource(ChooseComponents, '/api/chooseComponents')#
+api.add_resource(ChooseTemplate, '/api/chooseTemplate')#
+api.add_resource(ChooseName, '/api/chooseName')#
+api.add_resource(Login, '/api/Login')#
+api.add_resource(Logout, '/api/Logout')#
+api.add_resource(ChooseDomain, '/api/chooseDomain')#
+api.add_resource(StartCustomSite, '/api/startCustomSite')  #
 api.add_resource(GetAllCustomWebsitesOfManager, '/api/getCustomWebsites')
-api.add_resource(EnterGeneratorSystem, '/api/enterGeneratorSystem')
+api.add_resource(EnterGeneratorSystem, '/api/enterGeneratorSystem')#
 api.add_resource(GetCustomSite, '/api/getCustomSite')
 
-##TODO: add members
-##TODO: add managers
+
+
+api.add_resource(GetMemberPublications, '/api/getMemberPublications')
+api.add_resource(ApproveRegistration, '/api/approveRegistration') #
+api.add_resource(RejectRegistration, '/api/rejectRegistration') #
+api.add_resource(GetAllLabManagers, '/api/getAllLabManagers')#
+api.add_resource(GetAllLabMembers, '/api/getAllLabMembers')#
+api.add_resource(GetAllAlumni, '/api/getAllAlumni')#
+api.add_resource(AddLabMember, '/api/addLabMember') #
+api.add_resource(AddLabManager, '/api/addLabManager')#
+# api.add_resource(GetAllCustomWebsites, '/api/getCustomWebsites')
+# api.add_resource(GetAllLabWebsites, '/api/getWebsites')
+# api.add_resource(GetCustomSite, '/api/getCustomSite')
+api.add_resource(SetSecondEmail, '/api/setSecondEmail')#
+api.add_resource(SetLinkedInLink, '/api/setLinkedInLink')#
+api.add_resource(SetFullName, '/api/setFullName')#
+api.add_resource(SetDegree, '/api/setDegree')#
+api.add_resource(SetBio, '/api/setBio')#
+api.add_resource(SetMedia, '/api/setMedia')#
+api.add_resource( GetHomepageDetails, '/api/getHomepageDetails')
+api.add_resource( RemoveSiteManagerFromGenerator, '/api/removeSiteManager')
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+def helper():
+     response = generator_system.enter_generator_system()
+     user_id = response.get_data()
+     response = generator_system.login(user_id, "liza_demo@gmail.com")
+     response = generator_system.create_website(user_id, "SPL", "www.localhost.com",["About Us"],"tamplate_1")

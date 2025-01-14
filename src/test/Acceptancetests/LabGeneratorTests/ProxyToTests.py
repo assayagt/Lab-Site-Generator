@@ -79,3 +79,8 @@ class ProxyToTest(BridgeToTests):
         if self.real_service_adapter:
             return self.real_service_adapter.reset_system()
         return Response(None, "Not Implemented yet")
+
+    def get_site_by_domain(self, domain):
+        if self.real_service_adapter:
+            return self.real_service_adapter.get_site_by_domain(domain)
+        return Response(None, "Not Implemented yet")

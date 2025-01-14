@@ -5,7 +5,7 @@ const baseApiUrl = "http://127.0.0.1:5000/api/";
 export const SendLogin = async(email,sid) => {
   let data;
   return axios
-    .post(`${baseApiUrl}Login`, {
+    .post(`${baseApiUrl}loginWebsite`, {
       email:email,
       user_id: sid,
     })
@@ -26,7 +26,7 @@ export const SendLogout = async (
     let data;
     const sid = sessionStorage.getItem("sid");
     try {
-      const response = await axios.post(`${baseApiUrl}Logout`, {
+      const response = await axios.post(`${baseApiUrl}logoutWebsite`, {
         user_id: sid,
       });
       data =  response.data;
@@ -41,7 +41,7 @@ export const SendLogout = async (
   ) => {
     let data;
     await axios
-        .get(`${baseApiUrl}enterGeneratorSystem`)
+        .get(`${baseApiUrl}enterLabWebsite`)
         .then((resp) => {
             data = resp.data.user_id;
             return data;
@@ -51,5 +51,7 @@ export const SendLogout = async (
 
   };
   
+
+
 
 
