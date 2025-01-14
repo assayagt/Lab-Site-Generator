@@ -469,7 +469,7 @@ class GetHomepageDetails(Resource):
     def get(self):
         try:
             domain = request.args.get('domain')
-            print(domain)
+           
             # Fetch the site data from the siteData.json file
             response_1 = generator_system.get_site_by_domain(domain)
             if response_1.is_success():
@@ -491,11 +491,7 @@ class GetHomepageDetails(Resource):
 
 class EnterLabWebsite(Resource):
     def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('domain', type=str, required=True, help="Domain is required")
-        args = parser.parse_args()
-
-        domain = args['domain']
+        domain = request.args.get('domain')
         try:
             response = lab_system_service.enter_lab_website(domain)
             if response.is_success():
@@ -537,9 +533,7 @@ class LogoutWebsite(Resource):
         
 class GetApprovedPublications(Resource):
     def get(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('domain', type=str, required=True, help="Domain is required")
-        args = parser.parse_args()
+        domain = request.args.get('domain')
 
         try:
             response = lab_system_service.get_all_approved_publications(args['domain'])

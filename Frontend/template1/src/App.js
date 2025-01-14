@@ -52,6 +52,7 @@ function App() {
           };
 
           setWebsite(mappedData); 
+          sessionStorage.setItem("domain",mappedData.domain)
             //const approvedPublications = await getApprovedPublications(mappedData.domain);
           //setPublications(approvedPublications); 
         }

@@ -186,7 +186,7 @@ export const setMediaByMember = async (userId, media, domain) => {
 
 export const getApprovedPublications = async (domain) => {
     try {
-        const response = await axios.get(`${baseApiUrl}getApprovedPublications`, { params: { domain } });
+        const response = await axios.get(`${baseApiUrl}getApprovedPublications?domain=${domain}` );
         return response.data.publications;
     } catch (error) {
         console.error("Error getting approved publications:", error);
