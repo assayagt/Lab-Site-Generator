@@ -24,18 +24,34 @@ const ParticipantsPage = () => {
         setLoading(true);
   
         try {
-          const domain = window.location.hostname; // Extract domain dynamically
+          let domain = window.location.hostname; // Extract domain dynamically
+          domain = domain.replace(/^https?:\/\//, '');
+          domain= domain.replace(":3001",'')
+          console.log(domain);
+      // Add "www." if missing
+          if (!domain.startsWith('www.')) {
+            domain = `www.${domain}`;
+          }
+
+          // Add ".com" if missing
+          if (!domain.endsWith('.com')) {
+            domain = `${domain}.com`;
+          }
           const [managers, members, alumni] = await Promise.all([
             getAllLabManagers(domain),
             getAllLabMembers(domain),
             getAllAlumni(domain),
           ]);
   
+          const safeManagers = managers || [];
+          const safeMembers = members || [];
+          const safeAlumni = alumni || [];
+
           // Combine all participants without modifying their structure
           const combinedParticipants = [
-            ...managers,
-            ...members,
-            ...alumni,
+            ...safeManagers,
+            ...safeMembers,
+            ...safeAlumni,
           ];
   
           setParticipants(combinedParticipants);

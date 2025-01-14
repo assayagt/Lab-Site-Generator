@@ -466,7 +466,7 @@ class GetHomepageDetails(Resource):
     def get(self):
         try:
             domain = request.args.get('domain')
-
+            print(domain)
             # Fetch the site data from the siteData.json file
             response_1 = generator_system.get_site_by_domain(domain)
             if response_1.is_success():
@@ -483,6 +483,7 @@ class GetHomepageDetails(Resource):
 
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
+
 
 
 class EnterLabWebsite(Resource):

@@ -65,6 +65,7 @@ export const getAllLabManagers = async (domain) => {
     try {
         let data;
         const response = await axios.get(`${baseApiUrl}getAllLabManagers?domain=${domain}`);
+        console.log(response.data);
         return response.data.managers;
     } catch (error) {
         console.error("Error getting all lab managers:", error);
@@ -75,6 +76,7 @@ export const getAllLabManagers = async (domain) => {
 export const getAllLabMembers = async (domain) => {
     try {
         const response = await axios.get(`${baseApiUrl}getAllLabMembers?domain=${domain}`);
+        console.log(response.data);
         return response.data.members;
     } catch (error) {
         console.error("Error getting all lab members:", error);
@@ -82,9 +84,11 @@ export const getAllLabMembers = async (domain) => {
     }
 };
 
+
 export const getAllAlumni = async (domain) => {
     try {
         const response = await axios.get(`${baseApiUrl}getAllAlumni?domain=${domain}`);
+        console.log(response.data);
         return response.data.alumni;
     } catch (error) {
         console.error("Error getting all alumni:", error);

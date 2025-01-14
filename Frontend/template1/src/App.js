@@ -26,7 +26,7 @@ function App() {
     const fetchHomepageDetails = async () => {
       let domain = window.location.hostname;
       domain = domain.replace(/^https?:\/\//, '');
-      domain= domain.replace(":3002",'')
+      domain= domain.replace(":3001",'')
       console.log(domain);
       // Add "www." if missing
       if (!domain.startsWith('www.')) {
@@ -37,7 +37,7 @@ function App() {
       if (!domain.endsWith('.com')) {
         domain = `${domain}.com`;
       }
-  
+      console.log(domain);
       try {
         const data = await getHomepageDetails(domain);
         console.log(data);
