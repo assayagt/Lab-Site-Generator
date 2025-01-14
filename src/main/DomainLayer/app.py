@@ -480,7 +480,7 @@ class GetHomepageDetails(Resource):
                     website_data = response_1.get_data()
                     about_us_data = response_2.get_data()
                     website_data['about_us'] = about_us_data
-                    return jsonify({'data': "D", "response": "true"})
+                    return jsonify({'data': website_data, "response": "true"})
 
                 return jsonify({"message": response_2.get_message(), "response": "false"})
             return jsonify({"message": response_1.get_message(), "response": "false"})
