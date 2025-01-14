@@ -176,3 +176,12 @@ class AllWebsitesUserFacade:
     def get_pending_registration_emails(self, domain):
         return self.getUserFacadeByDomain(domain).get_pending_registration_emails()
 
+    def get_all_lab_members_details(self, domain):
+        return self.getUserFacadeByDomain(domain).get_all_lab_members_details()
+
+    def get_all_lab_managers_details(self, domain):
+        return self.getUserFacadeByDomain(domain).get_all_lab_managers_details()
+
+    def get_all_alumnis_details(self, domain):
+        return self.getUserFacadeByDomain(domain).get_all_alumnis_details()
+

@@ -317,3 +317,21 @@ class UserFacade:
     def get_pending_registration_emails(self):
         # Get all the emails that are in the registration requests list and that their value is RegistrationStatus.PENDING.value
         return [email for email, status in self.emails_requests_to_register.items() if status == RegistrationStatus.PENDING.value]
+
+    def get_all_lab_members_details(self):
+        all_members = []
+        for email, member in self.members.items():
+            all_members.append(member.get_details())
+        return all_members
+
+    def get_all_lab_managers_details(self):
+        all_managers = []
+        for email, member in self.managers.items():
+            all_managers.append(member.get_details())
+        return all_managers
+
+    def get_all_alumnis_details(self):
+        all_alumnis = []
+        for email, member in self.alumnis.items():
+            all_alumnis.append(member.get_details())
+        return all_alumnis

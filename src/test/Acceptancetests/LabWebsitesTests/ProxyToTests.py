@@ -149,3 +149,8 @@ class ProxyToTests(BridgeToTests):
         if self.real_service_adapter:
             return self.real_service_adapter.set_media_by_member(userid, media, domain)
         return Response(None, "Not Implemented yet")
+
+    def get_all_lab_members_details(self, domain):
+        if self.real_service_adapter:
+            return self.real_service_adapter.get_all_lab_members_details(domain)
+        return Response(None, "Not Implemented yet")
