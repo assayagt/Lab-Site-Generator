@@ -7,7 +7,8 @@ export const AuthProvider = ({ children }) => {
   
   
   const login = async (email) => {
-    let data = await SendLogin(email,sessionStorage.getItem("sid"));
+    let data = await SendLogin(email,sessionStorage.getItem("sid"),sessionStorage.getItem("domain"));
+    console.log(data);
     if(data){
       if(data.response === "true"){
         sessionStorage.setItem('isLoggedIn', true);

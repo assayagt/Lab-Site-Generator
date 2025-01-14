@@ -490,7 +490,7 @@ class GetHomepageDetails(Resource):
 
 
 class EnterLabWebsite(Resource):
-    def post(self):
+    def get(self):
         domain = request.args.get('domain')
         try:
             response = lab_system_service.enter_lab_website(domain)

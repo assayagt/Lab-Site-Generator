@@ -41,8 +41,9 @@ function App() {
       try {
         const data = await getHomepageDetails(domain);
         if (data.response === "true") {
+         
           const mappedData = {
-            domain: data.data[domain], 
+            domain: data.data.domain, 
             websiteName: data.data.name, 
             components: data.data.components, 
             template: data.data.template, 
@@ -50,10 +51,10 @@ function App() {
             home_picture: data.data.home_picture, 
             about_us: data.data.about_us, 
           };
-
           setWebsite(mappedData); 
-          sessionStorage.setItem("domain",mappedData.domain)
-            //const approvedPublications = await getApprovedPublications(mappedData.domain);
+          console.log(mappedData.domain);
+          sessionStorage.setItem("domain",mappedData.domain);
+          //const approvedPublications = await getApprovedPublications(mappedData.domain);
           //setPublications(approvedPublications); 
         }
       } catch (error) {
@@ -77,7 +78,8 @@ function App() {
     <AuthProvider>
         <Router>
           
-              <Header components={components} title={websiteData.websiteName}></Header>
+              <Header components={components} title={websiteData.websiteName}>          sessionStorage.setItem("domain",websiteData.domain);
+              </Header>
               <Routes>
                 <Route path="/" element={<HomePage about_us={websiteData.about_us}/>} />
                 <Route

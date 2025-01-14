@@ -280,7 +280,7 @@ class UserFacade:
 
     def error_if_degree_not_valid(self, degree):
         if isinstance(degree, str):
-            valid_degrees = {d.value for d in Degree}
+            valid_degrees = {d for d in Degree}
             if degree not in valid_degrees:
                 raise Exception(ExceptionsEnum.INVALID_DEGREE.value)
         elif isinstance(degree, Degree):
