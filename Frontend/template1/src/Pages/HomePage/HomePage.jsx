@@ -18,7 +18,7 @@ function HomePage(props) {
       <div className='HomePage'>
           {fetchData()}
         <div className="main_section_homePage">
-            <div className="subTitle">Welcome to our lab website.<br/> This is where there will be a custom welcome message</div>
+            <div className="subTitle">Welcome to our lab website.</div>
             <div className="homeImg">to be img</div>
             {props.about_us?(
                    <AboutUs info={props.about_us}/> ):
