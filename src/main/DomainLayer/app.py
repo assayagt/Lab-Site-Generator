@@ -24,7 +24,7 @@ os.makedirs(GENERATED_WEBSITES_FOLDER, exist_ok=True)
 
 
 generator_system = GeneratorSystemService.get_instance()
-lab_system_service = LabSystemService.get_instance(generator_system.get_lab_system_controller())
+lab_system_service = LabSystemService.get_instance()
 
 TEMPLATE_1_PATH = os.path.join(os.getcwd(), 'Frontend', 'template1')
 

@@ -5,16 +5,16 @@ from src.main.Util.Response import Response
 class LabSystemService:
     _singleton_instance = None
 
-    def __init__(self, lab_system_controller):
+    def __init__(self):
         if LabSystemService._singleton_instance is not None:
             raise Exception("This is a singleton class!")
-        # Get the instance of LabSystem
-        self.lab_system_controller = lab_system_controller
+        # Initialize the LabSystemController instance
+        self.lab_system_controller = LabSystemController.get_instance()
 
     @staticmethod
-    def get_instance(lab_system_controller):
+    def get_instance():
         if LabSystemService._singleton_instance is None:
-            LabSystemService._singleton_instance = LabSystemService(lab_system_controller)
+            LabSystemService._singleton_instance = LabSystemService()
         return LabSystemService._singleton_instance
 
     def enter_lab_website(self, domain):
