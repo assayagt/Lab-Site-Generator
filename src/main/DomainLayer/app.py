@@ -30,8 +30,6 @@ lab_system_service = LabSystemService.get_instance(generator_system.get_lab_syst
 
 TEMPLATE_1_PATH = os.path.join(os.getcwd(), 'Frontend', 'template1')
 
-##todo: add email and domain where needed
-
 # Service for uploading file
 
 def read_lab_info(excel_path):
@@ -478,8 +476,8 @@ class GetHomepageDetails(Resource):
                     website_data['about_us'] = about_us_data
                     return jsonify({'data': website_data, "response": "true"})
 
-                return jsonify({"message": response_2.get_message(), "response": "false"})
-            return jsonify({"message": response_1.get_message(), "response": "false"})
+                return jsonify({"message1": response_2.get_message(), "response": "false"})
+            return jsonify({"message2": response_1.get_message(), "response": "false"})
 
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})

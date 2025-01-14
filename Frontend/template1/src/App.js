@@ -41,20 +41,22 @@ function App() {
       try {
         const data = await getHomepageDetails(domain);
         console.log(data);
-        if (data.response === true) {
+        if (data.response === "true") {
           const mappedData = {
-            domain: data.data.siteDomain, 
+            domain: data.data[domain], 
             websiteName: data.data.name, 
-            components: data.data.pageComponents, 
-            template: data.data.templateType, 
-            logo: data.data.logoPath, 
-            home_picture: data.data.homePageImage, 
+            components: data.data.components, 
+            template: data.data.template, 
+            logo: data.data.logo, 
+            home_picture: data.data.home_picture, 
             about_us: data.data.about_us, 
           };
-  
+          console.log(mappedData);
+
           setWebsite(mappedData); 
-            const approvedPublications = await getApprovedPublications(mappedData.domain);
-          setPublications(approvedPublications); 
+          console.log(websiteData);
+            //const approvedPublications = await getApprovedPublications(mappedData.domain);
+          //setPublications(approvedPublications); 
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -64,7 +66,7 @@ function App() {
     };
   
     fetchHomepageDetails();
-  }, [setWebsite]);
+  }, []);
 
   if (loading) {
     return <div>Loading...</div>; // Show loading indicator
@@ -73,9 +75,11 @@ function App() {
   const components = websiteData.components || [];
 
   return (
+    
     <AuthProvider>
         <Router>
-              <Header components={components} title={websiteData.websiteName}></Header>
+          
+              <Header components={components} title={websiteData.websiteName}>{console.log(websiteData.websiteName)}</Header>
               <Routes>
                 <Route path="/" element={<HomePage/>} />
                 <Route
