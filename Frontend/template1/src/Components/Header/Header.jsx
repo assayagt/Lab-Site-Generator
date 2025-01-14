@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./Header.css";
 import Logo from "../../images/brain.svg";
 import accountIcon from "../../images/account_avatar.svg";
@@ -8,6 +8,7 @@ import { useAuth } from "../../Context/AuthContext";
 function Header(props) {
   const navbarRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation(); // Get current location
   const { login, logout } = useAuth();
   const [hasNotifications, setHasNotifications] = useState(false); // State for notifications
   const [showLogin, setShowLogin] = useState(false);
@@ -69,10 +70,11 @@ function Header(props) {
   };
 
    const handleLogin = (e) => {
-    e.preventDefault();
+    //e.preventDefault();
     if (login(email)) {
       setShowLogin(false); 
       setLoginError(""); 
+      //window.location.reload();
     } else {
       setLoginError("Login failed. Please check your username and try again."); 
     }
@@ -80,9 +82,24 @@ function Header(props) {
   };
 
   const handleLogout = () => {
-    logout(); 
+    
+
+    let ans = logout(); 
+    if(ans){
+       sessionStorage.removeItem("isLoggedIn");
+       sessionStorage.removeItem("userEmail");
+
+    if (location.pathname === "/Account") {
+      // If user is currently on "/Account", navigate to "/"
+      navigate("/");
+    } else {
+      // Otherwise, reload the page
+      window.location.reload();
+    }
+    }
+   
     console.log("Logout clicked");
-    navigate("/"); 
+    
   };
 
   return (
