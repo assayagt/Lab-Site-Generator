@@ -328,3 +328,9 @@ class LabSystemController:
         Set the contact us section of the website.
         """
         self.websiteFacade.set_site_contact_info(domain, contact_info_dto)
+
+    def get_about_us(self, domain):
+        """
+        Get the about us section of the website.
+        """
+        return self.websiteFacade.get_about_us(domain)

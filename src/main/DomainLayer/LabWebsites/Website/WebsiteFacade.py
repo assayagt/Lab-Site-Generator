@@ -93,3 +93,9 @@ class WebsiteFacade:
         if website is None:
             raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
         website.set_contact_info(contact_info_dto)
+
+    def get_about_us(self, domain):
+        website = self.get_website(domain)
+        if website is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        return website.get_about_us()
