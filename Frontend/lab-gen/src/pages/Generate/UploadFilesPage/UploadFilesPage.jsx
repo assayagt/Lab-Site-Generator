@@ -118,20 +118,18 @@ const UploadFilesPage = () => {
     sessionStorage.setItem('ContactUs', JSON.stringify(contactUsData));
     alert('Contact Us saved in session storage!');
   };
-
   const handleFileChange = (e, component) => {
-  const file = e.target.files[0];
-  if (file) {
-    setFormData((prev) => ({
-      ...prev,
-      files: {
-        ...prev.files,
-        [component]: file,
-      },
-    }));
-  }
-};
-
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        files: {
+          ...prev.files,
+          [component]: file,
+        },
+      }));
+    }
+  };
   const handleDownload = (component) => {
     const link = document.createElement('a');
     link.href = `/path/to/template/${component}-template.xlsx`; // Modify as needed
@@ -170,14 +168,14 @@ const UploadFilesPage = () => {
   const handleGenerate = async () => {
     try {
       const response = await axios.post(`${baseApiUrl}generateWebsite`, {
-        user_id: sessionStorage.getItem("sid"),
         domain: formData.domain,
         about_us: aboutUsContent,
         lab_address: contactUsData.address,
-        lab_email:contactUsData.email,
+        lab_mail:contactUsData.email,
         lab_phone_num:contactUsData.phoneNumber,
       });
       const data =  response.data;
+      console.log(data);
       if (data.response==="true") {
         console.log(data.message);
         alert(data);
@@ -260,65 +258,89 @@ const UploadFilesPage = () => {
   const ParticipantsForm = () => (
     <div className="file-upload-item">
       <div className="file-upload_title">Participants</div>
-      {websiteData.generated &&
-      (<div>
-                         <table className="participants-table">
-                           <thead>
-                             <tr>
-                               <th>Full Name</th>
-                               <th>Degree</th>
-                               <th>Manager</th>
-                             </tr>
-                           </thead>
-                           <tbody>
-                             {participants.map((participant, index) => (
-                               <tr key={index}>
-                                 <td>{participant.fullName}</td>
-                                 <td>{participant.degree}</td>
-                                 <td>
-                                   <input
-                                     type="checkbox"
-                                     checked={participant.isLabManager}
-                                     onChange={() => toggleLabManager(index)}
-                                 />
-                                 </td>
-                               </tr>
-                             ))}
-                           </tbody>
-                         </table>
-                         {showAddForm ? (
-                           <div>
-                             <input
-                               type="text"
-                               placeholder="Full Name"
-                               name="fullName"
-                               value={newParticipant.fullName}
-                               onChange={handleInputChangeParticipant}
-                             />
-                             <input
-                               type="text"
-                               placeholder="Degree"
-                               name="degree"
-                               value={newParticipant.degree}
-                               onChange={handleInputChangeParticipant}
-                             />
-                           <label>
-                               Manager
-                               <input
-                               type="checkbox"
-                                 name="isLabManager"
-                                 checked={newParticipant.isLabManager}
-                                 onChange={handleInputChangeParticipant}
-                              />
-                             </label>
-                             <button onClick={addParticipant}>Save</button>
-                             <button onClick={() => setShowAddForm(false)}>Cancel</button>
-                           </div>
-                       ) : (
-                           <button onClick={() => setShowAddForm(true)}>+ Add Participant</button>
-                         )}
-                       </div>)
-      }
+      {!websiteData.generated ? (
+        <div>
+          <div>
+            <button
+              className="downloadTemplate"
+              onClick={() => handleDownload('participants')}
+            >
+              Download Template
+            </button>
+          </div>
+          <div>
+            <input
+              className="uploadTemplate"
+              type="file"
+              onChange={(e) => handleFileChange(e, 'participants')}
+            />
+            <button
+              className="uploadTemplateButton"
+              onClick={() => handleSubmit('participants')}
+            >
+              Upload Template
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <table className="participants-table">
+            <thead>
+              <tr>
+                <th>Full Name</th>
+                <th>Degree</th>
+                <th>Manager</th>
+              </tr>
+            </thead>
+            <tbody>
+              {participants.map((participant, index) => (
+                <tr key={index}>
+                  <td>{participant.fullName}</td>
+                  <td>{participant.degree}</td>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={participant.isLabManager}
+                      onChange={() => toggleLabManager(index)}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {showAddForm ? (
+            <div>
+              <input
+                type="text"
+                placeholder="Full Name"
+                name="fullName"
+                value={newParticipant.fullName}
+                onChange={handleInputChangeParticipant}
+              />
+              <input
+                type="text"
+                placeholder="Degree"
+                name="degree"
+                value={newParticipant.degree}
+                onChange={handleInputChangeParticipant}
+              />
+              <label>
+                Manager
+                <input
+                  type="checkbox"
+                  name="isLabManager"
+                  checked={newParticipant.isLabManager}
+                  onChange={handleInputChangeParticipant}
+                />
+              </label>
+              <button onClick={addParticipant}>Save</button>
+              <button onClick={() => setShowAddForm(false)}>Cancel</button>
+            </div>
+          ) : (
+            <button onClick={() => setShowAddForm(true)}>+ Add Participant</button>
+          )}
+        </div>
+      )}
     </div>
   );
 
@@ -367,7 +389,6 @@ const UploadFilesPage = () => {
       <ul>
         <li onClick={() => handleNavClick('AboutUs')}>About Us</li>
         <li onClick={() => handleNavClick('ContactUs')}>Contact Us</li>
-        {!websiteData.generated && ( <li onClick={() => handleNavClick('Publications')}>Publications</li>)}
         <li onClick={() => handleNavClick('Participants')}>Participants</li>
         <li onClick={() => handleNavClick('Media')}>Media</li>
       </ul>
