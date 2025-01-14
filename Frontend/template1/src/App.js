@@ -40,7 +40,6 @@ function App() {
       console.log(domain);
       try {
         const data = await getHomepageDetails(domain);
-        console.log(data);
         if (data.response === "true") {
           const mappedData = {
             domain: data.data[domain], 
@@ -51,10 +50,8 @@ function App() {
             home_picture: data.data.home_picture, 
             about_us: data.data.about_us, 
           };
-          console.log(mappedData);
 
           setWebsite(mappedData); 
-          console.log(websiteData);
             //const approvedPublications = await getApprovedPublications(mappedData.domain);
           //setPublications(approvedPublications); 
         }
@@ -79,9 +76,9 @@ function App() {
     <AuthProvider>
         <Router>
           
-              <Header components={components} title={websiteData.websiteName}>{console.log(websiteData.websiteName)}</Header>
+              <Header components={components} title={websiteData.websiteName}></Header>
               <Routes>
-                <Route path="/" element={<HomePage/>} />
+                <Route path="/" element={<HomePage about_us={websiteData.about_us}/>} />
                 <Route
                   path="/Participants"
                   element= {<ParticipantsPage />}
