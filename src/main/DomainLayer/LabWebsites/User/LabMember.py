@@ -74,4 +74,7 @@ class LabMember(State):
     def get_bio(self):
         return self.bio
 
+    def get_details(self):
+        return {"email": self.email, "secondEmail": self.secondEmail, "linkedin_link": self.linkedin_link, "media": self.media, "fullName": self.fullName, "degree": self.degree.value, "bio": self.bio}
+
 
