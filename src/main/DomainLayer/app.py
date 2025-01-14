@@ -756,12 +756,10 @@ class RejectRegistration(Resource):
 
 class GetAllLabManagers(Resource):
     def get(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('domain', required=True, help="Domain is required.")
-        args = parser.parse_args()
+        domain = request.args.get('domain')
 
         try:
-            response = lab_system_service.get_all_lab_managers(args['domain'])
+            response = lab_system_service.get_all_lab_managers(domain)
             if response.is_success():
                 return jsonify({"managers": response.get_data(), "response": "true"})
             return jsonify({"error": response.get_message(), "response": "false"})
@@ -770,12 +768,10 @@ class GetAllLabManagers(Resource):
 
 class GetAllLabMembers(Resource):
     def get(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('domain', required=True, help="Domain is required.")
-        args = parser.parse_args()
+        domain = request.args.get('domain')
 
         try:
-            response = lab_system_service.get_all_lab_members(args['domain'])
+            response = lab_system_service.get_all_lab_members(domain)
             if response.is_success():
                 return jsonify({"members": response.get_data(), "response": "true"})
             return jsonify({"error": response.get_message(), "response": "false"})
@@ -785,12 +781,10 @@ class GetAllLabMembers(Resource):
 
 class GetAllAlumni(Resource):
     def get(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('domain', required=True, help="Domain is required.")
-        args = parser.parse_args()
+        domain = request.args.get('domain')
 
         try:
-            response = lab_system_service.get_all_alumnis(args['domain'])
+            response = lab_system_service.get_all_alumnis(domain)
             if response.is_success():
                 return jsonify({"alumni": response.get_data(), "response": "true"})
             return jsonify({"error": response.get_message(), "response": "false"})

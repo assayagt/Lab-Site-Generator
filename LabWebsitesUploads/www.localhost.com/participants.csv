@@ -1,0 +1,11 @@
+Full Name,Email,Degree,Manager,Site Creator
+Alice Johnson,alice.johnson@example.com,BSc,TRUE,TRUE
+Bob Smith,bob.smith@example.com,Research Assistant,FALSE,FALSE
+Carol Lee,carol.lee@example.com,Alumni,FALSE,FALSE
+David Kim,david.kim@example.com,MSc,FALSE,FALSE
+Emma Brown,emma.brown@example.com,PhD,FALSE,FALSE
+Frank White,frank.white@example.com,Research Assistant,FALSE,FALSE
+Grace Adams,grace.adams@example.com,BSc,FALSE,FALSE
+Henry Thomas,henry.thomas@example.com,Alumni,FALSE,FALSE
+Isabella Martinez,isabella.martinez@example.com,MSc,FALSE,FALSE
+Jack Wilson,jack.wilson@example.com,PhD,FALSE,FALSE
