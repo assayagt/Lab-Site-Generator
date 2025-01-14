@@ -122,10 +122,8 @@ class GenerateWebsiteResource(Resource):
         lab_mail = args['lab_mail']
         lab_phone_num = args['lab_phone_num']
         contact_info = ContactInfo(lab_address, lab_mail, lab_phone_num)
-
         try: 
 
-           
            
             excel_file_path = os.path.join(GENERATED_WEBSITES_FOLDER, domain ,'participants.csv')
             print(excel_file_path)
@@ -944,3 +942,8 @@ if __name__ == '__main__':
     app.run(debug=True)
 
 
+def helper():
+     response = generator_system.enter_generator_system()
+     user_id = response.get_data()
+     response = generator_system.login(user_id, "liza_demo@gmail.com")
+     response = generator_system.create_website(user_id, "SPL", "www.localhost.com",["About Us"],"tamplate_1")
