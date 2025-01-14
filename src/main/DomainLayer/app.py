@@ -465,11 +465,7 @@ class GetCustomSite(Resource):
 class GetHomepageDetails(Resource):
     def get(self):
         try:
-            parser = reqparse.RequestParser()
-            parser.add_argument('domain', type=str, required=True, help="Domain is required")
-            args = parser.parse_args()
-
-            domain = args['domain']
+            domain = request.args.get('domain')
 
             # Fetch the site data from the siteData.json file
             response_1 = generator_system.get_site_by_domain(domain)
