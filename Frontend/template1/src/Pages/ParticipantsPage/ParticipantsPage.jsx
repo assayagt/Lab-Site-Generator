@@ -43,9 +43,9 @@ const ParticipantsPage = () => {
             getAllAlumni(domain),
           ]);
   
-          const safeManagers = managers || [];
-          const safeMembers = members || [];
-          const safeAlumni = alumni || [];
+          const safeManagers = Array.isArray(managers) ? managers : [];
+          const safeMembers = Array.isArray(members) ? members : [];
+          const safeAlumni = Array.isArray(alumni) ? alumni : [];
 
           // Combine all participants without modifying their structure
           const combinedParticipants = [
