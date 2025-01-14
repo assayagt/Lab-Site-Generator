@@ -205,6 +205,10 @@ class GeneratorSystemController:
         self.user_facade.error_if_user_is_not_site_manager(user_id, domain)
         return self.site_custom_facade.get_site_by_domain(domain)
 
+    def get_site_by_domain(self, domain):
+        """Get a custom website dto for specific manager and domain."""
+        return self.site_custom_facade.get_site_by_domain(domain)
+
     def reset_system(self):
         """
         Resets the entire system, clearing all users, websites, and lab-related data.

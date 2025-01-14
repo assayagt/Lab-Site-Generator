@@ -24,7 +24,7 @@ os.makedirs(GENERATED_WEBSITES_FOLDER, exist_ok=True)
 
 
 generator_system = GeneratorSystemService.get_instance()
-lab_system_service = LabSystemService.get_instance()
+lab_system_service = LabSystemService.get_instance(generator_system.get_lab_system_controller())
 
 TEMPLATE_1_PATH = os.path.join(os.getcwd(), 'Frontend', 'template1')
 
@@ -256,7 +256,7 @@ class Login(Resource):
     
 
         try:
-            response = generator_system.login(email, user_id)
+            response = generator_system.login(user_id, email)
             
             if response.is_success():
                 return jsonify({"message": "User logged in successfully","response" : "true" })
@@ -423,7 +423,7 @@ class GetHomepageDetails(Resource):
             domain = args['domain']
 
             # Fetch the site data from the siteData.json file
-            response_1 = generator_system.get_custom_website(domain)
+            response_1 = generator_system.get_site_by_domain(domain)
             if response_1.is_success():
                 # the returned value is website name, template, components
                 response_2 = lab_system_service.get_about_us(domain)

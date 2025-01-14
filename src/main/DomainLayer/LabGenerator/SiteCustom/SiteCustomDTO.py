@@ -43,7 +43,7 @@ class SiteCustomDTO:
         return self.components
 
     def get_template(self):
-        return self.template
+        return self.template.value
 
     def get_logo(self):
         return self.logo

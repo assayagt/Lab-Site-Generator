@@ -62,6 +62,11 @@ class BridgeToTests(ABC):
         """Get the currently logged-in user."""
         pass
 
+    @abstractmethod
+    def get_site_by_domain(self, domain):
+        """Get a site by its domain."""
+        pass
+
     def reset_system(self):
         """Reset the system."""
         pass

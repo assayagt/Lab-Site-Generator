@@ -50,3 +50,6 @@ class RealToTests(BridgeToTests):
 
     def reset_system(self):
         return self.generator_system_service.reset_system()
+
+    def get_site_by_domain(self, domain):
+        return self.generator_system_service.get_site_by_domain(domain)
