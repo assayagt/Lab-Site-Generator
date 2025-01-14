@@ -35,7 +35,7 @@ class TestRegisterNewLabMemberFromLabWebsite(unittest.TestCase):
 
         self.website_name = "Lab Website"
         self.components = ["Homepage", "Contact Us", "Research"]
-        self.template = Template.BASIC
+        self.template = Template.template1
         self.generator_system_service.create_website(self.user_id, self.website_name, self.domain, self.components,
                                                      self.template)
 

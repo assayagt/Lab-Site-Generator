@@ -757,7 +757,7 @@ class GetAllLabManagers(Resource):
         domain = request.args.get('domain')
 
         try:
-            response = lab_system_service.get_all_lab_managers(domain)
+            response = lab_system_service.get_all_lab_managers_details(domain)
             if response.is_success():
                 return jsonify({"managers": response.get_data(), "response": "true"})
             return jsonify({"error": response.get_message(), "response": "false"})
@@ -769,7 +769,7 @@ class GetAllLabMembers(Resource):
         domain = request.args.get('domain')
 
         try:
-            response = lab_system_service.get_all_lab_members(domain)
+            response = lab_system_service.get_all_lab_members_details(domain)
             if response.is_success():
                 return jsonify({"members": response.get_data(), "response": "true"})
             return jsonify({"error": response.get_message(), "response": "false"})
@@ -782,7 +782,7 @@ class GetAllAlumni(Resource):
         domain = request.args.get('domain')
 
         try:
-            response = lab_system_service.get_all_alumnis(domain)
+            response = lab_system_service.get_all_alumnis_details(domain)
             if response.is_success():
                 return jsonify({"alumni": response.get_data(), "response": "true"})
             return jsonify({"error": response.get_message(), "response": "false"})

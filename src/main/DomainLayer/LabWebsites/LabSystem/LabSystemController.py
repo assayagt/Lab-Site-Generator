@@ -334,3 +334,21 @@ class LabSystemController:
         Get the about us section of the website.
         """
         return self.websiteFacade.get_about_us(domain)
+
+    def get_all_lab_members_details(self, domain):
+        """
+        Get all lab members details.
+        """
+        return self.allWebsitesUserFacade.get_all_lab_members_details(domain)
+
+    def get_all_lab_managers_details(self, domain):
+        """
+        Get all lab managers details.
+        """
+        return self.allWebsitesUserFacade.get_all_lab_managers_details(domain)
+
+    def get_all_alumnis_details(self, domain):
+        """
+        Get all alumnis details.
+        """
+        return self.allWebsitesUserFacade.get_all_alumnis_details(domain)

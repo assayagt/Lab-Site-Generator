@@ -129,3 +129,7 @@ class BridgeToTests(ABC):
     def set_media_by_member(self, userid, media, domain):
         """Set media for a member."""
         pass
+
+    def get_all_lab_members_details(self, domain):
+        """Get all lab members details."""
+        pass

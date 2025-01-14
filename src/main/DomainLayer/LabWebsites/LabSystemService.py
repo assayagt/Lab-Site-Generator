@@ -258,5 +258,29 @@ class LabSystemService:
             return Response(about_us, "Retrieved about us successfully")
         except Exception as e:
             return Response(None, str(e))
+
+    def get_all_lab_members_details(self, domain):
+        """Get all lab members."""
+        try:
+            lab_members = self.lab_system_controller.get_all_lab_members_details(domain)
+            return Response(lab_members, "Retrieved all lab members successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def get_all_lab_managers_details(self, domain):
+        """Get all lab members."""
+        try:
+            lab_managers = self.lab_system_controller.get_all_lab_managers_details(domain)
+            return Response(lab_managers, "Retrieved all lab managers successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def get_all_alumnis_details(self, domain):
+        """Get all lab members."""
+        try:
+            lab_alumnis = self.lab_system_controller.get_all_alumnis_details(domain)
+            return Response(lab_alumnis, "Retrieved all lab alumnis successfully")
+        except Exception as e:
+            return Response(None, str(e))
         
     
