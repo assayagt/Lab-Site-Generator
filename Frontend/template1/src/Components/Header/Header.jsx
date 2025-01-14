@@ -107,12 +107,12 @@ function Header(props) {
           <div className="hidden-box">
             <div className="personal_menu">
               <div className="icon_photo">
-                <img src={accountIcon} alt="icon" onClick={() => navigate("Account")} />
+                <img src={accountIcon} alt="icon" />
               </div>
               <hr className="hr_line" />
               {sessionStorage.getItem("isLoggedIn") ? (
                 <div className="choose_item">
-                  <button className="my_sites_button" onClick={() => console.log("My Account clicked")}>
+                  <button className="my_sites_button" onClick={() => navigate("Account")}>
                     My Account
                   </button>
                   <button className="logout_button" onClick={() => handleLogout()}>
@@ -149,3 +149,4 @@ function Header(props) {
 }
 
 export default Header;
+///onClick={() => navigate("Account")}
