@@ -397,8 +397,72 @@ const UploadFilesPage = () => {
        </div>
     </div>
     <div className="main-content">
-      {selectedComponent === 'AboutUs' && <AboutUsForm />}
-      {selectedComponent === 'ContactUs' && <ContactUsForm />}
+      {selectedComponent === 'AboutUs' && (
+    <div className="file-upload-item">
+      <div className="file-upload_title">About Us</div>
+      <div className="about_contact_section">
+        <input
+          className="about_contact_input"
+          name="AboutUs"
+          placeholder="Enter content for About Us"
+          value={aboutUsContent}
+          onChange={handleAboutUsChange}
+        />
+        <button
+          className="about_contact_button"
+          onClick={saveAboutUs}
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  )
+    }
+      {selectedComponent === 'ContactUs' && 
+      (
+        <div className="file-upload-item">
+          <div className="file-upload_title">Contact Us</div>
+          <div className="contact_us_section">
+            <input
+              className="contact_us_input"
+              name="email"
+              placeholder="Enter your email"
+              value={contactUsData.email}
+              onChange={handleContactUsChange}
+            />
+            <input
+              className="contact_us_input"
+              name="phoneNumber"
+              placeholder="Enter your phone number"
+              value={contactUsData.phoneNumber}
+              onChange={handleContactUsChange}
+            />
+            <input
+              className="contact_us_input"
+              name="address"
+              placeholder="Enter your address"
+              value={contactUsData.address}
+              onChange={handleContactUsChange}
+            />
+            <button
+              className="about_contact_button"
+              onClick={() => {
+                const contactData = {
+                  email: contactUsData.email,
+                  phoneNumber: contactUsData.phoneNumber,
+                  address: contactUsData.address,
+                };
+                sessionStorage.setItem('ContactUs', JSON.stringify(contactData));
+                alert('Contact Us saved in session storage!');
+              }}
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      )
+      
+      }
       {selectedComponent === 'Participants' && <ParticipantsForm />}
       {selectedComponent === 'Media' && <MediaForm />}
     </div>
