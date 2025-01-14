@@ -11,13 +11,14 @@ import AccountPage from './Pages/AccountPage/AccountPage';
 import PublicationsPage from './Pages/PublicationsPage/PublicationsPage';
 //import publications from "./publications.json"
 import { AuthProvider } from './Context/AuthContext';
-import { WebsiteProvider, useWebsite } from './Context/WebsiteContext';
+import { useWebsite } from './Context/WebsiteContext';
 import { getHomepageDetails,getApprovedPublications  } from  "./services/websiteService"
 
 function App() {
 
 
   const { websiteData, setWebsite } = useWebsite();
+
   const [loading, setLoading] = useState(true);
   const [publications, setPublications] = useState([]); // State for fetched publications
 
@@ -25,7 +26,8 @@ function App() {
     const fetchHomepageDetails = async () => {
       let domain = window.location.hostname;
       domain = domain.replace(/^https?:\/\//, '');
-
+      domain= domain.replace(":3002",'')
+      console.log(domain);
       // Add "www." if missing
       if (!domain.startsWith('www.')) {
         domain = `www.${domain}`;
@@ -38,7 +40,7 @@ function App() {
   
       try {
         const data = await getHomepageDetails(domain);
-  
+        console.log(data);
         if (data.response === true) {
           const mappedData = {
             domain: data.data.siteDomain, 
@@ -72,7 +74,6 @@ function App() {
 
   return (
     <AuthProvider>
-      <WebsiteProvider>
         <Router>
               <Header components={components} title={websiteData.websiteName}></Header>
               <Routes>
@@ -95,7 +96,6 @@ function App() {
                 />
               </Routes>
         </Router>
-      </WebsiteProvider>
     </AuthProvider>
     
 

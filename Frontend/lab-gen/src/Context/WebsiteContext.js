@@ -13,7 +13,7 @@ export const WebsiteProvider = ({ children }) => {
     domain: '',
     websiteName: '',
     created: false,
-    generated: true,
+    generated: false,
   };
 
   const [websiteData, setWebsiteData] = useState(initialWebsiteData);

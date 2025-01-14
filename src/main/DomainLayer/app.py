@@ -4,6 +4,8 @@ from flask_restful import Api, Resource, reqparse
 import os
 from flask_cors import CORS
 import subprocess
+import pandas as pd
+
 
 from src.main.DomainLayer.LabGenerator.GeneratorSystemService import GeneratorSystemService
 from src.main.DomainLayer.LabWebsites.LabSystemService import LabSystemService
@@ -31,6 +33,52 @@ TEMPLATE_1_PATH = os.path.join(os.getcwd(), 'Frontend', 'template1')
 ##todo: add email and domain where needed
 
 # Service for uploading file
+
+def read_lab_info(excel_path):
+    # Check if the file exists
+    if not os.path.exists(excel_path):
+        return None, None, "Excel file does not exist."
+
+    try:
+        # Load the Excel file
+        df = pd.read_csv(excel_path)
+
+        # Assuming columns are named 'Full Name', 'Email', 'Degree', 'Manager', 'Site Creator'
+        lab_members = {}
+        lab_managers = {}
+        site_creator = None
+        
+        site_creator_count = df['Site Creator'].sum()  # Assuming this column contains boolean True for the site creator
+
+        if site_creator_count != 1:
+            return None, None, "There must be exactly one site creator."
+
+        for index, row in df.iterrows():
+            person_info = {
+                "full_name": row['Full Name'],
+                "degree": row['Degree']
+            }
+            # Add to lab_members dictionary
+            lab_members[row['Email']] = person_info
+            
+            # Check if the person is a manager
+            if row['Manager']:  # Assuming this column contains boolean values
+                lab_managers[row['Email']] = person_info
+
+            # Identify the site creator
+            if row['Site Creator']:
+                site_creator = {
+                    "email": row['Email'],
+                    "full_name": row['Full Name'],
+                    "degree": row['Degree']
+                }
+
+        return lab_members, lab_managers, site_creator
+
+    except Exception as e:
+        return None, None, str(e)
+
+
 class UploadFilesAndData(Resource):
     def post(self):
         try:
@@ -44,13 +92,15 @@ class UploadFilesAndData(Resource):
             files = request.files
             for component in files:
                 file = files[component]
+                print(component)
                 if file:
                     if component == 'logo':
                         file_path = os.path.join(website_folder, "logo.png")  # Assuming logo is always a .png
                     elif component == 'homepage_photo':
                         file_path = os.path.join(website_folder, "homepage_photo.jpg")  # Assuming photo is always a .jpg
                     else:
-                        file_path = os.path.join(website_folder, f"{component}.xlsx")  # Default case for other files
+                        print("help")
+                        file_path = os.path.join(website_folder, f"{component}.csv")  # Default case for other files
                     file.save(file_path)
 
             return jsonify({'message': 'Files and data uploaded successfully!'})
@@ -63,8 +113,6 @@ class GenerateWebsiteResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
         parser.add_argument('about_us', type=str, required=True, help="About us content is required")
-
-        #fetch the arguments needed for contact info
         parser.add_argument('lab_address', type=str, required=True, help="Lab address is required")
         parser.add_argument('lab_mail', type=str, required=True, help="Lab mail is required")
         parser.add_argument('lab_phone_num', type=str, required=True, help="Lab phone number is required")
@@ -77,21 +125,22 @@ class GenerateWebsiteResource(Resource):
         lab_phone_num = args['lab_phone_num']
         contact_info = ContactInfo(lab_address, lab_mail, lab_phone_num)
 
-        try:  
-            parser = reqparse.RequestParser()
-            parser.add_argument('domain', type=str, required=True, help="Domain is required")
-            args = parser.parse_args()
-            domain = args['domain']
+        try: 
 
-            TEMPLATE_1_PATH = '/path/to/your/templates'
-            excel_file_path = os.path.join(TEMPLATE_1_PATH, 'lab_members.xlsx')
+           
+           
+            excel_file_path = os.path.join(GENERATED_WEBSITES_FOLDER, domain ,'participants.csv')
+            print(excel_file_path)
             lab_members, lab_managers, siteCreator = read_lab_info(excel_file_path)
-            
+            print(f"Lab Members: {lab_members}")
+            print(f"Lab Managers: {lab_managers}")
+            print(f"Site Creator: {siteCreator}")
+
             if lab_members is None:
                 return jsonify({"error": f"An error occurred: {lab_managers}"})
             
-            if not os.path.exists(TEMPLATE_1_PATH):
-                return jsonify({"error": f"Path {TEMPLATE_1_PATH} does not exist."})
+            # if not os.path.exists(TEMPLATE_1_PATH):
+            #     return jsonify({"error": f"Path {TEMPLATE_1_PATH} does not exist."})
 
            
             response = generator_system.create_new_lab_website(domain,lab_members,lab_managers,siteCreator)
@@ -431,7 +480,7 @@ class GetHomepageDetails(Resource):
                     website_data = response_1.get_data()
                     about_us_data = response_2.get_data()
                     website_data['about_us'] = about_us_data
-                    return jsonify({'data': website_data, "response": "true"})
+                    return jsonify({'data': "D", "response": "true"})
 
                 return jsonify({"message": response_2.get_message(), "response": "false"})
             return jsonify({"message": response_1.get_message(), "response": "false"})
@@ -906,46 +955,3 @@ if __name__ == '__main__':
     app.run(debug=True)
 
 
-def read_lab_info(excel_path):
-    # Check if the file exists
-    if not os.path.exists(excel_path):
-        return None, None, "Excel file does not exist."
-
-    try:
-        # Load the Excel file
-        df = pd.read_excel(excel_path)
-
-        # Assuming columns are named 'Full Name', 'Email', 'Degree', 'Manager', 'Site Creator'
-        lab_members = {}
-        lab_managers = {}
-        site_creator = None
-        
-        site_creator_count = df['Site Creator'].sum()  # Assuming this column contains boolean True for the site creator
-
-        if site_creator_count != 1:
-            return None, None, "There must be exactly one site creator."
-
-        for index, row in df.iterrows():
-            person_info = {
-                "full_name": row['Full Name'],
-                "degree": row['Degree']
-            }
-            # Add to lab_members dictionary
-            lab_members[row['Email']] = person_info
-            
-            # Check if the person is a manager
-            if row['Manager']:  # Assuming this column contains boolean values
-                lab_managers[row['Email']] = person_info
-
-            # Identify the site creator
-            if row['Site Creator']:
-                site_creator = {
-                    "email": row['Email'],
-                    "full_name": row['Full Name'],
-                    "degree": row['Degree']
-                }
-
-        return lab_members, lab_managers, site_creator
-
-    except Exception as e:
-        return None, None, str(e)
