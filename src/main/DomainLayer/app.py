@@ -553,15 +553,22 @@ class AddPublication(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('user_id', type=str, required=True, help="User ID is required")
-        parser.add_argument('publication_dto', type=dict, location='json', required=True, help="Publication data is required")
+        parser.add_argument('publication_link', type=dict, location='json', required=True, help="Publication link is required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
-        parser.add_argument('authors_emails', type=list, location='json', required=True, help="Authors' emails are required")
+        parser.add_argument('git_link', type=list, location='json', required=False)
+        parser.add_argument('video_link', type=list, location='json', required=False)
+        parser.add_argument('presentation_link', type=list, location='json', required=False)
         args = parser.parse_args()
 
+        user_id = args['user_id']
+        domain = args['domain']
+        publication_link = args['publication_link']
+        git_link = args['git_link']
+        video_link = args['video_link']
+        presentation_link = args['presentation_link']
+
         try:
-            response = lab_system_service.add_publication_manually(
-                args['user_id'], args['publication_dto'], args['domain'], args['authors_emails']
-            )
+            response = lab_system_service.add_publication_manually(user_id, domain, publication_link, git_link, video_link, presentation_link)
             if response.is_success():
                 return jsonify({"message": response.get_message(), "response": "true"})
             return jsonify({"message": response.get_message() , "response": "false"})

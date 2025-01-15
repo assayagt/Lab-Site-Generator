@@ -1,9 +1,12 @@
+import uuid
+
+
 class PublicationDTO:
-    def __init__(self, paper_id, title, authors,
+    def __init__(self, title, authors,
                  publication_year, approved,
                  publication_link, video_link=None, git_link=None, presentation_link=None):
 
-        self.paper_id = paper_id
+        self.paper_id = str(uuid.uuid4())
         self.title = title
         self.authors = authors
         self.publication_year = publication_year
@@ -46,4 +49,7 @@ class PublicationDTO:
 
     def get_paper_id(self):
         return self.paper_id
+
+    def get_authors(self):
+        return self.authors
 

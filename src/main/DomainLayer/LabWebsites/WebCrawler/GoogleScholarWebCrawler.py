@@ -7,7 +7,6 @@ import requests
 class GoogleScholarWebCrawler:
     def __init__(self):
         self.visited_papers = set()
-        self.id_counter = 0 # needed for the paper_id, WILL BE REMOVED IN THE FUTURE
 
     def fetch_crawler_publications(self, authors, year):
         results = []
@@ -33,7 +32,6 @@ class GoogleScholarWebCrawler:
                         publication_authors = self.get_authors_from_citation(url)
 
                         publication_dto = PublicationDTO(
-                            paper_id=self.id_counter,
                             title=new_publication_title,
                             authors=publication_authors,
                             publication_year=pub_year,
@@ -41,7 +39,6 @@ class GoogleScholarWebCrawler:
                             publication_link=url
                         )
 
-                        self.id_counter += 1
 
                         self.visited_papers.add(publication_dto)
                         results.append(publication_dto)
@@ -72,3 +69,42 @@ class GoogleScholarWebCrawler:
         except Exception as e:
             print(f"Error occurred: {e}")
             return []
+
+
+    def get_details_by_link(self, link):
+        try:
+            # Fetch the page content
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+            }
+            response = requests.get(link, headers=headers)
+            response.raise_for_status()  # Raise an exception for HTTP errors
+
+            soup = BeautifulSoup(response.text, "html.parser")
+
+            # Extract authors
+            authors_section = soup.find("div", class_="gsc_oci_value")
+            authors = [author.strip() for author in authors_section.text.split(",")] if authors_section else []
+
+            # Extract title
+            title_section = soup.find("a", class_="gsc_oci_title_link")
+            title = title_section.text.strip() if title_section else "Title not found"
+
+            # Extract publication year
+            year_section = soup.find("div", text="Publication date")
+            year = (
+                year_section.find_next_sibling("div").text.strip()
+                if year_section
+                else "Year not found"
+            )
+
+            return {
+                "authors": authors,
+                "title": title,
+                "publication_year": year,
+            }
+
+        except Exception as e:
+            print(f"Error occurred: {e}")
+            return {}
+
