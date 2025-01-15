@@ -887,6 +887,23 @@ class SetMedia(Resource):
             return jsonify({"error": str(e)})
 
 
+
+class GetContactUs(Resource):
+    def get(self):
+        try:
+            domain = request.args.get('domain')
+           
+            response = generator_system.get_contact_us(domain)
+            if response.is_success():
+                # the returned value is website name, template, components
+                    return jsonify({'data': response.get_data(), "response": "true"})
+            return jsonify({"message2": response.get_message(), "response": "false"})
+
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"})
+
+
+
 # Add resources to the API of lab
 api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')#
 api.add_resource(LoginWebsite, '/api/loginWebsite')#
@@ -936,6 +953,7 @@ api.add_resource(SetBio, '/api/setBio')#
 api.add_resource(SetMedia, '/api/setMedia')#
 api.add_resource( GetHomepageDetails, '/api/getHomepageDetails')
 api.add_resource( RemoveSiteManagerFromGenerator, '/api/removeSiteManager')
+api.add_resource( GetContactUs, '/api/getContactUs')
 
 
 

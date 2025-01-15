@@ -283,4 +283,15 @@ class LabSystemService:
         except Exception as e:
             return Response(None, str(e))
         
-    
+    def get_contact_us(self,domain):
+        try:
+            contact_us = self.lab_system_controller.get_contact_us(domain)
+            return Response (
+                {
+                "address": contact_us.get_lab_address(),
+                "email": contact_us.get_lab_mail(),
+                "phone_num": contact_us.get_lab_phone_num() 
+                },
+                "Successfully retrieved  website contact us") 
+        except Exception as e:
+            return Response(None, str(e))

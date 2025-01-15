@@ -91,5 +91,6 @@ class Website:
     def set_about_us(self, about_us_text):
         self.about_us = about_us_text
 
-    def set_contact_info(self, contact_info_dto):
-        self.contact_info = contact_info_dto
+    def get_about_us(self):
+        return self.contact_info
+    
