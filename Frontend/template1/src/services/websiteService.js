@@ -288,3 +288,13 @@ export const getHomepageDetails = async (domain) => {
         .catch((err) => console.log(err.message));
     return data;
 };
+export const getContactUs = async (domain) => {
+    try {
+        const response = await axios.get(`${baseApiUrl}getContactUs?domain=${domain}`);
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error getting all alumni:", error);
+        return [];
+    }
+};

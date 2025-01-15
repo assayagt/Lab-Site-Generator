@@ -893,7 +893,7 @@ class GetContactUs(Resource):
         try:
             domain = request.args.get('domain')
            
-            response = generator_system.get_contact_us(domain)
+            response = lab_system_service.get_contact_us(domain)
             if response.is_success():
                 # the returned value is website name, template, components
                     return jsonify({'data': response.get_data(), "response": "true"})
