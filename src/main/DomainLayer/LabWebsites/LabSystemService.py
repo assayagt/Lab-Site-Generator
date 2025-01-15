@@ -282,5 +282,13 @@ class LabSystemService:
             return Response(lab_alumnis, "Retrieved all lab alumnis successfully")
         except Exception as e:
             return Response(None, str(e))
+
+    def get_user_details(self, user_id, domain):
+        """Get user details."""
+        try:
+            user_details = self.lab_system_controller.get_user_details(user_id, domain)
+            return Response(user_details, "Retrieved user details successfully")
+        except Exception as e:
+            return Response(None, str(e))
         
     

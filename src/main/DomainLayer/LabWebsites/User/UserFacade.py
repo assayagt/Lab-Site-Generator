@@ -335,3 +335,7 @@ class UserFacade:
         for email, member in self.alumnis.items():
             all_alumnis.append(member.get_details())
         return all_alumnis
+
+    def get_user_details(self, email):
+        member = self.get_member_by_email(email)
+        return member.get_details()

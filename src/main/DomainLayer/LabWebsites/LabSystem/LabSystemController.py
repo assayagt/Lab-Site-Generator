@@ -352,3 +352,9 @@ class LabSystemController:
         Get all alumnis details.
         """
         return self.allWebsitesUserFacade.get_all_alumnis_details(domain)
+
+    def get_user_details(self, userId, domain):
+        """
+        Get user details.
+        """
+        return self.allWebsitesUserFacade.get_user_details(userId, domain)
