@@ -27,8 +27,8 @@ class RealToTests(BridgeToTests):
     def final_approve_publication_by_manager(self, user_id, domain, publication_id):
         return self.lab_system_service.final_approve_publication_by_manager(user_id, domain, publication_id)
 
-    def add_publication_manually(self, user_id, publication_dto, domain, authors_emails):
-        return self.lab_system_service.add_publication_manually(user_id, publication_dto, domain, authors_emails)
+    def add_publication_manually(self, user_id, domain, publication_link, git_link, video_link, presentation_link):
+        return self.lab_system_service.add_publication_manually(user_id, domain, publication_link, git_link, video_link, presentation_link)
 
     def get_all_approved_publications(self, domain):
         return self.lab_system_service.get_all_approved_publication(domain)

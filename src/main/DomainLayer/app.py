@@ -547,15 +547,22 @@ class AddPublication(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('user_id', type=str, required=True, help="User ID is required")
-        parser.add_argument('publication_dto', type=dict, location='json', required=True, help="Publication data is required")
+        parser.add_argument('publication_link', type=dict, location='json', required=True, help="Publication link is required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
-        parser.add_argument('authors_emails', type=list, location='json', required=True, help="Authors' emails are required")
+        parser.add_argument('git_link', type=list, location='json', required=False)
+        parser.add_argument('video_link', type=list, location='json', required=False)
+        parser.add_argument('presentation_link', type=list, location='json', required=False)
         args = parser.parse_args()
 
+        user_id = args['user_id']
+        domain = args['domain']
+        publication_link = args['publication_link']
+        git_link = args['git_link']
+        video_link = args['video_link']
+        presentation_link = args['presentation_link']
+
         try:
-            response = lab_system_service.add_publication_manually(
-                args['user_id'], args['publication_dto'], args['domain'], args['authors_emails']
-            )
+            response = lab_system_service.add_publication_manually(user_id, domain, publication_link, git_link, video_link, presentation_link)
             if response.is_success():
                 return jsonify({"message": response.get_message(), "response": "true"})
             return jsonify({"message": response.get_message() , "response": "false"})
@@ -789,6 +796,19 @@ class GetAllAlumni(Resource):
         except Exception as e:
             return jsonify({"error": str(e)})
 
+class GetUserDetails(Resource):
+    def get(self):
+        domain = request.args.get('domain')
+        user_id = request.args.get('user_id')
+
+        try:
+            response = lab_system_service.get_user_details(user_id, domain)
+            if response.is_success():
+                return jsonify({"user": response.get_data(), "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
 
 class SetSecondEmail(Resource):
     def post(self):
@@ -953,6 +973,7 @@ api.add_resource(SetBio, '/api/setBio')#
 api.add_resource(SetMedia, '/api/setMedia')#
 api.add_resource( GetHomepageDetails, '/api/getHomepageDetails')
 api.add_resource( RemoveSiteManagerFromGenerator, '/api/removeSiteManager')
+api.add_resource( GetUserDetails, '/api/getUserDetails')
 api.add_resource( GetContactUs, '/api/getContactUs')
 
 

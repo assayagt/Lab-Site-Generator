@@ -25,3 +25,14 @@ class WebCrawlerFacade:
             results = crawler.fetch_crawler_publications(authors, year)
             all_results.extend(results)
         return all_results
+
+    def get_details_by_link(self, link):
+        """
+        Calls get_authors_by_link on each WebCrawler.
+        """
+        for crawler in self.web_crawlers:
+            authors = crawler.get_details_by_link(link)
+            if authors:
+                return authors
+        return None
+
