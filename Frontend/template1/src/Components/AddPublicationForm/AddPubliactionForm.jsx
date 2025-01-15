@@ -1,22 +1,31 @@
 import React, { useState } from 'react';
+import { addPublication } from '../../services/websiteService';
 
 const AddPublicationForm = () => {
-  const [title, setTitle] = useState('');
-  const [publicationYear, setPublicationYear] = useState('');
+
+  const [publication, setPublication] = useState('');
   const [githubLink, setGithubLink] = useState('');
   const [presentationLink, setPresentationLink] = useState('');
   const [videoLink, setVideoLink] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (title && publicationYear) {
-      setTitle('');
-      setPublicationYear('');
-      setGithubLink('');
-      setPresentationLink('');
-      setVideoLink('');
+    if (publication) {
+      const domain = sessionStorage.getItem('domain');
+      const data = await addPublication(publication, domain, githubLink, videoLink, presentationLink);
+      if(data.response === "true"){
+        setPublication('');
+        setGithubLink('');
+        setPresentationLink('');
+        setVideoLink('');
+      }
+      else{
+        alert(data.data);
+      }
+
+      
     } else {
-      alert('Title and Publication Year are required.');
+      alert('Publication Link is required.');
     }
   };
 
@@ -25,22 +34,12 @@ const AddPublicationForm = () => {
       <h3>Add New Publication</h3>
       <form className="upload-publication-form" onSubmit={handleSubmit}>
         <label>
-          <strong>Title:</strong>
+          <strong>publication-link:</strong>
           <input
             type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Publication title"
-            required
-          />
-        </label>
-        <label>
-          <strong>Year:</strong>
-          <input
-            type="number"
-            value={publicationYear}
-            onChange={(e) => setPublicationYear(e.target.value)}
-            placeholder="Year"
+            value={publication}
+            onChange={(e) => setPublication(e.target.value)}
+            placeholder="Publication link"
             required
           />
         </label>

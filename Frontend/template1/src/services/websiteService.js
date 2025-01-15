@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useId } from "react";
 
 const baseApiUrl = "http://127.0.0.1:5000/api/";
 
@@ -194,10 +195,22 @@ export const getApprovedPublications = async (domain) => {
     }
 };
 
-export const addPublication = async (data) => {
+
+
+
+export const addPublication = async (publication_link, domain, git_link,video_link, presentation_link) => {
     try {
-        const response = await axios.post(`${baseApiUrl}addPublication`, data);
-        return response.data.message;
+        const response = await axios.post(`${baseApiUrl}addPublication`, 
+            {
+                user_id: sessionStorage.getItem("sid"),
+                publication_link: publication_link,
+                domain:domain,
+                video_link: video_link || "",
+                git_link: git_link || "",
+                presentation_link: presentation_link || "",
+            }
+        );
+        return response.data;
     } catch (error) {
         console.error("Error adding publication:", error);
         return null;
