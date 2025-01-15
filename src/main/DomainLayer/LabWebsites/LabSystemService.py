@@ -73,10 +73,10 @@ class LabSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def add_publication_manually(self, user_id, publication_dto, domain, authors_emails):
+    def add_publication_manually(self, user_id, domain, publication_link, git_link, video_link, presentation_link):
         """Add a publication manually to a lab website."""
         try:
-            self.lab_system_controller.add_publication_manually(user_id, publication_dto, domain, authors_emails)
+            self.lab_system_controller.add_publication_manually(user_id, domain, publication_link, git_link, video_link, presentation_link)
             return Response(True, "Publication added successfully")
         except Exception as e:
             return Response(None, str(e))
@@ -280,6 +280,14 @@ class LabSystemService:
         try:
             lab_alumnis = self.lab_system_controller.get_all_alumnis_details(domain)
             return Response(lab_alumnis, "Retrieved all lab alumnis successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def get_user_details(self, user_id, domain):
+        """Get user details."""
+        try:
+            user_details = self.lab_system_controller.get_user_details(user_id, domain)
+            return Response(user_details, "Retrieved user details successfully")
         except Exception as e:
             return Response(None, str(e))
         

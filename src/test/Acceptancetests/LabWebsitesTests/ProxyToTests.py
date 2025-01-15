@@ -45,9 +45,9 @@ class ProxyToTests(BridgeToTests):
             return self.real_service_adapter.final_approve_publication_by_manager(user_id, domain, publication_id)
         return Response(None, "Not Implemented yet")
 
-    def add_publication_manually(self, user_id, publication_dto, domain, authors_emails):
+    def add_publication_manually(self, user_id, domain, publication_link, git_link, video_link, presentation_link):
         if self.real_service_adapter:
-            return self.real_service_adapter.add_publication_manually(user_id, publication_dto, domain, authors_emails)
+            return self.real_service_adapter.add_publication_manually(user_id, domain, publication_link, git_link, video_link, presentation_link)
         return Response(None, "Not Implemented yet")
 
     def get_all_approved_publications(self, domain):

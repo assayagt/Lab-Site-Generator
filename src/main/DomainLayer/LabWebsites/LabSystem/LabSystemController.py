@@ -189,14 +189,27 @@ class LabSystemController:
         userFacade.error_if_user_is_not_labManager(email, domain)
         self.websiteFacade.final_approve_publication(domain, publication_id)
 
-    def add_publication_manually(self, userId, publicationDTO, domain, authors_emails):
+    def add_publication_manually(self, user_id, domain, publication_link, git_link, video_link, presentation_link):
         """A Lab Member updates the website with new research publications"""
         self.allWebsitesUserFacade.error_if_domain_not_exist(domain)
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(userId)
-        userFacade.error_if_user_not_logged_in(userId)
-        userFacade.error_if_user_is_not_labMember_manager_creator(userId)
-        self.websiteFacade.create_new_publication(domain, publicationDTO, authors_emails)
+        userFacade.error_if_user_notExist(user_id)
+        userFacade.error_if_user_not_logged_in(user_id)
+        userFacade.error_if_user_is_not_labMember_manager_creator(user_id)
+
+        # Get publication details
+        publication_details = self.webCrawlerFacade.get_details_by_link(publication_link)
+
+        # Replace author names with emails
+        if 'authors' in publication_details:
+            publication_details['authors'] = [
+                userFacade.getMemberEmailByName(author) for author in publication_details['authors']
+            ]
+
+        # Create the new publication
+        self.websiteFacade.create_new_publication(
+            domain, publication_link, publication_details, git_link, video_link, presentation_link
+        )
 
     def get_all_approved_publication(self, domain):
         """
@@ -352,3 +365,9 @@ class LabSystemController:
         Get all alumnis details.
         """
         return self.allWebsitesUserFacade.get_all_alumnis_details(domain)
+
+    def get_user_details(self, userId, domain):
+        """
+        Get user details.
+        """
+        return self.allWebsitesUserFacade.get_user_details(userId, domain)

@@ -1,3 +1,6 @@
+from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
+
+
 class Website:
     def __init__(self, domain, contact_info=None, about_us=None):
         self.members_publications = {}
@@ -11,6 +14,10 @@ class Website:
             if author_email not in self.members_publications:
                 self.members_publications[author_email] = []
             self.members_publications[author_email].append(publicationDTO)
+
+    def add_publication_manually(self, publication_link, publication_details, git_link, video_link, presentation_link):
+        publication_dto = PublicationDTO(publication_details["title"], publication_details["authors"], publication_details["publication_year"], True, publication_link, git_link, video_link, presentation_link)
+        self.create_publication(publication_dto, publication_details["authors"])
 
 
     def check_publication_exist(self, publication):

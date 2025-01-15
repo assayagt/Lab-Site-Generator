@@ -93,17 +93,17 @@ class UserFacade:
         # Search in members
         for email, member in self.members.items():
             if member.fullName and member.fullName.lower() == author_lower:
-                return member
+                return email
 
         # Search in managers
         for email, manager in self.managers.items():
             if manager.fullName and manager.fullName.lower() == author_lower:
-                return manager
+                return email
 
         # Search in siteCreator
         for email, site_creator in self.siteCreator.items():
             if site_creator.fullName and site_creator.fullName.lower() == author_lower:
-                return site_creator
+                return email
 
         # If no match is found, return None
         return None
@@ -335,3 +335,7 @@ class UserFacade:
         for email, member in self.alumnis.items():
             all_alumnis.append(member.get_details())
         return all_alumnis
+
+    def get_user_details(self, email):
+        member = self.get_member_by_email(email)
+        return member.get_details()
