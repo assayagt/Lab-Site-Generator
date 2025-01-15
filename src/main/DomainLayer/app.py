@@ -802,6 +802,19 @@ class GetAllAlumni(Resource):
         except Exception as e:
             return jsonify({"error": str(e)})
 
+class GetUserDetails(Resource):
+    def get(self):
+        domain = request.args.get('domain')
+        user_id = request.args.get('user_id')
+
+        try:
+            response = lab_system_service.get_user_details(user_id, domain)
+            if response.is_success():
+                return jsonify({"user": response.get_data(), "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
 
 class SetSecondEmail(Resource):
     def post(self):
@@ -949,6 +962,7 @@ api.add_resource(SetBio, '/api/setBio')#
 api.add_resource(SetMedia, '/api/setMedia')#
 api.add_resource( GetHomepageDetails, '/api/getHomepageDetails')
 api.add_resource( RemoveSiteManagerFromGenerator, '/api/removeSiteManager')
+api.add_resource( GetUserDetails, '/api/getUserDetails')
 
 
 
