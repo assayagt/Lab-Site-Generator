@@ -38,7 +38,7 @@ class BridgeToTests(ABC):
         pass
 
     @abstractmethod
-    def add_publication_manually(self, user_id, publication_dto, domain, authors_emails):
+    def add_publication_manually(self, user_id, domain, publication_link, git_link, video_link, presentation_link):
         """Add a publication manually to a lab website."""
         pass
 
