@@ -54,8 +54,8 @@ function App() {
           setWebsite(mappedData); 
           console.log(mappedData.domain);
           sessionStorage.setItem("domain",mappedData.domain);
-          //const approvedPublications = await getApprovedPublications(mappedData.domain);
-          //setPublications(approvedPublications); 
+          const approvedPublications = await getApprovedPublications(mappedData.domain);
+          setPublications(approvedPublications || []); 
         }
       } catch (error) {
         console.error('Error fetching data:', error);

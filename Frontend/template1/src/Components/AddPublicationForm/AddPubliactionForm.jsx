@@ -13,15 +13,16 @@ const AddPublicationForm = () => {
     if (publication) {
       const domain = sessionStorage.getItem('domain');
       const data = await addPublication(publication, domain, githubLink, videoLink, presentationLink);
-      if(data.response === "true"){
+      console.log(data);
+      //if(data.response === "true"){
         setPublication('');
         setGithubLink('');
         setPresentationLink('');
         setVideoLink('');
-      }
-      else{
-        alert(data.data);
-      }
+      //}
+     // else{
+       // alert(data.data);
+      //}
 
       
     } else {

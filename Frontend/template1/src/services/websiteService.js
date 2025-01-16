@@ -188,6 +188,7 @@ export const setMediaByMember = async (userId, media, domain) => {
 export const getApprovedPublications = async (domain) => {
     try {
         const response = await axios.get(`${baseApiUrl}getApprovedPublications?domain=${domain}` );
+        console.log(response.data);
         return response.data.publications;
     } catch (error) {
         console.error("Error getting approved publications:", error);
@@ -200,6 +201,7 @@ export const getApprovedPublications = async (domain) => {
 
 export const addPublication = async (publication_link, domain, git_link,video_link, presentation_link) => {
     try {
+        console.log(publication_link);
         const response = await axios.post(`${baseApiUrl}addPublication`, 
             {
                 user_id: sessionStorage.getItem("sid"),
@@ -210,22 +212,26 @@ export const addPublication = async (publication_link, domain, git_link,video_li
                 presentation_link: presentation_link || "",
             }
         );
-        return response.data;
+        if(response){
+             return response.data;
+        }
+       
     } catch (error) {
         console.error("Error adding publication:", error);
         return null;
     }
+    return "d";
 };
 
 export const setPublicationVideoLink = async (userId, domain, publicationId, videoLink) => {
     try {
         const response = await axios.post(`${baseApiUrl}setPublicationVideoLink`, {
             user_id: userId,
-            domain,
+            domain:domain,
             publication_id: publicationId,
             video_link: videoLink
         });
-        return response.data.message;
+        return response.data;
     } catch (error) {
         console.error("Error setting publication video link:", error);
         return null;
@@ -236,11 +242,11 @@ export const setPublicationGitLink = async (userId, domain, publicationId, gitLi
     try {
         const response = await axios.post(`${baseApiUrl}setPublicationGitLink`, {
             user_id: userId,
-            domain,
+            domain:domain,
             publication_id: publicationId,
             git_link: gitLink
         });
-        return response.data.message;
+        return response.data;
     } catch (error) {
         console.error("Error setting publication Git link:", error);
         return null;
@@ -251,11 +257,11 @@ export const setPublicationPttxLink = async (userId, domain, publicationId, pres
     try {
         const response = await axios.post(`${baseApiUrl}setPublicationPttxLink`, {
             user_id: userId,
-            domain,
+            domain:domain,
             publication_id: publicationId,
             presentation_link: presentationLink
         });
-        return response.data.message;
+        return response.data;
     } catch (error) {
         console.error("Error setting publication presentation link:", error);
         return null;

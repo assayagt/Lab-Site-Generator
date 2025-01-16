@@ -536,7 +536,7 @@ class GetApprovedPublications(Resource):
         domain = request.args.get('domain')
 
         try:
-            response = lab_system_service.get_all_approved_publications(args['domain'])
+            response = lab_system_service.get_all_approved_publications(domain)
             if response.is_success():
                 return jsonify({"publications": response.get_data(), "response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})
@@ -547,11 +547,11 @@ class AddPublication(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('user_id', type=str, required=True, help="User ID is required")
-        parser.add_argument('publication_link', type=dict, location='json', required=True, help="Publication link is required")
+        parser.add_argument('publication_link', type=str, location='json', required=True, help="Publication link is required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
-        parser.add_argument('git_link', type=list, location='json', required=False)
-        parser.add_argument('video_link', type=list, location='json', required=False)
-        parser.add_argument('presentation_link', type=list, location='json', required=False)
+        parser.add_argument('git_link', type=str, required=False , default="")
+        parser.add_argument('video_link', type=str, required=False, default="")
+        parser.add_argument('presentation_link', type=str, required=False, default="")
         args = parser.parse_args()
 
         user_id = args['user_id']

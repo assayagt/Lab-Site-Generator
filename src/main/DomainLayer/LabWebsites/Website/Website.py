@@ -33,7 +33,7 @@ class Website:
         for publications in self.members_publications.values():  # Iterate over all author-publication lists
             for publication in publications:  # Iterate over publications for each author
                 if publication.approved:  # Check if the publication is approved
-                    approved_publications.append(publication)
+                    approved_publications.append(publication.to_dict())
         return approved_publications
 
     def check_if_publication_approved(self, publication_paper_id):
@@ -47,7 +47,7 @@ class Website:
         if email in self.members_publications:  # Check if the email exists in the dictionary
             for publication in self.members_publications[email]:  # Iterate through the member's publications
                 if publication.approved:  # Check if the publication is approved
-                    approved_publications.append(publication)
+                    approved_publications.append(publication.to_dict())
         return approved_publications
 
     def set_publication_video_link(self, publication_paper_id, video_link):

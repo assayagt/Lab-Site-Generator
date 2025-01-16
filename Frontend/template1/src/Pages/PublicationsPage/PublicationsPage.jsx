@@ -14,9 +14,15 @@ const PublicationPage = ({ publications }) => {
     setAvailableYears(years);
 
     const authors = Array.from(
-        new Set(publications.flatMap((pub) => pub.authors.split(', ').map((author) => author.trim())))
-      ).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
-      setAvailableAuthors(authors);
+      new Set(
+        publications.flatMap((pub) => {
+          if (typeof pub.authors === 'string') {
+            return pub.authors.split(', ').map((author) => author.trim());
+          }
+          return []; // Fallback for invalid authors field
+        })
+      )
+    ).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
     setAvailableAuthors(authors);
   }, [publications]);
 
@@ -31,14 +37,15 @@ const PublicationPage = ({ publications }) => {
   };
 
   const filteredPublications = publications
-  .filter((pub) => {
-    const matchesYear = yearFilter ? pub.publication_year.toString() === yearFilter : true;
-    const matchesAuthor = authorFilter
-      ? pub.authors.toLowerCase().includes(authorFilter.toLowerCase())
-      : true;
-    return matchesYear && matchesAuthor;
-  })
-  .sort((a, b) => b.publication_year - a.publication_year);
+    .filter((pub) => {
+      const matchesYear = yearFilter ? pub.publication_year.toString() === yearFilter : true;
+      const matchesAuthor = authorFilter
+        ? typeof pub.authors === 'string' && pub.authors.toLowerCase().includes(authorFilter.toLowerCase())
+        : true;
+      return matchesYear && matchesAuthor;
+    })
+    .sort((a, b) => b.publication_year - a.publication_year);
+
   const paginatedPublications = filteredPublications.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -89,25 +96,26 @@ const PublicationPage = ({ publications }) => {
         {paginatedPublications.map((pub) => (
           <div key={pub.paper_id} className="publication-item">
             <h2>{pub.title}</h2>
-            <div className = "publication-item-info">
-            {pub.video &&
-            <iframe className='video'
-              src={pub.video}
-              title={pub.title}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-                >     </iframe>
-            }
-                <div>
-                    <p><strong>Authors:</strong> {pub.authors}</p>
-                    <p><strong>Year:</strong> {pub.publication_year}</p>
-                    <p className="description">{pub.description}</p>
-                    <div className='links'>
-                        <div className="git">Git</div>
-                        <div className="presentation">Presentation</div>
-                        <a href={pub.publication_link} target="_blank" rel="noopener noreferrer">Read More</a>
-                    </div>
+            <div className="publication-item-info">
+              {pub.video && (
+                <iframe
+                  className="video"
+                  src={pub.video}
+                  title={pub.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              )}
+              <div>
+                <p><strong>Authors:</strong> {pub.authors || "Unknown Authors"}</p>
+                <p><strong>Year:</strong> {pub.publication_year}</p>
+                <p className="description">{pub.description}</p>
+                <div className='links'>
+                  <div className="git">Git</div>
+                  <div className="presentation">Presentation</div>
+                  <a href={pub.publication_link} target="_blank" rel="noopener noreferrer">Read More</a>
                 </div>
+              </div>
             </div>
           </div>
         ))}
@@ -128,3 +136,4 @@ const PublicationPage = ({ publications }) => {
 };
 
 export default PublicationPage;
+
