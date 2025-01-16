@@ -1,13 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import './PublicationsPage.css';
-
-const PublicationPage = ({ publications }) => {
+import { getApprovedPublications } from '../../services/websiteService';
+const PublicationPage = () => {
+  const [publications, setPublications] = useState([]);
   const [yearFilter, setYearFilter] = useState('');
   const [authorFilter, setAuthorFilter] = useState('');
   const [availableYears, setAvailableYears] = useState([]);
   const [availableAuthors, setAvailableAuthors] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+
+
+  useEffect(() => {
+    const fetchPublications = async () => {
+      try {
+        const domain = sessionStorage.getItem('domain');
+        const fetchedPublications = await getApprovedPublications(domain);
+        setPublications(fetchedPublications || []);
+      } catch (error) {
+        console.error('Error fetching publications:', error);
+      } finally {
+        
+      }
+    };
+
+    fetchPublications();
+  }, []);
 
   useEffect(() => {
     const years = Array.from(new Set(publications.map((pub) => pub.publication_year))).sort((a, b) => b - a);

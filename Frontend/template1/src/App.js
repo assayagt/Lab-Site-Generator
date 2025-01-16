@@ -12,7 +12,7 @@ import PublicationsPage from './Pages/PublicationsPage/PublicationsPage';
 //import publications from "./publications.json"
 import { AuthProvider } from './Context/AuthContext';
 import { useWebsite } from './Context/WebsiteContext';
-import { getHomepageDetails,getApprovedPublications  } from  "./services/websiteService"
+import { getHomepageDetails} from  "./services/websiteService"
 
 function App() {
 
@@ -20,7 +20,6 @@ function App() {
   const { websiteData, setWebsite } = useWebsite();
 
   const [loading, setLoading] = useState(true);
-  const [publications, setPublications] = useState([]); // State for fetched publications
 
   useEffect(() => {
     const fetchHomepageDetails = async () => {
@@ -52,10 +51,7 @@ function App() {
             about_us: data.data.about_us, 
           };
           setWebsite(mappedData); 
-          console.log(mappedData.domain);
           sessionStorage.setItem("domain",mappedData.domain);
-          const approvedPublications = await getApprovedPublications(mappedData.domain);
-          setPublications(approvedPublications || []); 
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -71,14 +67,14 @@ function App() {
     return <div>Loading...</div>; // Show loading indicator
   }
 
-  const components = websiteData.components || [];
+  const components = websiteData.components ? [...websiteData.components, 'Home'] : ['Home'];
 
   return (
     
     <AuthProvider>
         <Router>
           
-              <Header components={components} title={websiteData.websiteName}>          sessionStorage.setItem("domain",websiteData.domain);
+              <Header components={components} title={websiteData.websiteName}>       
               </Header>
               <Routes>
                 <Route path="/" element={<HomePage about_us={websiteData.about_us}/>} />
@@ -96,7 +92,7 @@ function App() {
                 />
                 <Route
                   path="/Publications"
-                  element= {<PublicationsPage publications={publications}/>}
+                  element= {<PublicationsPage />}
                 />
               </Routes>
         </Router>
