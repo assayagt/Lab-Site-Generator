@@ -31,12 +31,15 @@ class GoogleScholarWebCrawler:
 
                         publication_authors = self.get_authors_from_citation(url)
 
+                        publication_description = self.get_description_from_citation(url)
+
                         publication_dto = PublicationDTO(
                             title=new_publication_title,
                             authors=publication_authors,
                             publication_year=pub_year,
                             approved=False,  # Default value
-                            publication_link=url
+                            publication_link=url,
+                            description=publication_description
                         )
 
 
@@ -98,13 +101,35 @@ class GoogleScholarWebCrawler:
                 else "Year not found"
             )
 
+            description = self.get_description_from_citation(link)
+
             return {
                 "authors": authors,
                 "title": title,
                 "publication_year": year,
+                "description": description,
             }
 
         except Exception as e:
             print(f"Error occurred: {e}")
             return {}
+
+    def get_description_from_citation(self, url):
+        try:
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+            }
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+
+            soup = BeautifulSoup(response.text, "html.parser")
+            description_section = soup.find("div", class_="gsc_oci_value", id="gsc_oci_descr")
+            if description_section:
+                return description_section.get_text(separator=" ").strip()  # Clean up the text
+            else:
+                return "Description not available"
+
+        except Exception as e:
+            print(f"Error occurred: {e}")
+            return "Error fetching description"
 
