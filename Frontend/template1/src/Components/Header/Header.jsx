@@ -14,6 +14,8 @@ function Header(props) {
   const [showLogin, setShowLogin] = useState(false);
   const [email, setEmail] = useState("");
   const [loginError, setLoginError] = useState(""); // State to store login error messages
+  const [isLoggedIn, setIsLoggedIn] = useState(sessionStorage.getItem("isLoggedIn"));
+
 
   let scrollAnimationFrame = null;
 
@@ -74,6 +76,7 @@ function Header(props) {
     if (login(email)) {
       setShowLogin(false); 
       setLoginError(""); 
+      setIsLoggedIn(true);
       //window.location.reload();
     } else {
       setLoginError("Login failed. Please check your username and try again."); 
@@ -88,7 +91,7 @@ function Header(props) {
     if(ans){
        sessionStorage.removeItem("isLoggedIn");
        sessionStorage.removeItem("userEmail");
-
+       setIsLoggedIn(false);
     if (location.pathname === "/Account") {
       // If user is currently on "/Account", navigate to "/"
       navigate("/");
@@ -127,7 +130,7 @@ function Header(props) {
                 <img src={accountIcon} alt="icon" />
               </div>
               <hr className="hr_line" />
-              {sessionStorage.getItem("isLoggedIn") ? (
+              {isLoggedIn ? (
                 <div className="choose_item">
                   <button className="my_sites_button" onClick={() => navigate("Account")}>
                     My Account
