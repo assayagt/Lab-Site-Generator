@@ -12,7 +12,8 @@ const AccountPage = () => {
     email: '',
     secondaryEmail: '',
     degree: '',
-    linkedIn: ''
+    linkedIn: '',
+    fullname: ''
   });
   const [notifications, setNotifications] = useState([]);
   const [publications, setPublications] = useState([]);
@@ -26,21 +27,23 @@ const AccountPage = () => {
     const fetchUserDetails = async () => {
       const data = await getUserDetails(sessionStorage.getItem("domain"), sessionStorage.getItem("sid"));
       if (data) {
+        console.log(data);
         setUserDetails({
-          bio: data.bio || '',
-          email: data.email || '',
-          secondaryEmail: data.secondaryEmail || '',
-          degree: data.degree || '',
-          linkedIn: data.linkedIn || ''
+          bio: data.user.bio || '',
+          email:data.user.email || '',
+          secondaryEmail: data.user.secondEmail || '',
+          degree: data.user.degree || '',
+          linkedIn: data.user.linkedIn || '',
+          fullname: data.user.fullName
         });
       }
     };
 
     const fetchPublications = async () => { //TODO: change it
-      const data = await getApprovedPublications();
-      if (data.response === "true") {
-        setPublications(data.data);
-      }
+      //const data = await getApprovedPublications();
+      // if (data.response === "true") {
+      //   setPublications(data.data);
+      // }
     };
 
     const fetchNotifications = async () => {

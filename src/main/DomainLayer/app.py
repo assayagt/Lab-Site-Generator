@@ -590,6 +590,7 @@ class SetPublicationVideoLink(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
         
+        
 
 class SetPublicationGitLink(Resource):
         def post(self):
