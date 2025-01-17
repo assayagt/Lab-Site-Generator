@@ -4,7 +4,7 @@ import accountIcon from "../../images/account_avatar.svg";
 import cameraIcon from "../../images/camera_icon.svg";
 import searchIcon from "../../images/search_icon.svg";
 import AddPublicationForm from '../../Components/AddPublicationForm/AddPubliactionForm';
-import { getApprovedPublications, getUserDetails, approveRegistration, rejectRegistration, setPublicationGitLink, setPublicationPttxLink, setPublicationVideoLink } from '../../services/websiteService';
+import { getApprovedPublications, getUserDetails, approveRegistration, rejectRegistration, setPublicationGitLink, setPublicationPttxLink, setPublicationVideoLink, setBioByMember,setDegreeByMember, setSecondEmailByMember, setLinkedInLinkByMember } from '../../services/websiteService';
 const AccountPage = () => {
   const [activeSection, setActiveSection] = useState('personal-info');
   const [userDetails, setUserDetails] = useState({
@@ -114,9 +114,6 @@ const AccountPage = () => {
     }
   };
 
-  const handleSaveChanges = () => {
-    alert('Changes saved successfully!');
-  };
 
 
   const handleSavePublicationLinks = async (publication) => {
@@ -160,6 +157,46 @@ const AccountPage = () => {
       alert(`An error occurred: ${error.message}`);
     }
   };
+
+  const handleSaveChanges = async () => {
+  try {
+    const userId = '12345'; // Replace with dynamic userId
+
+    // Track if any update was successful
+    let isUpdated = false;
+
+    if (userDetails.bio) {
+      await setBioByMember(userId, userDetails.bio);
+      isUpdated = true;
+    }
+
+    if (userDetails.secondaryEmail) {
+      await setSecondEmailByMember(userId, userDetails.secondaryEmail);
+      isUpdated = true;
+    }
+
+    if (userDetails.degree) {
+      await setDegreeByMember(userId, userDetails.degree);
+      isUpdated = true;
+    }
+
+    if (userDetails.linkedIn) {
+      await setLinkedInLinkByMember(userId, userDetails.linkedIn);
+      isUpdated = true;
+    }
+
+    if (isUpdated) {
+      alert('Changes saved successfully!');
+    } else {
+      alert('No changes were made.');
+    }
+  } catch (error) {
+    console.error('Error saving changes:', error);
+    alert(`An error occurred: ${error.message}`);
+  }
+};
+
+
 
   return (
     <div className="account-page">
