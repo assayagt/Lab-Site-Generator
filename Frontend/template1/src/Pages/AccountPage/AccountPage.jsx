@@ -24,9 +24,7 @@ const AccountPage = () => {
   useEffect(() => {
     // Fetch user details
     const fetchUserDetails = async () => {
-      const domain = 'example.com'; // Replace with actual domain
-      const userId = '12345'; // Replace with actual user ID
-      const data = await getUserDetails(domain, userId);
+      const data = await getUserDetails(sessionStorage.getItem("domain"), sessionStorage.getItem("sid"));
       if (data) {
         setUserDetails({
           bio: data.bio || '',
@@ -38,7 +36,7 @@ const AccountPage = () => {
       }
     };
 
-    const fetchPublications = async () => {
+    const fetchPublications = async () => { //TODO: change it
       const data = await getApprovedPublications();
       if (data.response === "true") {
         setPublications(data.data);
@@ -77,6 +75,7 @@ const AccountPage = () => {
     };
     fileInput.click();
   };
+
 
   const handleSavePhoto = () => {
     alert('Photo saved successfully!');
@@ -119,9 +118,10 @@ const AccountPage = () => {
   const handleSavePublicationLinks = async (publication) => {
     try {
       let isUpdated = false; // Track if any field was successfully updated
-  
+      const sid = sessionStorage.getItem("sid");
+      const domain = sessionStorage.getItem("domain");
       if (publication.github) {
-        const githubResponse = await setPublicationGitLink(publication.id, publication.github);
+        const githubResponse = await setPublicationGitLink(sid, domain, publication.id, publication.github);
         if (githubResponse=== "true") {
           isUpdated = true;
         } else {
@@ -130,7 +130,7 @@ const AccountPage = () => {
       }
   
       if (publication.presentation) {
-        const presentationResponse = await setPublicationPttxLink(publication.id, publication.presentation);
+        const presentationResponse = await setPublicationPttxLink(sid, domain,publication.id, publication.presentation);
         if (presentationResponse === "true") {
           isUpdated = true;
         } else {
@@ -139,7 +139,7 @@ const AccountPage = () => {
       }
   
       if (publication.video) {
-        const videoResponse = await setPublicationVideoLink(publication.id, publication.video);
+        const videoResponse = await setPublicationVideoLink(sid, domain,publication.id, publication.video);
         if (videoResponse === "true") {
           isUpdated = true;
         } else {
@@ -160,28 +160,28 @@ const AccountPage = () => {
 
   const handleSaveChanges = async () => {
   try {
-    const userId = '12345'; // Replace with dynamic userId
-
+    const sid = sessionStorage.getItem("sid");
+    const domain = sessionStorage.getItem("domain");
     // Track if any update was successful
     let isUpdated = false;
 
     if (userDetails.bio) {
-      await setBioByMember(userId, userDetails.bio);
+      await setBioByMember(sid, userDetails.bio,domain);
       isUpdated = true;
     }
 
     if (userDetails.secondaryEmail) {
-      await setSecondEmailByMember(userId, userDetails.secondaryEmail);
+      await setSecondEmailByMember(sid, userDetails.secondaryEmail,domain);
       isUpdated = true;
     }
 
     if (userDetails.degree) {
-      await setDegreeByMember(userId, userDetails.degree);
+      await setDegreeByMember(sid, userDetails.degree,domain);
       isUpdated = true;
     }
 
     if (userDetails.linkedIn) {
-      await setLinkedInLinkByMember(userId, userDetails.linkedIn);
+      await setLinkedInLinkByMember(sid, userDetails.linkedIn,domain);
       isUpdated = true;
     }
 
