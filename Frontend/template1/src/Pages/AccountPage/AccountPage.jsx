@@ -2,42 +2,63 @@ import React, { useState, useEffect } from 'react';
 import './AccountPage.css';
 import accountIcon from "../../images/account_avatar.svg";
 import cameraIcon from "../../images/camera_icon.svg";
-import publicationsData from "../../publications.json";
 import searchIcon from "../../images/search_icon.svg";
 import AddPublicationForm from '../../Components/AddPublicationForm/AddPubliactionForm';
+import { getApprovedPublications, getUserDetails, approveRegistration, rejectRegistration, setPublicationGitLink, setPublicationPttxLink, setPublicationVideoLink } from '../../services/websiteService';
 const AccountPage = () => {
-  const [activeSection, setActiveSection] = useState('personal-info'); // Track the active section
-  const [notifications, setNotifications] = useState([
-    { id: 1, message: 'New publication approval', status: 'pending' },
-    { id: 2, message: 'Profile update required', status: 'pending' },
-  ]);
-  const [publications, setPublications] = useState(publicationsData);
+  const [activeSection, setActiveSection] = useState('personal-info');
+  const [userDetails, setUserDetails] = useState({
+    bio: '',
+    email: '',
+    secondaryEmail: '',
+    degree: '',
+    linkedIn: ''
+  });
+  const [notifications, setNotifications] = useState([]);
+  const [publications, setPublications] = useState([]);
   const [uploadedPhoto, setUploadedPhoto] = useState(accountIcon);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
   const [searchTerm, setSearchTerm] = useState('');
 
+  useEffect(() => {
+    // Fetch user details
+    const fetchUserDetails = async () => {
+      const domain = 'example.com'; // Replace with actual domain
+      const userId = '12345'; // Replace with actual user ID
+      const data = await getUserDetails(domain, userId);
+      if (data) {
+        setUserDetails({
+          bio: data.bio || '',
+          email: data.email || '',
+          secondaryEmail: data.secondaryEmail || '',
+          degree: data.degree || '',
+          linkedIn: data.linkedIn || ''
+        });
+      }
+    };
+
+    const fetchPublications = async () => {
+      const data = await getApprovedPublications();
+      if (data.response === "true") {
+        setPublications(data.data);
+      }
+    };
+
+    const fetchNotifications = async () => {
+      // const data = await getNotifications();
+      // if (data) {
+      //   setNotifications(data);
+      // }
+    };
+
+    fetchUserDetails();
+    fetchPublications();
+    fetchNotifications();
+  }, []);
+
   const handleSectionChange = (section) => {
     setActiveSection(section);
-  };
-
-  const handleApproveNotification = (id) => {
-    setNotifications((prev) => prev.filter((notif) => notif.id !== id));
-  };
-
-  const handleRejectNotification = (id) => {
-    setNotifications((prev) => prev.filter((notif) => notif.id !== id));
-  };
-
-  const handleEditPublication = (id) => {
-    const newContent = prompt('Edit publication content:');
-    if (newContent) {
-      setPublications((prev) =>
-        prev.map((pub) =>
-          pub.id === id ? { ...pub, content: newContent } : pub
-        )
-      );
-    }
   };
 
   const handleUploadPhoto = () => {
@@ -57,19 +78,29 @@ const AccountPage = () => {
     fileInput.click();
   };
 
+  const handleSavePhoto = () => {
+    alert('Photo saved successfully!');
+  };
+
+  const handleApproveNotification = async (id) => {
+    //await approveNotification(id); // API call to approve notification
+    setNotifications((prev) => prev.filter((notif) => notif.id !== id));
+  };
+
+  const handleRejectNotification = async (id) => {
+    //await rejectNotification(id); // API call to reject notification
+    setNotifications((prev) => prev.filter((notif) => notif.id !== id));
+  };
+
   const filteredPublications = publications.filter((pub) =>
     pub.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleSavePhoto = () => {
-    alert('Photo saved successfully!');
-  };
   const totalPages = Math.ceil(filteredPublications.length / itemsPerPage);
   const paginatedPublications = filteredPublications.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
-
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -83,55 +114,134 @@ const AccountPage = () => {
     }
   };
 
+  const handleSaveChanges = () => {
+    alert('Changes saved successfully!');
+  };
+
+
+  const handleSavePublicationLinks = async (publication) => {
+    try {
+      let isUpdated = false; // Track if any field was successfully updated
+  
+      if (publication.github) {
+        const githubResponse = await setPublicationGitLink(publication.id, publication.github);
+        if (githubResponse=== "true") {
+          isUpdated = true;
+        } else {
+          throw new Error(`Failed to update GitHub link: ${githubResponse.statusText}`);
+        }
+      }
+  
+      if (publication.presentation) {
+        const presentationResponse = await setPublicationPttxLink(publication.id, publication.presentation);
+        if (presentationResponse === "true") {
+          isUpdated = true;
+        } else {
+          throw new Error(`Failed to update Presentation link: ${presentationResponse.statusText}`);
+        }
+      }
+  
+      if (publication.video) {
+        const videoResponse = await setPublicationVideoLink(publication.id, publication.video);
+        if (videoResponse === "true") {
+          isUpdated = true;
+        } else {
+          throw new Error(`Failed to update Video link: ${videoResponse.statusText}`);
+        }
+      }
+  
+      if (isUpdated) {
+        alert('Links updated successfully!');
+      } else {
+        alert('No changes were made.');
+      }
+    } catch (error) {
+      console.error('Error updating publication links:', error);
+      alert(`An error occurred: ${error.message}`);
+    }
+  };
+
   return (
     <div className="account-page">
       <Sidebar activeSection={activeSection} onSectionChange={handleSectionChange} />
       <div className="main-content">
         {activeSection === 'personal-info' && (
-          <form id="personal-info" className="personal-info" onSubmit={(e) => { e.preventDefault(); alert('Form Submitted'); }}>
+          <form id="personal-info" className="personal-info" onSubmit={(e) => e.preventDefault()}>
             <h2>Personal Information</h2>
             <div className="info">
-              <div className='user-photo-div'>
+              <div className="user-photo-div">
                 <img src={uploadedPhoto} alt="User" className="user-photo" />
                 <div className="camera-icon" onClick={handleUploadPhoto}>
                   <img src={cameraIcon} alt="Upload" />
                 </div>
-                <button className="save-photo" onClick={handleSavePhoto}>Save Photo</button>
+                <button className="save-photo" onClick={handleSavePhoto}>
+                  Save Photo
+                </button>
               </div>
               <div className="details">
-                <label className='detail-bio'>
+                <label className="detail-bio">
                   <strong>Bio:</strong>
-                  <input className="text-detail" defaultValue="Lorem ipsum dolor sit amet." />
+                  <input
+                    className="text-detail"
+                    value={userDetails.bio}
+                    onChange={(e) =>
+                      setUserDetails({ ...userDetails, bio: e.target.value })
+                    }
+                  />
                 </label>
 
-                <label className='detail-bio'>
+                <label className="detail-bio">
                   <strong>Email:</strong>
-                  <div className="text-detail" type="email">user@example.com</div>
+                  <div className="text-detail">{userDetails.email}</div>
                 </label>
 
-                <label className='detail-bio'>
+                <label className="detail-bio">
                   <strong>Secondary Email:</strong>
-                  <input className="text-detail" type="email" defaultValue="secondary@example.com" />
+                  <input
+                    className="text-detail"
+                    value={userDetails.secondaryEmail}
+                    onChange={(e) =>
+                      setUserDetails({
+                        ...userDetails,
+                        secondaryEmail: e.target.value,
+                      })
+                    }
+                  />
                 </label>
 
-                <label className='detail-bio'>
+                <label className="detail-bio">
                   <strong>Degree:</strong>
-                  <input className="text-detail" type="text" defaultValue="Bachelor of Science" />
+                  <input
+                    className="text-detail"
+                    value={userDetails.degree}
+                    onChange={(e) =>
+                      setUserDetails({ ...userDetails, degree: e.target.value })
+                    }
+                  />
                 </label>
 
-                <label className='detail-bio'>
+                <label className="detail-bio">
                   <strong>LinkedIn:</strong>
-                  <input className="text-detail" type="url" defaultValue="linkedin.com/in/username" />
+                  <input
+                    className="text-detail"
+                    value={userDetails.linkedIn}
+                    onChange={(e) =>
+                      setUserDetails({ ...userDetails, linkedIn: e.target.value })
+                    }
+                  />
                 </label>
               </div>
             </div>
-            <button className="save-changes" type="submit">Save Changes</button>
+            <button className="save-changes" type="button" onClick={handleSaveChanges}>
+              Save Changes
+            </button>
           </form>
         )}
+
         {activeSection === 'my-publications' && (
           <div id="my-publications" className="my-publications">
             <h2>My Publications</h2>
-            <AddPublicationForm/>
+            <AddPublicationForm />
             <div className="search-bar">
               <img src={searchIcon} alt="Search" className="search-icon" />
               <input
@@ -142,33 +252,46 @@ const AccountPage = () => {
                 className="search-input"
               />
             </div>
-
-              {paginatedPublications.map((publication) => (
-                <div key={publication.id} className='publication-item'>
-                  <from className='publication-form'>
-                    <strong>{publication.title}</strong>
-                    <div>
-                      {publication.publication_year}
-                    </div>
-                    <label className='detail-bio'>
-                      <strong>Git-Hub:</strong>
-                      <input className="text-detail" type="url" defaultValue="github//" />
-                    </label>
-                    <label className='detail-bio'>
-                      <strong>Presentation:</strong>
-                      <input className="text-detail" type="url" defaultValue="github//" />
-                    </label>
-                    <label className='detail-bio'>
-                      <strong>Video:</strong>
-                      <input className="text-detail" type="url" defaultValue="youtubr" />
-                    </label>
-                    <button  className= "save-publications" type="submit">Save Changes</button>
-                  </from>
-                  
-                  
-                </div>
-              ))}
-          <div className="pagination">
+            {paginatedPublications.map((publication) => (
+              <div key={publication.id} className="publication-item">
+                <form className="publication-form">
+                  <strong>{publication.title}</strong>
+                  <div>{publication.publication_year}</div>
+                  <label className="detail-bio">
+                    <strong>GitHub:</strong>
+                    <input
+                      className="text-detail"
+                      type="url"
+                      defaultValue={publication.github || ''}
+                    />
+                  </label>
+                  <label className="detail-bio">
+                    <strong>Presentation:</strong>
+                    <input
+                      className="text-detail"
+                      type="url"
+                      defaultValue={publication.presentation || ''}
+                    />
+                  </label>
+                  <label className="detail-bio">
+                    <strong>Video:</strong>
+                    <input
+                      className="text-detail"
+                      type="url"
+                      defaultValue={publication.video || ''}
+                    />
+                  </label>
+                  <button
+                    className="save-publications"
+                    type="button"
+                    onClick={() => handleSavePublicationLinks(publication)}
+                  >
+                    Save Changes
+                  </button>
+                </form>
+              </div>
+            ))}
+            <div className="pagination">
               <button onClick={handlePrevPage} disabled={currentPage === 1}>
                 Previous
               </button>
@@ -191,8 +314,12 @@ const AccountPage = () => {
               notifications.map((notif) => (
                 <div key={notif.id} className={`notification ${notif.status}`}>
                   <p>{notif.message}</p>
-                  <button onClick={() => handleApproveNotification(notif.id)}>Approve</button>
-                  <button onClick={() => handleRejectNotification(notif.id)}>Reject</button>
+                  <button onClick={() => handleApproveNotification(notif.id)}>
+                    Approve
+                  </button>
+                  <button onClick={() => handleRejectNotification(notif.id)}>
+                    Reject
+                  </button>
                 </div>
               ))
             )}

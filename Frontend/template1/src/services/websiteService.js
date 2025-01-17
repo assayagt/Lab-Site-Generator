@@ -317,3 +317,14 @@ export const getContactUs = async (domain) => {
         return [];
     }
 };
+
+export const getUserDetails = async (domain, user_id) => {
+    try {
+        const response = await axios.get(`${baseApiUrl}getUserDetails?domain=${domain}&user_id=${user_id}`);
+        console.log(response.data); // Log the response data
+        return response.data; // Return the data
+    } catch (error) {
+        console.error("Error getting user details:", error); // Log the error
+        return {}; // Return an empty object if there's an error
+    }
+};
