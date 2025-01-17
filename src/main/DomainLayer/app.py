@@ -819,7 +819,7 @@ class SetSecondEmail(Resource):
         args = parser.parse_args()
 
         try:
-            response = generator_system.set_secondEmail_by_member(args['userid'], args['secondEmail'], args['domain'])
+            response = lab_system_service.set_secondEmail_by_member(args['userid'], args['secondEmail'], args['domain'])
             if response.is_success():
                 return jsonify({"message": "Second email added successfully", "response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})
@@ -835,7 +835,7 @@ class SetLinkedInLink(Resource):
         args = parser.parse_args()
 
         try:
-            response = generator_system.set_linkedin_link_by_member(args['userid'], args['linkedin_link'], args['domain'])
+            response = lab_system_service.set_linkedin_link_by_member(args['userid'], args['linkedin_link'], args['domain'])
             if response.is_success():
                 return jsonify({"message": "LinkedIn link added successfully", "response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})
@@ -851,7 +851,7 @@ class SetFullName(Resource):
         args = parser.parse_args()
 
         try:
-            response = generator_system.set_fullName_by_member(args['userid'], args['fullName'], args['domain'])
+            response = lab_system_service.set_fullName_by_member(args['userid'], args['fullName'], args['domain'])
             if response.is_success():
                 return jsonify({"message": "Full name updated successfully", "response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})
@@ -867,7 +867,7 @@ class SetDegree(Resource):
         args = parser.parse_args()
 
         try:
-            response = generator_system.set_degree_by_member(args['userid'], args['degree'], args['domain'])
+            response = lab_system_service.set_degree_by_member(args['userid'], args['degree'], args['domain'])
             if response.is_success():
                 return jsonify({"message": "Degree updated successfully", "response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})
@@ -883,7 +883,7 @@ class SetBio(Resource):
         args = parser.parse_args()
 
         try:
-            response = generator_system.set_bio_by_member(args['userid'], args['bio'], args['domain'])
+            response = lab_system_service.set_bio_by_member(args['userid'], args['bio'], args['domain'])
             if response.is_success():
                 return jsonify({"message": "Bio updated successfully", "response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})
@@ -899,7 +899,7 @@ class SetMedia(Resource):
         args = parser.parse_args()
 
         try:
-            response = generator_system.set_media_by_member(args['userid'], args['media'], args['domain'])
+            response = lab_system_service.set_media_by_member(args['userid'], args['media'], args['domain'])
             if response.is_success():
                 return jsonify({"message": "Media updated successfully", "response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})
