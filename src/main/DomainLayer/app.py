@@ -1023,12 +1023,10 @@ class GetAllMembersNames(Resource):
     returns all lab members + managers + site creator + alumnis names
     '''
     def get(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('domain', required=True, help="Domain is required.")
-        args = parser.parse_args()
+        domain = request.args.get('domain')
 
         try:
-            response = lab_system_service.get_all_members_names(args['domain'])
+            response = lab_system_service.get_all_members_names(domain)
             if response.is_success():
                 return jsonify({"members": response.get_data(), "response": "true"})
             return jsonify({"error": response.get_message(), "response": "false"})
@@ -1041,13 +1039,12 @@ class GetPendingRegistrationEmails(Resource):
     Registration Notifications! returns all pending registration emails
     '''
     def get(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('userid', required=True, help="User ID is required.")
-        parser.add_argument('domain', required=True, help="Domain is required.")
-        args = parser.parse_args()
+
+        domain = request.args.get('domain')
+        user_id = request.args.get('userid')
 
         try:
-            response = lab_system_service.get_pending_registration_emails(args['userid'], args['domain'])
+            response = lab_system_service.get_pending_registration_emails(user_id, domain)
             if response.is_success():
                 return jsonify({"emails": response.get_data(), "response": "true"})
             return jsonify({"error": response.get_message(), "response": "false"})
