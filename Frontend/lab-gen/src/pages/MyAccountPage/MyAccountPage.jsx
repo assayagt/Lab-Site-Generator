@@ -3,11 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './MyAccountPage.css';
 
 const MyAccountPage = () => {
-  const [user, setUser] = useState({
-    name: 'John Doe',
-    email: 'john@example.com',
-    // Add other user details
-  });
+ 
 
   const [websites, setWebsites] = useState([
     { id: 1, name: 'Website 1', domain: 'website1.com' },
@@ -27,11 +23,6 @@ const MyAccountPage = () => {
     <div className="myAccountPage">
       <div className="accountInfo">
         <h2>My Account</h2>
-        <div className="userInfo">
-          <p><strong>Name:</strong> {user.name}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-          {/* Add more user information here */}
-        </div>
       </div>
 
       <div className="myWebsites">
