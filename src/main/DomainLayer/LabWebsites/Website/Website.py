@@ -30,10 +30,14 @@ class Website:
 
     def get_all_approved_publication(self):
         approved_publications = []
+        seen_paper_ids = set()  # To track unique paper IDs
+
         for publications in self.members_publications.values():  # Iterate over all author-publication lists
             for publication in publications:  # Iterate over publications for each author
-                if publication.approved:  # Check if the publication is approved
+                if publication.approved and publication.get_paper_id() not in seen_paper_ids:
                     approved_publications.append(publication)
+                    seen_paper_ids.add(publication.get_paper_id())  # Mark the paper ID as seen
+
         return approved_publications
 
     def check_if_publication_approved(self, publication_paper_id):
