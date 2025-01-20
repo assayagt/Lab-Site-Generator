@@ -409,11 +409,9 @@ class GetAllCustomWebsitesOfManager(Resource):
         """Fetch all custom website details for specific manager (both generated and not generated sites).
         The details contain the domain, site name, and generated status"""
         try:
-            parser = reqparse.RequestParser()
-            parser.add_argument('user_id', type=str, required=True, help="User id is required")
-            args = parser.parse_args()
+        
 
-            user_id = args['user_id']
+            user_id = request.args.get("user_id")
 
             response = generator_system.get_all_custom_websites_of_manager(user_id)
             if response.is_success():

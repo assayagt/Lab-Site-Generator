@@ -39,7 +39,8 @@ function Header(props) {
   };
 
   const onIconClick = () => {
-    navigate("/my-account")
+    console.log("h");
+    navigate("/my-account");
   };
 
   return (
@@ -50,15 +51,15 @@ function Header(props) {
             <div className="hidden-box">
             <div className="personal_menu">
                 <div className="icon_photo">
-                    {!sessionStorage.getItem('isLoggedIn')?<img src ={accountIcon} alt= "icon" onClick={onIconClick}></img>:
+                    {!sessionStorage.getItem('isLoggedIn')?<img src ={accountIcon} alt= "icon"></img>:
                     <img src ={accountIcon} alt= "icon" ></img>
                     }
                 </div>
                 <hr className="hr_line" />
                 {sessionStorage.getItem('isLoggedIn') ? (
                 <div className="choose_item">
-                    <button className ="my_sites_button" onClick={doSomething}>
-                        <img className = "my_sites_icon "src ={myWebsitesIcon} alt= "logout"></img>
+                    <button className ="my_sites_button" onClick={onIconClick}>
+                        <img className = "my_sites_icon "src ={myWebsitesIcon} alt= "logout" ></img>
                         My Websites
                     </button> 
                     <button className ="logout_button" onClick={handleLogout}>

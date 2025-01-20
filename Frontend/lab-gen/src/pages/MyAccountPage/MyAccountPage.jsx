@@ -9,7 +9,7 @@ const MyAccountPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { websiteData, setWebsite } = useWebsite();
+  const { setWebsite } = useWebsite();
   useEffect(() => {
     // Function to fetch websites from the API
     const fetchWebsites = async () => {
@@ -19,7 +19,11 @@ const MyAccountPage = () => {
           throw new Error('Failed to fetch websites');
         }
         console.log(data);
-        setWebsites(data.data); 
+        const websitesArray = Object.entries(data.websites || {}).map(([domain, details]) => ({
+          domain,
+          ...details,
+        }));
+        setWebsites(websitesArray);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -32,10 +36,31 @@ const MyAccountPage = () => {
 
 
   // This function would navigate to the individual website page
-  const handleWebsiteClick = (websiteId) => {
-    const selectedWebsite = websites.find((site) => site.id === websiteId);
-    setWebsite(selectedWebsite); // Save data to context
+  const handleWebsiteClick = (websiteDomain) => {
+    console.log(websites);
+  
+    // Find the website by its domain
+    const selectedWebsite = websites.find((site) => site.domain === websiteDomain);
+    if (selectedWebsite) {
+      console.log(selectedWebsite);
+  
+      // Update the context with the selected website data
+      setWebsite({
+        components: selectedWebsite.components || [],
+        template: selectedWebsite.template || '',
+        domain: selectedWebsite.domain || '',
+        websiteName: selectedWebsite.site_name || '',
+        created: selectedWebsite.created || false,
+        generated: selectedWebsite.generated || false,
+      });
+  
+      // Navigate to the specific website's page or a components page
+      navigate("/choose-components");
+    } else {
+      console.error(`Website with domain ${websiteDomain} not found`);
+    }
   };
+  if (loading) return <p>Loading...</p>;
 
   return (
     <div className="myAccountPage">
@@ -44,20 +69,20 @@ const MyAccountPage = () => {
       </div>
 
       <div className="myWebsites">
-        <h3>Your Websites</h3>
-        {websites.length > 0 ? (
-          <ul className="websiteList">
-            {websites.map((website) => (
-              <li key={website.id} className="websiteItem">
-                <span>{website.name} - {website.domain}</span>
-                <button onClick={() => handleWebsiteClick(website.id)}>View Website</button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No websites available.</p>
-        )}
-      </div>
+  <h3>Your Websites</h3>
+  {websites?.length > 0 ? (
+    <ul className="websiteList">
+      {websites.map((website, index) => (
+        <li key={index} className="websiteItem">
+          <span>{website.site_name} - {website.domain}</span>
+          <button onClick={() => handleWebsiteClick(website.domain)}>View Website</button>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p>No websites available.</p>
+  )}
+</div>
     </div>
   );
 };
