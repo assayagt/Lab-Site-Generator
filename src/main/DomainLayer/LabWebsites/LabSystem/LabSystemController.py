@@ -172,10 +172,14 @@ class LabSystemController:
         self.websiteFacade.error_if_member_is_not_publication_author(domain, publication_id, email)
         if not self.websiteFacade.check_if_publication_approved(domain, publication_id):
             managers_emails = list(userFacade.getManagers().keys())
-            self.websiteFacade.initial_approve_publication(domain, publication_id)
-            for manager_email in managers_emails:
-                publicationDTO = self.websiteFacade.get_publication_by_paper_id(domain, publication_id)
-                self.notificationsFacade.send_publication_notification_for_final_approval(publicationDTO, manager_email)
+            # check if useId is manager. if he is not, do the following rows
+            if not userFacade.verify_if_member_is_manager(email):
+                self.websiteFacade.initial_approve_publication(domain, publication_id)
+                for manager_email in managers_emails:
+                    publicationDTO = self.websiteFacade.get_publication_by_paper_id(domain, publication_id)
+                    self.notificationsFacade.send_publication_notification_for_final_approval(publicationDTO, manager_email)
+            else:
+                self.final_approve_publication_by_manager(userId, domain, publication_id)
         else:
             raise Exception(ExceptionsEnum.PUBLICATION_ALREADY_APPROVED.value)
 
@@ -189,6 +193,15 @@ class LabSystemController:
         email = userFacade.get_email_by_userId(userId)
         userFacade.error_if_user_is_not_labManager(email, domain)
         self.websiteFacade.final_approve_publication(domain, publication_id)
+
+    def reject_publication(self, userId, domain, publication_id):
+        """
+        Reject a publication by a lab manager in the final review stage.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId)
+        userFacade.error_if_user_not_logged_in(userId)
+        self.websiteFacade.reject_publication(domain, publication_id)
 
     def add_publication_manually(self, user_id, domain, publication_link, git_link, video_link, presentation_link):
         """A Lab Member updates the website with new research publications"""
