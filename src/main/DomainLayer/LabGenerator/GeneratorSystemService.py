@@ -1,3 +1,5 @@
+import base64
+import os
 from src.main.DomainLayer.LabGenerator.GeneratorSystem import GeneratorSystemController
 from src.main.Util.Response import Response
 import src.main.DomainLayer.LabGenerator.SiteCustom.Template as Template
@@ -187,12 +189,19 @@ class GeneratorSystemService:
         """ Get a custom website dto for specific manager and domain, through GeneratorSystemController."""
         try:
             website = self.generator_system_controller.get_custom_website(user_id, domain)
+            logo_path = website.logo  # Ensure `website.logo` contains the full file path
+            if logo_path and os.path.exists(logo_path):
+                with open(logo_path+".svg", "rb") as logo_file:
+                    logo_base64 = base64.b64encode(logo_file.read()).decode()
+                    logo_data_url = f"data:image/svg+xml;base64,{logo_base64}"
+            else:
+                logo_data_url = None
             return Response({
                 "domain": domain,
                 "name": website.get_name(),
                 "components": website.get_components(),
                 "template": website.get_template(),
-                "logo": website.logo,  # Include the logo
+                "logo": logo_data_url,  # Include the logo
                 "home_picture": website.home_picture  # Include the home picture
             }, "Successfully retrieved custom website")
         except Exception as e:
@@ -201,12 +210,19 @@ class GeneratorSystemService:
     def get_site_by_domain(self, domain):
         try:
             website = self.generator_system_controller.get_site_by_domain(domain)
+            logo_path = website.get_logo()  # Ensure `website.logo` contains the full file path
+            if logo_path and os.path.exists(logo_path):
+                with open(logo_path+".svg", "rb") as logo_file:
+                    logo_base64 = base64.b64encode(logo_file.read()).decode()
+                    logo_data_url = f"data:image/svg+xml;base64,{logo_base64}"
+            else:
+                logo_data_url = None
             return Response({
                 "domain": domain,
                 "name": website.get_name(),
                 "components": website.get_components(),
                 "template": website.get_template(),
-                "logo": website.get_logo(),  # Include the logo
+                "logo": logo_data_url,  # Include the logo
                 "home_picture": website.get_home_picture()  # Include the home picture
             }, "Successfully retrieved custom website")
         except Exception as e:

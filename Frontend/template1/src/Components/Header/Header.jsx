@@ -107,7 +107,7 @@ function Header(props) {
 
   return (
     <div className="header">
-      <img className="header_logo" src={Logo} alt="logoItem" />
+      <img className="header_logo" src={props.logo} alt="logoItem" />
       <div className="header_title">{props.title}</div>
       <div className="navbar" ref={navbarRef} onMouseMove={handleMouseEnter}>
         {props.components
