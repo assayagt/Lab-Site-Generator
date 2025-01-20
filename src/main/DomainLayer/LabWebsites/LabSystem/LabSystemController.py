@@ -172,6 +172,7 @@ class LabSystemController:
         self.websiteFacade.error_if_member_is_not_publication_author(domain, publication_id, email)
         if not self.websiteFacade.check_if_publication_approved(domain, publication_id):
             managers_emails = list(userFacade.getManagers().keys())
+            self.websiteFacade.initial_approve_publication(domain, publication_id)
             for manager_email in managers_emails:
                 publicationDTO = self.websiteFacade.get_publication_by_paper_id(domain, publication_id)
                 self.notificationsFacade.send_publication_notification_for_final_approval(publicationDTO, manager_email)
