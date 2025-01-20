@@ -245,6 +245,7 @@ class LabSystemController:
         Only managers can perform this operation.
         Site creator cant be defined as alumni.
         """
+        #TODO: Change it so site creator can be defined as alumni if he is replaced by another site creator
         return self.allWebsitesUserFacade.define_member_as_alumni(manager_userId, member_email, domain)
 
     def remove_manager_permission(self, manager_userId, manager_toRemove_email, domain):
@@ -296,7 +297,6 @@ class LabSystemController:
         else:
             self.websiteFacade.error_if_member_is_not_publication_author(domain, publication_id, email)
             self.websiteFacade.set_publication_video_link(domain, publication_id, video_link)
-            #TODO: in the future, send notification to lab manager for approve
 
     def set_publication_git_link_by_author(self, userId, domain, publication_id, git_link):
         """
@@ -313,7 +313,6 @@ class LabSystemController:
         else:
             self.websiteFacade.error_if_member_is_not_publication_author(domain, publication_id, email)
             self.websiteFacade.set_publication_git_link(domain, publication_id, git_link)
-            #TODO: in the future, send notification to lab manager for approve
 
     def set_publication_presentation_link_by_author(self, userId, domain, publication_id, presentation_link):
         """
