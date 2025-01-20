@@ -912,6 +912,22 @@ class SetMedia(Resource):
         except Exception as e:
             return jsonify({"error": str(e)})
 
+class RejectPublication(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User ID is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        parser.add_argument('publication_id', type=str, required=True, help="Publication ID is required")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.reject_publication(args['user_id'], args['domain'], args['publication_id'])
+            if response.is_success():
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
 
 # Add resources to the API of lab
 api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')#

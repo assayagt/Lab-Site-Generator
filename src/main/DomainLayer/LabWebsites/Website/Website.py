@@ -133,3 +133,7 @@ class Website:
                     seen_paper_ids.add(publication.get_paper_id())  # Mark the paper ID as seen
 
         return final_publications
+
+    def reject_publication(self, publication_id):
+        publication = self.get_publication_by_paper_id(publication_id)
+        publication.approved = ApprovalStatus.REJECTED

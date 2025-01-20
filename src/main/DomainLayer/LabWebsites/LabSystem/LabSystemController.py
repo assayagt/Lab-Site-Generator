@@ -190,6 +190,15 @@ class LabSystemController:
         userFacade.error_if_user_is_not_labManager(email, domain)
         self.websiteFacade.final_approve_publication(domain, publication_id)
 
+    def reject_publication(self, userId, domain, publication_id):
+        """
+        Reject a publication by a lab manager in the final review stage.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId)
+        userFacade.error_if_user_not_logged_in(userId)
+        self.websiteFacade.reject_publication(domain, publication_id)
+
     def add_publication_manually(self, user_id, domain, publication_link, git_link, video_link, presentation_link):
         """A Lab Member updates the website with new research publications"""
         self.allWebsitesUserFacade.error_if_domain_not_exist(domain)
