@@ -1,22 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MyAccountPage.css';
+import { getCustomWebsites } from '../../services/MyAccount';
+import { useWebsite } from '../../Context/WebsiteContext';
 
 const MyAccountPage = () => {
- 
-
-  const [websites, setWebsites] = useState([
-    { id: 1, name: 'Website 1', domain: 'website1.com' },
-    { id: 2, name: 'Website 2', domain: 'website2.com' },
-    { id: 3, name: 'Website 3', domain: 'website3.com' },
-    // This would be dynamically fetched from the server
-  ]);
-
+  const [websites, setWebsites] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { websiteData, setWebsite } = useWebsite();
+  useEffect(() => {
+    // Function to fetch websites from the API
+    const fetchWebsites = async () => {
+      try {
+        const data = await getCustomWebsites(sessionStorage.getItem("sid")); // Replace with your API URL
+        if (data.response === "false") {
+          throw new Error('Failed to fetch websites');
+        }
+        console.log(data);
+        setWebsites(data.data); 
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWebsites();
+  }, []);
+
 
   // This function would navigate to the individual website page
   const handleWebsiteClick = (websiteId) => {
-    
+    const selectedWebsite = websites.find((site) => site.id === websiteId);
+    setWebsite(selectedWebsite); // Save data to context
   };
 
   return (
