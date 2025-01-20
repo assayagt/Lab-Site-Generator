@@ -539,7 +539,7 @@ class GetApprovedPublications(Resource):
                 return jsonify({"publications": response.get_data(), "response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}"})
 
 class AddPublication(Resource):
     def post(self):

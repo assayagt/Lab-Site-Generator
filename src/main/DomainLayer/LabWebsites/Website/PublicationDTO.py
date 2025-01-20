@@ -23,7 +23,6 @@ class PublicationDTO:
             "title": self.title,
             "authors": self.authors,
             "publication_year": self.publication_year,
-            "approved": self.approved,
             "publication_link": self.publication_link,
             "video_link": self.video_link,
             "git_link": self.git_link,

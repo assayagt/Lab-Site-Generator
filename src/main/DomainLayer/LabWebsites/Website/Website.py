@@ -36,7 +36,7 @@ class Website:
         for publications in self.members_publications.values():  # Iterate over all author-publication lists
             for publication in publications:  # Iterate over publications for each author
                 if publication.approved == ApprovalStatus.APPROVED and publication.get_paper_id() not in seen_paper_ids:
-                    approved_publications.append(publication)
+                    approved_publications.append(publication.to_dict())
                     seen_paper_ids.add(publication.get_paper_id())  # Mark the paper ID as seen
 
         return approved_publications
