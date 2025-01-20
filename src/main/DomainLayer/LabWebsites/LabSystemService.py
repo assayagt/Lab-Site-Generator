@@ -73,6 +73,14 @@ class LabSystemService:
         except Exception as e:
             return Response(None, str(e))
 
+    def reject_publication(self, user_id, domain, publication_id):
+        """Reject a publication."""
+        try:
+            self.lab_system_controller.reject_publication(user_id, domain, publication_id)
+            return Response(True, "Publication rejected successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
     def add_publication_manually(self, user_id, domain, publication_link, git_link, video_link, presentation_link):
         """Add a publication manually to a lab website."""
         try:
@@ -108,7 +116,7 @@ class LabSystemService:
     def set_publication_git_link(self, user_id, domain, publication_id, git_link):
         """Set git link for a publication."""
         try:
-            self.lab_system_controller.set_publication_git_link(user_id, domain, publication_id, git_link)
+            self.lab_system_controller.set_publication_git_link_by_author(user_id, domain, publication_id, git_link)
             return Response(True, "Git link added successfully")
         except Exception as e:
             return Response(None, str(e))
@@ -116,7 +124,7 @@ class LabSystemService:
     def set_publication_presentation_link(self, user_id, domain, publication_id, presentation_link):
         """Set presentation link for a publication."""
         try:
-            self.lab_system_controller.set_publication_presentation_link(user_id, domain, publication_id, presentation_link)
+            self.lab_system_controller.set_publication_presentation_link_by_author(user_id, domain, publication_id, presentation_link)
             return Response(True, "Presentation link added successfully")
         except Exception as e:
             return Response(None, str(e))
