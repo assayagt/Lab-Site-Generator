@@ -105,3 +105,9 @@ class WebsiteFacade:
         if website is None:
             raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
         website.initial_approve_publication(publication_id)
+
+    def reject_publication(self, domain, publication_id):
+        website = self.get_website(domain)
+        if website is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        website.reject_publication(publication_id)

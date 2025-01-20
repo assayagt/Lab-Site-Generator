@@ -73,6 +73,14 @@ class LabSystemService:
         except Exception as e:
             return Response(None, str(e))
 
+    def reject_publication(self, user_id, domain, publication_id):
+        """Reject a publication."""
+        try:
+            self.lab_system_controller.reject_publication(user_id, domain, publication_id)
+            return Response(True, "Publication rejected successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
     def add_publication_manually(self, user_id, domain, publication_link, git_link, video_link, presentation_link):
         """Add a publication manually to a lab website."""
         try:
