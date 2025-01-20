@@ -69,7 +69,7 @@ class GeneratorSystemController:
         Set the site logo on lab website creation.
         """
         self.site_custom_facade.error_if_domain_not_exist(domain)
-        logo_path = os.path.join(domain, "logo")
+        logo_path = os.path.join('./LabWebsitesUploads',domain, "logo")
         logo = logo_path if os.path.exists(logo_path) else None
         self.site_custom_facade.set_logo(domain, logo)
 
@@ -87,7 +87,7 @@ class GeneratorSystemController:
         Set the site home picture on lab website creation.
         """
         self.site_custom_facade.error_if_domain_not_exist(domain)
-        home_picture_path = os.path.join(domain, "home_picture")
+        home_picture_path = os.path.join('./LabWebsitesUploads',domain, "home_picture")
         home_picture = home_picture_path if os.path.exists(home_picture_path) else None
         self.site_custom_facade.set_home_picture(domain, home_picture)
 

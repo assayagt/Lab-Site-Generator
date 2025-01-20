@@ -93,9 +93,9 @@ class UploadFilesAndData(Resource):
                 print(component)
                 if file:
                     if component == 'logo':
-                        file_path = os.path.join(website_folder, "logo.png")  # Assuming logo is always a .png
+                        file_path = os.path.join(website_folder, "logo")  # Assuming logo is always a .png
                     elif component == 'homepage_photo':
-                        file_path = os.path.join(website_folder, "homepage_photo.jpg")  # Assuming photo is always a .jpg
+                        file_path = os.path.join(website_folder, "homepage_photo")  # Assuming photo is always a .jpg
                     else:
                         print("help")
                         file_path = os.path.join(website_folder, f"{component}.csv")  # Default case for other files
