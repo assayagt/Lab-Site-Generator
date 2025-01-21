@@ -17,9 +17,9 @@ class Website:
                 self.members_publications[author_email] = []
             self.members_publications[author_email].append(publicationDTO)
 
-    def add_publication_manually(self, publication_link, publication_details, git_link, video_link, presentation_link):
+    def add_publication_manually(self, publication_link, publication_details, git_link, video_link, presentation_link, authors_emails):
         publication_dto = PublicationDTO(publication_details["title"], publication_details["authors"], publication_details["publication_year"], ApprovalStatus.FINAL_PENDING, publication_link, git_link, video_link, presentation_link, publication_details["description"])
-        self.create_publication(publication_dto, publication_details["authors"])
+        self.create_publication(publication_dto, authors_emails)
         return publication_dto.get_paper_id()
 
 

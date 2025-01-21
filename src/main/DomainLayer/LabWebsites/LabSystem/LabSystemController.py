@@ -215,13 +215,13 @@ class LabSystemController:
 
         # Replace author names with emails
         if 'authors' in publication_details:
-            publication_details['authors'] = [
+            authors_emails = [
                 userFacade.getMemberEmailByName(author) for author in publication_details['authors']
             ]
 
         # Create the new publication
         publication_id = self.websiteFacade.create_new_publication(
-            domain, publication_link, publication_details, git_link, video_link, presentation_link
+            domain, publication_link, publication_details, git_link, video_link, presentation_link, authors_emails
         )
 
         email = userFacade.get_email_by_userId(user_id)
@@ -241,11 +241,15 @@ class LabSystemController:
         """
         return self.websiteFacade.get_all_approved_publication(domain)
 
-    def get_all_approved_publications_of_member(self, domain, email):
+    def get_all_approved_publications_of_member(self, domain, user_id):
         """
         return all approved publications of a specific member of the lab website
         (in order to display them on his personal profile on the website)
         """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(user_id)
+        userFacade.error_if_user_not_logged_in(user_id)
+        email = userFacade.get_email_by_userId(user_id)
         return self.websiteFacade.get_all_approved_publications_of_member(domain, email)
 
     def define_member_as_alumni(self, manager_userId, member_email, domain):

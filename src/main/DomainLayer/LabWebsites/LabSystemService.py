@@ -97,10 +97,10 @@ class LabSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def get_all_approved_publications_of_member(self, domain, email):
+    def get_all_approved_publications_of_member(self, domain, user_id):
         """Get all approved publications of a specific member for a specific website."""
         try:
-            publications = self.lab_system_controller.get_all_approved_publications_of_member(domain, email)
+            publications = self.lab_system_controller.get_all_approved_publications_of_member(domain, user_id)
             return Response(publications, "Retrieved all approved publications for member successfully")
         except Exception as e:
             return Response(None, str(e))
