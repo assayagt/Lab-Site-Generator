@@ -241,11 +241,15 @@ class LabSystemController:
         """
         return self.websiteFacade.get_all_approved_publication(domain)
 
-    def get_all_approved_publications_of_member(self, domain, email):
+    def get_all_approved_publications_of_member(self, domain, user_id):
         """
         return all approved publications of a specific member of the lab website
         (in order to display them on his personal profile on the website)
         """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(user_id)
+        userFacade.error_if_user_not_logged_in(user_id)
+        email = userFacade.get_email_by_userId(user_id)
         return self.websiteFacade.get_all_approved_publications_of_member(domain, email)
 
     def define_member_as_alumni(self, manager_userId, member_email, domain):

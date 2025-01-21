@@ -691,11 +691,11 @@ class GetMemberPublications(Resource):
     def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument('domain', required=True, help="Domain is required.")
-        parser.add_argument('email', required=True, help="Member email is required.")
+        parser.add_argument('user_id', required=True, help="User id is required.")
         args = parser.parse_args()
 
         try:
-            response = lab_system_service.get_all_approved_publications_of_member(args['domain'], args['email'])
+            response = lab_system_service.get_all_approved_publications_of_member(args['domain'], args['user_id'])
             if response.is_success():
                 return jsonify({"publications": response.get_data(), "response": "true"})
             return jsonify({"error": response.get_message(), "response": "false"})
