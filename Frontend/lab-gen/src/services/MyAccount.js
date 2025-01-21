@@ -16,7 +16,7 @@ export const getCustomWebsites = async (userId) => {
 
 export const getCustomSite = async (userId, domain) => {
     try {
-        const response = await axios.get(`${baseApiUrl}getCustomSite??domain=${domain}&user_id=${userId}`);
+        const response = await axios.get(`${baseApiUrl}getCustomSite?domain=${domain}&user_id=${userId}`);
         console.log(response);
         return response.data;
     } catch (error) {

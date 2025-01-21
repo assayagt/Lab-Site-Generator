@@ -9,7 +9,7 @@ const MyAccountPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { setWebsite } = useWebsite();
+  const { setWebsite, websiteData } = useWebsite();
   useEffect(() => {
     // Function to fetch websites from the API
     const fetchWebsites = async () => {
@@ -46,11 +46,12 @@ const MyAccountPage = () => {
         components: data.data.components || [],
         template: data.data.template || '',
         domain: data.data.domain || '',
-        websiteName: data.data.site_name || '',
-        created: selectedWebsite.created || false,
+        websiteName: data.data.name || '',
+        created: true,
         generated: selectedWebsite.generated || false,
       });
   
+      console.log(websiteData);
       navigate("/choose-components");
  
   };
