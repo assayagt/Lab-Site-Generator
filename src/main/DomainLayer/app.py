@@ -1195,7 +1195,7 @@ api.add_resource(RejectRegistration, '/api/rejectRegistration') #
 api.add_resource(GetAllLabManagers, '/api/getAllLabManagers')#
 api.add_resource(GetAllLabMembers, '/api/getAllLabMembers')#
 api.add_resource(GetAllAlumni, '/api/getAllAlumni')#
-api.add_resource(AddLabMemberFromWebsite, '/api/addLabMember') #
+# api.add_resource(AddLabMemberFromWebsite, '/api/addLabMember') #
 api.add_resource(AddLabMemberFromGenerator, '/api/addLabMemberFromGenerator')#
 api.add_resource(AddLabManager, '/api/addLabManager')#
 # api.add_resource(GetAllCustomWebsites, '/api/getCustomWebsites')
