@@ -285,9 +285,9 @@ export const removeSiteManager = async (userId, managerEmail, domain) => {
     }
 };
 
-export const getMemberPublications = async (domain, email) => {
+export const getMemberPublications = async (domain) => {
     try {
-        const response = await axios.get(`${baseApiUrl}getMemberPublications`, { params: { domain, email } });
+        const response = await axios.get(`${baseApiUrl}getMemberPublications?domain=${domain}&user_id=${sessionStorage.getItem("sid")}`);
         return response.data.publications;
     } catch (error) {
         console.error("Error getting member publications:", error);
