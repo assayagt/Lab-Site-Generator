@@ -12,3 +12,12 @@ class ContactInfo:
 
     def set_phone_num(self, lab_phone_num):
         self.lab_phone_num = lab_phone_num
+
+    def get_lab_address(self):
+        return self.lab_address
+    
+    def get_lab_mail(self):
+        return self.lab_mail
+    
+    def get_lab_phone_num(self):
+        return self.lab_phone_num

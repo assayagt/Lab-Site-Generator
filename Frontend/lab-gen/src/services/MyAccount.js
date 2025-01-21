@@ -6,8 +6,8 @@ const baseApiUrl = "http://127.0.0.1:5000/api/";
 
 export const getCustomWebsites = async (userId) => {
     try {
-        const response = await axios.get(`${baseApiUrl}getCustomWebsites`, { params: { user_id: userId } });
-        return response.data.websites;
+        const response = await axios.get(`${baseApiUrl}getCustomWebsites?user_id=${userId}`);
+        return response.data;
     } catch (error) {
         console.error("Error fetching custom websites:", error);
         return [];

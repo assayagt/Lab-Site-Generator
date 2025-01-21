@@ -2,10 +2,11 @@ import axios from "axios";
 
 const baseApiUrl = "http://127.0.0.1:5000/api/";
 
-export const SendLogin = async(email,sid) => {
+export const SendLogin = async(email,sid,domain) => {
   let data;
   return axios
     .post(`${baseApiUrl}loginWebsite`, {
+      domain: domain,
       email:email,
       user_id: sid,
     })
@@ -28,8 +29,10 @@ export const SendLogout = async (
     try {
       const response = await axios.post(`${baseApiUrl}logoutWebsite`, {
         user_id: sid,
+        domain: sessionStorage.getItem("domain"),
       });
       data =  response.data;
+      console.log(data);
     } catch (err) {
       console.error("Error sending to signup" + err);
     }
@@ -41,7 +44,7 @@ export const SendLogout = async (
   ) => {
     let data;
     await axios
-        .get(`${baseApiUrl}enterLabWebsite`)
+        .get(`${baseApiUrl}enterLabWebsite?domain=${sessionStorage.getItem("domain")}`)
         .then((resp) => {
             data = resp.data.user_id;
             return data;

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./Header.css";
 import Logo from "../../images/brain.svg";
 import accountIcon from "../../images/account_avatar.svg";
@@ -8,11 +8,14 @@ import { useAuth } from "../../Context/AuthContext";
 function Header(props) {
   const navbarRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation(); // Get current location
   const { login, logout } = useAuth();
   const [hasNotifications, setHasNotifications] = useState(false); // State for notifications
   const [showLogin, setShowLogin] = useState(false);
   const [email, setEmail] = useState("");
   const [loginError, setLoginError] = useState(""); // State to store login error messages
+  const [isLoggedIn, setIsLoggedIn] = useState(sessionStorage.getItem("isLoggedIn"));
+
 
   let scrollAnimationFrame = null;
 
@@ -69,10 +72,12 @@ function Header(props) {
   };
 
    const handleLogin = (e) => {
-    e.preventDefault();
+    //e.preventDefault();
     if (login(email)) {
       setShowLogin(false); 
       setLoginError(""); 
+      setIsLoggedIn(true);
+      //window.location.reload();
     } else {
       setLoginError("Login failed. Please check your username and try again."); 
     }
@@ -80,9 +85,24 @@ function Header(props) {
   };
 
   const handleLogout = () => {
-    logout(); 
+    
+
+    let ans = logout(); 
+    if(ans){
+       sessionStorage.removeItem("isLoggedIn");
+       sessionStorage.removeItem("userEmail");
+       setIsLoggedIn(false);
+    if (location.pathname === "/Account") {
+      // If user is currently on "/Account", navigate to "/"
+      navigate("/");
+    } else {
+      // Otherwise, reload the page
+      window.location.reload();
+    }
+    }
+   
     console.log("Logout clicked");
-    navigate("/"); 
+    
   };
 
   return (
@@ -107,12 +127,12 @@ function Header(props) {
           <div className="hidden-box">
             <div className="personal_menu">
               <div className="icon_photo">
-                <img src={accountIcon} alt="icon" onClick={() => navigate("Account")} />
+                <img src={accountIcon} alt="icon" />
               </div>
               <hr className="hr_line" />
-              {sessionStorage.getItem("isLoggedIn") ? (
+              {isLoggedIn ? (
                 <div className="choose_item">
-                  <button className="my_sites_button" onClick={() => console.log("My Account clicked")}>
+                  <button className="my_sites_button" onClick={() => navigate("Account")}>
                     My Account
                   </button>
                   <button className="logout_button" onClick={() => handleLogout()}>
@@ -149,3 +169,4 @@ function Header(props) {
 }
 
 export default Header;
+///onClick={() => navigate("Account")}

@@ -191,5 +191,5 @@ class AllWebsitesUserFacade:
         userFacade.error_if_user_not_logged_in(userid)
         userFacade.error_if_user_is_not_labMember_manager_creator(userid)
         email = userFacade.get_email_by_userId(userid)
-        userFacade.get_user_details(email)
+        return userFacade.get_user_details(email)
 

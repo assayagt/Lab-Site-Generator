@@ -343,16 +343,36 @@ class LabSystemController:
         userFacade.error_if_user_not_logged_in(userid)
         return self.allWebsitesUserFacade.get_pending_registration_emails(domain)
 
-    def set_site_about_us_on_creation_from_generator(self, domain, about_us):
+    def set_site_about_us_from_generator(self, domain, about_us):
         """
         Set the about us section of the website.
         """
         self.websiteFacade.set_site_about_us(domain, about_us)
 
-    def set_site_contact_info_on_creation_from_generator(self, domain, contact_info_dto):
+    def set_site_about_us_from_labWebsite(self, userId, domain, about_us):
+        """
+        Set the about us section of the website.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId)
+        userFacade.error_if_user_not_logged_in(userId)
+        userFacade.error_if_user_is_not_manager_or_site_creator(userId)
+        self.websiteFacade.set_site_about_us(domain, about_us)
+
+    def set_site_contact_info_from_generator(self, domain, contact_info_dto):
         """
         Set the contact us section of the website.
         """
+        self.websiteFacade.set_site_contact_info(domain, contact_info_dto)
+
+    def set_site_contact_info_from_labWebsite(self, userId, domain, contact_info_dto):
+        """
+        Set the contact us section of the website.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId)
+        userFacade.error_if_user_not_logged_in(userId)
+        userFacade.error_if_user_is_not_manager_or_site_creator(userId)
         self.websiteFacade.set_site_contact_info(domain, contact_info_dto)
 
     def get_about_us(self, domain):
@@ -384,3 +404,6 @@ class LabSystemController:
         Get user details.
         """
         return self.allWebsitesUserFacade.get_user_details(userId, domain)
+    
+    def get_contact_us(self,domain):
+        return self.websiteFacade.get_contact_us(domain)
