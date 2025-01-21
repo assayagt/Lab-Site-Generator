@@ -692,26 +692,7 @@ class GetAllCustomWebsites(Resource):
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e :
             return jsonify({"error": f"An error occurred: {str(e)}"})
-        
-    class GetCustomSite(Resource):
-        def get(self):
-            parser = reqparse.RequestParser()
-            parser.add_argument('user_id', type=str, required=True, help="User id is required")
-            parser.add_argument('domain', type=str, required=True, help="Domain is required")
-            args = parser.parse_args()
 
-            user_id = args['user_id']
-            domain = args['domain']
-
-            try :
-                response = generator_system.get_custom_website(user_id, domain)
-                if response.is_success():
-                    website_data = response.get_data() # Returned value is website name, template, components
-                    return jsonify({'data': website_data, "response": "true"})
-                return jsonify({"message": response.get_message(), "response": "false"})
-            except Exception as e:
-                return jsonify({"error": f"An error occurred: {str(e)}"})
-            
 
 class GetMemberPublications(Resource):
     def get(self):
@@ -1067,6 +1048,88 @@ class RejectPublication(Resource):
         except Exception as e:
             return jsonify({"error": str(e)})
 
+class SetSiteAboutUsByManagerFromGenerator(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User ID is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        parser.add_argument('about_us', type=str, required=True, help="About us is required")
+        args = parser.parse_args()
+
+        try:
+            response = generator_system.set_site_about_us_by_manager_from_generator(args['user_id'], args['domain'], args['about_us'])
+            if response.is_success():
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class SetSiteContactInfoByManagerFromGenerator(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User ID is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        parser.add_argument('lab_address', type=str, required=True, help="Lab address is required")
+        parser.add_argument('lab_mail', type=str, required=True, help="Lab mail is required")
+        parser.add_argument('lab_phone_num', type=str, required=True, help="Lab phone number is required")
+        args = parser.parse_args()
+
+        user_id = args['user_id']
+        domain = args['domain']
+        lab_address = args['lab_address']
+        lab_mail = args['lab_mail']
+        lab_phone_num = args['lab_phone_num']
+        contact_info = ContactInfo(lab_address, lab_mail, lab_phone_num)
+
+        try:
+            response = generator_system.set_site_contact_info_by_manager_from_generator(user_id, domain, contact_info)
+            if response.is_success():
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class SetSiteAboutUsByManagerFromLabWebsite(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User ID is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        parser.add_argument('about_us', type=str, required=True, help="About us is required")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.set_site_about_us_from_labWebsite(args['user_id'], args['domain'], args['about_us'])
+            if response.is_success():
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+
+class SetSiteContactInfoByManagerFromLabWebsite(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User ID is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        parser.add_argument('lab_address', type=str, required=True, help="Lab address is required")
+        parser.add_argument('lab_mail', type=str, required=True, help="Lab mail is required")
+        parser.add_argument('lab_phone_num', type=str, required=True, help="Lab phone number is required")
+        args = parser.parse_args()
+
+        user_id = args['user_id']
+        domain = args['domain']
+        lab_address = args['lab_address']
+        lab_mail = args['lab_mail']
+        lab_phone_num = args['lab_phone_num']
+        contact_info = ContactInfo(lab_address, lab_mail, lab_phone_num)
+
+        try:
+            response = lab_system_service.set_site_contact_info_from_labWebsite(user_id, domain, contact_info)
+            if response.is_success():
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
 
 # Add resources to the API of lab
 api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')#
@@ -1098,6 +1161,7 @@ api.add_resource(StartCustomSite, '/api/startCustomSite')  #
 api.add_resource(GetAllCustomWebsitesOfManager, '/api/getCustomWebsites')
 api.add_resource(EnterGeneratorSystem, '/api/enterGeneratorSystem')#
 api.add_resource(GetCustomSite, '/api/getCustomSite')
+api.add_resource(CreateNewSiteManagerFromGenerator, '/api/CreateNewSiteManagerFromGenerator')
 
 
 
@@ -1119,7 +1183,13 @@ api.add_resource(SetFullName, '/api/setFullName')#
 api.add_resource(SetDegree, '/api/setDegree')#
 api.add_resource(SetBio, '/api/setBio')#
 api.add_resource(SetMedia, '/api/setMedia')#
+api.add_resource(SetSiteAboutUsByManagerFromGenerator, '/api/setSiteAboutUsByManagerFromGenerator')#
+api.add_resource(SetSiteAboutUsByManagerFromLabWebsite, '/api/setSiteAboutUsByManagerFromLabWebsite')#
+api.add_resource(SetSiteContactInfoByManagerFromGenerator, '/api/setSiteContactInfoByManagerFromGenerator')#
+api.add_resource(SetSiteContactInfoByManagerFromLabWebsite, '/api/setSiteContactInfoByManagerFromLabWebsite')#
 api.add_resource( GetHomepageDetails, '/api/getHomepageDetails')
+api.add_resource(ChangeSiteHomePictureByManager, '/api/ChangeSiteHomePictureByManager')
+api.add_resource(ChangeSiteLogoByManager, '/api/ChangeSiteLogoByManager')
 api.add_resource( RemoveSiteManagerFromGenerator, '/api/removeSiteManager')
 api.add_resource( GetUserDetails, '/api/getUserDetails')
 
