@@ -190,8 +190,7 @@ class LabSystemController:
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
-        email = userFacade.get_email_by_userId(userId)
-        userFacade.error_if_user_is_not_labManager(email, domain)
+        userFacade.error_if_user_is_not_manager(userId)
         self.websiteFacade.final_approve_publication(domain, publication_id)
 
     def reject_publication(self, userId, domain, publication_id):
@@ -221,9 +220,19 @@ class LabSystemController:
             ]
 
         # Create the new publication
-        self.websiteFacade.create_new_publication(
+        publication_id = self.websiteFacade.create_new_publication(
             domain, publication_link, publication_details, git_link, video_link, presentation_link
         )
+
+        email = userFacade.get_email_by_userId(user_id)
+        if not userFacade.verify_if_member_is_manager(email):
+            managers_emails = list(userFacade.getManagers().keys())
+            for manager_email in managers_emails:
+                publicationDTO = self.websiteFacade.get_publication_by_paper_id(domain, publication_id)
+                self.notificationsFacade.send_publication_notification_for_final_approval(publicationDTO, manager_email)
+        else:
+            self.final_approve_publication_by_manager(user_id, domain, publication_id)
+
 
     def get_all_approved_publication(self, domain):
         """
