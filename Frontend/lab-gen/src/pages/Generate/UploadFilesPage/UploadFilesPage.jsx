@@ -3,22 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useWebsite } from '../../../Context/WebsiteContext';
 import './UploadFilesPage.css';
 import axios from "axios";
-
+import { getAllAlumni,getAllLabManagers,getAllLabMembers,createNewSiteManager, removeSiteManager,addLabMember } from '../../../../../template1/src/services/websiteService';
 const baseApiUrl = "http://127.0.0.1:5000/api/";
 const UploadFilesPage = () => {
-
-
-
-  const [participants, setParticipants] = useState([
-    { fullName: "Dr. Alice Johnson", degree: "PhD", isLabManager: true },
-    { fullName: "Prof. Brian Smith", degree: "PhD", isLabManager: false },
-    { fullName: "Dr. Carmen Li", degree: "MD", isLabManager: false },
-    { fullName: "Prof. David Wright", degree: "PhD", isLabManager: false },
-    { fullName: "Ms. Emily Davis", degree: "MSc", isLabManager: true }
-  ]);
-
-
-
 
 
   const navigate = useNavigate();
@@ -33,10 +20,16 @@ const UploadFilesPage = () => {
     logo: null,
     homepagePhoto: null,
   });
+
+
+  const [participants, setParticipants] = useState([]);
+ 
+
   const [selectedComponent, setSelectedComponent] = useState('AboutUs');  // Default to About Us
   const [showAddForm, setShowAddForm] = useState(false);
   const [newParticipant, setNewParticipant] = useState({
     fullName: '',
+    email:'',
     degree: '',
     isLabManager: false
   });
@@ -49,6 +42,34 @@ const UploadFilesPage = () => {
     const savedData = sessionStorage.getItem('ContactUs');
     return savedData ? JSON.parse(savedData) : { email: '', phoneNumber: '', address: '' };
   });
+
+
+
+  useEffect(() => {
+    const fetchParticipants = async () => {
+      let domain = websiteData.domain;
+      try {
+        const [managers, members, alumni] = await Promise.all([
+          getAllLabManagers(domain),
+          getAllLabMembers(domain),
+          getAllAlumni(domain),
+        ]);
+  
+        // Add isLabManager field to each participant
+        const allParticipants = [
+          ...managers.map((participant) => ({ ...participant, isLabManager: true })),
+          ...members.map((participant) => ({ ...participant, isLabManager: false })),
+          ...alumni.map((participant) => ({ ...participant, isLabManager: false }))
+        ];
+  
+        setParticipants(allParticipants);
+      } catch (err) {
+        console.error('Error fetching participants:', err);
+      }
+    };
+  
+    fetchParticipants();
+  }, [websiteData.domain]);
 
 
   useEffect(() => {
@@ -65,19 +86,38 @@ const UploadFilesPage = () => {
   };
 
 
-
-
- 
-  const toggleLabManager = index => {
-    const newParticipants = participants.map((participant, idx) => {
-      if (idx === index) {
-        return { ...participant, isLabManager: !participant.isLabManager };
+  const toggleLabManager = async (index) => {
+    const updatedParticipants = [...participants];
+    const participant = updatedParticipants[index];
+  
+    const email = participant.email;
+    const isLabManager = participant.isLabManager;
+  
+    
+    try {
+      if (!isLabManager) {
+        
+        let data = await createNewSiteManager(sessionStorage.getItem("sid"), email, websiteData.domain);
+        if(data.response==="true"){
+          participant.isLabManager = !isLabManager;
+          setParticipants(updatedParticipants);
+        }
+      } else {
+        // Removing as a site manager
+        let data =await removeSiteManager(sessionStorage.getItem("sid"), email, websiteData.domain);
+        if(data.response==="true"){
+          participant.isLabManager = !isLabManager;
+          setParticipants(updatedParticipants);
+        }
       }
-      return participant;
-    });
-    setParticipants(newParticipants);
+  
+    
+    } catch (error) {
+      console.error('Error toggling lab manager:', error);
+      alert('An error occurred while updating the lab manager.');
+    }
   };
-
+  
   const handleInputChangeParticipant = (e) => {
     const { name, value, type, checked } = e.target;
     setNewParticipant(prev => ({
@@ -86,15 +126,36 @@ const UploadFilesPage = () => {
     }));
   };
 
-  const addParticipant = () => {
-    if (newParticipant.fullName && newParticipant.degree) {
-      setParticipants([...participants, newParticipant]);
-      setNewParticipant({ fullName: '', degree: '', isLabManager: false });
-      setShowAddForm(false);
+  const addParticipant = async () => {
+    if (newParticipant.fullName && newParticipant.degree && newParticipant.email) {
+      try {
+        const response = await addLabMember(
+          sessionStorage.getItem("sid"), // Manager's User ID, assuming this is stored in sessionStorage
+          newParticipant.email, // Email of the new participant
+          newParticipant.fullName, // Full name of the new participant
+          newParticipant.degree, // Degree of the new participant
+          websiteData.domain // Domain of the lab
+        );
+  
+        if (response.response === 'true') {
+          alert('Lab member added successfully');
+        
+          setParticipants([...participants, { ...newParticipant, isLabManager: false }]);
+          setNewParticipant({ fullName: '', degree: '', email: '' }); 
+          setShowAddForm(false);
+        } else {
+          alert(`Error: ${response.message}`);
+        }
+      } catch (error) {
+        console.error('Error adding participant:', error);
+        alert('An error occurred while adding the lab member.');
+      }
     } else {
       alert("Please fill all fields.");
     }
   };
+
+  
 
 
   const handleAboutUsChange = (e) => {
@@ -127,6 +188,8 @@ const UploadFilesPage = () => {
       }));
     }
   };
+
+
   const handleDownload = (component) => {
     const link = document.createElement('a');
     link.href = `/path/to/template/${component}-template.xlsx`; // Modify as needed
@@ -186,71 +249,6 @@ const UploadFilesPage = () => {
     }
   };
 
-
-
-  const AboutUsForm = () => (
-    <div className="file-upload-item">
-      <div className="file-upload_title">About Us</div>
-      <div className="about_contact_section">
-        <input
-          className="about_contact_input"
-          name="AboutUs"
-          placeholder="Enter content for About Us"
-          value={aboutUsContent}
-          onChange={handleAboutUsChange}
-        />
-        <button
-          className="about_contact_button"
-          onClick={saveAboutUs}
-        >
-          Save
-        </button>
-      </div>
-    </div>
-  );
-  
-  const ContactUsForm = () => (
-    <div className="file-upload-item">
-      <div className="file-upload_title">Contact Us</div>
-      <div className="contact_us_section">
-        <input
-          className="contact_us_input"
-          name="email"
-          placeholder="Enter your email"
-          value={contactUsData.email}
-          onChange={handleContactUsChange}
-        />
-        <input
-          className="contact_us_input"
-          name="phoneNumber"
-          placeholder="Enter your phone number"
-          value={contactUsData.phoneNumber}
-          onChange={handleContactUsChange}
-        />
-        <input
-          className="contact_us_input"
-          name="address"
-          placeholder="Enter your address"
-          value={contactUsData.address}
-          onChange={handleContactUsChange}
-        />
-        <button
-          className="about_contact_button"
-          onClick={() => {
-            const contactData = {
-              email: contactUsData.email,
-              phoneNumber: contactUsData.phoneNumber,
-              address: contactUsData.address,
-            };
-            sessionStorage.setItem('ContactUs', JSON.stringify(contactData));
-            alert('Contact Us saved in session storage!');
-          }}
-        >
-          Save
-        </button>
-      </div>
-    </div>
-  );
   
   const ParticipantsForm = () => (
     <div className="file-upload-item">
@@ -297,12 +295,13 @@ const UploadFilesPage = () => {
                   <td>
                     <input
                       type="checkbox"
-                      checked={participant.isLabManager}
+                      checked={participant.degree}
                       onChange={() => toggleLabManager(index)}
                     />
                   </td>
                 </tr>
               ))}
+
             </tbody>
           </table>
           {showAddForm ? (
@@ -321,15 +320,14 @@ const UploadFilesPage = () => {
                 value={newParticipant.degree}
                 onChange={handleInputChangeParticipant}
               />
-              <label>
-                Manager
-                <input
-                  type="checkbox"
-                  name="isLabManager"
-                  checked={newParticipant.isLabManager}
-                  onChange={handleInputChangeParticipant}
-                />
-              </label>
+              <input
+                type="text"
+                placeholder="Email"
+                name="email"
+                value={newParticipant.email}
+                onChange={handleInputChangeParticipant}
+              />
+            
               <button onClick={addParticipant}>Save</button>
               <button onClick={() => setShowAddForm(false)}>Cancel</button>
             </div>

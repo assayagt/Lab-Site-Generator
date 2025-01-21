@@ -263,7 +263,7 @@ class CreateNewSiteManagerFromGenerator(Resource):
         try:
             response = generator_system.create_new_site_manager(nominator_manager_userId, nominated_manager_email, domain)
             if response.is_success():
-                return jsonify({"message": "New site manager created", "manager_email": nominated_manager_email})
+                return jsonify({"message": "New site manager created", "manager_email": nominated_manager_email,"response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
@@ -289,7 +289,7 @@ class RemoveSiteManagerFromGenerator(Resource):
         try:
             response = generator_system.remove_site_manager_from_generator(nominator_manager_userId, manager_toRemove_email, domain)
             if response.is_success():
-                return jsonify({"message": "Site manager removed", "manager_email": manager_toRemove_email})
+                return jsonify({"message": "Site manager removed", "manager_email": manager_toRemove_email, "response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
@@ -1196,9 +1196,7 @@ api.add_resource(GetAllAlumni, '/api/getAllAlumni')#
 # api.add_resource(AddLabMemberFromWebsite, '/api/addLabMember') #
 api.add_resource(AddLabMemberFromGenerator, '/api/addLabMemberFromGenerator')#
 api.add_resource(AddLabManager, '/api/addLabManager')#
-# api.add_resource(GetAllCustomWebsites, '/api/getCustomWebsites')
-# api.add_resource(GetAllLabWebsites, '/api/getWebsites')
-# api.add_resource(GetCustomSite, '/api/getCustomSite')
+
 api.add_resource(SetSecondEmail, '/api/setSecondEmail')#
 api.add_resource(SetLinkedInLink, '/api/setLinkedInLink')#
 api.add_resource(SetFullName, '/api/setFullName')#
@@ -1209,12 +1207,12 @@ api.add_resource(SetSiteAboutUsByManagerFromGenerator, '/api/setSiteAboutUsByMan
 api.add_resource(SetSiteAboutUsByManagerFromLabWebsite, '/api/setSiteAboutUsByManagerFromLabWebsite')#
 api.add_resource(SetSiteContactInfoByManagerFromGenerator, '/api/setSiteContactInfoByManagerFromGenerator')#
 api.add_resource(SetSiteContactInfoByManagerFromLabWebsite, '/api/setSiteContactInfoByManagerFromLabWebsite')#
-api.add_resource( GetHomepageDetails, '/api/getHomepageDetails')
+api.add_resource(GetHomepageDetails, '/api/getHomepageDetails')
 api.add_resource(ChangeSiteHomePictureByManager, '/api/ChangeSiteHomePictureByManager')
 api.add_resource(ChangeSiteLogoByManager, '/api/ChangeSiteLogoByManager')
-api.add_resource( RemoveSiteManagerFromGenerator, '/api/removeSiteManager')
-api.add_resource( GetUserDetails, '/api/getUserDetails')
-api.add_resource( GetContactUs, '/api/getContactUs')
+api.add_resource(RemoveSiteManagerFromGenerator, '/api/removeSiteManager')
+api.add_resource(GetUserDetails, '/api/getUserDetails')
+api.add_resource(GetContactUs, '/api/getContactUs')
 
 
 

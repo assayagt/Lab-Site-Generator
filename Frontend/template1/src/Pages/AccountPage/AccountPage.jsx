@@ -4,7 +4,7 @@ import accountIcon from "../../images/account_avatar.svg";
 import cameraIcon from "../../images/camera_icon.svg";
 import searchIcon from "../../images/search_icon.svg";
 import AddPublicationForm from '../../Components/AddPublicationForm/AddPubliactionForm';
-import { getApprovedPublications, getUserDetails, approveRegistration, rejectRegistration, setPublicationGitLink, setPublicationPttxLink, setPublicationVideoLink, setBioByMember,setDegreeByMember, setSecondEmailByMember, setLinkedInLinkByMember, getMemberPublications } from '../../services/websiteService';
+import { getUserDetails, approveRegistration, rejectRegistration, setPublicationGitLink, setPublicationPttxLink, setPublicationVideoLink, setBioByMember,setDegreeByMember, setSecondEmailByMember, setLinkedInLinkByMember, getMemberPublications } from '../../services/websiteService';
 const AccountPage = () => {
   const [activeSection, setActiveSection] = useState('personal-info');
   const [userDetails, setUserDetails] = useState({
