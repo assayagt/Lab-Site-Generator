@@ -703,13 +703,11 @@ class GetAllCustomWebsites(Resource):
 
 class GetMemberPublications(Resource):
     def get(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('domain', required=True, help="Domain is required.")
-        parser.add_argument('user_id', required=True, help="User id is required.")
-        args = parser.parse_args()
-
+    
+        domain = request.args.get('domain')
+        user_id = domain = request.args.get('user_id')
         try:
-            response = lab_system_service.get_all_approved_publications_of_member(args['domain'], args['user_id'])
+            response = lab_system_service.get_all_approved_publications_of_member(domain, user_id)
             if response.is_success():
                 return jsonify({"publications": response.get_data(), "response": "true"})
             return jsonify({"error": response.get_message(), "response": "false"})
