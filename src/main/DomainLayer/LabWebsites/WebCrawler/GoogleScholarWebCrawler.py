@@ -1,6 +1,8 @@
 import time
 from bs4 import BeautifulSoup
 from scholarly import scholarly
+
+from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
 import requests
 
@@ -37,7 +39,7 @@ class GoogleScholarWebCrawler:
                             title=new_publication_title,
                             authors=publication_authors,
                             publication_year=pub_year,
-                            approved=False,  # Default value
+                            approved=ApprovalStatus.INITIAL_PENDING,  # Default value
                             publication_link=url,
                             description=publication_description
                         )
