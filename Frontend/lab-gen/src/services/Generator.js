@@ -183,7 +183,7 @@ export const removeSiteManager = async (nominatorManagerUserId, managerToRemoveE
 
 export const addLabMember = async (managerUserId, emailToRegister, labMemberFullName, labMemberDegree, domain) => {
   try {
-    const response = await axios.post('http://your-api-url/add_lab_member_from_generator', {
+    const response = await axios.post(`${baseApiUrl}addLabMemberFromGenerator`, {
       manager_userId: managerUserId,
       email_to_register: emailToRegister,
       lab_member_fullName: labMemberFullName,
@@ -195,5 +195,40 @@ export const addLabMember = async (managerUserId, emailToRegister, labMemberFull
   } catch (error) {
     console.error('Error adding lab member:', error);
     alert('An error occurred while adding the lab member.');
+  }
+};
+
+export const setSiteAboutUs = async (userId, domain, aboutUs) => {
+  try {
+    const response = await axios.post(`${baseApiUrl}setSiteAboutUsByManagerFromGenerator`, {
+      user_id: userId,
+      domain: domain,
+      about_us: aboutUs,
+    });
+
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error setting About Us:', error);
+    alert('An error occurred while setting the About Us section.');
+  }
+};
+
+
+export const setSiteContactInfo = async (userId, domain, labAddress, labMail, labPhoneNum) => {
+  try {
+    const response = await axios.post(`${baseApiUrl}setSiteContactInfoByManagerFromGenerator`, {
+      user_id: userId,
+      domain: domain,
+      lab_address: labAddress,
+      lab_mail: labMail,
+      lab_phone_num: labPhoneNum,
+    });
+
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error setting contact info:', error);
+    alert('An error occurred while setting the contact information.');
   }
 };

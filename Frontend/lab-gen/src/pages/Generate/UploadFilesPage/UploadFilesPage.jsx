@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useWebsite } from '../../../Context/WebsiteContext';
 import './UploadFilesPage.css';
 import axios from "axios";
-import { getAllAlumni,getAllLabManagers,getAllLabMembers,createNewSiteManager, removeSiteManager,addLabMember } from '../../../../../template1/src/services/websiteService';
+import { getAllAlumni,getAllLabManagers,getAllLabMembers,createNewSiteManager, removeSiteManager,addLabMember,setSiteContactInfo, setSiteAboutUs } from '../../../../../template1/src/services/websiteService';
 const baseApiUrl = "http://127.0.0.1:5000/api/";
 const UploadFilesPage = () => {
 
@@ -162,9 +162,18 @@ const UploadFilesPage = () => {
     setAboutUsContent(e.target.value);
   };
 
-  const saveAboutUs = () => {
+  const saveAboutUs = async () => {
     sessionStorage.setItem('AboutUs', aboutUsContent);
-    alert('About Us saved in session storage!');
+    if (websiteData.generated) {
+      const response = await setSiteAboutUs(sessionStorage.getItem('sid'), websiteData.domain, aboutUsContent);
+      if (response.response === 'true') {
+        alert('About Us saved successfully');
+      } else {
+        alert('Error updating About Us: ' + response.message);
+      }
+    } else {
+      alert('Website not generated yet');
+    }
   };
 
   const handleContactUsChange = (e) => {
@@ -175,7 +184,21 @@ const UploadFilesPage = () => {
     }));
   };
 
+  const saveContactUs = async () => {
+    sessionStorage.setItem('ContactUs', JSON.stringify(contactUsData));
+    if (websiteData.generated) {
+      const response = await setSiteContactInfo(sessionStorage.getItem('sid'), websiteData.domain, contactUsData.address, contactUsData.email, contactUsData.phoneNumber);
+      if (response.response === 'true') {
+        alert('Contact information saved successfully');
+      } else {
+        alert('Error updating Contact Information: ' + response.message);
+      }
+    } else {
+      alert('Website not generated yet');
+    }
 
+  }
+  
   const handleFileChange = (e, component) => {
     const file = e.target.files[0];
     if (file) {
@@ -450,15 +473,7 @@ const UploadFilesPage = () => {
             />
             <button
               className="about_contact_button"
-              onClick={() => {
-                const contactData = {
-                  email: contactUsData.email,
-                  phoneNumber: contactUsData.phoneNumber,
-                  address: contactUsData.address,
-                };
-                sessionStorage.setItem('ContactUs', JSON.stringify(contactData));
-                alert('Contact Us saved in session storage!');
-              }}
+              onClick={saveContactUs}
             >
               Save
             </button>
