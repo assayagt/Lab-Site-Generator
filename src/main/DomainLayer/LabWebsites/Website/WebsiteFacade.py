@@ -33,11 +33,11 @@ class WebsiteFacade:
         return website.get_all_approved_publications_of_member(email)
 
     #creare new publication manually
-    def create_new_publication(self, domain, publication_link, publication_details, git_link, video_link, presentation_link):
+    def create_new_publication(self, domain, publication_link, publication_details, git_link, video_link, presentation_link, authors_emails):
         website = self.get_website(domain)
         if website is None:
             raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
-        return website.add_publication_manually(publication_link, publication_details, git_link, video_link, presentation_link)
+        return website.add_publication_manually(publication_link, publication_details, git_link, video_link, presentation_link, authors_emails)
 
     def set_publication_video_link(self, domain, publication_id, video_link):
         website = self.get_website(domain)
