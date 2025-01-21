@@ -41,6 +41,9 @@ class TestAddPublicationManually(unittest.TestCase):
         self.member_userId = self.lab_system_service.enter_lab_website(self.domain).get_data()
         self.lab_system_service.login(self.domain, self.member_userId, self.labMember1_email)
 
+        self.manager_id = self.lab_system_service.enter_lab_website(self.domain).get_data()
+        self.lab_system_service.login(self.domain, self.manager_id, "manager1@example.com")
+
     def tearDown(self):
         # Reset the system after each test
         self.generator_system_service.reset_system()
@@ -61,7 +64,7 @@ class TestAddPublicationManually(unittest.TestCase):
 
         # Perform the operation
         response = self.lab_system_service.add_publication_manually(
-            self.member_userId, self.domain, publication.publication_link,
+            self.manager_id, self.domain, publication.publication_link,
             None, None, None  # Pass None for git_link, video_link, and presentation_link if not provided
         )
         self.assertTrue(response.is_success())
@@ -83,7 +86,6 @@ class TestAddPublicationManually(unittest.TestCase):
 
         # Prepare the publication details
         publication = PublicationDTO(
-            paper_id="P12347",
             title="Advanced Robotics",
             authors=["member1@example.com"],
             publication_year=2025,
@@ -110,7 +112,6 @@ class TestAddPublicationManually(unittest.TestCase):
 
         # Prepare the publication details
         publication = PublicationDTO(
-            paper_id="P12348",
             title="Nanotechnology Advances",
             authors=["member1@example.com"],
             publication_year=2025,
