@@ -190,8 +190,7 @@ class LabSystemController:
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
-        email = userFacade.get_email_by_userId(userId)
-        userFacade.error_if_user_is_not_labManager(email, domain)
+        userFacade.error_if_user_is_not_manager(userId)
         self.websiteFacade.final_approve_publication(domain, publication_id)
 
     def reject_publication(self, userId, domain, publication_id):
