@@ -12,8 +12,8 @@ from src.main.DomainLayer.LabWebsites.LabSystemService import LabSystemService
 from src.main.DomainLayer.LabWebsites.Website.ContactInfo import ContactInfo
 
 # Create a Flask app
+app = Flask(__name__, static_folder='Frontend/lab-gen/build', static_url_path='/')
 app_secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-app = Flask(__name__)
 app.config["SECRET_KEY"] = app.secret_key
 CORS(app)
 api = Api(app)
@@ -1207,7 +1207,7 @@ api.add_resource( GetContactUs, '/api/getContactUs')
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
 
 
 def helper():
