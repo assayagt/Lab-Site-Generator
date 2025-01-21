@@ -35,17 +35,13 @@ const MyAccountPage = () => {
   }, []);
 
 
-  // This function would navigate to the individual website page
   const handleWebsiteClick = async(websiteDomain) => {
     console.log(websites);
-  
-    // Find the website by its domain
     const selectedWebsite = websites.find((site) => site.domain === websiteDomain);
     const data = await getCustomSite(sessionStorage.getItem("sid"),websiteDomain);
-    if (data.response === "true") {
+   
       console.log(data.data);
-  
-      // Update the context with the selected website data
+      
       setWebsite({
         components: data.data.components || [],
         template: data.data.template || '',
@@ -55,11 +51,8 @@ const MyAccountPage = () => {
         generated: selectedWebsite.generated || false,
       });
   
-      // Navigate to the specific website's page or a components page
       navigate("/choose-components");
-    } else {
-      console.error(`Website with domain ${websiteDomain} not found`);
-    }
+ 
   };
   if (loading) return <p>Loading...</p>;
 
