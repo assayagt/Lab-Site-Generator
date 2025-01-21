@@ -299,15 +299,23 @@ class LabSystemService:
         except Exception as e:
             return Response(None, str(e))
         
-    def get_contact_us(self,domain):
+
+    def set_site_about_us_from_labWebsite(self, userId, domain, about_us):
+        """
+        Set the about us section of the website.
+        """
         try:
-            contact_us = self.lab_system_controller.get_contact_us(domain)
-            return Response (
-                {
-                "address": contact_us.get_lab_address(),
-                "email": contact_us.get_lab_mail(),
-                "phone_num": contact_us.get_lab_phone_num() 
-                },
-                "Successfully retrieved  website contact us") 
+            self.lab_system_controller.set_site_about_us_from_labWebsite(userId, domain, about_us)
+            return Response(True, "About us added successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def set_site_contact_info_from_labWebsite(self, userId, domain, contact_info_dto):
+        """
+        Set the contact info section of the website.
+        """
+        try:
+            self.lab_system_controller.set_site_contact_info_from_labWebsite(userId, domain, contact_info_dto)
+            return Response(True, "Contact info added successfully")
         except Exception as e:
             return Response(None, str(e))

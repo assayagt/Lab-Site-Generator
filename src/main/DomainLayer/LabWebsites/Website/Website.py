@@ -1,4 +1,5 @@
 from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
+from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
 
 
@@ -17,6 +18,7 @@ class Website:
             self.members_publications[author_email].append(publicationDTO)
 
     def add_publication_manually(self, publication_link, publication_details, git_link, video_link, presentation_link):
+        publication_dto = PublicationDTO(publication_details["title"], publication_details["authors"], publication_details["publication_year"], ApprovalStatus.INITIAL_PENDING, publication_link, git_link, video_link, presentation_link, publication_details["description"])
         publication_dto = PublicationDTO(publication_details["title"], publication_details["authors"], publication_details["publication_year"], ApprovalStatus.INITIAL_PENDING, publication_link, git_link, video_link, presentation_link, publication_details["description"])
         self.create_publication(publication_dto, publication_details["authors"])
 
@@ -46,11 +48,14 @@ class Website:
             for publication in self.members_publications[author_email]:
                 if publication.get_paper_id() == publication_paper_id:
                     return publication.approved == ApprovalStatus.APPROVED
+                    return publication.approved == ApprovalStatus.APPROVED
 
     def get_all_approved_publications_of_member(self, email):
         approved_publications = []
         if email in self.members_publications:  # Check if the email exists in the dictionary
             for publication in self.members_publications[email]:  # Iterate through the member's publications
+                if publication.approved == ApprovalStatus.APPROVED:  # Check if the publication is approved
+                    approved_publications.append(publication)
                 if publication.approved == ApprovalStatus.APPROVED:  # Check if the publication is approved
                     approved_publications.append(publication)
         return approved_publications
@@ -93,6 +98,7 @@ class Website:
     def final_approve_publication(self, paper_id):
         publication = self.get_publication_by_paper_id(paper_id)
         publication.approved = ApprovalStatus.APPROVED
+        publication.approved = ApprovalStatus.APPROVED
 
     def get_domain(self):
         return self.domain
@@ -106,9 +112,37 @@ class Website:
     def set_contact_info(self, contact_info_dto):
         self.contact_info = contact_info_dto
 
-    def get_contact_us(self):
-        return self.contact_info
-    
+    def initial_approve_publication(self, publication_id):
+        publication = self.get_publication_by_paper_id(publication_id)
+        publication.approved = ApprovalStatus.FINAL_PENDING
+
+    def get_all_initial_pending_publication(self):
+        initial_publications = []
+        seen_paper_ids = set()  # To track unique paper IDs
+
+        for publications in self.members_publications.values():  # Iterate over all author-publication lists
+            for publication in publications:  # Iterate over publications for each author
+                if publication.approved == ApprovalStatus.INITIAL_PENDING and publication.get_paper_id() not in seen_paper_ids:
+                    initial_publications.append(publication)
+                    seen_paper_ids.add(publication.get_paper_id())  # Mark the paper ID as seen
+
+        return initial_publications
+
+    def get_all_final_pending_publication(self):
+        final_publications = []
+        seen_paper_ids = set()  # To track unique paper IDs
+
+        for publications in self.members_publications.values():  # Iterate over all author-publication lists
+            for publication in publications:  # Iterate over publications for each author
+                if publication.approved == ApprovalStatus.INITIAL_PENDING and publication.get_paper_id() not in seen_paper_ids:
+                    final_publications.append(publication)
+                    seen_paper_ids.add(publication.get_paper_id())  # Mark the paper ID as seen
+
+        return final_publications
+
+    def reject_publication(self, publication_id):
+        publication = self.get_publication_by_paper_id(publication_id)
+        publication.approved = ApprovalStatus.REJECTED
 
     def initial_approve_publication(self, publication_id):
         publication = self.get_publication_by_paper_id(publication_id)

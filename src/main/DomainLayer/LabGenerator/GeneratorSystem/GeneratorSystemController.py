@@ -56,13 +56,31 @@ class GeneratorSystemController:
         """
         Set the about us section on lab website creation. This function should be called after create_new_lab_website.
         """
-        self.labSystem.set_site_about_us_on_creation_from_generator(domain, about_us)
+        self.labSystem.set_site_about_us_from_generator(domain, about_us)
+
+    def set_site_about_us_by_manager_from_generator(self, user_id, domain, about_us):
+        """
+        Set the about us section by manager
+        """
+        self.user_facade.error_if_user_notExist(user_id)
+        self.user_facade.error_if_user_not_logged_in(user_id)
+        self.user_facade.error_if_user_is_not_site_manager(user_id, domain)
+        self.set_site_about_us_on_creation_from_generator(domain, about_us)
 
     def set_site_contact_info_on_creation_from_generator(self, domain, contact_info_dto):
         """
         Set the contact us section on lab website creation. This function should be called after create_new_lab_website.
         """
-        self.labSystem.set_site_contact_info_on_creation_from_generator(domain, contact_info_dto)
+        self.labSystem.set_site_contact_info_from_generator(domain, contact_info_dto)
+
+    def set_site_contact_info_by_manager_from_generator(self, user_id, domain, contact_info_dto):
+        """
+        Set the contact us section by manager
+        """
+        self.user_facade.error_if_user_notExist(user_id)
+        self.user_facade.error_if_user_not_logged_in(user_id)
+        self.user_facade.error_if_user_is_not_site_manager(user_id, domain)
+        self.set_site_contact_info_on_creation_from_generator(domain, contact_info_dto)
 
     def set_site_logo_on_site_creation(self, domain):
         """

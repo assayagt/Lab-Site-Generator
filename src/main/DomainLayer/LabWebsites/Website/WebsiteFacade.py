@@ -116,4 +116,4 @@ class WebsiteFacade:
         website = self.get_website(domain)
         if website is None:
             raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
-        return website.get_contact_us()
+        website.reject_publication(publication_id)
