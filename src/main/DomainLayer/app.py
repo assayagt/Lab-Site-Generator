@@ -32,6 +32,14 @@ TEMPLATE_1_PATH = os.path.join(os.getcwd(), 'Frontend', 'template1')
 
 # Service for uploading file
 
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_react(path):
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
+
 def read_lab_info(excel_path):
     # Check if the file exists
     if not os.path.exists(excel_path):
