@@ -1,10 +1,22 @@
-.myAccountPage{
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
-    margin: 20px;
+.websiteItem{
+    display: flex;
+    flex-direction: row;
+    gap:20px;
+    background-color: rgb(225, 225, 225);
+    justify-content:space-around;
+    height: 50px;
+    border-radius: 10px;
+    align-items:center;
 }
 
-.accountInfo{
-    background-color: antiquewhite;
-    height: 700px;
+.websiteItem:hover{
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.websiteList{
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+    margin: 20px;
 }

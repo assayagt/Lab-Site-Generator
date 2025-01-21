@@ -446,14 +446,9 @@ class GetCustomSite(Resource):
     """ Get a custom website dto for specific manager and domain"""
     def get(self):
         try:
-            parser = reqparse.RequestParser()
-            parser.add_argument('user_id', type=str, required=True, help="User id is required")
-            parser.add_argument('domain', type=str, required=True, help="Domain is required")
-            args = parser.parse_args()
-
-            user_id = args['user_id']
-            domain = args['domain']
-
+        
+            user_id = request.args.get('user_id')
+            domain = request.args.get('domain')
             response = generator_system.get_custom_website(user_id, domain)
             if response.is_success():
                 #the returned value is website name, template, components

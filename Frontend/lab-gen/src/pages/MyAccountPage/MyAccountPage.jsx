@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MyAccountPage.css';
-import { getCustomWebsites } from '../../services/MyAccount';
+import { getCustomWebsites ,getCustomSite} from '../../services/MyAccount';
 import { useWebsite } from '../../Context/WebsiteContext';
 
 const MyAccountPage = () => {
@@ -36,20 +36,21 @@ const MyAccountPage = () => {
 
 
   // This function would navigate to the individual website page
-  const handleWebsiteClick = (websiteDomain) => {
+  const handleWebsiteClick = async(websiteDomain) => {
     console.log(websites);
   
     // Find the website by its domain
     const selectedWebsite = websites.find((site) => site.domain === websiteDomain);
-    if (selectedWebsite) {
-      console.log(selectedWebsite);
+    const data = await getCustomSite(sessionStorage.getItem("sid"),websiteDomain);
+    if (data.response === "true") {
+      console.log(data.data);
   
       // Update the context with the selected website data
       setWebsite({
-        components: selectedWebsite.components || [],
-        template: selectedWebsite.template || '',
-        domain: selectedWebsite.domain || '',
-        websiteName: selectedWebsite.site_name || '',
+        components: data.data.components || [],
+        template: data.data.template || '',
+        domain: data.data.domain || '',
+        websiteName: data.data.site_name || '',
         created: selectedWebsite.created || false,
         generated: selectedWebsite.generated || false,
       });
@@ -64,24 +65,22 @@ const MyAccountPage = () => {
 
   return (
     <div className="myAccountPage">
-      <div className="accountInfo">
-        <h2>My Account</h2>
-      </div>
-
+      <h2>My Account</h2>
       <div className="myWebsites">
-  <h3>Your Websites</h3>
-  {websites?.length > 0 ? (
-    <ul className="websiteList">
-      {websites.map((website, index) => (
-        <li key={index} className="websiteItem">
-          <span>{website.site_name} - {website.domain}</span>
-          <button onClick={() => handleWebsiteClick(website.domain)}>View Website</button>
-        </li>
-      ))}
-    </ul>
-  ) : (
-    <p>No websites available.</p>
-  )}
+        <h3>Your Websites</h3>
+        {websites?.length > 0 ? (
+          <div className="websiteList">
+            {websites.map((website, index) => (
+              <div key={index} className="websiteItem" onClick={() => handleWebsiteClick(website.domain)}>
+                <div>{website.site_name}</div>
+                <div>{website.domain}</div>
+                <div>{website.generated ? 'Generated' : 'Not Generated'}</div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No websites available.</p>
+        )}
 </div>
     </div>
   );

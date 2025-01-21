@@ -114,10 +114,7 @@ const UploadFilesPage = () => {
     }));
   };
 
-  const saveContactUs = () => {
-    sessionStorage.setItem('ContactUs', JSON.stringify(contactUsData));
-    alert('Contact Us saved in session storage!');
-  };
+
   const handleFileChange = (e, component) => {
     const file = e.target.files[0];
     if (file) {
@@ -392,9 +389,18 @@ const UploadFilesPage = () => {
         <li onClick={() => handleNavClick('Participants')}>Participants</li>
         <li onClick={() => handleNavClick('Media')}>Media</li>
       </ul>
-      <div>
-             <button onClick={handleGenerate}>Generate</button>
-       </div>
+      {
+        websiteData.generated ? (
+          <div>
+            <button onClick={console.log("save")}>Save changes</button>
+          </div>
+        ) : (
+          <div>
+            <button onClick={handleGenerate}>Generate</button>
+          </div>
+        )
+      }
+      
     </div>
     <div className="main-content">
       {selectedComponent === 'AboutUs' && (
@@ -471,167 +477,6 @@ const UploadFilesPage = () => {
 
 
   
-    // <div>
-    //   <div className="upload_files_page">
-    //     <h2 className="upload_title">Upload Files for Each Component</h2>
-    //     <div className="upload_instruction">
-    //       First, download the template, fill it in, and upload it.
-    //     </div>
-    //     <div className="upload_files_main">
-    //     {websiteData.components
-    //         .filter(component => websiteData.generated ? component !== 'Publications' : true)
-    //         .map((component) => (
-    //         <div key={component} className="file-upload-section">
-    //           <div className="file-upload-item">
-    //             <div className="file-upload_title">{component}</div>
-    //             <div>
-    //               {component === 'About Us' ? (
-    //                 <div className="about_contact_section">
-    //                   <input
-    //                     className="about_contact_input"
-    //                     name="AboutUs"
-    //                     placeholder={`Enter content for ${component}`}
-    //                     value={formData.AboutUs}
-    //                     onChange={handleInputChange}
-    //                   />
-    //                   <button
-    //                     className="about_contact_button"
-    //                     onClick={() => handleSubmit(component)}
-    //                   >
-    //                     Save
-    //                   </button>
-    //                 </div>
-    //               ) : (component !== 'Contact Us' && websiteData.generated===false) ? (
-    //                 <button
-    //                   className="downloadTemplate"
-    //                   onClick={() => handleDownload(component)}
-    //                 >
-    //                   Download Template
-    //                 </button>
-    //               ) : (
-    //                 <div> </div> // This block is for Contact Us
-    //               )}
-    //             </div>
-
-    //             {component === 'Contact Us' && (
-    //               <div className="contact_us_section">
-    //                 <input
-    //                   className="contact_us_input"
-    //                   name="email"
-    //                   placeholder="Enter your email"
-    //                   value={formData.email}
-    //                   onChange={handleInputChange}
-    //                 />
-    //                 <input
-    //                   className="contact_us_input"
-    //                   name="phoneNumber"
-    //                   placeholder="Enter your phone number"
-    //                   value={formData.phoneNumber}
-    //                   onChange={handleInputChange}
-    //                 />
-    //                 <input
-    //                   className="contact_us_input"
-    //                   name="address"
-    //                   placeholder="Enter your address"
-    //                   value={formData.address}
-    //                   onChange={handleInputChange}
-    //                 />
-                  
-    //                 <button
-    //                   className="about_contact_button"
-    //                   onClick={() => handleSubmit(component)}
-    //                 >
-    //                   Save
-    //                 </button>
-    //               </div>
-    //             )}
-
-    //              {component === 'Participants' && (websiteData.generated) && (
-    //                 <div>
-    //                 <table className="participants-table">
-    //                   <thead>
-    //                     <tr>
-    //                       <th>Full Name</th>
-    //                       <th>Degree</th>
-    //                       <th>Manager</th>
-    //                     </tr>
-    //                   </thead>
-    //                   <tbody>
-    //                     {participants.map((participant, index) => (
-    //                       <tr key={index}>
-    //                         <td>{participant.fullName}</td>
-    //                         <td>{participant.degree}</td>
-    //                         <td>
-    //                           <input
-    //                             type="checkbox"
-    //                             checked={participant.isLabManager}
-    //                             onChange={() => toggleLabManager(index)}
-    //                           />
-    //                         </td>
-    //                       </tr>
-    //                     ))}
-    //                   </tbody>
-    //                 </table>
-    //                 {showAddForm ? (
-    //                   <div>
-    //                     <input
-    //                       type="text"
-    //                       placeholder="Full Name"
-    //                       name="fullName"
-    //                       value={newParticipant.fullName}
-    //                       onChange={handleInputChangepart}
-    //                     />
-    //                     <input
-    //                       type="text"
-    //                       placeholder="Degree"
-    //                       name="degree"
-    //                       value={newParticipant.degree}
-    //                       onChange={handleInputChangepart}
-    //                     />
-    //                     <label>
-    //                       Manager
-    //                       <input
-    //                         type="checkbox"
-    //                         name="isLabManager"
-    //                         checked={newParticipant.isLabManager}
-    //                         onChange={handleInputChangepart}
-    //                       />
-    //                     </label>
-    //                     <button onClick={addParticipant}>Save</button>
-    //                     <button onClick={() => setShowAddForm(false)}>Cancel</button>
-    //                   </div>
-    //                 ) : (
-    //                   <button onClick={() => setShowAddForm(true)}>+ Add Participant</button>
-    //                 )}
-    //               </div>
-    //              )
-    //                 }           
-    //             {(component !== 'About Us' && component !== 'Contact Us' && websiteData.generated===false)  && (
-    //               <div>
-    //                 <input
-    //                   className="downloadTemplate"
-    //                   type="file"
-    //                   onChange={(e) => handleFileChange(e, component)}
-    //                 />
-    //                 <button
-    //                   className="downloadTemplate"
-    //                   onClick={() => handleSubmit(component)}
-    //                 >
-    //                   Save
-    //                 </button>
-    //               </div>
-    //             )}
-    //           </div>
-    //         </div>
-    //       ))}
-
-    //       <div>
-    //         <button onClick={handleGenerate}>Generate</button>
-    //       </div>
-    //     </div>
-    //   </div>
-    // </div>
-  //);
 };
 
 export default UploadFilesPage;
