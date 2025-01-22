@@ -340,7 +340,8 @@ const UploadFilesPage = () => {
             </tbody>
           </table>
           {showAddForm ? (
-            <div>
+            <div className='add-participant-form'>
+              <label>Participant's full name:</label>
               <input
                 type="text"
                 placeholder="Full Name"
@@ -348,12 +349,14 @@ const UploadFilesPage = () => {
                 value={newParticipant.fullName}
                 onChange={handleInputChangeParticipant}
               />
+              <label>Participant's degree:</label>
               <select name="degree" value={newParticipant.degree} onChange={handleInputChangeParticipant}>
                 <option value="">Select Degree</option>
                 {degreeOptions.map((degree, index) => (
                   <option key={index} value={degree}>{degree}</option>
                 ))}
               </select>
+              <label>Participant's email:</label>
               <input
                 type="text"
                 placeholder="Email"

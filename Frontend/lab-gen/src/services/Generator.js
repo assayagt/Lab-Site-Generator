@@ -248,7 +248,7 @@ export const saveLogo = async (userId, domain) => {
 };
 
 
-const saveHomePicture = async (userId, domain) => {
+export const saveHomePicture = async (userId, domain) => {
   try {
       const response = await axios.post(`${baseApiUrl}changeSiteHomePictureByManager`, {
         user_id: userId,  // User ID
