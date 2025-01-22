@@ -36,14 +36,7 @@ const PublicationPage = () => {
     setAvailableYears(years);
 
     const authors = Array.from(
-      new Set(
-        publications.flatMap((pub) => {
-          if (typeof pub.authors === 'string') {
-            return pub.authors.split(', ').map((author) => author.trim());
-          }
-          return []; // Fallback for invalid authors field
-        })
-      )
+      new Set(publications.flatMap((pub) => pub.authors || []))
     ).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
     setAvailableAuthors(authors);
   }, [publications]);
@@ -136,7 +129,7 @@ const PublicationPage = () => {
                 ></iframe>
               )}
               <div>
-                <p><strong>Authors:</strong> {pub.authors || "Unknown Authors"}</p>
+                <p><strong>Authors:</strong> {pub.authors.join(', ') || "Unknown Authors"}</p>
                 <p><strong>Year:</strong> {pub.publication_year}</p>
                 <p className="description">{pub.description}</p>
                 <div className='links'>
