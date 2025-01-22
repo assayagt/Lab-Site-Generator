@@ -84,3 +84,13 @@ class ProxyToTest(BridgeToTests):
         if self.real_service_adapter:
             return self.real_service_adapter.get_site_by_domain(domain)
         return Response(None, "Not Implemented yet")
+
+    def change_site_logo_by_manager(self, user_id, domain):
+        if self.real_service_adapter:
+            return self.real_service_adapter.change_site_logo_by_manager(user_id, domain)
+        return Response(None, "Not Implemented yet")
+
+    def remove_site_manager_from_generator(self, nominator_manager_userId, manager_toRemove_email, domain):
+        if self.real_service_adapter:
+            return self.real_service_adapter.remove_site_manager_from_generator(nominator_manager_userId, manager_toRemove_email, domain)
+        return Response(None, "Not Implemented yet")
