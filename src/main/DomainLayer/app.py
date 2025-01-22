@@ -12,7 +12,7 @@ from src.main.DomainLayer.LabWebsites.LabSystemService import LabSystemService
 from src.main.DomainLayer.LabWebsites.Website.ContactInfo import ContactInfo
 
 # Create a Flask app
-app = Flask(__name__, static_folder='Frontend/lab-gen/build', static_url_path='/')
+app = Flask(__name__, static_folder="../../../Frontend/lab-gen/build", template_folder="../../../Frontend/lab-gen/build")
 app_secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app.config["SECRET_KEY"] = app.secret_key
 CORS(app)
@@ -32,13 +32,13 @@ TEMPLATE_1_PATH = os.path.join(os.getcwd(), 'Frontend', 'template1')
 
 # Service for uploading file
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
 def serve_react(path):
     if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
         return send_from_directory(app.static_folder, path)
     else:
-        return send_from_directory(app.static_folder, 'index.html')
+        return send_from_directory(app.static_folder, "index.html")
 
 def read_lab_info(excel_path):
     # Check if the file exists
@@ -1215,7 +1215,7 @@ api.add_resource( GetContactUs, '/api/getContactUs')
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(debug=True)
 
 
 def helper():
