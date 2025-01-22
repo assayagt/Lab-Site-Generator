@@ -267,6 +267,10 @@ class LabSystemController:
         The permissions of the lab creator cannot be removed, it must always remain a Lab Manager"""
         return self.allWebsitesUserFacade.remove_manager_permission(manager_userId, manager_toRemove_email, domain)
 
+    def remove_manager_permission_from_generator(self, manager_toRemove_email, domain):
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.remove_manager_permissions(manager_toRemove_email)
+
     def get_all_alumnis(self, domain):
         return self.allWebsitesUserFacade.get_all_alumnis(domain)
 

@@ -172,7 +172,7 @@ class GeneratorSystemController:
         self.user_facade.error_if_user_not_logged_in(nominator_manager_userId)
         self.user_facade.error_if_user_is_not_site_manager(nominator_manager_userId, domain)
         self.user_facade.remove_site_manager(manager_toRemove_email, domain)
-        self.labSystem.remove_manager_permission(nominator_manager_userId, manager_toRemove_email, domain)
+        self.labSystem.remove_manager_permission_from_generator(manager_toRemove_email, domain)
 
     def register_new_LabMember_from_generator(self, manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain):
         """
