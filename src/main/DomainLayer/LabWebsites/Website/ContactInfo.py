@@ -21,3 +21,10 @@ class ContactInfo:
     
     def get_lab_phone_num(self):
         return self.lab_phone_num
+    
+    def to_dict(self):
+        return {
+            "address": self.lab_address,
+            "email": self.lab_mail,
+            "phone_num": self.lab_phone_num
+        }

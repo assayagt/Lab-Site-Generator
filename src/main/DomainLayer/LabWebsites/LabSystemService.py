@@ -266,6 +266,13 @@ class LabSystemService:
             return Response(about_us, "Retrieved about us successfully")
         except Exception as e:
             return Response(None, str(e))
+        
+    def get_contact_us(self, domain):
+        try:
+            about_us = self.lab_system_controller.get_contact_us(domain)
+            return Response(about_us, "Retrieved about us successfully")
+        except Exception as e:
+            return Response(None, str(e))
 
     def get_all_lab_members_details(self, domain):
         """Get all lab members."""

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useWebsite } from '../../../Context/WebsiteContext';
 import './UploadFilesPage.css';
 import axios from "axios";
-import { getAllAlumni,getAllLabManagers,getAllLabMembers,createNewSiteManager, removeSiteManager,addLabMember,setSiteContactInfo, setSiteAboutUs } from '../../../../../template1/src/services/websiteService';
+import { getAllAlumni,getAllLabManagers,getAllLabMembers,createNewSiteManager, removeSiteManager,addLabMember,setSiteContactInfo, setSiteAboutUs } from '../../../services/Generator';
 const baseApiUrl = "http://127.0.0.1:5000/api/";
 const UploadFilesPage = () => {
 
