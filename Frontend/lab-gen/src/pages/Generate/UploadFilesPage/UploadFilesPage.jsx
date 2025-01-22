@@ -43,7 +43,8 @@ const UploadFilesPage = () => {
     const savedData = sessionStorage.getItem('ContactUs');
     return savedData ? JSON.parse(savedData) : { email: '', phoneNumber: '', address: '' };
   });
-
+  const [about_usSave, setAboutUsSaved] = useState(false);
+  const [contactUs_usSave, setcontactUs] = useState(false);
 
 
   useEffect(() => {
@@ -161,6 +162,7 @@ const UploadFilesPage = () => {
 
 
   const handleAboutUsChange = (e) => {
+    setAboutUsSaved(false);
     setAboutUsContent(e.target.value);
   };
 
@@ -173,12 +175,13 @@ const UploadFilesPage = () => {
       } else {
         alert('Error updating About Us: ' + response.message);
       }
-    } else {
-      //alert('Website not generated yet');
-    }
+    } 
+      setAboutUsSaved(true);
+    
   };
 
   const handleContactUsChange = (e) => {
+    setcontactUs(false);
     const { name, value } = e.target;
     setContactUsData((prev) => ({
       ...prev,
@@ -195,9 +198,9 @@ const UploadFilesPage = () => {
       } else {
         alert('Error updating Contact Information: ' + response.message);
       }
-    } else {
-      alert('Website not generated yet');
-    }
+    } 
+      setcontactUs(true);
+    
 
   }
   
@@ -436,12 +439,23 @@ const UploadFilesPage = () => {
           value={aboutUsContent}
           onChange={handleAboutUsChange}
         />
-        <button
+        {about_usSave!=''? (
+          <button
+          className="about_contact_button"
+          onClick={saveAboutUs}
+        >
+          Saved
+        </button>
+        ):(
+          <button
           className="about_contact_button"
           onClick={saveAboutUs}
         >
           Save
         </button>
+        )
+        }
+        
       </div>
     </div>
   )
