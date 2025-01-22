@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MyAccountPage.css';
-import { getCustomWebsites } from '../../services/MyAccount';
+import { getCustomWebsites ,getCustomSite} from '../../services/MyAccount';
 import { useWebsite } from '../../Context/WebsiteContext';
 
 const MyAccountPage = () => {
@@ -9,7 +9,7 @@ const MyAccountPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { setWebsite } = useWebsite();
+  const { setWebsite, websiteData } = useWebsite();
   useEffect(() => {
     // Function to fetch websites from the API
     const fetchWebsites = async () => {
@@ -35,53 +35,46 @@ const MyAccountPage = () => {
   }, []);
 
 
-  // This function would navigate to the individual website page
-  const handleWebsiteClick = (websiteDomain) => {
+  const handleWebsiteClick = async(websiteDomain) => {
     console.log(websites);
-  
-    // Find the website by its domain
     const selectedWebsite = websites.find((site) => site.domain === websiteDomain);
-    if (selectedWebsite) {
-      console.log(selectedWebsite);
-  
-      // Update the context with the selected website data
+    const data = await getCustomSite(sessionStorage.getItem("sid"),websiteDomain);
+   
+      console.log(data.data);
+      
       setWebsite({
-        components: selectedWebsite.components || [],
-        template: selectedWebsite.template || '',
-        domain: selectedWebsite.domain || '',
-        websiteName: selectedWebsite.site_name || '',
-        created: selectedWebsite.created || false,
+        components: data.data.components || [],
+        template: data.data.template || '',
+        domain: data.data.domain || '',
+        websiteName: data.data.name || '',
+        created: true,
         generated: selectedWebsite.generated || false,
       });
   
-      // Navigate to the specific website's page or a components page
+      console.log(websiteData);
       navigate("/choose-components");
-    } else {
-      console.error(`Website with domain ${websiteDomain} not found`);
-    }
+ 
   };
   if (loading) return <p>Loading...</p>;
 
   return (
     <div className="myAccountPage">
-      <div className="accountInfo">
-        <h2>My Account</h2>
-      </div>
-
+      <h2>My Account</h2>
       <div className="myWebsites">
-  <h3>Your Websites</h3>
-  {websites?.length > 0 ? (
-    <ul className="websiteList">
-      {websites.map((website, index) => (
-        <li key={index} className="websiteItem">
-          <span>{website.site_name} - {website.domain}</span>
-          <button onClick={() => handleWebsiteClick(website.domain)}>View Website</button>
-        </li>
-      ))}
-    </ul>
-  ) : (
-    <p>No websites available.</p>
-  )}
+        <h3>Your Websites</h3>
+        {websites?.length > 0 ? (
+          <div className="websiteList">
+            {websites.map((website, index) => (
+              <div key={index} className="websiteItem" onClick={() => handleWebsiteClick(website.domain)}>
+                <div>{website.site_name}</div>
+                <div>{website.domain}</div>
+                <div>{website.generated ? 'Generated' : 'Not Generated'}</div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No websites available.</p>
+        )}
 </div>
     </div>
   );

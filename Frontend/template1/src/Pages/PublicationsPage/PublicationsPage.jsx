@@ -28,18 +28,15 @@ const PublicationPage = () => {
   }, []);
 
   useEffect(() => {
-    const years = Array.from(new Set(publications.map((pub) => pub.publication_year))).sort((a, b) => b - a);
+    const years = Array.from(new Set(publications.map((pub) => {
+      // Ensure to extract only the year if it's a full date
+      const year = new Date(pub.publication_year).getFullYear();
+      return year;
+    }))).sort((a, b) => b - a); // Sort in descending order
     setAvailableYears(years);
 
     const authors = Array.from(
-      new Set(
-        publications.flatMap((pub) => {
-          if (typeof pub.authors === 'string') {
-            return pub.authors.split(', ').map((author) => author.trim());
-          }
-          return []; // Fallback for invalid authors field
-        })
-      )
+      new Set(publications.flatMap((pub) => pub.authors || []))
     ).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
     setAvailableAuthors(authors);
   }, [publications]);
@@ -55,14 +52,21 @@ const PublicationPage = () => {
   };
 
   const filteredPublications = publications
-    .filter((pub) => {
-      const matchesYear = yearFilter ? pub.publication_year.toString() === yearFilter : true;
-      const matchesAuthor = authorFilter
-        ? typeof pub.authors === 'string' && pub.authors.toLowerCase().includes(authorFilter.toLowerCase())
-        : true;
-      return matchesYear && matchesAuthor;
-    })
-    .sort((a, b) => b.publication_year - a.publication_year);
+  .filter((pub) => {
+    const publicationYear = new Date(pub.publication_year).getFullYear(); // Extract the year from the full date
+    const matchesYear = yearFilter
+      ? publicationYear === parseInt(yearFilter, 10) // Compare the extracted year with the yearFilter
+      : true;
+    const matchesAuthor = authorFilter
+      ? typeof pub.authors === 'string' && pub.authors.toLowerCase().includes(authorFilter.toLowerCase())
+      : true;
+    return matchesYear && matchesAuthor;
+  })
+  .sort((a, b) => {
+    const yearA = new Date(a.publication_year).getFullYear();
+    const yearB = new Date(b.publication_year).getFullYear();
+    return yearB - yearA; // Sort based on the extracted year
+  });
 
   const paginatedPublications = filteredPublications.slice(
     (currentPage - 1) * itemsPerPage,
@@ -125,12 +129,12 @@ const PublicationPage = () => {
                 ></iframe>
               )}
               <div>
-                <p><strong>Authors:</strong> {pub.authors || "Unknown Authors"}</p>
+                <p><strong>Authors:</strong> {pub.authors.join(', ') || "Unknown Authors"}</p>
                 <p><strong>Year:</strong> {pub.publication_year}</p>
                 <p className="description">{pub.description}</p>
                 <div className='links'>
-                  <div className="git">Git</div>
-                  <div className="presentation">Presentation</div>
+                  {pub.git&&(<div className="git">Git</div>)}
+                  {pub.presentation_link&&<div className="presentation">Presentation</div>}
                   <a href={pub.publication_link} target="_blank" rel="noopener noreferrer">Read More</a>
                 </div>
               </div>

@@ -50,6 +50,7 @@ function App() {
             home_picture: data.data.home_picture, 
             about_us: data.data.about_us, 
           };
+          console.log(mappedData);
           setWebsite(mappedData); 
           sessionStorage.setItem("domain",mappedData.domain);
         }
@@ -74,7 +75,7 @@ function App() {
     <AuthProvider>
         <Router>
           
-              <Header components={components} title={websiteData.websiteName}>       
+              <Header components={components} title={websiteData.websiteName} logo = {websiteData.logo}>       
               </Header>
               <Routes>
                 <Route path="/" element={<HomePage about_us={websiteData.about_us}/>} />

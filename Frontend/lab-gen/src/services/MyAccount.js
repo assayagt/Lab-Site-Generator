@@ -16,8 +16,9 @@ export const getCustomWebsites = async (userId) => {
 
 export const getCustomSite = async (userId, domain) => {
     try {
-        const response = await axios.get(`${baseApiUrl}getCustomSite`, { params: { user_id: userId, domain } });
-        return response.data.data;
+        const response = await axios.get(`${baseApiUrl}getCustomSite?domain=${domain}&user_id=${userId}`);
+        console.log(response);
+        return response.data;
     } catch (error) {
         console.error("Error getting custom site details:", error);
         return null;

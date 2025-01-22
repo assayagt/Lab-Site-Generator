@@ -36,7 +36,6 @@ def read_lab_info(excel_path):
     # Check if the file exists
     if not os.path.exists(excel_path):
         return None, None, "Excel file does not exist."
-
     try:
         # Load the Excel file
         df = pd.read_csv(excel_path)
@@ -93,9 +92,9 @@ class UploadFilesAndData(Resource):
                 print(component)
                 if file:
                     if component == 'logo':
-                        file_path = os.path.join(website_folder, "logo.png")  # Assuming logo is always a .png
+                        file_path = os.path.join(website_folder, "logo.svg")  # Assuming logo is always a .png
                     elif component == 'homepage_photo':
-                        file_path = os.path.join(website_folder, "homepage_photo.jpg")  # Assuming photo is always a .jpg
+                        file_path = os.path.join(website_folder, "homepage_photo")  # Assuming photo is always a .jpg
                     else:
                         print("help")
                         file_path = os.path.join(website_folder, f"{component}.csv")  # Default case for other files
@@ -105,6 +104,39 @@ class UploadFilesAndData(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
+
+# class UploadFilesAndData(Resource):
+#     def post(self):
+#         try:
+#             # Get the data from the frontend
+#             domain = request.form['domain']
+#             website_name = request.form['website_name']
+
+#             website_folder = os.path.join(GENERATED_WEBSITES_FOLDER, domain)
+#             os.makedirs(website_folder, exist_ok=True)
+
+#             files = request.files
+#             for component in files:
+#                 file = files[component]
+#                 print(component)
+#                 if file:
+#                     # Ensure the filename is secure and replace the old file if it exists
+#                     file_name = secure_filename(file.filename)
+
+#                     # Determine the file path based on the component type
+#                     if component == 'logo':
+#                         file_path = os.path.join(website_folder, "logo")  # Assuming logo is always a .png
+#                     elif component == 'homepage_photo':
+#                         file_path = os.path.join(website_folder, "homepage_photo")  # Assuming photo is always a .jpg
+#                     else:
+#                         file_path = os.path.join(website_folder, f"{component}.csv")  # Default case for other files
+                    
+#                     # Save the file, replacing the existing one if it exists
+#                     file.save(file_path)
+
+#             return jsonify({'message': 'Files and data uploaded successfully!'})
+#         except Exception as e:
+#             return jsonify({"error": f"An error occurred: {str(e)}"})
 # Service for generating a website from templates
 class GenerateWebsiteResource(Resource):
     def post(self):
@@ -263,7 +295,7 @@ class CreateNewSiteManagerFromGenerator(Resource):
         try:
             response = generator_system.create_new_site_manager(nominator_manager_userId, nominated_manager_email, domain)
             if response.is_success():
-                return jsonify({"message": "New site manager created", "manager_email": nominated_manager_email})
+                return jsonify({"message": "New site manager created", "manager_email": nominated_manager_email,"response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
@@ -289,7 +321,7 @@ class RemoveSiteManagerFromGenerator(Resource):
         try:
             response = generator_system.remove_site_manager_from_generator(nominator_manager_userId, manager_toRemove_email, domain)
             if response.is_success():
-                return jsonify({"message": "Site manager removed", "manager_email": manager_toRemove_email})
+                return jsonify({"message": "Site manager removed", "manager_email": manager_toRemove_email, "response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
@@ -446,14 +478,9 @@ class GetCustomSite(Resource):
     """ Get a custom website dto for specific manager and domain"""
     def get(self):
         try:
-            parser = reqparse.RequestParser()
-            parser.add_argument('user_id', type=str, required=True, help="User id is required")
-            parser.add_argument('domain', type=str, required=True, help="Domain is required")
-            args = parser.parse_args()
-
-            user_id = args['user_id']
-            domain = args['domain']
-
+        
+            user_id = request.args.get('user_id')
+            domain = request.args.get('domain')
             response = generator_system.get_custom_website(user_id, domain)
             if response.is_success():
                 #the returned value is website name, template, components
@@ -539,7 +566,7 @@ class GetApprovedPublications(Resource):
                 return jsonify({"publications": response.get_data(), "response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}"})
 
 class AddPublication(Resource):
     def post(self):
@@ -635,7 +662,7 @@ class SetPublicationPttxLink(Resource):
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 
-class AddLabMemberFromWebsite(Resource):
+class AddLabMemberFromWebsiteFromWebsite(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('user_id', type=str, required=True, help="User ID of the manager adding the member is required")
@@ -685,17 +712,34 @@ class GetAllCustomWebsites(Resource):
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e :
             return jsonify({"error": f"An error occurred: {str(e)}"})
+        
+    class GetCustomSite(Resource):
+        def get(self):
+            parser = reqparse.RequestParser()
+            parser.add_argument('user_id', type=str, required=True, help="User id is required")
+            parser.add_argument('domain', type=str, required=True, help="Domain is required")
+            args = parser.parse_args()
 
+            user_id = args['user_id']
+            domain = args['domain']
+
+            try :
+                response = generator_system.get_custom_website(user_id, domain)
+                if response.is_success():
+                    website_data = response.get_data() # Returned value is website name, template, components
+                    return jsonify({'data': website_data, "response": "true"})
+                return jsonify({"message": response.get_message(), "response": "false"})
+            except Exception as e:
+                return jsonify({"error": f"An error occurred: {str(e)}"})
+            
 
 class GetMemberPublications(Resource):
     def get(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('domain', required=True, help="Domain is required.")
-        parser.add_argument('user_id', required=True, help="User id is required.")
-        args = parser.parse_args()
-
+    
+        domain = request.args.get('domain')
+        user_id = domain = request.args.get('user_id')
         try:
-            response = lab_system_service.get_all_approved_publications_of_member(args['domain'], args['user_id'])
+            response = lab_system_service.get_all_approved_publications_of_member(domain, user_id)
             if response.is_success():
                 return jsonify({"publications": response.get_data(), "response": "true"})
             return jsonify({"error": response.get_message(), "response": "false"})
@@ -897,6 +941,7 @@ class AddLabMemberFromGenerator(Resource):
         parser.add_argument('lab_member_degree', required=True, help="Lab member degree is required")
         parser.add_argument('domain', required=True, help="Domain is required")
         args = parser.parse_args()
+
 
         try:
             response = generator_system.register_new_LabMember_from_generator(args['manager_userId'], args['email_to_register'], args['lab_member_fullName'], args['lab_member_degree'], args['domain'])
@@ -1181,12 +1226,10 @@ api.add_resource(RejectRegistration, '/api/rejectRegistration') #
 api.add_resource(GetAllLabManagers, '/api/getAllLabManagers')#
 api.add_resource(GetAllLabMembers, '/api/getAllLabMembers')#
 api.add_resource(GetAllAlumni, '/api/getAllAlumni')#
-api.add_resource(AddLabMemberFromWebsite, '/api/addLabMember') #
+# api.add_resource(AddLabMemberFromWebsite, '/api/addLabMember') #
 api.add_resource(AddLabMemberFromGenerator, '/api/addLabMemberFromGenerator')#
 api.add_resource(AddLabManager, '/api/addLabManager')#
-# api.add_resource(GetAllCustomWebsites, '/api/getCustomWebsites')
-# api.add_resource(GetAllLabWebsites, '/api/getWebsites')
-# api.add_resource(GetCustomSite, '/api/getCustomSite')
+
 api.add_resource(SetSecondEmail, '/api/setSecondEmail')#
 api.add_resource(SetLinkedInLink, '/api/setLinkedInLink')#
 api.add_resource(SetFullName, '/api/setFullName')#
@@ -1197,12 +1240,12 @@ api.add_resource(SetSiteAboutUsByManagerFromGenerator, '/api/setSiteAboutUsByMan
 api.add_resource(SetSiteAboutUsByManagerFromLabWebsite, '/api/setSiteAboutUsByManagerFromLabWebsite')#
 api.add_resource(SetSiteContactInfoByManagerFromGenerator, '/api/setSiteContactInfoByManagerFromGenerator')#
 api.add_resource(SetSiteContactInfoByManagerFromLabWebsite, '/api/setSiteContactInfoByManagerFromLabWebsite')#
-api.add_resource( GetHomepageDetails, '/api/getHomepageDetails')
+api.add_resource(GetHomepageDetails, '/api/getHomepageDetails')
 api.add_resource(ChangeSiteHomePictureByManager, '/api/ChangeSiteHomePictureByManager')
 api.add_resource(ChangeSiteLogoByManager, '/api/ChangeSiteLogoByManager')
-api.add_resource( RemoveSiteManagerFromGenerator, '/api/removeSiteManager')
-api.add_resource( GetUserDetails, '/api/getUserDetails')
-api.add_resource( GetContactUs, '/api/getContactUs')
+api.add_resource(RemoveSiteManagerFromGenerator, '/api/removeSiteManager')
+api.add_resource(GetUserDetails, '/api/getUserDetails')
+api.add_resource(GetContactUs, '/api/getContactUs')
 
 
 
