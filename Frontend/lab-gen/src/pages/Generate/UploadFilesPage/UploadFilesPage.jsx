@@ -23,7 +23,8 @@ const UploadFilesPage = () => {
 
 
   const [participants, setParticipants] = useState([]);
- 
+  const degreeOptions = ["P.hD.", "M.Sc.",  "B.Sc.", "Postdoc"];
+
 
   const [selectedComponent, setSelectedComponent] = useState('AboutUs');  // Default to About Us
   const [showAddForm, setShowAddForm] = useState(false);
@@ -337,13 +338,12 @@ const UploadFilesPage = () => {
                 value={newParticipant.fullName}
                 onChange={handleInputChangeParticipant}
               />
-              <input
-                type="text"
-                placeholder="Degree"
-                name="degree"
-                value={newParticipant.degree}
-                onChange={handleInputChangeParticipant}
-              />
+              <select name="degree" value={newParticipant.degree} onChange={handleInputChangeParticipant}>
+                <option value="">Select Degree</option>
+                {degreeOptions.map((degree, index) => (
+                  <option key={index} value={degree}>{degree}</option>
+                ))}
+              </select>
               <input
                 type="text"
                 placeholder="Email"
