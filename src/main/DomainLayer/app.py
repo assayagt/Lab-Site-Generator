@@ -133,10 +133,10 @@ class UploadFilesAndData(Resource):
                             return jsonify({"error": "Invalid file type for logo, only SVG, PNG, JPG are allowed."})
 
                     # Handle homepage photo upload
-                    elif component == 'homepage_photo':
+                    elif component == 'homepagephoto':
                         if extension in ['.jpg', '.jpeg', '.png']:
                             # Save homepage photo with the correct extension
-                            file_path = os.path.join(website_folder, f"homepage_photo{extension}")
+                            file_path = os.path.join(website_folder, f"homepagephoto{extension}")
                         else:
                             return jsonify({"error": "Invalid file type for homepage photo, only JPG, PNG, and JPEG are allowed."})
 

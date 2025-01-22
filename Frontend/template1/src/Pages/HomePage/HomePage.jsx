@@ -19,7 +19,7 @@ function HomePage(props) {
           {fetchData()}
         <div className="main_section_homePage">
             <div className="subTitle">Welcome to our lab website.</div>
-            <div className="homeImg">to be img</div>
+            <img src ={props.photo} className="homeImg" alt="home_page_photo"/>
             {props.about_us?(
                    <AboutUs info={props.about_us}/> ):
                    (<div> </div>

@@ -78,7 +78,7 @@ function App() {
               <Header components={components} title={websiteData.websiteName} logo = {websiteData.logo}>       
               </Header>
               <Routes>
-                <Route path="/" element={<HomePage about_us={websiteData.about_us}/>} />
+                <Route path="/" element={<HomePage about_us={websiteData.about_us} photo = {websiteData.home_picture}/>} />
                 <Route
                   path="/Participants"
                   element= {<ParticipantsPage />}

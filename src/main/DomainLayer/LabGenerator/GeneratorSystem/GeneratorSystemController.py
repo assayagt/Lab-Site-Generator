@@ -116,7 +116,16 @@ class GeneratorSystemController:
         Set the site home picture on lab website creation.
         """
         self.site_custom_facade.error_if_domain_not_exist(domain)
-        home_picture_path = os.path.join('./LabWebsitesUploads',domain, "home_picture")
+
+        logo_extensions = ['.svg', '.png', '.jpg', '.jpeg']  # Supported logo formats
+        home_picture_path = None
+        
+        # Loop through possible logo extensions
+        for ext in logo_extensions:
+            possible_path = os.path.join('./LabWebsitesUploads', domain, f"homepagephoto{ext}")
+            if os.path.exists(possible_path):
+                home_picture_path = possible_path  # Set the correct logo path if it exists
+                break  # Stop as soon as a matching file is found
         home_picture = home_picture_path if os.path.exists(home_picture_path) else None
         self.site_custom_facade.set_home_picture(domain, home_picture)
 

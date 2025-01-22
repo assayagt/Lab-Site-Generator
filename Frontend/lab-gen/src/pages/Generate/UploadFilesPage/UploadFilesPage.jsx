@@ -18,7 +18,7 @@ const UploadFilesPage = () => {
     publicationsFile: null,
     participantsFile: null,
     logo: null,
-    homepagePhoto: null,
+    homepagephoto: null,
   });
 
 
@@ -401,11 +401,11 @@ const UploadFilesPage = () => {
           <input
             className="media_input"
             type="file"
-            onChange={(e) => handleFileChange(e, 'homepagePhoto')}
+            onChange={(e) => handleFileChange(e, 'homepagephoto')}
           />
           <button
             className="media_button"
-            onClick={() => handleSubmit('homepagePhoto')}
+            onClick={() => handleSubmit('homepagephoto')}
           >
             Save
           </button>

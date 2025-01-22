@@ -232,7 +232,6 @@ class GeneratorSystemService:
         try:
             website = self.generator_system_controller.get_site_by_domain(domain)
             logo_path = website.get_logo()  # Ensure `website.logo` contains the full file path
-            print(logo_path)
             if logo_path and os.path.exists(logo_path):
                 # Check the file extension
                 extension = os.path.splitext(logo_path)[1].lower()
@@ -253,13 +252,35 @@ class GeneratorSystemService:
                     logo_data_url = None
             else:
                 logo_data_url = None
+            homePhoto_path = website.get_home_picture()  # Ensure `website.logo` contains the full file path
+            print(logo_path)
+            if homePhoto_path and os.path.exists(homePhoto_path):
+                # Check the file extension
+                extension = os.path.splitext(homePhoto_path)[1].lower()
+                if extension in ['.svg', '.png', '.jpg', '.jpeg']:
+                    with open(homePhoto_path, "rb") as picture_file:
+                        if extension == '.svg':
+                            mime_type = 'image/svg+xml'
+                        elif extension == '.png':
+                            mime_type = 'image/png'
+                        elif extension == '.jpg' or extension == '.jpeg':
+                            mime_type = 'image/jpeg'
+                        else:
+                            mime_type = 'application/octet-stream'  # Default for unsupported types
+        
+                        picture_base64 = base64.b64encode(picture_file.read()).decode()
+                        picture_data_url = f"data:{mime_type};base64,{picture_base64}"  # Set dynamic MIME type
+                else:
+                    picture_data_url = None
+            else:
+                picture_data_url = None
             return Response({
                 "domain": domain,
                 "name": website.get_name(),
                 "components": website.get_components(),
                 "template": website.get_template(),
                 "logo": logo_data_url,  # Include the logo
-                "home_picture": website.get_home_picture()  # Include the home picture
+                "home_picture":  picture_data_url  # Include the home picture
             }, "Successfully retrieved custom website")
         except Exception as e:
             return Response(None, str(e))
