@@ -128,6 +128,7 @@ const UploadFilesPage = () => {
 
   const addParticipant = async () => {
     if (newParticipant.fullName && newParticipant.degree && newParticipant.email) {
+     
       try {
         const response = await addLabMember(
           sessionStorage.getItem("sid"), // Manager's User ID, assuming this is stored in sessionStorage
@@ -318,7 +319,7 @@ const UploadFilesPage = () => {
                   <td>
                     <input
                       type="checkbox"
-                      checked={participant.degree}
+                      checked={participant.isLabManager}
                       onChange={() => toggleLabManager(index)}
                     />
                   </td>
