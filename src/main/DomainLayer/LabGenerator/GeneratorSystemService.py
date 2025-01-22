@@ -207,9 +207,14 @@ class GeneratorSystemService:
             website = self.generator_system_controller.get_custom_website(user_id, domain)
             logo_path = website.logo  # Ensure `website.logo` contains the full file path
             if logo_path and os.path.exists(logo_path):
-                with open(logo_path+".svg", "rb") as logo_file:
-                    logo_base64 = base64.b64encode(logo_file.read()).decode()
-                    logo_data_url = f"data:image/svg+xml;base64,{logo_base64}"
+                # Check the file extension
+                extension = os.path.splitext(logo_path)[1].lower()
+                if extension in ['.svg', '.png', '.jpg', '.jpeg']:
+                    with open(logo_path, "rb") as logo_file:
+                        logo_base64 = base64.b64encode(logo_file.read()).decode()
+                        logo_data_url = f"data:image/{extension[1:]};base64,{logo_base64}"  # Adjust MIME type dynamically
+                else:
+                    logo_data_url = None
             else:
                 logo_data_url = None
             return Response({
@@ -227,10 +232,25 @@ class GeneratorSystemService:
         try:
             website = self.generator_system_controller.get_site_by_domain(domain)
             logo_path = website.get_logo()  # Ensure `website.logo` contains the full file path
+            print(logo_path)
             if logo_path and os.path.exists(logo_path):
-                with open(logo_path+".svg", "rb") as logo_file:
-                    logo_base64 = base64.b64encode(logo_file.read()).decode()
-                    logo_data_url = f"data:image/svg+xml;base64,{logo_base64}"
+                # Check the file extension
+                extension = os.path.splitext(logo_path)[1].lower()
+                if extension in ['.svg', '.png', '.jpg', '.jpeg']:
+                    with open(logo_path, "rb") as logo_file:
+                        if extension == '.svg':
+                            mime_type = 'image/svg+xml'
+                        elif extension == '.png':
+                            mime_type = 'image/png'
+                        elif extension == '.jpg' or extension == '.jpeg':
+                            mime_type = 'image/jpeg'
+                        else:
+                            mime_type = 'application/octet-stream'  # Default for unsupported types
+        
+                        logo_base64 = base64.b64encode(logo_file.read()).decode()
+                        logo_data_url = f"data:{mime_type};base64,{logo_base64}"  # Set dynamic MIME type
+                else:
+                    logo_data_url = None
             else:
                 logo_data_url = None
             return Response({

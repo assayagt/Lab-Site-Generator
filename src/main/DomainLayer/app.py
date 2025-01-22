@@ -119,7 +119,7 @@ class UploadFilesAndData(Resource):
             for component in files:
                 file = files[component]
                 print(f"Processing {component}")
-                
+
                 if file:
                     # Get file extension
                     extension = os.path.splitext(file.filename)[1].lower()
@@ -127,16 +127,16 @@ class UploadFilesAndData(Resource):
                     # Handle logo upload
                     if component == 'logo':
                         if extension in ['.svg', '.png', '.jpg', '.jpeg']:
-                            # Save logo file (replace any existing logo file, regardless of format)
-                            file_path = os.path.join(website_folder, "logo")  # Use a common name for logo
+                            # Save the logo with the correct extension
+                            file_path = os.path.join(website_folder, f"logo{extension}")  # Save with the original extension
                         else:
                             return jsonify({"error": "Invalid file type for logo, only SVG, PNG, JPG are allowed."})
 
                     # Handle homepage photo upload
                     elif component == 'homepage_photo':
                         if extension in ['.jpg', '.jpeg', '.png']:
-                            # Save homepage photo (replace any existing photo file, regardless of format)
-                            file_path = os.path.join(website_folder, "homepage_photo")  # Use a common name for homepage photo
+                            # Save homepage photo with the correct extension
+                            file_path = os.path.join(website_folder, f"homepage_photo{extension}")
                         else:
                             return jsonify({"error": "Invalid file type for homepage photo, only JPG, PNG, and JPEG are allowed."})
 
@@ -152,7 +152,7 @@ class UploadFilesAndData(Resource):
                         print(f"File {component} already exists. Replacing it.")
                     else:
                         print(f"Uploading new file: {component}")
-                    
+
                     # Save or replace the file
                     file.save(file_path)
 
@@ -336,10 +336,10 @@ class RemoveSiteManagerFromGenerator(Resource):
         parser.add_argument('manager_toRemove_email', type=str, required=True, help="Manager to remove email is required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
         args = parser.parse_args()
-
         nominator_manager_userId = args['nominator_manager_userId']
         manager_toRemove_email = args['manager_toRemove_email']
         domain = args['domain']
+
         try:
             response = generator_system.remove_site_manager_from_generator(nominator_manager_userId, manager_toRemove_email, domain)
             if response.is_success():

@@ -105,8 +105,9 @@ const UploadFilesPage = () => {
           setParticipants(updatedParticipants);
         }
       } else {
-        // Removing as a site manager
+       
         let data =await removeSiteManager(sessionStorage.getItem("sid"), email, websiteData.domain);
+        console.log(email);
         if(data.response==="true"){
           participant.isLabManager = !isLabManager;
           setParticipants(updatedParticipants);
@@ -247,9 +248,9 @@ const UploadFilesPage = () => {
         setWebsite({ ...formData });
         if (websiteData.generated) {
       
-          const saveLogoResponse = await saveLogo(sessionStorage.getItem("sid"), sessionStorage.getItem("domain"));
+          const saveLogoResponse = await saveLogo(sessionStorage.getItem("sid"), websiteData.domain);
           console.log(saveLogoResponse);
-          const savePhotoResponse = await saveHomePicture(sessionStorage.getItem("sid"), sessionStorage.getItem("domain"));
+          const savePhotoResponse = await saveHomePicture(sessionStorage.getItem("sid"), websiteData.domain);
           console.log(savePhotoResponse)
       }
       } else {
