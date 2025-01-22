@@ -76,35 +76,6 @@ def read_lab_info(excel_path):
         return None, None, str(e)
 
 
-class UploadFilesAndData(Resource):
-    def post(self):
-        try:
-            # Get the data from the frontend
-            domain = request.form['domain']
-            website_name = request.form['website_name']
-
-            website_folder = os.path.join(GENERATED_WEBSITES_FOLDER, domain)
-            os.makedirs(website_folder, exist_ok=True)
-
-            files = request.files
-            for component in files:
-                file = files[component]
-                print(component)
-                if file:
-                    if component == 'logo':
-                        file_path = os.path.join(website_folder, "logo.svg")  # Assuming logo is always a .png
-                    elif component == 'homepage_photo':
-                        file_path = os.path.join(website_folder, "homepage_photo")  # Assuming photo is always a .jpg
-                    else:
-                        print("help")
-                        file_path = os.path.join(website_folder, f"{component}.csv")  # Default case for other files
-                    file.save(file_path)
-
-            return jsonify({'message': 'Files and data uploaded successfully!'})
-        except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"})
-
-
 # class UploadFilesAndData(Resource):
 #     def post(self):
 #         try:
@@ -120,24 +91,75 @@ class UploadFilesAndData(Resource):
 #                 file = files[component]
 #                 print(component)
 #                 if file:
-#                     # Ensure the filename is secure and replace the old file if it exists
-#                     file_name = secure_filename(file.filename)
-
-#                     # Determine the file path based on the component type
 #                     if component == 'logo':
-#                         file_path = os.path.join(website_folder, "logo")  # Assuming logo is always a .png
+#                         file_path = os.path.join(website_folder, "logo.svg")  # Assuming logo is always a .png
 #                     elif component == 'homepage_photo':
 #                         file_path = os.path.join(website_folder, "homepage_photo")  # Assuming photo is always a .jpg
 #                     else:
+#                         print("help")
 #                         file_path = os.path.join(website_folder, f"{component}.csv")  # Default case for other files
-                    
-#                     # Save the file, replacing the existing one if it exists
 #                     file.save(file_path)
 
 #             return jsonify({'message': 'Files and data uploaded successfully!'})
 #         except Exception as e:
 #             return jsonify({"error": f"An error occurred: {str(e)}"})
-# Service for generating a website from templates
+
+
+class UploadFilesAndData(Resource):
+    def post(self):
+        try:
+            # Get the data from the frontend
+            domain = request.form['domain']
+            website_name = request.form['website_name']
+
+            website_folder = os.path.join(GENERATED_WEBSITES_FOLDER, domain)
+            os.makedirs(website_folder, exist_ok=True)
+
+            files = request.files
+            for component in files:
+                file = files[component]
+                print(f"Processing {component}")
+                
+                if file:
+                    # Get file extension
+                    extension = os.path.splitext(file.filename)[1].lower()
+
+                    # Handle logo upload
+                    if component == 'logo':
+                        if extension in ['.svg', '.png', '.jpg', '.jpeg']:
+                            # Save logo file (replace any existing logo file, regardless of format)
+                            file_path = os.path.join(website_folder, "logo")  # Use a common name for logo
+                        else:
+                            return jsonify({"error": "Invalid file type for logo, only SVG, PNG, JPG are allowed."})
+
+                    # Handle homepage photo upload
+                    elif component == 'homepage_photo':
+                        if extension in ['.jpg', '.jpeg', '.png']:
+                            # Save homepage photo (replace any existing photo file, regardless of format)
+                            file_path = os.path.join(website_folder, "homepage_photo")  # Use a common name for homepage photo
+                        else:
+                            return jsonify({"error": "Invalid file type for homepage photo, only JPG, PNG, and JPEG are allowed."})
+
+                    else:
+                        # Default case for other files (e.g., CSV files)
+                        if extension == '.csv':
+                            file_path = os.path.join(website_folder, f"{component}.csv")
+                        else:
+                            return jsonify({"error": "Invalid file type for component."})
+
+                    # Check if a file with the same name exists and overwrite it
+                    if os.path.exists(file_path):
+                        print(f"File {component} already exists. Replacing it.")
+                    else:
+                        print(f"Uploading new file: {component}")
+                    
+                    # Save or replace the file
+                    file.save(file_path)
+
+            return jsonify({'message': 'Files and data uploaded successfully!'})
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"})
+
 class GenerateWebsiteResource(Resource):
     def post(self):
         parser = reqparse.RequestParser()

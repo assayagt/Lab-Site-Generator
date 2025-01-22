@@ -232,3 +232,34 @@ export const setSiteContactInfo = async (userId, domain, labAddress, labMail, la
     alert('An error occurred while setting the contact information.');
   }
 };
+
+
+export const saveLogo = async (userId, domain) => {
+  try {
+      const response = await axios.post(`${baseApiUrl}changeSiteLogoByManager`, {
+            user_id: userId,  // User ID
+            domain: domain,
+      });
+
+      return response.data;
+  } catch (error) {
+      alert('Error saving logo: ' + error.message);
+  }
+};
+
+
+const saveHomePicture = async (userId, domain) => {
+  try {
+      const response = await axios.post(`${baseApiUrl}changeSiteHomePictureByManager`, {
+        user_id: userId,  // User ID
+        domain: domain,
+         
+      });
+
+      return response.data;
+
+  } catch (error) {
+      alert('Error saving home picture: ' + error.message);
+  }
+};
+

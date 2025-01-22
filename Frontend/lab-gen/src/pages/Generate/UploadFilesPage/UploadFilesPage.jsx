@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useWebsite } from '../../../Context/WebsiteContext';
 import './UploadFilesPage.css';
 import axios from "axios";
-import { getAllAlumni,getAllLabManagers,getAllLabMembers,createNewSiteManager, removeSiteManager,addLabMember,setSiteContactInfo, setSiteAboutUs } from '../../../services/Generator';
+import { getAllAlumni,getAllLabManagers,getAllLabMembers,createNewSiteManager, removeSiteManager,addLabMember,setSiteContactInfo, setSiteAboutUs ,saveLogo,saveHomePicture} from '../../../services/Generator';
 const baseApiUrl = "http://127.0.0.1:5000/api/";
 const UploadFilesPage = () => {
 
@@ -57,7 +57,7 @@ const UploadFilesPage = () => {
           getAllAlumni(domain),
         ]);
   
-        // Add isLabManager field to each participant
+      
         const allParticipants = [
           ...managers.map((participant) => ({ ...participant, isLabManager: true })),
           ...members.map((participant) => ({ ...participant, isLabManager: false })),
@@ -245,6 +245,13 @@ const UploadFilesPage = () => {
       if (response.ok) {
         alert(`${component} data saved successfully!`);
         setWebsite({ ...formData });
+        if (websiteData.generated) {
+      
+          const saveLogoResponse = await saveLogo(sessionStorage.getItem("sid"), sessionStorage.getItem("domain"));
+          console.log(saveLogoResponse);
+          const savePhotoResponse = await saveHomePicture((sessionStorage.getItem("sid"), sessionStorage.getItem("domain")));
+          console.log(savePhotoResponse)
+      }
       } else {
         alert('Error: ' + data.error);
       }
