@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useWebsite } from '../../../Context/WebsiteContext';
 import './UploadFilesPage.css';
 import axios from "axios";
-import { getAllAlumni,getAllLabManagers,getAllLabMembers,createNewSiteManager, removeSiteManager,addLabMember,setSiteContactInfo, setSiteAboutUs } from '../../../services/Generator';
+import { getAllAlumni,getAllLabManagers,getAllLabMembers,createNewSiteManager, removeSiteManager,addLabMember,setSiteContactInfo, setSiteAboutUs ,saveLogo,saveHomePicture} from '../../../services/Generator';
 const baseApiUrl = "http://127.0.0.1:5000/api/";
 const UploadFilesPage = () => {
 
@@ -18,7 +18,7 @@ const UploadFilesPage = () => {
     publicationsFile: null,
     participantsFile: null,
     logo: null,
-    homepagePhoto: null,
+    homepagephoto: null,
   });
 
 
@@ -57,7 +57,7 @@ const UploadFilesPage = () => {
           getAllAlumni(domain),
         ]);
   
-        // Add isLabManager field to each participant
+      
         const allParticipants = [
           ...managers.map((participant) => ({ ...participant, isLabManager: true })),
           ...members.map((participant) => ({ ...participant, isLabManager: false })),
@@ -105,8 +105,9 @@ const UploadFilesPage = () => {
           setParticipants(updatedParticipants);
         }
       } else {
-        // Removing as a site manager
+       
         let data =await removeSiteManager(sessionStorage.getItem("sid"), email, websiteData.domain);
+        console.log(email);
         if(data.response==="true"){
           participant.isLabManager = !isLabManager;
           setParticipants(updatedParticipants);
@@ -245,6 +246,13 @@ const UploadFilesPage = () => {
       if (response.ok) {
         alert(`${component} data saved successfully!`);
         setWebsite({ ...formData });
+        if (websiteData.generated) {
+      
+          const saveLogoResponse = await saveLogo(sessionStorage.getItem("sid"), websiteData.domain);
+          console.log(saveLogoResponse);
+          const savePhotoResponse = await saveHomePicture(sessionStorage.getItem("sid"), websiteData.domain);
+          console.log(savePhotoResponse)
+      }
       } else {
         alert('Error: ' + data.error);
       }
@@ -333,7 +341,8 @@ const UploadFilesPage = () => {
             </tbody>
           </table>
           {showAddForm ? (
-            <div>
+            <div className='add-participant-form'>
+              <label>Participant's full name:</label>
               <input
                 type="text"
                 placeholder="Full Name"
@@ -341,12 +350,14 @@ const UploadFilesPage = () => {
                 value={newParticipant.fullName}
                 onChange={handleInputChangeParticipant}
               />
+              <label>Participant's degree:</label>
               <select name="degree" value={newParticipant.degree} onChange={handleInputChangeParticipant}>
                 <option value="">Select Degree</option>
                 {degreeOptions.map((degree, index) => (
                   <option key={index} value={degree}>{degree}</option>
                 ))}
               </select>
+              <label>Participant's email:</label>
               <input
                 type="text"
                 placeholder="Email"
@@ -390,11 +401,11 @@ const UploadFilesPage = () => {
           <input
             className="media_input"
             type="file"
-            onChange={(e) => handleFileChange(e, 'homepagePhoto')}
+            onChange={(e) => handleFileChange(e, 'homepagephoto')}
           />
           <button
             className="media_button"
-            onClick={() => handleSubmit('homepagePhoto')}
+            onClick={() => handleSubmit('homepagephoto')}
           >
             Save
           </button>
