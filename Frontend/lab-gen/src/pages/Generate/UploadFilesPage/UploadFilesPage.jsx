@@ -249,7 +249,7 @@ const UploadFilesPage = () => {
       
           const saveLogoResponse = await saveLogo(sessionStorage.getItem("sid"), sessionStorage.getItem("domain"));
           console.log(saveLogoResponse);
-          const savePhotoResponse = await saveHomePicture((sessionStorage.getItem("sid"), sessionStorage.getItem("domain")));
+          const savePhotoResponse = await saveHomePicture(sessionStorage.getItem("sid"), sessionStorage.getItem("domain"));
           console.log(savePhotoResponse)
       }
       } else {

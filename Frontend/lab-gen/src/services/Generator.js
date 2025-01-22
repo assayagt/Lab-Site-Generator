@@ -236,8 +236,8 @@ export const setSiteContactInfo = async (userId, domain, labAddress, labMail, la
 
 export const saveLogo = async (userId, domain) => {
   try {
-      const response = await axios.post(`${baseApiUrl}changeSiteLogoByManager`, {
-            user_id: userId,  // User ID
+      const response = await axios.post(`${baseApiUrl}ChangeSiteLogoByManager`, {
+            user_id: userId,  
             domain: domain,
       });
 
@@ -250,10 +250,9 @@ export const saveLogo = async (userId, domain) => {
 
 export const saveHomePicture = async (userId, domain) => {
   try {
-      const response = await axios.post(`${baseApiUrl}changeSiteHomePictureByManager`, {
+      const response = await axios.post(`${baseApiUrl}ChangeSiteHomePictureByManager`, {
         user_id: userId,  // User ID
         domain: domain,
-         
       });
 
       return response.data;
