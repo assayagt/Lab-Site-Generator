@@ -173,7 +173,7 @@ const UploadFilesPage = () => {
         alert('Error updating About Us: ' + response.message);
       }
     } else {
-      alert('Website not generated yet');
+      //alert('Website not generated yet');
     }
   };
 

@@ -302,6 +302,7 @@ export const getHomepageDetails = async (domain) => {
         .get(`${baseApiUrl}getHomepageDetails?domain=${domain}`)
         .then((resp) => {
             data = resp.data;
+            console.log(data);
             return data;
         })
         .catch((err) => console.log(err.message));

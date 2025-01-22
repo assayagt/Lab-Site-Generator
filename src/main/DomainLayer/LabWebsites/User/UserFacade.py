@@ -279,8 +279,10 @@ class UserFacade:
         member.set_degree(degree)
 
     def error_if_degree_not_valid(self, degree):
+        print(degree)
         if isinstance(degree, str):
             valid_degrees = {d.value for d in Degree}
+            print(valid_degrees)
             if degree not in valid_degrees:
                 raise Exception(ExceptionsEnum.INVALID_DEGREE.value)
         elif isinstance(degree, Degree):
