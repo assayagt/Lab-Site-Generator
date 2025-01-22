@@ -70,3 +70,13 @@ class BridgeToTests(ABC):
     def reset_system(self):
         """Reset the system."""
         pass
+
+    @abstractmethod
+    def change_site_logo_by_manager(self, user_id, domain):
+        """Change the site's logo."""
+        pass
+
+    @abstractmethod
+    def remove_site_manager_from_generator(self, nominator_manager_userId, manager_toRemove_email, domain):
+        """Remove a site manager."""
+        pass

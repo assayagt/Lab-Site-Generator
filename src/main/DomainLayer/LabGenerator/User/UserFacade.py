@@ -122,6 +122,4 @@ class UserFacade:
                 raise Exception(ExceptionsEnum.USER_IS_NOT_MANAGER_OF_THE_GIVEN_DOMAIN.value)
         else:
             raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER.value)
-        #remove the removed_manager_email if it has no domains
-        if not self.members_customSites[manager_toRemove_email]["domains"]:
-            self.members_customSites.pop(manager_toRemove_email)
+

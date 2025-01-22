@@ -53,3 +53,9 @@ class RealToTests(BridgeToTests):
 
     def get_site_by_domain(self, domain):
         return self.generator_system_service.get_site_by_domain(domain)
+
+    def change_site_logo_by_manager(self, user_id, domain):
+        return self.generator_system_service.change_site_logo_by_manager(user_id, domain)
+
+    def remove_site_manager_from_generator(self, nominator_manager_userId, manager_toRemove_email, domain):
+        return self.generator_system_service.remove_site_manager_from_generator(nominator_manager_userId, manager_toRemove_email, domain)
