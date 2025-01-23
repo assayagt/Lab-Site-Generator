@@ -1,3 +1,4 @@
+from Util.ExceptionsEnum import ExceptionsEnum
 from src.main.DomainLayer.LabWebsites.LabSystem.LabSystemController import LabSystemController
 from src.main.Util.Response import Response
 
@@ -39,6 +40,9 @@ class LabSystemService:
             self.lab_system_controller.login(domain, user_id, email)
             return Response(True, "Login successful")
         except Exception as e:
+            #check if the exception is USER_NOT_REGISTERED
+            if e == ExceptionsEnum.USER_NOT_REGISTERED.value:
+                return Response(False, str(e))
             return Response(None, str(e))
 
     def logout(self, domain, user_id):
