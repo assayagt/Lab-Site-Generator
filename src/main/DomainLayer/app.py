@@ -1226,7 +1226,37 @@ class GetContactUs(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
+class RemoveAlumniFromGenerator(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('manager_userId', type=str, required=True, help="Manager user id is required")
+        parser.add_argument('email_toRemoveAlumni', type=str, required=True, help="Email to remove alumni is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        args = parser.parse_args()
 
+        try:
+            response = generator_system.remove_alumni_from_generator(args['manager_userId'], args['email_toRemoveAlumni'], args['domain'])
+            if response.is_success():
+                return jsonify({"message": "Alumni removed successfully", "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"})
+
+class AddAlumniFromGenerator(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('manager_userId', type=str, required=True, help="Manager user id is required")
+        parser.add_argument('email_toSetAlumni', type=str, required=True, help="Email to set alumni is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response = generator_system.add_alumni_from_generator(args['manager_userId'], args['email_toSetAlumni'], args['domain'])
+            if response.is_success():
+                return jsonify({"message": "Alumni added successfully", "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"})
 
 # Add resources to the API of lab
 api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')#
@@ -1259,8 +1289,8 @@ api.add_resource(GetAllCustomWebsitesOfManager, '/api/getCustomWebsites')
 api.add_resource(EnterGeneratorSystem, '/api/enterGeneratorSystem')#
 api.add_resource(GetCustomSite, '/api/getCustomSite')
 api.add_resource(CreateNewSiteManagerFromGenerator, '/api/CreateNewSiteManagerFromGenerator')
-
-
+api.add_resource(RemoveAlumniFromGenerator, '/api/RemoveAlumniFromGenerator')
+api.add_resource(AddAlumniFromGenerator, '/api/AddAlumniFromGenerator')
 
 api.add_resource(GetMemberPublications, '/api/getMemberPublications')
 api.add_resource(ApproveRegistration, '/api/approveRegistration') #

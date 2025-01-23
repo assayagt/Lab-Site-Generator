@@ -22,11 +22,11 @@ class TestLoginFunction(unittest.TestCase):
         self.website_name = "Lab Website"
         self.domain = "lab1.example.com"
         self.components = ["Homepage", "Contact Us", "Research"]
-        self.template = Template.BASIC
+        self.template = Template.template1
         self.generator_system_service.create_website(self.user_id, self.website_name, self.domain, self.components, self.template)
 
         # Add lab members and managers
-        self.site_creator_email = "someMail@example.com" #TODO: maybe need to change this email: it receives emails!!
+        self.site_creator_email = "creator@example.com" #TODO: maybe need to change this email: it receives emails!!
         self.lab_members = {"member1@example.com": {"full_name": "Member One", "degree": Degree.BSC}, "member2@example.com": {"full_name":"Member Two", "degree": Degree.MSC}}
         self.lab_managers = {}
         self.site_creator = {"email": self.site_creator_email, "full_name": "Site Creator", "degree": Degree.PHD}
