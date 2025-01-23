@@ -193,3 +193,18 @@ class AllWebsitesUserFacade:
         email = userFacade.get_email_by_userId(userid)
         return userFacade.get_user_details(email)
 
+    def site_creator_resignation(self, user_id, domain, nominate_email):
+        userFacade = self.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(user_id)
+        userFacade.error_if_user_not_logged_in(user_id)
+        userFacade.error_if_user_is_not_site_creator(user_id)
+
+        # Resign the site creator from its role
+        creator_email = userFacade.get_email_by_userId(user_id)
+        userFacade.site_creator_to_alumni(creator_email)
+
+        # Assign nominated as site creator
+        userFacade.error_if_labMember_notExist(nominate_email)
+        userFacade.define_member_as_site_creator(nominate_email)
+
+

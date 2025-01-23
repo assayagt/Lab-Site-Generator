@@ -341,3 +341,15 @@ class UserFacade:
     def get_user_details(self, email):
         member = self.get_member_by_email(email)
         return member.get_details()
+
+    def site_creator_to_alumni(self, creator_email):
+        site_creator = self.siteCreator[creator_email]
+        self.alumnis[creator_email] = site_creator
+        del self.siteCreator[creator_email]
+
+    def define_member_as_site_creator(self, nominate_email):
+        member = self.get_member_by_email(nominate_email)
+        self.remove_manager_permissions(nominate_email)
+        self.siteCreator[nominate_email] = member
+
+

@@ -1232,10 +1232,13 @@ class SiteCreatorResignation(Resource):
         args = parser.parse_args()
 
         try:
-            response = generator_system.site_creator_resignation(args['user_id'], args['domain'], args['email'])
-            if response.is_success():
-                return jsonify({"message": response.get_message(), "response": "true"})
-            return jsonify({"message": response.get_message(), "response": "false"})
+            response1 = generator_system.site_creator_resignation(args['user_id'], args['domain'], args['email'])
+            if response1.is_success():
+                response2 = lab_system_service.site_creator_resignation(args['user_id'], args['domain'], args['email'])
+                if response2.is_success():
+                    return jsonify({"message": response1.get_message(), "response": "true"})
+                return jsonify({"error": f"An error occurred: {response2.get_message()}", "response": "false"})
+            return jsonify({"message": response1.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
 
