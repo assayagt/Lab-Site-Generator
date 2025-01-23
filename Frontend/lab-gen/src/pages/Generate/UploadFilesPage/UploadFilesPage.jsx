@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useWebsite } from '../../../Context/WebsiteContext';
 import './UploadFilesPage.css';
 import axios from "axios";
-import { getAllAlumni,getAllLabManagers,getAllLabMembers,createNewSiteManager, removeSiteManager,addLabMember,setSiteContactInfo, setSiteAboutUs ,saveLogo,saveHomePicture} from '../../../services/Generator';
+import { getAllAlumni,getAllLabManagers,getAllLabMembers,createNewSiteManager, removeSiteManager,addLabMember,setSiteContactInfo, setSiteAboutUs ,saveLogo,saveHomePicture,addAlumni} from '../../../services/Generator';
 const baseApiUrl = "http://127.0.0.1:5000/api/";
 const UploadFilesPage = () => {
 
@@ -23,7 +23,7 @@ const UploadFilesPage = () => {
 
 
   const [participants, setParticipants] = useState([]);
-  const degreeOptions = ["P.hD.", "M.Sc.",  "B.Sc.", "Postdoc"];
+  const degreeOptions = ["Ph.D.", "M.Sc.",  "B.Sc.", "Postdoc"];
 
 
   const [selectedComponent, setSelectedComponent] = useState('AboutUs');  // Default to About Us
@@ -59,9 +59,9 @@ const UploadFilesPage = () => {
   
       
         const allParticipants = [
-          ...managers.map((participant) => ({ ...participant, isLabManager: true })),
-          ...members.map((participant) => ({ ...participant, isLabManager: false })),
-          ...alumni.map((participant) => ({ ...participant, isLabManager: false }))
+          ...managers.map((participant) => ({ ...participant, isLabManager: true, alumni:false })),
+          ...members.map((participant) => ({ ...participant, isLabManager: false ,alumni:false })),
+          ...alumni.map((participant) => ({ ...participant, isLabManager: false, alumni:true  }))
         ];
   
         setParticipants(allParticipants);
@@ -112,6 +112,40 @@ const UploadFilesPage = () => {
           participant.isLabManager = !isLabManager;
           setParticipants(updatedParticipants);
         }
+      }
+  
+    
+    } catch (error) {
+      console.error('Error toggling lab manager:', error);
+      alert('An error occurred while updating the lab manager.');
+    }
+  };
+
+
+  const toggleAlumni = async (index) => {
+    const updatedParticipants = [...participants];
+    const participant = updatedParticipants[index];
+  
+    const email = participant.email;
+    const islumi = participant.alumni;
+  
+    
+    try {
+    if (!islumi) {
+        
+       let data = await addAlumni(sessionStorage.getItem("sid"), email, websiteData.domain);
+        if(data.response==="true"){
+          participant.alumni = !islumi;
+           setParticipants(updatedParticipants);
+         }
+       } else {
+       
+        // let data =await removeSiteManager(sessionStorage.getItem("sid"), email, websiteData.domain);
+        // console.log(email);
+        // if(data.response==="true"){
+        //   participant.isLabManager = !isLabManager;
+        //   setParticipants(updatedParticipants);
+        // }
       }
   
     
@@ -221,8 +255,8 @@ const UploadFilesPage = () => {
 
   const handleDownload = (component) => {
     const link = document.createElement('a');
-    link.href = `/path/to/template/${component}-template.xlsx`; // Modify as needed
-    link.download = `${component}-template.xlsx`;
+    link.href = `C:\SE\Lab-Site-Generator\Frontend\lab-gen\src\participants.csv`; // Modify as needed
+    link.download = `${component}.xlsx`;
     link.click();
   };
 
@@ -274,9 +308,10 @@ const UploadFilesPage = () => {
       console.log(data);
       if (data.response==="true") {
         console.log(data.message);
-        alert(data);
+        alert(data.message);
         sessionStorage.removeItem("AboutUs");
         sessionStorage.removeItem("ContactUs");
+        navigate("/my-account");
       } else {
         alert('Error: ' + data.error);
       }
@@ -497,18 +532,126 @@ const UploadFilesPage = () => {
               value={contactUsData.address}
               onChange={handleContactUsChange}
             />
-            <button
-              className="about_contact_button"
-              onClick={saveContactUs}
-            >
-              Save
-            </button>
+
+{contactUs_usSave!=''? (
+          <button
+          className="about_contact_button"
+          onClick={saveContactUs}
+        >
+          Saved
+        </button>
+        ):(
+          <button
+          className="about_contact_button"
+          onClick={saveContactUs}
+        >
+          Save
+        </button>
+        )
+        }
+            
           </div>
         </div>
       )
       
       }
-      {selectedComponent === 'Participants' && <ParticipantsForm />}
+      {selectedComponent === 'Participants' && 
+        (<div className="file-upload-item">
+          <div className="file-upload_title">Participants</div>
+          {!websiteData.generated ? (
+            <div>
+              <div>
+                <button
+                  className="downloadTemplate"
+                  onClick={() => handleDownload('participants')}
+                >
+                  Download Template
+                </button>
+              </div>
+              <div>
+                <input
+                  className="uploadTemplate"
+                  type="file"
+                  onChange={(e) => handleFileChange(e, 'participants')}
+                />
+                <button
+                  className="uploadTemplateButton"
+                  onClick={() => handleSubmit('participants')}
+                >
+                  Upload Template
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <table className="participants-table">
+                <thead>
+                  <tr>
+                    <th>Full Name</th>
+                    <th>Degree</th>
+                    <th>Manager</th>
+                    <th>Alumni</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {participants.map((participant, index) => (
+                    <tr key={index}>
+                      <td>{participant.fullName}</td>
+                      <td>{participant.degree}</td>
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={participant.isLabManager}
+                          onChange={() => toggleLabManager(index)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={participant.alumni}
+                          onChange={() => toggleAlumni(index)}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+    
+                </tbody>
+              </table>
+              {showAddForm ? (
+                <div className='add-participant-form'>
+                  <label>Participant's full name:</label>
+                  <input
+                    type="text"
+                    placeholder="Full Name"
+                    name="fullName"
+                    value={newParticipant.fullName}
+                    onChange={handleInputChangeParticipant}
+                  />
+                  <label>Participant's degree:</label>
+                  <select name="degree" value={newParticipant.degree} onChange={handleInputChangeParticipant}>
+                    <option value="">Select Degree</option>
+                    {degreeOptions.map((degree, index) => (
+                      <option key={index} value={degree}>{degree}</option>
+                    ))}
+                  </select>
+                  <label>Participant's email:</label>
+                  <input
+                    type="text"
+                    placeholder="Email"
+                    name="email"
+                    value={newParticipant.email}
+                    onChange={handleInputChangeParticipant}
+                  />
+                
+                  <button onClick={addParticipant}>Save</button>
+                  <button onClick={() => setShowAddForm(false)}>Cancel</button>
+                </div>
+              ) : (
+                <button onClick={() => setShowAddForm(true)}>+ Add Participant</button>
+              )}
+            </div>
+          )}
+        </div>)}
       {selectedComponent === 'Media' && <MediaForm />}
     </div>
   </div>

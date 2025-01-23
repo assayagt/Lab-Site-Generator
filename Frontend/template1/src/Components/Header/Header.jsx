@@ -1,16 +1,16 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState,useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Header.css";
-import Logo from "../../images/brain.svg";
 import accountIcon from "../../images/account_avatar.svg";
 import { useAuth } from "../../Context/AuthContext";
+import {NotificationContext} from "../../Context/NotificationContext"
 
 function Header(props) {
   const navbarRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation(); // Get current location
   const { login, logout } = useAuth();
-  const [hasNotifications, setHasNotifications] = useState(false); // State for notifications
+  const { hasNewNotifications } = useContext(NotificationContext); 
   const [showLogin, setShowLogin] = useState(false);
   const [email, setEmail] = useState("");
   const [loginError, setLoginError] = useState(""); // State to store login error messages
@@ -67,18 +67,19 @@ function Header(props) {
   };
 
   const handleLoginClick = () => {
-    console.log("Login clicked");
     setShowLogin(true); // Show login popup
   };
 
-   const handleLogin = (e) => {
-    //e.preventDefault();
-    if (login(email)) {
+   const handleLogin = async(e) => {
+    e.preventDefault(); // Prevent form submission from reloading the page
+    let data = await login(email);
+    if (data) {
       setShowLogin(false); 
       setLoginError(""); 
       setIsLoggedIn(true);
-      //window.location.reload();
     } else {
+      setIsLoggedIn(false);
+      setShowLogin(true); 
       setLoginError("Login failed. Please check your username and try again."); 
     }
     setEmail("");
@@ -101,13 +102,12 @@ function Header(props) {
     }
     }
    
-    console.log("Logout clicked");
+   
     
   };
 
   return (
     <div className="header">
-      {console.log(props.logo)}
       <img className="header_logo" src={props.logo} alt="logo" />
       <div className="header_title">{props.title}</div>
       <div className="navbar" ref={navbarRef} onMouseMove={handleMouseEnter}>
@@ -124,7 +124,7 @@ function Header(props) {
       </div>
       <div className="icon_photo">
         <div className="menu">
-          {hasNotifications && <div className="notification-dot"></div>}
+          {hasNewNotifications && <div className="notification-dot"></div>}
           <div className="hidden-box">
             <div className="personal_menu">
               <div className="icon_photo">

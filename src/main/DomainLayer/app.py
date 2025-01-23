@@ -17,8 +17,8 @@ app_secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app = Flask(__name__)
 app.config["SECRET_KEY"] = app.secret_key
 CORS(app)
-api = Api(app)
-socketio = SocketIO(app)
+api = Api(app,resources={r"/*":{"origins":"*"}})
+socketio = SocketIO(app, cors_allowed_origins="*", path='/ws/notifications')
 
 # Directories for file storage and website generation
 UPLOAD_FOLDER = './uploads'
@@ -39,6 +39,7 @@ def handle_connect():
 @socketio.on('disconnect')
 def handle_disconnect():
     print('Client disconnected')
+
 
 def notify_registration(email):
     socketio.emit('registration-notification', {'message': f'New registration request from: {email}'})
@@ -116,6 +117,8 @@ def read_lab_info(excel_path):
 #             return jsonify({'message': 'Files and data uploaded successfully!'})
 #         except Exception as e:
 #             return jsonify({"error": f"An error occurred: {str(e)}"})
+
+
 
 
 class UploadFilesAndData(Resource):
@@ -1337,11 +1340,11 @@ api.add_resource(ChangeSiteLogoByManager, '/api/ChangeSiteLogoByManager')
 api.add_resource(RemoveSiteManagerFromGenerator, '/api/removeSiteManager')
 api.add_resource(GetUserDetails, '/api/getUserDetails')
 api.add_resource(GetContactUs, '/api/getContactUs')
-
-
+##
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
+    ##app.run(debug=True)
 
 
 def helper():

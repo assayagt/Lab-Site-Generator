@@ -13,7 +13,7 @@ import PublicationsPage from './Pages/PublicationsPage/PublicationsPage';
 import { AuthProvider } from './Context/AuthContext';
 import { useWebsite } from './Context/WebsiteContext';
 import { getHomepageDetails} from  "./services/websiteService"
-
+import { NotificationProvider } from './Context/NotificationContext';
 function App() {
 
 
@@ -50,7 +50,6 @@ function App() {
             home_picture: data.data.home_picture, 
             about_us: data.data.about_us, 
           };
-          console.log(mappedData);
           setWebsite(mappedData); 
           sessionStorage.setItem("domain",mappedData.domain);
         }
@@ -73,8 +72,8 @@ function App() {
   return (
     
     <AuthProvider>
-        <Router>
-          
+       <NotificationProvider>
+       <Router>
               <Header components={components} title={websiteData.websiteName} logo = {websiteData.logo}>       
               </Header>
               <Routes>
@@ -97,6 +96,8 @@ function App() {
                 />
               </Routes>
         </Router>
+       </NotificationProvider>
+
     </AuthProvider>
     
 

@@ -164,6 +164,25 @@ export const createNewSiteManager = async (nominatorManagerUserId, nominatedMana
   }
 };
 
+
+export const addAlumni = async (nominatorManagerUserId, nominatedManagerEmail, domain) => {
+  try {
+    const response = await axios.post(`${baseApiUrl}AddAlumniFromGenerator`, {
+      manager_userId: nominatorManagerUserId,
+      email_toSetAlumni: nominatedManagerEmail,
+      domain: domain,
+    });
+      console.log(response.data);
+      return response.data;
+  } catch (error) {
+    console.error('Error creating new ALUMNI:', error);
+    //alert('An error occurred while adding the aluni.');
+  }
+};
+
+
+
+
 export const removeSiteManager = async (nominatorManagerUserId, managerToRemoveEmail, domain) => {
   try {
     const response = await axios.post(`${baseApiUrl}removeSiteManager`, {
