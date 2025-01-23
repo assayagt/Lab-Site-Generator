@@ -1,4 +1,4 @@
-from Util.ExceptionsEnum import ExceptionsEnum
+from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.main.DomainLayer.LabWebsites.LabSystem.LabSystemController import LabSystemController
 from src.main.Util.Response import Response
 
