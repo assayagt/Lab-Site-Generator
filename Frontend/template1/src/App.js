@@ -13,7 +13,7 @@ import PublicationsPage from './Pages/PublicationsPage/PublicationsPage';
 import { AuthProvider } from './Context/AuthContext';
 import { useWebsite } from './Context/WebsiteContext';
 import { getHomepageDetails} from  "./services/websiteService"
-
+import { NotificationProvider } from './Context/NotificationContext';
 function App() {
 
 
@@ -73,8 +73,8 @@ function App() {
   return (
     
     <AuthProvider>
-        <Router>
-          
+       <NotificationProvider>
+       <Router>
               <Header components={components} title={websiteData.websiteName} logo = {websiteData.logo}>       
               </Header>
               <Routes>
@@ -97,6 +97,8 @@ function App() {
                 />
               </Routes>
         </Router>
+       </NotificationProvider>
+
     </AuthProvider>
     
 
