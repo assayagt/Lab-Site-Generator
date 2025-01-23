@@ -75,6 +75,12 @@ class AllWebsitesUserFacade:
         userFacade.error_if_degree_not_valid(lab_member_degree)
         userFacade.register_new_LabMember(email_to_register, lab_member_fullName, lab_member_degree)
 
+    def define_member_as_alumni_from_generator(self, member_email, domain):
+        userFacade = self.getUserFacadeByDomain(domain)
+        userFacade.error_if_trying_to_define_site_creator_as_alumni(member_email)
+        userFacade.error_if_member_is_not_labMember_or_manager(member_email)
+        userFacade.define_member_as_alumni(member_email)
+
     def define_member_as_alumni(self, manager_userId, member_email, domain):
         userFacade = self.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(manager_userId)
