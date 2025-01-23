@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useWebsite } from '../../../Context/WebsiteContext';
 import './UploadFilesPage.css';
 import axios from "axios";
-import { getAllAlumni,getAllLabManagers,getAllLabMembers,createNewSiteManager, removeSiteManager,addLabMember,setSiteContactInfo, setSiteAboutUs ,saveLogo,saveHomePicture} from '../../../services/Generator';
+import { getAllAlumni,getAllLabManagers,getAllLabMembers,createNewSiteManager, removeSiteManager,addLabMember,setSiteContactInfo, setSiteAboutUs ,saveLogo,saveHomePicture,addAlumni} from '../../../services/Generator';
 const baseApiUrl = "http://127.0.0.1:5000/api/";
 const UploadFilesPage = () => {
 
@@ -130,29 +130,29 @@ const UploadFilesPage = () => {
     const islumi = participant.alumni;
   
     
-    //try {
-      //if (!islumi) {
+    try {
+    if (!islumi) {
         
-       // let data = await createNewSiteManager(sessionStorage.getItem("sid"), email, websiteData.domain);
+       let data = await addAlumni(sessionStorage.getItem("sid"), email, websiteData.domain);
+        if(data.response==="true"){
+          participant.alumni = !islumi;
+           setParticipants(updatedParticipants);
+         }
+       } else {
+       
+        // let data =await removeSiteManager(sessionStorage.getItem("sid"), email, websiteData.domain);
+        // console.log(email);
         // if(data.response==="true"){
-        //   participant.alumni = !islumi;
+        //   participant.isLabManager = !isLabManager;
         //   setParticipants(updatedParticipants);
         // }
-      // } else {
-       
-      //   let data =await removeSiteManager(sessionStorage.getItem("sid"), email, websiteData.domain);
-      //   console.log(email);
-      //   if(data.response==="true"){
-      //     participant.isLabManager = !isLabManager;
-      //     setParticipants(updatedParticipants);
-      //   }
-      // }
+      }
   
     
-    // } catch (error) {
-    //   console.error('Error toggling lab manager:', error);
-    //   alert('An error occurred while updating the lab manager.');
-    // }
+    } catch (error) {
+      console.error('Error toggling lab manager:', error);
+      alert('An error occurred while updating the lab manager.');
+    }
   };
   
   const handleInputChangeParticipant = (e) => {
