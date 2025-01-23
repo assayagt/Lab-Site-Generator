@@ -187,6 +187,11 @@ class UserFacade:
             return self.siteCreator[email]
         return None
 
+    def get_alumni_by_email(self, email):
+        if email in self.alumnis:
+            return self.alumnis[email]
+        return None
+
     def delete_member_by_email(self, email):
         """Delete an active member by an email
         Site creator cant be deleted!"""
