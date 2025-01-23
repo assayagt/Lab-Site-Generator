@@ -133,8 +133,8 @@ const PublicationPage = () => {
                 <p><strong>Year:</strong> {pub.publication_year}</p>
                 <p className="description">{pub.description}</p>
                 <div className='links'>
-                  {pub.git&&(<div className="git">Git</div>)}
-                  {pub.presentation_link&&<div className="presentation">Presentation</div>}
+                  {pub.git_link&&(<a href={pub.git_link} target="_blank" rel="noopener noreferrer" className="git">Git</a>)}
+                  {pub.presentation_link&&<a href={pub.presentation_link} target="_blank" rel="noopener noreferrer" className="git">Presentation</a>}
                   <a href={pub.publication_link} target="_blank" rel="noopener noreferrer">Read More</a>
                 </div>
               </div>

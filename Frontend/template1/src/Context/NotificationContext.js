@@ -40,7 +40,7 @@ export const NotificationProvider = ({ children }) => {
 
     // Cleanup WebSocket on component unmount
     return () => {
-      socket.close();
+      //socket.close();
       console.log("WebSocket closed");
     };
   }, []); // The empty dependency array ensures this effect only runs once when the component mounts
