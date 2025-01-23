@@ -1223,6 +1223,27 @@ class GetContactUs(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
+
+class SiteCreatorResignation(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', required=True, help="User ID is required")
+        parser.add_argument('domain', required=True, help="Domain is required")
+        parser.add_argument('email', required=True, help="Email is required")
+        args = parser.parse_args()
+
+        try:
+            response1 = generator_system.site_creator_resignation(args['user_id'], args['domain'], args['email'])
+            if response1.is_success():
+                response2 = lab_system_service.site_creator_resignation(args['user_id'], args['domain'], args['email'])
+                if response2.is_success():
+                    return jsonify({"message": response1.get_message(), "response": "true"})
+                return jsonify({"error": f"An error occurred: {response2.get_message()}", "response": "false"})
+            return jsonify({"message": response1.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+
 class RemoveAlumniFromGenerator(Resource):
     def post(self):
         parser = reqparse.RequestParser()
@@ -1246,6 +1267,7 @@ class AddAlumniFromGenerator(Resource):
         parser.add_argument('email_toSetAlumni', type=str, required=True, help="Email to set alumni is required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
         args = parser.parse_args()
+
 
         try:
             response = generator_system.add_alumni_from_generator(args['manager_userId'], args['email_toSetAlumni'], args['domain'])

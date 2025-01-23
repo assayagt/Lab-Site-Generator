@@ -330,3 +330,13 @@ class LabSystemService:
             return Response(True, "Contact info added successfully")
         except Exception as e:
             return Response(None, str(e))
+
+    def site_creator_resignation(self, user_id, domain, nominate_email):
+        """
+        Site creator resignation.
+        """
+        try:
+            self.lab_system_controller.site_creator_resignation(user_id, domain, nominate_email)
+            return Response(True, "Site creator resigned successfully")
+        except Exception as e:
+            return Response(None, str(e))

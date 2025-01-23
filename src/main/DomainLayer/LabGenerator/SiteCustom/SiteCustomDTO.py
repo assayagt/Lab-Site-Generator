@@ -2,13 +2,14 @@ from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
 from src.main.DomainLayer.LabGenerator.SiteCustom.SiteCustom import SiteCustom
 
 class SiteCustomDTO:
-    def __init__(self, domain=None, name=None, components=None, template=None, logo=None, home_picture=None):
+    def __init__(self, domain=None, name=None, components=None, template=None, site_creator_email=None, logo=None, home_picture=None):
         self.domain = domain
         self.name = name
         self.components = components if components is not None else []
         self.template = template
         self.logo = logo
         self.home_picture = home_picture
+        self.site_creator_email = site_creator_email
 
     @classmethod
     def from_site_custom(cls, site_custom):
@@ -20,6 +21,7 @@ class SiteCustomDTO:
             template=site_custom.template,
             logo=site_custom.logo,
             home_picture=site_custom.home_picture,
+            site_creator_email=site_custom.site_creator_email,
         )
 
     def to_site_custom(self):
@@ -31,6 +33,7 @@ class SiteCustomDTO:
             template=self.template,
             logo=self.logo,
             home_picture=self.home_picture,
+            site_creator_email=self.site_creator_email,
         )
 
     def get_domain(self):
