@@ -31,7 +31,7 @@ class TestSetFullNameByMember(unittest.TestCase):
         }
         self.website_name = "Lab Website"
         self.components = ["Homepage", "Contact Us", "Research"]
-        self.template = Template.BASIC
+        self.template = Template.template1
         self.generator_system_service.create_website(self.user_id, self.website_name, self.domain, self.components,
                                                      self.template)
         self.generator_system_service.create_new_lab_website(
@@ -43,6 +43,8 @@ class TestSetFullNameByMember(unittest.TestCase):
         # Simulate a lab member login
         self.labMember1_userId = self.lab_system_service.enter_lab_website(self.domain).get_data()
         self.lab_system_service.login(self.domain, self.labMember1_userId, self.labMember1_email)
+        self.labManager1_userId = self.lab_system_service.enter_lab_website(self.domain).get_data()
+        self.lab_system_service.login(self.domain, self.labManager1_userId, self.labManager1_email)
 
     def tearDown(self):
         # Reset the system after each test
@@ -102,3 +104,17 @@ class TestSetFullNameByMember(unittest.TestCase):
         )
         self.assertFalse(response.is_success())
         self.assertEqual(response.get_message(), ExceptionsEnum.USER_NOT_EXIST.value)
+
+    def test_set_fullName_by_alumni_success(self):
+        new_full_name = "Name Member"
+
+        self.lab_system_service.define_member_as_alumni(self.labManager1_userId, self.labMember1_email, self.domain)
+        # Set the bio
+        response = self.lab_system_service.set_fullName_by_member(
+            self.labMember1_userId, new_full_name, self.domain
+        )
+        self.assertTrue(response.is_success())
+
+        # Validate that the bio was successfully set
+        member_data = self.lab_system_service.get_all_alumnis(self.domain).get_data()
+        self.assertEqual(member_data[self.labMember1_email].get_fullName(), new_full_name)

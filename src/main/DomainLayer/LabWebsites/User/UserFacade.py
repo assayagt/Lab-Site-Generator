@@ -225,6 +225,11 @@ class UserFacade:
         if email not in self.members and email not in self.managers and email not in self.siteCreator:
             raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MEMBER_OR_LAB_MANAGER_OR_CREATOR.value)
 
+    def error_if_user_is_not_labMember_manager_creator_alumni(self, userId):
+        email = self.get_email_by_userId(userId)
+        if email not in self.members and email not in self.managers and email not in self.siteCreator and email not in self.alumnis:
+            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MEMBER_OR_LAB_MANAGER_OR_CREATOR_OR_ALUMNI.value)
+
     def error_if_trying_to_define_site_creator_as_alumni(self, email):
         if email in self.siteCreator:
             raise Exception(ExceptionsEnum.SITE_CREATOR_CANT_BE_ALUMNI.value)
@@ -265,22 +270,32 @@ class UserFacade:
 
     def set_secondEmail_by_member(self, email, secondEmail):
         member = self.get_member_by_email(email)
+        if member is None:
+            member = self.get_alumni_by_email(email)
         member.set_secondEmail(secondEmail)
 
     def set_linkedin_link_by_member(self, email, linkedin_link):
         member = self.get_member_by_email(email)
+        if member is None:
+            member = self.get_alumni_by_email(email)
         member.set_linkedin_link(linkedin_link)
 
     def set_media_by_member(self, email, media):
         member = self.get_member_by_email(email)
+        if member is None:
+            member = self.get_alumni_by_email(email)
         member.set_media(media)
 
     def set_fullName_by_member(self,email, fullName):
         member = self.get_member_by_email(email)
+        if member is None:
+            member = self.get_alumni_by_email(email)
         member.set_fullName(fullName)
 
     def set_degree_by_member(self,email, degree):
         member = self.get_member_by_email(email)
+        if member is None:
+            member = self.get_alumni_by_email(email)
         member.set_degree(degree)
 
     def error_if_degree_not_valid(self, degree):
@@ -298,6 +313,8 @@ class UserFacade:
 
     def set_bio_by_member(self,email, bio):
         member = self.get_member_by_email(email)
+        if member is None:
+            member = self.get_alumni_by_email(email)
         member.set_bio(bio)
 
     def add_user(self):
