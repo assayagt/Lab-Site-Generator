@@ -70,10 +70,10 @@ function Header(props) {
     setShowLogin(true); // Show login popup
   };
 
-   const handleLogin = (e) => {
+   const handleLogin = async(e) => {
     e.preventDefault(); // Prevent form submission from reloading the page
-
-    if (login(email)===true) {
+    let data = await login(email);
+    if (data) {
       setShowLogin(false); 
       setLoginError(""); 
       setIsLoggedIn(true);
