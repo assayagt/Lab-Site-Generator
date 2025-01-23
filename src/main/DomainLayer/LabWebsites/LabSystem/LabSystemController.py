@@ -65,15 +65,19 @@ class LabSystemController:
         userFacade.error_if_user_notExist(userId)
         member = userFacade.get_member_by_email(email)
         if member is None:
-            # check if registration request already sent to managers:
-            userFacade.error_if_email_is_in_requests_and_wait_approval(email)
-            # error if registration request already sent to managers and rejected:
-            userFacade.error_if_email_is_in_requests_and_rejected(email)
-            # send registration request to all LabManagers:
-            self.send_registration_notification_to_all_LabManagers(domain, email)
-            # keep the email in the requests list, so next time the user will login, a registration request wont be sent again:
-            userFacade.add_email_to_requests(email)
-            raise Exception(ExceptionsEnum.USER_NOT_REGISTERED.value)
+            alumni = userFacade.get_alumni_by_email(email)
+            if alumni is None:
+                # check if registration request already sent to managers:
+                userFacade.error_if_email_is_in_requests_and_wait_approval(email)
+                # error if registration request already sent to managers and rejected:
+                userFacade.error_if_email_is_in_requests_and_rejected(email)
+                # send registration request to all LabManagers:
+                self.send_registration_notification_to_all_LabManagers(domain, email)
+                # keep the email in the requests list, so next time the user will login, a registration request wont be sent again:
+                userFacade.add_email_to_requests(email)
+                raise Exception(ExceptionsEnum.USER_NOT_REGISTERED.value)
+            else:
+                userFacade.login(userId, email)
         else:
             userFacade.login(userId, email)
 
