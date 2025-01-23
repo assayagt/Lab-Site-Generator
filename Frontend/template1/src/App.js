@@ -50,7 +50,6 @@ function App() {
             home_picture: data.data.home_picture, 
             about_us: data.data.about_us, 
           };
-          console.log(mappedData);
           setWebsite(mappedData); 
           sessionStorage.setItem("domain",mappedData.domain);
         }

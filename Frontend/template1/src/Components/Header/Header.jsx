@@ -67,16 +67,19 @@ function Header(props) {
   };
 
   const handleLoginClick = () => {
-    console.log("Login clicked");
     setShowLogin(true); // Show login popup
   };
 
    const handleLogin = (e) => {
-    if (login(email)) {
+    e.preventDefault(); // Prevent form submission from reloading the page
+
+    if (login(email)===true) {
       setShowLogin(false); 
       setLoginError(""); 
       setIsLoggedIn(true);
     } else {
+      setIsLoggedIn(false);
+      setShowLogin(true); 
       setLoginError("Login failed. Please check your username and try again."); 
     }
     setEmail("");
@@ -99,13 +102,12 @@ function Header(props) {
     }
     }
    
-    console.log("Logout clicked");
+   
     
   };
 
   return (
     <div className="header">
-      {console.log(props.logo)}
       <img className="header_logo" src={props.logo} alt="logo" />
       <div className="header_title">{props.title}</div>
       <div className="navbar" ref={navbarRef} onMouseMove={handleMouseEnter}>
