@@ -5,6 +5,7 @@ import os
 from flask_cors import CORS
 import subprocess
 import pandas as pd
+from flask_socketio import SocketIO, emit
 
 
 from src.main.DomainLayer.LabGenerator.GeneratorSystemService import GeneratorSystemService
@@ -17,6 +18,7 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = app.secret_key
 CORS(app)
 api = Api(app)
+socketio = SocketIO(app)
 
 # Directories for file storage and website generation
 UPLOAD_FOLDER = './uploads'
@@ -29,6 +31,17 @@ generator_system = GeneratorSystemService.get_instance()
 lab_system_service = LabSystemService.get_instance(generator_system.get_lab_system_controller())
 
 TEMPLATE_1_PATH = os.path.join(os.getcwd(), 'Frontend', 'template1')
+
+@socketio.on('connect')
+def handle_connect():
+    print('Client connected')
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    print('Client disconnected')
+
+def notify_registration(email):
+    socketio.emit('registration-notification', {'message': f'New registration request from: {email}'})
 
 # Service for uploading file
 
@@ -560,7 +573,11 @@ class LoginWebsite(Resource):
         try:
             response = lab_system_service.login(args['domain'], args['user_id'], args['email'])
             if response.is_success():
-                return jsonify({"message": response.get_message(), "response": "true"})
+                if response.get_data():
+                    return jsonify({"message": response.get_message(), "response": "true"})
+                else:
+                    notify_registration(args['email'])
+                    return jsonify({"message": response.get_message(), "response": "false"})
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
