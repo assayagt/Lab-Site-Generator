@@ -284,3 +284,19 @@ class GeneratorSystemService:
             }, "Successfully retrieved custom website")
         except Exception as e:
             return Response(None, str(e))
+
+    def add_alumni_from_generator(self, manager_userId, email_toSetAlumni, domain):
+        """Set a lab member as alumni through GeneratorSystemController."""
+        try:
+            self.generator_system_controller.add_alumni_from_generator(manager_userId, email_toSetAlumni, domain)
+            return Response(email_toSetAlumni, "Lab member set as alumni successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def remove_alumni_from_generator(self, manager_userId, email_toRemoveAlumni, domain):
+        """Remove a lab member from alumni through GeneratorSystemController."""
+        try:
+            self.generator_system_controller.remove_alumni_from_generator(manager_userId, email_toRemoveAlumni, domain)
+            return Response(email_toRemoveAlumni, "Lab member removed from alumni successfully")
+        except Exception as e:
+            return Response(None, str(e))

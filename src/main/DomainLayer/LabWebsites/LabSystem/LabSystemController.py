@@ -256,6 +256,14 @@ class LabSystemController:
         email = userFacade.get_email_by_userId(user_id)
         return self.websiteFacade.get_all_approved_publications_of_member(domain, email)
 
+    def define_member_as_alumni_from_generator(self, member_email, domain):
+        """
+        define member (lab manager or lab member) as alumni
+        Only managers can perform this operation.
+        Site creator cant be defined as alumni.
+        """
+        return self.allWebsitesUserFacade.define_member_as_alumni_from_generator(member_email, domain)
+
     def define_member_as_alumni(self, manager_userId, member_email, domain):
         """
         define member (lab manager or lab member) as alumni
@@ -274,6 +282,10 @@ class LabSystemController:
     def remove_manager_permission_from_generator(self, manager_toRemove_email, domain):
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.remove_manager_permissions(manager_toRemove_email)
+
+    def remove_alumni_from_generator(self, alumni_email, domain):
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.remove_alumni(alumni_email)
 
     def get_all_alumnis(self, domain):
         return self.allWebsitesUserFacade.get_all_alumnis(domain)

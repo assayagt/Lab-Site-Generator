@@ -249,6 +249,13 @@ class UserFacade:
         self.members[email] = manager
         del self.managers[email]
 
+    def remove_alumni(self, email):
+        if email not in self.alumnis:
+            raise Exception(ExceptionsEnum.USER_IS_NOT_AN_ALUMNI.value)
+        alumni = self.get_alumni_by_email(email)
+        self.members[email] = alumni
+        del self.alumnis[email]
+
     def getUsers(self):
         return self.users
 
