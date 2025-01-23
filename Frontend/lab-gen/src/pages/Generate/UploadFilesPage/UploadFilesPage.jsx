@@ -59,9 +59,9 @@ const UploadFilesPage = () => {
   
       
         const allParticipants = [
-          ...managers.map((participant) => ({ ...participant, isLabManager: true })),
-          ...members.map((participant) => ({ ...participant, isLabManager: false })),
-          ...alumni.map((participant) => ({ ...participant, isLabManager: false }))
+          ...managers.map((participant) => ({ ...participant, isLabManager: true, alumni:false })),
+          ...members.map((participant) => ({ ...participant, isLabManager: false ,alumni:false })),
+          ...alumni.map((participant) => ({ ...participant, isLabManager: false, alumni:true  }))
         ];
   
         setParticipants(allParticipants);
@@ -119,6 +119,40 @@ const UploadFilesPage = () => {
       console.error('Error toggling lab manager:', error);
       alert('An error occurred while updating the lab manager.');
     }
+  };
+
+
+  const toggleAlumni = async (index) => {
+    const updatedParticipants = [...participants];
+    const participant = updatedParticipants[index];
+  
+    const email = participant.email;
+    const islumi = participant.alumni;
+  
+    
+    //try {
+      //if (!islumi) {
+        
+       // let data = await createNewSiteManager(sessionStorage.getItem("sid"), email, websiteData.domain);
+        // if(data.response==="true"){
+        //   participant.alumni = !islumi;
+        //   setParticipants(updatedParticipants);
+        // }
+      // } else {
+       
+      //   let data =await removeSiteManager(sessionStorage.getItem("sid"), email, websiteData.domain);
+      //   console.log(email);
+      //   if(data.response==="true"){
+      //     participant.isLabManager = !isLabManager;
+      //     setParticipants(updatedParticipants);
+      //   }
+      // }
+  
+    
+    // } catch (error) {
+    //   console.error('Error toggling lab manager:', error);
+    //   alert('An error occurred while updating the lab manager.');
+    // }
   };
   
   const handleInputChangeParticipant = (e) => {
@@ -556,6 +590,7 @@ const UploadFilesPage = () => {
                     <th>Full Name</th>
                     <th>Degree</th>
                     <th>Manager</th>
+                    <th>Alumni</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -568,6 +603,13 @@ const UploadFilesPage = () => {
                           type="checkbox"
                           checked={participant.isLabManager}
                           onChange={() => toggleLabManager(index)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={participant.alumni}
+                          onChange={() => toggleAlumni(index)}
                         />
                       </td>
                     </tr>
