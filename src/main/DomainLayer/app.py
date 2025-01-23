@@ -17,7 +17,7 @@ app_secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app = Flask(__name__)
 app.config["SECRET_KEY"] = app.secret_key
 CORS(app)
-api = Api(app)
+api = Api(app,resources={r"/*":{"origins":"*"}})
 socketio = SocketIO(app, cors_allowed_origins="*", path='/ws/notifications')
 
 # Directories for file storage and website generation

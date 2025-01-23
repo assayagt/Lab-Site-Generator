@@ -221,8 +221,8 @@ const UploadFilesPage = () => {
 
   const handleDownload = (component) => {
     const link = document.createElement('a');
-    link.href = `/path/to/template/${component}-template.xlsx`; // Modify as needed
-    link.download = `${component}-template.xlsx`;
+    link.href = `C:\SE\Lab-Site-Generator\Frontend\lab-gen\src\participants.csv`; // Modify as needed
+    link.download = `${component}.xlsx`;
     link.click();
   };
 
@@ -274,9 +274,10 @@ const UploadFilesPage = () => {
       console.log(data);
       if (data.response==="true") {
         console.log(data.message);
-        alert(data);
+        alert(data.message);
         sessionStorage.removeItem("AboutUs");
         sessionStorage.removeItem("ContactUs");
+        navigate("/my-account");
       } else {
         alert('Error: ' + data.error);
       }
