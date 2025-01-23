@@ -23,7 +23,7 @@ const UploadFilesPage = () => {
 
 
   const [participants, setParticipants] = useState([]);
-  const degreeOptions = ["P.hD.", "M.Sc.",  "B.Sc.", "Postdoc"];
+  const degreeOptions = ["Ph.D.", "M.Sc.",  "B.Sc.", "Postdoc"];
 
 
   const [selectedComponent, setSelectedComponent] = useState('AboutUs');  // Default to About Us
@@ -520,7 +520,95 @@ const UploadFilesPage = () => {
       )
       
       }
-      {selectedComponent === 'Participants' && <ParticipantsForm />}
+      {selectedComponent === 'Participants' && 
+        (<div className="file-upload-item">
+          <div className="file-upload_title">Participants</div>
+          {!websiteData.generated ? (
+            <div>
+              <div>
+                <button
+                  className="downloadTemplate"
+                  onClick={() => handleDownload('participants')}
+                >
+                  Download Template
+                </button>
+              </div>
+              <div>
+                <input
+                  className="uploadTemplate"
+                  type="file"
+                  onChange={(e) => handleFileChange(e, 'participants')}
+                />
+                <button
+                  className="uploadTemplateButton"
+                  onClick={() => handleSubmit('participants')}
+                >
+                  Upload Template
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <table className="participants-table">
+                <thead>
+                  <tr>
+                    <th>Full Name</th>
+                    <th>Degree</th>
+                    <th>Manager</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {participants.map((participant, index) => (
+                    <tr key={index}>
+                      <td>{participant.fullName}</td>
+                      <td>{participant.degree}</td>
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={participant.isLabManager}
+                          onChange={() => toggleLabManager(index)}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+    
+                </tbody>
+              </table>
+              {showAddForm ? (
+                <div className='add-participant-form'>
+                  <label>Participant's full name:</label>
+                  <input
+                    type="text"
+                    placeholder="Full Name"
+                    name="fullName"
+                    value={newParticipant.fullName}
+                    onChange={handleInputChangeParticipant}
+                  />
+                  <label>Participant's degree:</label>
+                  <select name="degree" value={newParticipant.degree} onChange={handleInputChangeParticipant}>
+                    <option value="">Select Degree</option>
+                    {degreeOptions.map((degree, index) => (
+                      <option key={index} value={degree}>{degree}</option>
+                    ))}
+                  </select>
+                  <label>Participant's email:</label>
+                  <input
+                    type="text"
+                    placeholder="Email"
+                    name="email"
+                    value={newParticipant.email}
+                    onChange={handleInputChangeParticipant}
+                  />
+                
+                  <button onClick={addParticipant}>Save</button>
+                  <button onClick={() => setShowAddForm(false)}>Cancel</button>
+                </div>
+              ) : (
+                <button onClick={() => setShowAddForm(true)}>+ Add Participant</button>
+              )}
+            </div>
+          )}
+        </div>)}
       {selectedComponent === 'Media' && <MediaForm />}
     </div>
   </div>

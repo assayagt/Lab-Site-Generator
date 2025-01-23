@@ -7,32 +7,56 @@ export const NotificationProvider = ({ children }) => {
   const [hasNewNotifications, setHasNewNotifications] = useState(false);
 
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:5000/ws/notifications"); 
+    // Only create WebSocket connection once
+    const socket = new WebSocket("ws://localhost:5000/ws/notifications");
 
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.type === "new_notification") {
-        setNotifications((prev) => [...prev, data]); 
-        setHasNewNotifications(true);
+    // Handle WebSocket open event
+    socket.onopen = () => {
+      console.log("WebSocket connected");
+    };
+
+    // Handle WebSocket message event
+    socket.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === "registration-notification") {
+          setNotifications((prev) => [...prev, data]);
+          setHasNewNotifications(true);
+        }
+      } catch (error) {
+        console.error("Error parsing WebSocket message:", error);
       }
     };
 
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
+    // Handle WebSocket error event
+    socket.onerror = (error) => {
+      console.log("WebSocket error:", error);
     };
 
+    // Handle WebSocket close event
+    socket.onclose = () => {
+      console.log("WebSocket connection closed");
+    };
+
+    // Cleanup WebSocket on component unmount
     return () => {
-      ws.close(); 
+      socket.close();
+      console.log("WebSocket closed");
     };
-  }, []);
+  }, []); // The empty dependency array ensures this effect only runs once when the component mounts
 
+  // Mark notifications as read
   const markNotificationsAsRead = () => {
     setHasNewNotifications(false);
   };
 
   return (
     <NotificationContext.Provider
-      value={{ notifications, hasNewNotifications, markNotificationsAsRead }}
+      value={{
+        notifications,
+        hasNewNotifications,
+        markNotificationsAsRead,
+      }}
     >
       {children}
     </NotificationContext.Provider>
