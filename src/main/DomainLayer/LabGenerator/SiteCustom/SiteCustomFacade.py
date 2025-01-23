@@ -27,13 +27,13 @@ class SiteCustomFacade:
         if re.match(domain_regex, domain) is None:
             raise Exception(ExceptionsEnum.INVALID_DOMAIN_FORMAT.value)
 
-    def create_new_site(self, domain, name, components, template):
+    def create_new_site(self, domain, name, components, template, email):
         # if not isinstance(template, Template):
         #     raise Exception(ExceptionsEnum.INVALID_TEMPLATE.value)
         if not isinstance(name, str) or not name:
             raise Exception(ExceptionsEnum.INVALID_SITE_NAME.value)
         self.error_if_domain_is_not_valid(domain)
-        site = SiteCustom(domain, name, components, template)
+        site = SiteCustom(domain, name, components, template, email)
         self.sites[domain] = site
         return site
 
@@ -115,3 +115,16 @@ class SiteCustomFacade:
         """Set home picture to site"""
         site = self.sites[domain]
         site.set_home_picture(home_picture)
+
+    def error_if_user_is_not_site_creator(self, email, domain):
+        site = self.sites[domain]
+        if site.get_site_creator_email() != email:
+            raise Exception(ExceptionsEnum.USER_IS_NOT_A_SITE_CREATOR.value)
+
+    def get_site_creator_email(self, domain):
+        site = self.sites[domain]
+        return site.get_site_creator_email()
+
+    def set_site_creator(self, domain, nominated_email):
+        site = self.sites[domain]
+        site.set_site_creator_email(nominated_email)

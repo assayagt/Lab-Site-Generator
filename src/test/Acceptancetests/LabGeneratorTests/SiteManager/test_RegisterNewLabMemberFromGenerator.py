@@ -25,7 +25,7 @@ class TestRegisterNewLabMember(unittest.TestCase):
         self.site_creator = {"email": "creator@example.com", "full_name": "Site Creator", "degree": Degree.PHD}
 
         # Create a new lab website
-        self.generator_system_service.create_website(self.manager_user_id, "Lab Website", self.domain, ["Homepage", "Contact Us", "Publications"], Template.BASIC)
+        self.generator_system_service.create_website(self.manager_user_id, "Lab Website", self.domain, ["Homepage", "Contact Us", "Publications"], Template.template1)
         self.generator_system_service.create_new_lab_website(self.domain, self.lab_members, self.lab_managers, self.site_creator)
 
     def tearDown(self):

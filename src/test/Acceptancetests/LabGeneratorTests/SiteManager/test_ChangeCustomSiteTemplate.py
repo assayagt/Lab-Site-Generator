@@ -13,7 +13,7 @@ class TestChangeWebsiteTemplate(unittest.TestCase):
         self.generator_system_service.login(self.user_id1, "user1@test.com")
         self.domain = "example.com"
         self.components = ["Contact Us", "About Us"]
-        self.generator_system_service.create_website(self.user_id1, "Test Site", self.domain, self.components, Template.BASIC)
+        self.generator_system_service.create_website(self.user_id1, "Test Site", self.domain, self.components, Template.template1)
 
     def tearDown(self):
         # Clean up after each test

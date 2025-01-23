@@ -440,3 +440,9 @@ class LabSystemController:
     
     def get_contact_us(self,domain):
         return self.websiteFacade.get_contact_us(domain)
+
+    def site_creator_resignation(self, user_id, domain, nominate_email):
+        """
+        Site creator resignation.
+        """
+        self.allWebsitesUserFacade.site_creator_resignation(user_id, domain, nominate_email)
