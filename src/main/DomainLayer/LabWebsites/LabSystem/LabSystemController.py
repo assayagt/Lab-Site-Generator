@@ -65,15 +65,19 @@ class LabSystemController:
         userFacade.error_if_user_notExist(userId)
         member = userFacade.get_member_by_email(email)
         if member is None:
-            # check if registration request already sent to managers:
-            userFacade.error_if_email_is_in_requests_and_wait_approval(email)
-            # error if registration request already sent to managers and rejected:
-            userFacade.error_if_email_is_in_requests_and_rejected(email)
-            # send registration request to all LabManagers:
-            self.send_registration_notification_to_all_LabManagers(domain, email)
-            # keep the email in the requests list, so next time the user will login, a registration request wont be sent again:
-            userFacade.add_email_to_requests(email)
-            raise Exception(ExceptionsEnum.USER_NOT_REGISTERED.value)
+            alumni = userFacade.get_alumni_by_email(email)
+            if alumni is None:
+                # check if registration request already sent to managers:
+                userFacade.error_if_email_is_in_requests_and_wait_approval(email)
+                # error if registration request already sent to managers and rejected:
+                userFacade.error_if_email_is_in_requests_and_rejected(email)
+                # send registration request to all LabManagers:
+                self.send_registration_notification_to_all_LabManagers(domain, email)
+                # keep the email in the requests list, so next time the user will login, a registration request wont be sent again:
+                userFacade.add_email_to_requests(email)
+                raise Exception(ExceptionsEnum.USER_NOT_REGISTERED.value)
+            else:
+                userFacade.login(userId, email)
         else:
             userFacade.login(userId, email)
 
@@ -252,6 +256,14 @@ class LabSystemController:
         email = userFacade.get_email_by_userId(user_id)
         return self.websiteFacade.get_all_approved_publications_of_member(domain, email)
 
+    def define_member_as_alumni_from_generator(self, member_email, domain):
+        """
+        define member (lab manager or lab member) as alumni
+        Only managers can perform this operation.
+        Site creator cant be defined as alumni.
+        """
+        return self.allWebsitesUserFacade.define_member_as_alumni_from_generator(member_email, domain)
+
     def define_member_as_alumni(self, manager_userId, member_email, domain):
         """
         define member (lab manager or lab member) as alumni
@@ -270,6 +282,10 @@ class LabSystemController:
     def remove_manager_permission_from_generator(self, manager_toRemove_email, domain):
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.remove_manager_permissions(manager_toRemove_email)
+
+    def remove_alumni_from_generator(self, alumni_email, domain):
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.remove_alumni(alumni_email)
 
     def get_all_alumnis(self, domain):
         return self.allWebsitesUserFacade.get_all_alumnis(domain)

@@ -72,7 +72,7 @@ class TestAddPublicationManually(unittest.TestCase):
 
         # Validate that the publication is now listed for the authors
         publications_member1 = self.lab_system_service.get_all_approved_publications_of_member(
-            self.domain, self.labMember1_email
+            self.domain, self.member_userId
         ).get_data()
         #check if the titles of the publications are the same
         self.assertIn(publication.title, [pub.title for pub in publications_member1])

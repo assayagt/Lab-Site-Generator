@@ -181,6 +181,29 @@ class GeneratorSystemController:
         self.user_facade.create_new_site_manager(nominated_manager_email, domain)
         self.labSystem.create_new_site_manager_from_generator(domain, nominated_manager_email)
 
+    def add_alumni_from_generator(self, manager_userId, email_toSetAlumni, domain):
+        """
+        Define a lab member or lab manager as alumni in a specific website, from generator site.
+        The given email_toSetAlumni must be associated with a Lab Member of the given website.
+        """
+        self.user_facade.error_if_user_notExist(manager_userId)
+        self.user_facade.error_if_user_not_logged_in(manager_userId)
+        self.user_facade.error_if_user_is_not_site_manager(manager_userId, domain)
+        isSiteManager = self.user_facade.check_if_email_is_site_manager(email_toSetAlumni, domain)
+        if isSiteManager:
+            self.user_facade.remove_site_manager(email_toSetAlumni, domain)
+        self.labSystem.define_member_as_alumni_from_generator(email_toSetAlumni, domain)
+
+    def remove_alumni_from_generator(self, manager_userId, email_toRemoveAlumni, domain):
+        """
+        Remove alumni in a specific website and set him again as member, from generator site.
+        The given email_toRemoveAlumni must be associated with alumni of the given website.
+        """
+        self.user_facade.error_if_user_notExist(manager_userId)
+        self.user_facade.error_if_user_not_logged_in(manager_userId)
+        self.user_facade.error_if_user_is_not_site_manager(manager_userId, domain)
+        self.labSystem.remove_alumni_from_generator(email_toRemoveAlumni, domain)
+
     def remove_site_manager_from_generator(self, nominator_manager_userId, manager_toRemove_email, domain):
         """
         Remove a manager from a specific website, from generator site.

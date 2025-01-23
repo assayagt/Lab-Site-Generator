@@ -42,6 +42,12 @@ class UserFacade:
         if domain not in self.members_customSites[email]["domains"]:
             raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER.value)
 
+    def check_if_email_is_site_manager(self, email, domain):
+        if email in self.members_customSites:
+            if domain in self.members_customSites[email]["domains"]:
+                return True
+        return False
+
     def error_if_email_is_not_valid(self, email):
         """
         Validate the email format using a regular expression.
