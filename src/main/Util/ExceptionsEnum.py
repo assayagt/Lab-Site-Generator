@@ -31,3 +31,4 @@ class ExceptionsEnum(Enum):
     INVALID_FULL_NAME = "Invalid full name provided"
     INVALID_DEGREE = "Invalid degree provided"
     USER_IS_NOT_MANAGER_OF_THE_GIVEN_DOMAIN = "User is not a manager of the given domain"
+    USER_IS_NOT_A_LAB_MEMBER_OR_LAB_MANAGER_OR_CREATOR_OR_ALUMNI = "User is not a lab member or a lab manager or a site creator or an alumni"
