@@ -77,6 +77,38 @@ class TestAddPublicationManually(unittest.TestCase):
         #check if the titles of the publications are the same
         self.assertIn(publication.title, [pub.title for pub in publications_member1])
 
+    def test_add_publication_manually_with_links_success(self):
+        """
+        Test that a lab member can successfully add a new publication to the website.
+        """
+        # Prepare the publication details
+        publication = PublicationDTO(
+            title="Conflict-based search for optimal multi-agent pathfinding",
+            authors=["member1@example.com", "author2@example.com"],
+            publication_year=2015,
+            approved=True,
+            publication_link="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=X6t18NkAAAAJ&citation_for_view=X6t18NkAAAAJ:_kc_bZDykSQC"
+        )
+        authors_emails = ["member1@example.com", "author2@example.com"]
+
+        # Perform the operation
+        response = self.lab_system_service.add_publication_manually(
+            self.manager_id, self.domain, publication.publication_link,
+            "gitlink", "videolink", "presentationlink"  # Pass None for git_link, video_link, and presentation_link if not provided
+        )
+        self.assertTrue(response.is_success())
+        self.assertEqual(response.get_message(), "Publication added successfully")
+
+        # Validate that the publication is now listed for the authors
+        publications_member1 = self.lab_system_service.get_all_approved_publications_of_member(
+            self.domain, self.member_userId
+        ).get_data()
+        # check if the titles of the publications are the same
+        self.assertIn(publication.title, [pub.title for pub in publications_member1])
+        self.assertIn("gitlink", [pub.git_link for pub in publications_member1])
+        self.assertIn("videolink", [pub.video_link for pub in publications_member1])
+        self.assertIn("presentationlink", [pub.presentation_link for pub in publications_member1])
+
     def test_add_publication_manually_failure_user_not_logged_in(self):
         """
         Test that a user who is not logged in cannot add a publication.
