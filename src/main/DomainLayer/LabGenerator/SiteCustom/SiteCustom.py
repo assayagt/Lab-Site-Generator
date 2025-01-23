@@ -1,7 +1,7 @@
 from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
 
 class SiteCustom:
-    def __init__(self, domain, name, components, template: Template, logo=None, home_picture=None):
+    def __init__(self, domain, name, components, template: Template, site_creator_email, logo=None, home_picture=None):
         self.domain = domain
         self.name = name
         self.components = components
@@ -9,6 +9,7 @@ class SiteCustom:
         self.logo = logo
         self.home_picture = home_picture
         self.generated = False
+        self.site_creator_email = site_creator_email
 
     def change_template(self, template: Template):
         self.template = template
@@ -40,3 +41,9 @@ class SiteCustom:
 
     def set_home_picture(self, home_picture):
         self.home_picture = home_picture
+
+    def get_site_creator_email(self):
+        return self.site_creator_email
+
+    def set_site_creator_email(self, site_creator_email):
+        self.site_creator_email = site_creator_email

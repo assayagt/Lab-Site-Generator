@@ -29,8 +29,8 @@ class GeneratorSystemController:
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
         self.site_custom_facade.error_if_domain_already_exist(domain)
-        self.site_custom_facade.create_new_site(domain, website_name, components, template)
         email = self.user_facade.get_email_by_userId(user_id)
+        self.site_custom_facade.create_new_site(domain, website_name, components, template, email)
         self.user_facade.create_new_site_manager(email, domain)
 
     def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator):
@@ -254,5 +254,14 @@ class GeneratorSystemController:
         self.user_facade.reset_system()
         self.site_custom_facade.reset_system()
 
-
-
+    def site_creator_resignation(self, user_id, domain, nominated_email):
+        """
+        The site creator resigns from the site
+        """
+        self.user_facade.error_if_user_notExist(user_id)
+        self.user_facade.error_if_user_not_logged_in(user_id)
+        site_creator_email = self.site_custom_facade.get_site_creator_email(domain)
+        self.site_custom_facade.error_if_user_is_not_site_creator(site_creator_email, domain)
+        self.site_custom_facade.set_site_creator(domain, nominated_email)
+        self.user_facade.remove_site_manager(site_creator_email, domain)
+        self.user_facade.logout(user_id)

@@ -284,3 +284,11 @@ class GeneratorSystemService:
             }, "Successfully retrieved custom website")
         except Exception as e:
             return Response(None, str(e))
+
+    def site_creator_resignation(self, user_id, domain, nominated_email):
+        """Resignation of the site creator through GeneratorSystemController."""
+        try:
+            self.generator_system_controller.site_creator_resignation(user_id, domain, nominated_email)
+            return Response(domain, "Site creator resigned successfully")
+        except Exception as e:
+            return Response(None, str(e))

@@ -1223,6 +1223,22 @@ class GetContactUs(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
+class SiteCreatorResignation(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', required=True, help="User ID is required")
+        parser.add_argument('domain', required=True, help="Domain is required")
+        parser.add_argument('email', required=True, help="Email is required")
+        args = parser.parse_args()
+
+        try:
+            response = generator_system.site_creator_resignation(args['user_id'], args['domain'], args['email'])
+            if response.is_success():
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
 
 
 # Add resources to the API of lab
