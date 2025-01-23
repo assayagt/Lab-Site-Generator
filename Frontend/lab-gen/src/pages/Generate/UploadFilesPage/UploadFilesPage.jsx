@@ -497,12 +497,24 @@ const UploadFilesPage = () => {
               value={contactUsData.address}
               onChange={handleContactUsChange}
             />
-            <button
-              className="about_contact_button"
-              onClick={saveContactUs}
-            >
-              Save
-            </button>
+
+{contactUs_usSave!=''? (
+          <button
+          className="about_contact_button"
+          onClick={saveContactUs}
+        >
+          Saved
+        </button>
+        ):(
+          <button
+          className="about_contact_button"
+          onClick={saveContactUs}
+        >
+          Save
+        </button>
+        )
+        }
+            
           </div>
         </div>
       )
