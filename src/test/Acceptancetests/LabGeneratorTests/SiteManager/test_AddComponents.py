@@ -13,7 +13,7 @@ class TestAddComponentsToSite(unittest.TestCase):
         self.generator_system_service.login(self.user_id1, "manager@test.com")
         self.domain = "example.com"
         self.generator_system_service.create_website(
-            self.user_id1, "Test Site", self.domain, ["Homepage", "About Us"], Template.BASIC
+            self.user_id1, "Test Site", self.domain, ["Homepage", "About Us"], Template.template1
         )
 
     def tearDown(self):

@@ -17,7 +17,7 @@ class TestChangeWebsiteDomain(unittest.TestCase):
         self.website_name = "My Lab Website"
         self.original_domain = "lab1.example.com"
         self.components = ["Homepage", "Contact Us", "Research"]
-        self.template = Template.BASIC
+        self.template = Template.template1
 
     def tearDown(self):
         # Reset the system after each test

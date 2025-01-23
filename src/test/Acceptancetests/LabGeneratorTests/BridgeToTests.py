@@ -80,3 +80,13 @@ class BridgeToTests(ABC):
     def remove_site_manager_from_generator(self, nominator_manager_userId, manager_toRemove_email, domain):
         """Remove a site manager."""
         pass
+
+    @abstractmethod
+    def add_alumni_from_generator(self, manager_userId, email_toSetAlumni, domain):
+        """Add an alumni."""
+        pass
+
+    @abstractmethod
+    def remove_alumni_from_generator(self, manager_userId, email_toRemoveAlumni, domain):
+        """Remove an alumni."""
+        pass

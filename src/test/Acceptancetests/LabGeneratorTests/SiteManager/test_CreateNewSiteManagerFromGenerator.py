@@ -21,7 +21,7 @@ class TestCreateNewSiteManager(unittest.TestCase):
         self.website_name = "My Lab Website"
         self.domain = "lab1.example.com"
         self.components = ["Homepage", "Contact Us", "Publiccations"]
-        self.template = Template.BASIC
+        self.template = Template.template1
         self.lab_member1_email = "member1@example.com"
         self.lab_member2_email = "member2@example.com"
         self.lab_members = {self.lab_member1_email: {"full_name": "Member One", "degree": Degree.PHD}, self.lab_member2_email: {"full_name": "Member Two", "degree": Degree.MSC}}

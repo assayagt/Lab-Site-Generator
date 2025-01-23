@@ -59,3 +59,9 @@ class RealToTests(BridgeToTests):
 
     def remove_site_manager_from_generator(self, nominator_manager_userId, manager_toRemove_email, domain):
         return self.generator_system_service.remove_site_manager_from_generator(nominator_manager_userId, manager_toRemove_email, domain)
+
+    def add_alumni_from_generator(self, manager_userId, email_toSetAlumni, domain):
+        return self.generator_system_service.add_alumni_from_generator(manager_userId, email_toSetAlumni, domain)
+
+    def remove_alumni_from_generator(self, manager_userId, email_toRemoveAlumni, domain):
+        return self.generator_system_service.remove_alumni_from_generator(manager_userId, email_toRemoveAlumni, domain)
