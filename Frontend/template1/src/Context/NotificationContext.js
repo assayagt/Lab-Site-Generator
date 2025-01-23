@@ -22,7 +22,7 @@ export const NotificationProvider = ({ children }) => {
     };
 
     return () => {
-      ws.close(); // Cleanup WebSocket on component unmount
+      ws.close(); 
     };
   }, []);
 

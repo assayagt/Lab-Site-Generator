@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './AccountPage.css';
+import {NotificationContext} from "../../Context/NotificationContext"
 import accountIcon from "../../images/account_avatar.svg";
 import cameraIcon from "../../images/camera_icon.svg";
 import searchIcon from "../../images/search_icon.svg";
@@ -15,12 +16,14 @@ const AccountPage = () => {
     linkedIn: '',
     fullname: ''
   });
-  const [notifications, setNotifications] = useState([]);
+
   const [publications, setPublications] = useState([]);
   const [uploadedPhoto, setUploadedPhoto] = useState(accountIcon);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
   const [searchTerm, setSearchTerm] = useState('');
+  const { notifications, markNotificationsAsRead } = useContext(NotificationContext);
+
 
   useEffect(() => {
     // Fetch user details
@@ -44,17 +47,8 @@ const AccountPage = () => {
       setPublications(data ||[]);
       
     };
-
-    const fetchNotifications = async () => {
-      // const data = await getNotifications();
-      // if (data) {
-      //   setNotifications(data);
-      // }
-    };
-
     fetchUserDetails();
     fetchPublications();
-    fetchNotifications();
   }, []);
 
   const handleSectionChange = (section) => {
@@ -85,12 +79,12 @@ const AccountPage = () => {
 
   const handleApproveNotification = async (id) => {
     //await approveNotification(id); // API call to approve notification
-    setNotifications((prev) => prev.filter((notif) => notif.id !== id));
+    //setNotifications((prev) => prev.filter((notif) => notif.id !== id));
   };
 
   const handleRejectNotification = async (id) => {
     //await rejectNotification(id); // API call to reject notification
-    setNotifications((prev) => prev.filter((notif) => notif.id !== id));
+    //setNotifications((prev) => prev.filter((notif) => notif.id !== id));
   };
 
   const filteredPublications = publications.filter((pub) =>
