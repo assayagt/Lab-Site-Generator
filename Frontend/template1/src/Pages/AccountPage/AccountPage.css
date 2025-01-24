@@ -1,166 +1,172 @@
 .account-page {
-    display: flex;
-  }
-  
-  .sidebar {
-    width: 250px;
-    padding: 20px;
-    background-color: #f4f4f4;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .main-content {
-    flex: 1;
-    padding: 20px;
-  }
-  
-  .personal-info,
-  .my-publications,
-  .notifications {
-    margin-bottom: 20px;
-  }
+  display: flex;
+}
 
-  .personal-info{
-    margin-left: 20px;
-    border-radius: 10px;
-    padding: 20px;
-    padding-left: 30px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.sidebar {
+  width: 250px;
+  padding: 20px;
+  background-color: #f4f4f4;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
 
-  }
-.info{
+.main-content {
+  flex: 1;
+  padding: 20px;
+}
+
+.personal-info,
+.my-publications,
+.notifications {
+  margin-bottom: 20px;
+}
+.personal-info {
+  margin-left: 20px;
+  border-radius: 10px;
+  padding: 20px;
+  padding-left: 30px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative; /* Allow absolute positioning for child elements */
+}
+
+.personal-info .info {
   display: flex;
   flex-direction: row;
   gap: 40px;
 }
-  
-  .user-photo {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-  }
-  
-  .details {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  button {
-    margin-left: 10px;
-  }
-  
-  .notifications .notification {
-    padding: 10px;
-    margin: 5px 0;
-    background-color: #e9e9e9;
-    border-radius: 5px;
-  }
-  
-  .notifications .notification.approved {
-    background-color: #d4edda;
-  }
-  
-  .notifications .notification.rejected {
-    background-color: #f8d7da;
-  }
-  .sidebar {
-    width: 200px;
-    background-color: #f5f5f5;
-    padding: 20px;
-    border-right: 1px solid #ddd;
-  }
-  
-  .sidebar h3 {
-    margin-bottom: 20px;
-  }
-  
-  .sidebar ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .sidebar li {
-    margin-bottom: 10px;
-  }
-  
-  .sidebar button {
-    width: 100%;
-    padding: 10px;
-    text-align: left;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .sidebar button:hover {
-    background-color: #ddd;
-  }
-  
-  .sidebar button.active {
-    background-color: #7bb3f0;
-    color: white;
-    font-weight: bold;
-  }
-  
-  .main-content {
-    padding: 20px;
-    flex: 1;
-  }
-  
-  
-  .personal-info.active,
-  .my-publications.active,
-  .notifications.active {
-    display: block;
-  }
 
-  .detail-bio{
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-    align-items: center;
-    padding: 10px;
-  }
-
-  .text-detail{
-    width: 200px;
-    height: 30px;
-    border-radius: 5px;
-    border: 1px solid transparent;
-  }
-  
-
- .save-changes{
-    padding: 10px;
-    border-radius: 20px;
-    right: 0;
-    position: relative;
-    cursor: pointer;
- }
- .save-changes:hover{
-  
+.personal-info .button-wrapper {
+  position: absolute; /* Absolute positioning for precise placement */
+  bottom: 20px; /* Distance from the bottom edge */
+  right: 20px; /* Distance from the right edge */
 }
 
-.user-photo-div{
+.save-changes {
+  padding: 8px 16px; /* Adjust size */
+  border-radius: 20px;
+  background-color: transparent;
+  color: #7bb3f0;
+  cursor: pointer;
+  border: 2px solid #7bb3f0;
+  transition: all 0.3s ease;
+  width: 130px; /* Adjust width */
+}
+
+.save-changes:hover {
+  background-color: #7bb3f0; /* Blue background on hover */
+  color: white; /* White text on hover */
+  border-color: #7bb3f0; /* Match border to background on hover */
+}
+
+.user-photo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+button {
+  margin-left: 10px;
+}
+
+.notifications .notification {
+  padding: 10px;
+  margin: 5px 0;
+  background-color: #e9e9e9;
+  border-radius: 5px;
+}
+
+.notifications .notification.approved {
+  background-color: #d4edda;
+}
+
+.notifications .notification.rejected {
+  background-color: #f8d7da;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-right: 1px solid #ddd;
+}
+
+.sidebar h3 {
+  margin-bottom: 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin-bottom: 10px;
+}
+
+.sidebar button {
+  width: 100%;
+  padding: 10px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.sidebar button:hover {
+  background-color: #ddd;
+}
+
+.sidebar button.active {
+  background-color: #7bb3f0;
+  color: white;
+  font-weight: bold;
+}
+
+.main-content {
+  padding: 20px;
+  flex: 1;
+}
+
+.personal-info.active,
+.my-publications.active,
+.notifications.active {
+  display: block;
+}
+
+.text-detail {
+  width: 200px;
+  height: 30px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+}
+
+
+.user-photo-div {
   display: flex;
   align-items: center;
   flex-direction: column;
   gap: 5px;
   position: relative;
-  width: 100px; /* Adjust as needed */
-  height: 100px; /* Adjust as needed */
+  width: 100px;
+  height: 100px;
 }
 
-.save-photo{
+.save-photo {
   border: none;
   cursor: pointer;
-
 }
 
-.save-photo:hover{
+.save-photo:hover {
   text-decoration: underline;
-
 }
 
 .camera-icon {
@@ -177,29 +183,29 @@
 }
 
 .camera-icon img {
-  width: 20px; /* Adjust icon size */
+  width: 20px;
   height: 20px;
-
 }
-.publication-form{
+
+.publication-form {
   display: flex;
   gap: 10px;
   flex-direction: column;
 }
 
-.save-publications{
+.save-publications {
   width: max-content;
   padding: 8px;
   border-radius: 20px;
 }
 
-.publication-item{
+.publication-item {
   padding: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
 }
 
-.my-publications{
+.my-publications {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -213,9 +219,9 @@
   border-radius: 25px;
   padding: 5px 10px;
   width: 100%;
-  max-width: 400px; /* Adjust the width as needed */
-  margin-bottom: 20px; /* Spacing below the search bar */
-  background-color: #f9f9f9;
+  max-width: 400px;
+  margin-bottom: 20px;
+  background-color: #efefef;
 }
 
 .search-bar .search-icon {
@@ -227,7 +233,7 @@
 .search-bar .search-input {
   border: none;
   outline: none;
-  flex: 1; /* Takes up the remaining space */
+  flex: 1;
   background-color: transparent;
   font-size: 16px;
   color: #333;
@@ -235,4 +241,48 @@
 
 .search-bar .search-input::placeholder {
   color: #aaa;
+}
+
+.coolinput {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  position: static;
+  min-width: 240px;
+  position: relative;
+}
+
+.coolinput label.text {
+  font-size: 0.75rem;
+  color: #818e97;
+  font-weight: 700;
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  background: transparent;
+  transition: all 0.3s ease-in-out;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.coolinput input[type=text].input {
+  padding: 11px 10px;
+  font-size: 0.75rem;
+  border: 2px #818e97 solid;
+  border-radius: 5px;
+  background: transparent;
+}
+
+.coolinput input[type=text].input:focus {
+  outline: none;
+}
+
+.coolinput:focus-within label.text,
+.coolinput input[type=text].input:not(:placeholder-shown) + label.text {
+  opacity: 1;
+  top: -10px;
+  background: #efefef;
+  padding: 0 3px;
+  transform: translateY(0);
 }

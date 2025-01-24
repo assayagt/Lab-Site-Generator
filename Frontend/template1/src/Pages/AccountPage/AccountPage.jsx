@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './AccountPage.css';
-import {NotificationContext} from "../../Context/NotificationContext"
 import accountIcon from "../../images/account_avatar.svg";
 import cameraIcon from "../../images/camera_icon.svg";
 import searchIcon from "../../images/search_icon.svg";
 import AddPublicationForm from '../../Components/AddPublicationForm/AddPubliactionForm';
 import { getUserDetails, approveRegistration, rejectRegistration, setPublicationGitLink, setPublicationPttxLink, setPublicationVideoLink, setBioByMember,setDegreeByMember, setSecondEmailByMember, setLinkedInLinkByMember, getMemberPublications } from '../../services/websiteService';
+
 const AccountPage = () => {
   const [activeSection, setActiveSection] = useState('personal-info');
   const [userDetails, setUserDetails] = useState({
@@ -22,8 +22,7 @@ const AccountPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
   const [searchTerm, setSearchTerm] = useState('');
-  const { notifications, markNotificationsAsRead } = useContext(NotificationContext);
-
+const[notifications,setnoti] = useState([])
 
   useEffect(() => {
     // Fetch user details
@@ -194,81 +193,92 @@ const AccountPage = () => {
 
 
 
+
+
   return (
     <div className="account-page">
       <Sidebar activeSection={activeSection} onSectionChange={handleSectionChange} />
       <div className="main-content">
         {activeSection === 'personal-info' && (
-          <form id="personal-info" className="personal-info" onSubmit={(e) => e.preventDefault()}>
-            <h2>Personal Information</h2>
-            <div className="info">
-              <div className="user-photo-div">
-                <img src={uploadedPhoto} alt="User" className="user-photo" />
-                <div className="camera-icon" onClick={handleUploadPhoto}>
-                  <img src={cameraIcon} alt="Upload" />
-                </div>
-                <button className="save-photo" onClick={handleSavePhoto}>
-                  Save Photo
-                </button>
-              </div>
-              <div className="details">
-                <label className="detail-bio">
-                  <strong>Bio:</strong>
-                  <input
-                    className="text-detail"
-                    value={userDetails.bio}
-                    onChange={(e) =>
-                      setUserDetails({ ...userDetails, bio: e.target.value })
-                    }
-                  />
-                </label>
-
-                <label className="detail-bio">
-                  <strong>Email:</strong>
-                  <div className="text-detail">{userDetails.email}</div>
-                </label>
-
-                <label className="detail-bio">
-                  <strong>Secondary Email:</strong>
-                  <input
-                    className="text-detail"
-                    value={userDetails.secondaryEmail}
-                    onChange={(e) =>
-                      setUserDetails({
-                        ...userDetails,
-                        secondaryEmail: e.target.value,
-                      })
-                    }
-                  />
-                </label>
-
-                <label className="detail-bio">
-                  <strong>Degree:</strong>
-                  <input
-                    className="text-detail"
-                    value={userDetails.degree}
-                    onChange={(e) =>
-                      setUserDetails({ ...userDetails, degree: e.target.value })
-                    }
-                  />
-                </label>
-
-                <label className="detail-bio">
-                  <strong>LinkedIn:</strong>
-                  <input
-                    className="text-detail"
-                    value={userDetails.linkedIn}
-                    onChange={(e) =>
-                      setUserDetails({ ...userDetails, linkedIn: e.target.value })
-                    }
-                  />
-                </label>
-              </div>
+        <form id="personal-info" className="personal-info" onSubmit={(e) => e.preventDefault()}>
+        <h2>Personal Information</h2>
+        <div className="info">
+          <div className="user-photo-div">
+            <img src={uploadedPhoto} alt="User" className="user-photo" />
+            <div className="camera-icon" onClick={handleUploadPhoto}>
+              <img src={cameraIcon} alt="Upload" />
             </div>
-            <button className="save-changes" type="button" onClick={handleSaveChanges}>
-              Save Changes
+            <button className="save-photo" onClick={handleSavePhoto}>
+              Save Photo
             </button>
-          </form>
+          </div>
+          <div className="details">
+            <label className="detail-bio">
+              <div className="text-detail">{userDetails.email}</div>
+            </label>
+            <div className="coolinput">
+              <label htmlFor="input" className="text">Bio:</label>
+              <input
+                type="text"
+                placeholder="Bio"
+                name="input"
+                className="input"
+                value={userDetails.bio}
+                onChange={(e) =>
+                  setUserDetails({ ...userDetails, bio: e.target.value })
+                }
+              />
+            </div>
+            <div className="coolinput">
+              <label htmlFor="input" className="text">Secondary Email:</label>
+              <input
+                type="text"
+                placeholder="Secondary Email"
+                name="input"
+                className="input"
+                value={userDetails.secondaryEmail}
+                onChange={(e) =>
+                  setUserDetails({
+                    ...userDetails,
+                    secondaryEmail: e.target.value,
+                  })
+                }
+              />
+            </div>
+            <div className="coolinput">
+              <label htmlFor="input" className="text">Degree:</label>
+              <input
+                type="text"
+                placeholder="Degree"
+                name="input"
+                className="input"
+                value={userDetails.degree}
+                onChange={(e) =>
+                  setUserDetails({ ...userDetails, degree: e.target.value })
+                }
+              />
+            </div>
+            <div className="coolinput">
+              <label htmlFor="input" className="text">LinkedIn:</label>
+              <input
+                type="text"
+                placeholder="LinkedIn"
+                name="input"
+                className="input"
+                value={userDetails.linkedIn}
+                onChange={(e) =>
+                  setUserDetails({ ...userDetails, linkedIn: e.target.value })
+                }
+              />
+            </div>
+          </div>
+        </div>
+        <div className="button-wrapper">
+          <button className="save-changes" type="button" onClick={handleSaveChanges}>
+            Save Changes
+          </button>
+        </div>
+      </form>
         )}
 
         {activeSection === 'my-publications' && (
