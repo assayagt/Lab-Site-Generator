@@ -10,7 +10,7 @@ function Header(props) {
   const navigate = useNavigate();
   const location = useLocation(); // Get current location
   const { login, logout } = useAuth();
-  const { hasNewNotifications } = useContext(NotificationContext); 
+  const { hasNewNotifications } = useContext(NotificationContext);
   const [showLogin, setShowLogin] = useState(false);
   const [email, setEmail] = useState("");
   const [loginError, setLoginError] = useState(""); // State to store login error messages

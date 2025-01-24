@@ -1,51 +1,43 @@
 import React, { createContext, useState, useEffect } from "react";
+import { io } from "socket.io-client";
 
 export const NotificationContext = createContext();
 
 export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
   const [hasNewNotifications, setHasNewNotifications] = useState(false);
-
+  const socket = io("http://localhost:5000/socket.io/",
+   {transports: ["websocket", "polling"],}
+  );
   useEffect(() => {
-    // Only create WebSocket connection once
-    const socket = new WebSocket("ws://localhost:5000/ws/notifications");
+    
+    
+    
+      socket.on("registration-notification", () => {
+        setHasNewNotifications(true);
+        console.log("harray");
+      });
+      socket.on("connect", () => {
+        console.log("harray");
+      });
 
-    // Handle WebSocket open event
-    socket.onopen = () => {
-      console.log("WebSocket connected");
-    };
+    //   socket.on("connect_error", (error) => {
+    //     console.error("Socket.IO connection error. Retrying in 2 seconds...", error);
+    //     //setTimeout(connectSocket, 2000);
+    //   });
 
-    // Handle WebSocket message event
-    socket.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (data.type === "registration-notification") {
-          setNotifications((prev) => [...prev, data]);
-          setHasNewNotifications(true);
-        }
-      } catch (error) {
-        console.error("Error parsing WebSocket message:", error);
-      }
-    };
+    //   socket.on("disconnect", (reason) => {
+    //     console.log("Socket.IO disconnected:", reason);
+    //   });
 
-    // Handle WebSocket error event
-    socket.onerror = (error) => {
-      console.log("WebSocket error:", error);
-    };
+      // Clean up connection on unmount
+      return () => {
+        socket.off("registration-notification");
+        
+      };
 
-    // Handle WebSocket close event
-    socket.onclose = () => {
-      console.log("WebSocket connection closed");
-    };
+  }, []); // Run only on component mount
 
-    // Cleanup WebSocket on component unmount
-    return () => {
-      socket.close();
-      console.log("WebSocket closed");
-    };
-  }, []); // The empty dependency array ensures this effect only runs once when the component mounts
-
-  // Mark notifications as read
   const markNotificationsAsRead = () => {
     setHasNewNotifications(false);
   };
