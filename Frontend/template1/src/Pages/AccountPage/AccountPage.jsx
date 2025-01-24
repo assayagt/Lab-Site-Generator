@@ -22,6 +22,8 @@ const AccountPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
   const [searchTerm, setSearchTerm] = useState('');
+  const [isAddPublicationModalOpen, setIsAddPublicationModalOpen] = useState(false);
+
 const[notifications,setnoti] = useState([])
 
   useEffect(() => {
@@ -284,16 +286,26 @@ const[notifications,setnoti] = useState([])
         {activeSection === 'my-publications' && (
           <div id="my-publications" className="my-publications">
             <h2>My Publications</h2>
-            <AddPublicationForm />
-            <div className="search-bar">
-              <img src={searchIcon} alt="Search" className="search-icon" />
-              <input
-                type="text"
-                placeholder="Search by title"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="search-input"
-              />
+          
+            <div className='search-add'>
+
+              <div className="search-bar">
+                <img src={searchIcon} alt="Search" className="search-icon" />
+                <input
+                  type="text"
+                  placeholder="Search by title"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="search-input"
+                />
+                
+              </div>
+              <button
+                className="add-publication-button"
+                onClick={() => setIsAddPublicationModalOpen(true)}
+              >
+               + Add Publication
+              </button>
             </div>
             {paginatedPublications.map((publication) => (
               <div key={publication.id} className="publication-item">
@@ -333,19 +345,37 @@ const[notifications,setnoti] = useState([])
                   </button>
                 </form>
               </div>
+              
             ))}
             <div className="pagination">
-              <button onClick={handlePrevPage} disabled={currentPage === 1}>
+              <button onClick={handlePrevPage} className='pagination-buttons' disabled={currentPage === 1}>
                 Previous
               </button>
               <span>
                 Page {currentPage} of {totalPages}
               </span>
-              <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+              <button onClick={handleNextPage} disabled={currentPage === totalPages} className='pagination-buttons'>
                 Next
               </button>
             </div>
+
+
+     
+    {isAddPublicationModalOpen && (
+      <div className="custom-modal-overlay">
+        <div className="custom-modal">
+        <button
+            className="close-button"
+            onClick={() => setIsAddPublicationModalOpen(false)}
+          >
+           X
+          </button>
+          <AddPublicationForm />
+        </div>
+      </div>
+    )}
           </div>
+          
         )}
 
         {activeSection === 'notifications' && (

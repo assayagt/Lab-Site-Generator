@@ -273,6 +273,9 @@ button {
   border: 2px #818e97 solid;
   border-radius: 5px;
   background: transparent;
+  height: max-content;
+  resize: none; /* Disable resizing for text inputs (useful for textareas) */
+  box-sizing: border-box; 
 }
 
 .coolinput input[type=text].input:focus {
@@ -289,16 +292,138 @@ button {
 }
 
 
-.coolinput input[type=text].input {
-  padding: 11px 10px;
-  font-size: 0.75rem;
-  border: 2px #818e97 solid;
-  border-radius: 5px;
-  background: transparent;
-}
 
 .upload-publication-form{
   display: flex;
   flex-direction: column;
+  gap:20px;
+  align-items: center;
+}
+.collapsible-section {
+  margin-bottom: 20px;
+}
+
+.toggle-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 15px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 15px;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-button:hover {
+  background-color: #0056b3;
+}
+
+.publication-item {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+}
+/* Modal Overlay */
+.custom-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Box */
+
+.search-add{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.add-publication-button{
+  width: max-content;
+  height: max-content;
+  padding: 8px;
+  border-radius: 25px ;
+  border: 1px solid #ccc;
+  right: 20px;
+  position: relative;
+  cursor: pointer;
+}
+
+.custom-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Box */
+.custom-modal {
+  background: #efefef;
+  border-radius: 10px;
+  padding: 20px;
+  
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+  animation: fadeIn 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
   gap:10px;
+  align-items: center;
+}
+
+/* Close Button */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close-button:hover {
+  color: #5090d4;
+}
+
+.upload-publication-section{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+.pagination{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
+
+.pagination-buttons{
+  width: 80px;
+  padding: 8px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  color: #ccc;
+  height: min-content;
+  
 }

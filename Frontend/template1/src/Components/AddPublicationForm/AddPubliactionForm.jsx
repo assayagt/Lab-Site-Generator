@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { addPublication } from '../../services/websiteService';
-
+import "./AddPublicationFrom.css"
 const AddPublicationForm = () => {
 
   const [publication, setPublication] = useState('');
@@ -78,7 +78,7 @@ const AddPublicationForm = () => {
             onChange={(e) => setVideoLink(e.target.value)}
           />
         </div>
-        <button type="submit">Add Publication</button>
+        <button type="submit" className='submit-pub'>Add Publication</button>
       </form>
     </div>
   );
