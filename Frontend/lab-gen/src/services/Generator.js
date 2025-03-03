@@ -9,7 +9,7 @@ export const changeComponents= async (domain, components) => {
   return axios
     .post(`${baseApiUrl}chooseComponents`, {
       user_id: sid,
-      components: components,
+      components:components.join(", "),
       domain:domain, 
     
     })

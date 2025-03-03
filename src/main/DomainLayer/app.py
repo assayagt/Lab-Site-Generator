@@ -260,14 +260,15 @@ class ChooseComponents(Resource):
         """
         parser = reqparse.RequestParser()
         parser.add_argument('user_id', type=str, required=True, help="User id is required")
-        parser.add_argument('components', type=list, required=True, help="Components to be added are required")
+        parser.add_argument('components', type=str, required=True, help="Components to be added are required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
         args = parser.parse_args()
 
         # Example: store the chosen components (could be in a database or in-memory)
         user_id = args['user_id']
         domain = args['domain']
-        selected_components = args['components']
+        selected_components = args['components'].split(", ") 
+        print(selected_components)
         try:
             response = generator_system.add_components_to_site(user_id, domain, selected_components)
             if response.is_success():
@@ -465,6 +466,7 @@ class StartCustomSite(Resource):
         domain = args['domain']
         components = args['components'].split(", ")  # Split the string back into a list
         template = args['template']
+
         print(components)
         try:
             response = generator_system.create_website(user_id, website_name, domain,components,template)

@@ -11,7 +11,11 @@ const useChooseComponents = () => {
 
   const [domain, setDomain] = useState(websiteData.domain || '');
   const [websiteName, setWebsiteName] = useState(websiteData.websiteName || '');
-  const [components, setComponents] = useState(websiteData.components || []);
+  const [components, setComponents] = useState(() => {
+    return websiteData.components && websiteData.components.length > 0
+      ? websiteData.components
+      : ["Home"];
+  });
   const [template, setTemplate] = useState(websiteData.template || '');
   const [isChanged, setIsChanged] = useState(false);
   const [domainError, setDomainError] = useState(false);
