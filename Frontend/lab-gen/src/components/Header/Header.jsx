@@ -46,7 +46,7 @@ function Header(props) {
   return (
     <div className="header">
       <img alt="Logo" src={logoIcon} className="img_logo" />
-      <h1>{props.title}</h1>
+      <div className="header_title">{props.title}</div>
       <div className="menu">
             <div className="hidden-box">
             <div className="personal_menu">

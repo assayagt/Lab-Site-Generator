@@ -3,8 +3,8 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  color: #2C3E50;
-  padding: 50px 20px;
+  color: #1c2c3d;
+  padding: 80px 20px;
 }
 
 
@@ -28,8 +28,8 @@
   font-size: 18px;
   border-radius: 8px;
   border: none;
-  background-color: #FFC147;
-  color: #2C3E50;
+  background-color: #d79f2f;
+  color: #1c2c3d;
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s;
