@@ -45,7 +45,7 @@ def handle_disconnect():
 
 def notify_registration(email):
     socketio.emit('registration-notification', {'message': f'New registration request from: {email}'})
-
+    
 # Service for uploading file
 
 def read_lab_info(excel_path):
