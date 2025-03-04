@@ -54,6 +54,7 @@
     flex-direction: column;
     align-items: center;
     gap: 5px;
+    width: 20%;
 }
 
 .websiteItem:hover {

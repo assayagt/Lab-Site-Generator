@@ -52,7 +52,8 @@ const ChooseComponentsPage = () => {
     toggleLabManager,
     toggleAlumni,
     handleParticipantChange,
-    componentsSaved,handleGenerate
+    componentsSaved,handleGenerate,
+    addParticipantGen
   } = useChooseComponents();
   
 
@@ -181,11 +182,11 @@ const ChooseComponentsPage = () => {
                       Participants
                     </li>
                   )}
-                <li className="generate_section">
+                <div className="generate_section_button">
                   <button className="generate_button" onClick={handleGenerate}>
                     Generate Website
                   </button>
-                </li>
+                </div>
               </ul>
             )}
             </ul>
@@ -512,7 +513,7 @@ const ChooseComponentsPage = () => {
 
         {/* "+" Button to add new participants */}
         <button className="add-row-button" onClick={addParticipant}>
-          + Add Row
+          + Add Participant
         </button>
       </div>
     ) : (
@@ -551,12 +552,65 @@ const ChooseComponentsPage = () => {
           </tbody>
         </table>
 
-        {/* "+" Button to add an empty row */}
-        <button className="add-row-button" onClick={addParticipant}>
+        {/* "Add Participant" button opens the modal */}
+        <button className="add-row-button" onClick={() => setShowAddForm(true)}>
           + Add Participant
         </button>
+
+        {/* Modal Popup Form */}
+        {showAddForm && (
+          <div className="modal-overlay" onClick={() => setShowAddForm(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <h3>Add New Participant</h3>
+              <label>Participant's full name:
+              <input
+                type="text"
+                placeholder="Full Name"
+                name="fullName"
+                value={newParticipant.fullName}
+                onChange={handleInputChangeParticipant}
+                className="modal-content-item"
+              />
+              </label>
+              
+              <label>Participant's email:
+              <input
+                type="text"
+                placeholder="Email"
+                name="email"
+                value={newParticipant.email}
+                onChange={handleInputChangeParticipant}
+                className="modal-content-item"
+
+              />
+              </label>
+              
+              <label>Participant's degree:
+              <select name="degree" value={newParticipant.degree} onChange={handleInputChangeParticipant}>
+                <option value="">Select Degree</option>
+                {degreeOptions.map((degree, index) => (
+                  <option key={index} value={degree}>{degree}</option>
+                ))}
+              </select>
+              </label>
+              
+              
+
+              <div className="modal-buttons">
+                <button onClick={() => {
+                  setShowAddForm(false);
+                  addParticipantGen();
+                }}>
+                  Save
+                </button>
+                <button className="cancel-button" onClick={() => setShowAddForm(false)}>Cancel</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     )}
+  
   </div>)
 }
 

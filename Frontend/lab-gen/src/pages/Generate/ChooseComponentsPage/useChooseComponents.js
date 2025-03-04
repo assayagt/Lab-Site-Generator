@@ -21,7 +21,7 @@ const useChooseComponents = () => {
   const [domainError, setDomainError] = useState(false);
   const [step, setStep] = useState(!domain ? 1 : 3);
   const [showContentSidebar, setShowContentSidebar] = useState(false);
-  const [componentsSaved, setComponentsSaved] = useState(false);
+  const [componentsSaved, setComponentsSaved] = useState(websiteData.components.length>1 );
 
 
   const [formData, setFormData] = useState({
@@ -184,35 +184,35 @@ const useChooseComponents = () => {
     }));
   };
 
-  // const addParticipant = async () => {
-  //   // if (newParticipant.fullName && newParticipant.degree && newParticipant.email) {
+  const addParticipantGen = async () => {
+    if (newParticipant.fullName && newParticipant.degree && newParticipant.email) {
      
-  //   //   try {
-  //   //     const response = await addLabMember(
-  //   //       sessionStorage.getItem("sid"), // Manager's User ID, assuming this is stored in sessionStorage
-  //   //       newParticipant.email, // Email of the new participant
-  //   //       newParticipant.fullName, // Full name of the new participant
-  //   //       newParticipant.degree, // Degree of the new participant
-  //   //       websiteData.domain // Domain of the lab
-  //   //     );
+      try {
+        const response = await addLabMember(
+          sessionStorage.getItem("sid"), // Manager's User ID, assuming this is stored in sessionStorage
+          newParticipant.email, // Email of the new participant
+          newParticipant.fullName, // Full name of the new participant
+          newParticipant.degree, // Degree of the new participant
+          websiteData.domain // Domain of the lab
+        );
   
-  //   //     if (response.response === 'true') {
-  //   //       alert('Lab member added successfully');
+        if (response.response === 'true') {
+          alert('Lab member added successfully');
         
-  //   //       setParticipants([...participants, { ...newParticipant, isLabManager: false }]);
-  //   //       setNewParticipant({ fullName: '', degree: '', email: '' }); 
-  //   //       setShowAddForm(false);
-  //   //     } else {
-  //   //       alert(`Error: ${response.message}`);
-  //   //     }
-  //   //   } catch (error) {
-  //   //     console.error('Error adding participant:', error);
-  //   //     alert('An error occurred while adding the lab member.');
-  //   //   }
-  //   // } else {
-  //   //   alert("Please fill all fields.");
-  //   // }
-  // };
+          setParticipants([...participants, { ...newParticipant, isLabManager: false }]);
+          setNewParticipant({ fullName: '', degree: '', email: '' }); 
+          setShowAddForm(false);
+        } else {
+          alert(`Error: ${response.message}`);
+        }
+      } catch (error) {
+        console.error('Error adding participant:', error);
+        alert('An error occurred while adding the lab member.');
+      }
+    } else {
+      alert("Please fill all fields.");
+    }
+  };
 
   const addParticipant = () => {
     setParticipants((prevParticipants) => {
@@ -495,7 +495,7 @@ const useChooseComponents = () => {
     toggleLabManager,
     toggleAlumni,
     handleParticipantChange,
-    componentsSaved, setComponentsSaved,handleGenerate
+    componentsSaved, setComponentsSaved,handleGenerate,addParticipantGen
   };
 };
 

@@ -133,6 +133,19 @@
     bottom: 10px;  
     right: 10px;
     margin: 10px;
+    border-radius: 20px;
+    width: 15%;
+    min-width: 150px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(31, 51, 71, 0.8);
+    transition: background 0.5s ease, border 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
+}
+
+.save_domain_name_button:hover {
+    background: rgba(228, 240, 247, 0.3);
+    border: 1px solid rgba(31, 51, 71, 1);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .input_container {
@@ -321,19 +334,24 @@
 }
 
 .media_button {
-  padding: 8px 16px;
-  background: #FFC147;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.3s ease;
-  height: 50%;
+    
+    border-radius: 20px;
+    width: 15%;
+   
+    height: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(31, 51, 71, 0.8);
+    transition: background 0.5s ease, border 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
 }
 
+
 .media_button:hover {
-  background: #e0a035;
+  background: rgba(228, 240, 247, 0.3);
+  border: 1px solid rgba(31, 51, 71, 1);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 }
+
+
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
@@ -344,8 +362,7 @@
 .about_contact_section, .contact_us_section {
   display: flex;
   flex-direction: column;
-
-  gap: 15px;
+  position: relative;
   width: 70%;
   /* max-width: 400px; */
   background: rgba(255, 255, 255, 0.1);
@@ -356,7 +373,7 @@
 }
 
 .about_contact_input, .contact_us_input {
-  width: 80%;
+  width: 95%;
   padding: 10px;
   font-size: 16px;
   border-radius: 5px;
@@ -369,9 +386,8 @@
   box-shadow: none; /* Prevent any shadow */
 }
 .about_contact_input.textarea {
-  width: 90%;
+  width: 95%;
   height: 150px; /* Adjust height as needed */
-  padding: 12px;
   font-size: 16px;
   border-radius: 5px;
   background: rgba(255, 255, 255, 0.1);
@@ -380,24 +396,28 @@
   resize: none; /* Allows user to resize the textarea vertically */
 }
 
-.about_contact_button {
-  padding: 8px 16px;
-  background: #FFC147;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.3s ease;
+.about_contact_button{
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    border-radius: 20px;
+    width: 15%;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(31, 51, 71, 0.8);
+    transition: background 0.5s ease, border 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
 }
 
-.about_contact_button:hover {
-  background: #e0a035;
+.about_contact_button:hover, .add-row-button:hover, .generate_button:hover {
+  background: rgba(228, 240, 247, 0.3);
+  border: 1px solid rgba(31, 51, 71, 1);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .input_container {
   position: relative;
   width: 100%;
-  margin-bottom: 20px;
+  padding-bottom:20px;
 }
 
 .floating_label {
@@ -461,25 +481,35 @@
   display: block;
   margin: 0 auto;
 }
-.add-row-button {
+.add-row-button{
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 15px;
   padding: 10px 20px;
   font-size: 16px;
-  font-weight: bold;
-  background-color: #FFC147;
-  color: #1c2c3d;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s ease;
+  border-radius: 20px;
+  width: 15%;
+  min-width: 170px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(31, 51, 71, 0.8);
+  transition: background 0.5s ease, border 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
+}
+.generate_button{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 15px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 20px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(31, 51, 71, 0.8);
+  transition: background 0.5s ease, border 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
 }
 
-.add-row-button:hover {
-  background-color: #e0a035;
-}
 .add-participant-form {
   display: flex;
   flex-direction: column;
@@ -530,3 +560,81 @@
 
 
 
+/* Modal Background */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Dark transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Box */
+.modal-content {
+  background: rgb(187, 187, 187);
+  padding: 20px;
+  width: 40%;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap:10px;
+}
+
+/* Modal Input Fields */
+.modal-content-item, 
+.modal-content select {
+  width: 90%;
+  padding: 10px;
+  margin-top: 8px;
+  border: 1px solid #1c2c3d;
+  border-radius: 5px;
+  background-color: transparent;
+}
+
+/* Modal Buttons */
+.modal-buttons {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.modal-buttons button:first-child, .modal-buttons .cancel-button  {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 15px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 20px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(31, 51, 71, 0.8);
+  transition: background 0.5s ease, border 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
+
+}
+
+/* Smooth Modal Fade-in Effect */
+.modal-overlay {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
