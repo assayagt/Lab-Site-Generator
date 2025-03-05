@@ -5,7 +5,7 @@
     border-radius: 10px;
     font-size: 16px;
     line-height: 1.5;
-    color: #34495e;
+    color: #090c10;
     transition: transform 0.3s ease-in-out;
     width: 100%;
     max-width: 400px; /* Adjust width as needed */
@@ -17,7 +17,7 @@
 
     font-size: 28px;
     font-weight: bold;
-    color: #2c3e50;
+    color: #090c10;
     margin-bottom: 10px;
 }
 
@@ -34,8 +34,7 @@
 }
 
 .aboutUsParagraph::-webkit-scrollbar-track {
-    background:rgba(69, 69, 69, 0.1);
-    ;
+    background:rgba(69, 69, 69, 0.1);;
     border-radius: 5px;
 }
 

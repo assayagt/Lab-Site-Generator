@@ -405,7 +405,7 @@ const[notifications,setnoti] = useState([])
 
 const Sidebar = ({ activeSection, onSectionChange }) => (
   <div className="sidebar">
-    <h3>Account</h3>
+    <h3 className='account_sidebar'>Account</h3>
     <ul>
       <li>
         <button

@@ -1,13 +1,26 @@
 .participants-page {
     height: fit-content;
+    color: #090c10;
     min-height: 100vh;
-    padding: 0 20px 20px;
-    margin:  0 20px;
+    padding-bottom:  20px;
+    padding-top:  20px;
+    margin:  0 50px;
     font-family: Arial, sans-serif;
     overflow-x: hidden; /* Prevents horizontal scroll */
     box-sizing: border-box; /* Ensures padding and border are included in the element's width */
   }
   
+  .participant_title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 30px;
+    font-weight: bold;
+}
+.degree {
+  font-family: 'Oswald', sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+  
+}
   .degree-section-items {
     margin-bottom: 30px;
     display: grid;
@@ -15,6 +28,12 @@
     gap: 10px;
     width: 100%; /* Ensures the grid doesn't exceed its container */
     box-sizing: border-box;
+  }
+  .degree-section{
+    display: flex;
+    flex-direction: column;
+    gap:20px;
+    padding: 10px;
   }
   
   .participant {
@@ -59,7 +78,7 @@
   
   #degree-filter {
     padding: 5px 5px;  
-    border-radius: 5px;
+    border-radius: 10px;
     border: 1px solid #000000;
     background-color: transparent;
 

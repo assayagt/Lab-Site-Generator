@@ -69,8 +69,7 @@ const ParticipantsPage = () => {
 
   return (
     <div className="participants-page">
-      <h1>Participants</h1>
-
+      <div className='participant_title'>Lab Members</div>
       {/* Degree Filter Dropdown */}
       <div className="filter-container">
         <label htmlFor="degree-filter">Filter by Degree:</label>
@@ -95,7 +94,7 @@ const ParticipantsPage = () => {
       {sortedDegrees.map((degree) =>
         filteredParticipants[degree] ? (
           <div key={degree} className="degree-section">
-            <h2>{degree}</h2>
+            <div className='degree'>{degree}</div>
             <div className="degree-section-items">
               {filteredParticipants[degree].map((member) => (
                 <div key={member.email} className="participant">
@@ -117,7 +116,7 @@ const ParticipantsPage = () => {
       {/* Alumni Section (Separate) */}
       {alumni.length > 0 && (
         <div className="degree-section">
-          <h2>Alumni</h2>
+          <div className='degree'>Alumni</div>
           <div className="degree-section-items">
             {alumni.map((member) => (
               <div key={member.email} className="participant">

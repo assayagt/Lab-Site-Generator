@@ -1,5 +1,6 @@
 .contact_page{
     height: 100vh;
+    color: #090c10;
     display: flex;
     flex-direction: column;
     gap: 30px;
