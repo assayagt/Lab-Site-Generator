@@ -175,6 +175,13 @@ const useChooseComponents = () => {
       alert('An error occurred while updating the lab manager.');
     }
   };
+
+  const removeParticipant = (index) => {
+    setParticipants((prevParticipants) =>
+      prevParticipants.filter((_, i) => i !== index)
+    );
+  };
+  
   
   const handleInputChangeParticipant = (e) => {
     const { name, value, type, checked } = e.target;
@@ -532,7 +539,7 @@ const useChooseComponents = () => {
     toggleLabManager,
     toggleAlumni,
     handleParticipantChange,
-    componentsSaved, setComponentsSaved,handleGenerate,addParticipantGen
+    componentsSaved, setComponentsSaved,handleGenerate,addParticipantGen,removeParticipant
   };
 };
 

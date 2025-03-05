@@ -9,7 +9,7 @@ const ChooseComponentsPage = () => {
     websiteName,
     components,
     template,
-    isChanged,
+    removeParticipant,
     domainError,
     step,
     setStep,
@@ -27,7 +27,6 @@ const ChooseComponentsPage = () => {
     websiteData,
     handleFileChange,
     aboutUsContent,
-    setAboutUsContent,
     handleAboutUsChange,
     about_usSave,
     contactUs_usSave,
@@ -35,18 +34,12 @@ const ChooseComponentsPage = () => {
     saveContactUs,
     contactUsData,
     handleContactUsChange,
-    handleDownload,
     handleSubmit,
     participants,
-    setParticipants,
     degreeOptions,
-    selectedComponent,
-    setSelectedComponent,
-    handleNavClick,
     showAddForm,
     setShowAddForm,
     newParticipant,
-    setNewParticipant,
     handleInputChangeParticipant,
     addParticipant,
     toggleLabManager,
@@ -423,92 +416,105 @@ const ChooseComponentsPage = () => {
               <th>Degree</th>
               <th>Manager</th>
               <th>Site Creator</th>
+              {!websiteData.generated && <th>Remove</th>} {/* Show column only if site is not generated */}
+
             </tr>
           </thead>
           <tbody>
-            {/* First row: Logged-in user */}
-            <tr>
-              <td></td>
-              <td>
-                <input
-                  type="text"
-                  value={participants[0]?.fullName || ''}
-                  onChange={(e) => handleParticipantChange(0, 'fullName', e.target.value)}
-                  className='input_parti'
-                  placeholder='Name'
-                />
-              </td>
-              <td>{participants[0]?.email || sessionStorage.getItem("userEmail")}</td>
-              <td>
-                <select
-                  name="degree"
-                  value={participants[0]?.degree || ''}
-                  onChange={(e) => handleParticipantChange(0, 'degree', e.target.value)}
-                  className='input_parti'
-                  
-                >
-                  <option value="">Select Degree</option>
-                  {degreeOptions.map((degree, index) => (
-                    <option key={index} value={degree}>{degree}</option>
-                  ))}
-                </select>
-              </td>
-              <td>
-                <input type="checkbox" checked={true} disabled />
-              </td>
-              <td>
-                <input type="checkbox" checked={true} disabled />
-              </td>
-            </tr>
+  {/* First row: Logged-in user (cannot be deleted) */}
+  <tr>
+    <td></td>
+    <td>
+      <input
+        type="text"
+        value={participants[0]?.fullName || ''}
+        onChange={(e) => handleParticipantChange(0, 'fullName', e.target.value)}
+        className='input_parti'
+        placeholder='Name'
+      />
+    </td>
+    <td>{participants[0]?.email || sessionStorage.getItem("userEmail")}</td>
+    <td>
+      <select
+        name="degree"
+        value={participants[0]?.degree || ''}
+        onChange={(e) => handleParticipantChange(0, 'degree', e.target.value)}
+        className='input_parti'
+      >
+        <option value="">Select Degree</option>
+        {degreeOptions.map((degree, index) => (
+          <option key={index} value={degree}>{degree}</option>
+        ))}
+      </select>
+    </td>
+    <td>
+      <input type="checkbox" checked={true} disabled />
+    </td>
+    <td>
+      <input type="checkbox" checked={true} disabled />
+    </td>
+    <td></td> {/* Empty cell to align delete icons */}
+  </tr>
 
-            {/* Additional participants */}
-            {participants.slice(1).map((participant, index) => (
-              <tr key={index}>
-                <td></td> {/* Empty cell for consistency */}
-                <td>
-                  <input
-                    className='input_parti'
-                    placeholder='Full Name'
-                    type="text"
-                    value={participant.fullName}
-                    onChange={(e) => handleParticipantChange(index+1, 'fullName', e.target.value)}
-                  />
-                </td>
-                <td>
-                  <input
-                    className='input_parti'
-                    placeholder='Email'
-                    type="text"
-                    value={participant.email||''}
-                    onChange={(e) => handleParticipantChange(index+1, 'email', e.target.value)}
-                  />
-                </td>
-                <td>
-                  <select
-                    className='input_parti'
-                    name="degree"
-                    value={participant.degree}
-                    onChange={(e) => handleParticipantChange(index+1, 'degree', e.target.value)}
-                  >
-                    <option value="">Select Degree</option>
-                    {degreeOptions.map((degree, i) => (
-                      <option key={i} value={degree}>{degree}</option>
-                    ))}
-                  </select>
-                </td>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={participant.isLabManager}
-                    onChange={(e) => handleParticipantChange(index+1, 'isLabManager', !participant.isLabManager)}
-                  />
-                </td>
-                <td>
-                  <input type="checkbox" disabled />
-                </td>
-              </tr>
-            ))}
-          </tbody>
+  {/* Additional participants */}
+  {participants.slice(1).map((participant, index) => (
+    <tr key={index}>
+      <td></td>
+      <td>
+        <input
+          className='input_parti'
+          placeholder='Full Name'
+          type="text"
+          value={participant.fullName}
+          onChange={(e) => handleParticipantChange(index + 1, 'fullName', e.target.value)}
+        />
+      </td>
+      <td>
+        <input
+          className='input_parti'
+          placeholder='Email'
+          type="text"
+          value={participant.email || ''}
+          onChange={(e) => handleParticipantChange(index + 1, 'email', e.target.value)}
+        />
+      </td>
+      <td>
+        <select
+          className='input_parti'
+          name="degree"
+          value={participant.degree}
+          onChange={(e) => handleParticipantChange(index + 1, 'degree', e.target.value)}
+        >
+          <option value="">Select Degree</option>
+          {degreeOptions.map((degree, i) => (
+            <option key={i} value={degree}>{degree}</option>
+          ))}
+        </select>
+      </td>
+      <td>
+        <input
+          type="checkbox"
+          checked={participant.isLabManager}
+          onChange={(e) => handleParticipantChange(index + 1, 'isLabManager', !participant.isLabManager)}
+        />
+      </td>
+      <td>
+        <input type="checkbox" disabled />
+      </td>
+      <td>
+        {/* Delete button (only before website is generated) */}
+        {!websiteData.generated && (
+          <button
+            className="delete-button"
+            onClick={() => removeParticipant(index + 1)}
+          >
+            🗑️
+          </button>
+        )}
+      </td>
+    </tr>
+  ))}
+</tbody>
         </table>
 
         {/* "+" Button to add new participants */}
