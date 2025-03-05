@@ -354,30 +354,67 @@ const useChooseComponents = () => {
     }
   };
 
+  // const handleGenerate = async () => {
+  //   try {
+  //     const response = await axios.post(`${baseApiUrl}generateWebsite`, {
+  //       domain: formData.domain,
+  //       about_us: aboutUsContent,
+  //       lab_address: contactUsData.address,
+  //       lab_mail:contactUsData.email,
+  //       lab_phone_num:contactUsData.phoneNumber,
+  //     });
+  //     const data =  response.data;
+  //     console.log(data);
+  //     if (data.response==="true") {
+  //       console.log(data.message);
+  //       alert(data.message);
+  //       sessionStorage.removeItem("AboutUs");
+  //       sessionStorage.removeItem("ContactUs");
+  //       navigate("/my-account");
+  //     } else {
+  //       alert('Error: ' + data.error);
+  //     }
+  //   } catch (error) {
+  //     alert('Error: ' + error.message);
+  //   }
+  // };
+
   const handleGenerate = async () => {
     try {
-      const response = await axios.post(`${baseApiUrl}generateWebsite`, {
-        domain: formData.domain,
-        about_us: aboutUsContent,
-        lab_address: contactUsData.address,
-        lab_mail:contactUsData.email,
-        lab_phone_num:contactUsData.phoneNumber,
-      });
-      const data =  response.data;
-      console.log(data);
-      if (data.response==="true") {
-        console.log(data.message);
-        alert(data.message);
-        sessionStorage.removeItem("AboutUs");
-        sessionStorage.removeItem("ContactUs");
-        navigate("/my-account");
-      } else {
-        alert('Error: ' + data.error);
-      }
+        console.log(participants);
+        const response = await axios.post(`${baseApiUrl}generateWebsite`, {
+            domain: websiteData.domain,
+            about_us: aboutUsContent,
+            lab_address: contactUsData.address,
+            lab_mail: contactUsData.email,
+            lab_phone_num: contactUsData.phoneNumber,
+            participants: participants.map(p => ({
+                fullName: p.fullName,
+                email: p.email,
+                degree: p.degree,
+                isLabManager: p.isLabManager,
+                alumni: p.alumni || false
+            }))
+        }, {
+            headers: { "Content-Type": "application/json" }
+        });
+
+        const data = response.data;
+        console.log("Response Data:", data);
+
+        if (data.response === "true") {
+            alert(data.message);
+            sessionStorage.removeItem("AboutUs");
+            sessionStorage.removeItem("ContactUs");
+            navigate("/my-account");
+        } else {
+            alert('Error: ' + (data.error || "Unknown error occurred"));
+        }
     } catch (error) {
-      alert('Error: ' + error.message);
+        console.error("Error in handleGenerate:", error);
+        alert('Error: ' + (error.response?.data?.message || error.message));
     }
-  };
+};
 
 
   /////////////////////////

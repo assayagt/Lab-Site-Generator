@@ -178,55 +178,117 @@ class UploadFilesAndData(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
+# class GenerateWebsiteResource(Resource):
+#     def post(self):
+#         parser = reqparse.RequestParser()
+#         parser.add_argument('domain', type=str, required=True, help="Domain is required")
+#         parser.add_argument('about_us', type=str, required=True, help="About us content is required")
+#         parser.add_argument('lab_address', type=str, required=True, help="Lab address is required")
+#         parser.add_argument('lab_mail', type=str, required=True, help="Lab mail is required")
+#         parser.add_argument('lab_phone_num', type=str, required=True, help="Lab phone number is required")
+        
+#         args = parser.parse_args()
+
+#         domain = args['domain']
+#         about_us = args['about_us']
+#         lab_address = args['lab_address']
+#         lab_mail = args['lab_mail']
+#         lab_phone_num = args['lab_phone_num']
+#         contact_info = ContactInfo(lab_address, lab_mail, lab_phone_num)
+#         try: 
+
+           
+#             participants = request.json.get('participants', [])
+#             response = generator_system.create_new_lab_website(domain,lab_members,lab_managers,siteCreator)
+#             if response.is_success():
+#                 response2 = generator_system.set_site_about_us_on_creation_from_generator(domain, about_us)
+#                 if response2.is_success():
+#                     response3 = generator_system.set_site_contact_info_on_creation_from_generator(domain,contact_info)
+#                     if response3.is_success():
+#                         command = ['start', 'cmd', '/K', 'npm', 'start']  # Command to open a new terminal and run npm start
+#                         process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH, shell=True)
+#                         return jsonify({"message": "Website generated successfully!", "response": "true"})
+#                     return jsonify({"error": f"An error occurred: {response3.get_message()}", "response": "false"})
+
+#                 return jsonify({"error": f"An error occurred: {response2.get_message()}", "response": "false"})
+#             return jsonify({"error": f"An error occurred: {response.get_message()}", "response": "false"})
+#         except Exception as e:
+#             return jsonify({"error": f"An error occurred: {str(e)}"})
+
+
 class GenerateWebsiteResource(Resource):
     def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('domain', type=str, required=True, help="Domain is required")
-        parser.add_argument('about_us', type=str, required=True, help="About us content is required")
-        parser.add_argument('lab_address', type=str, required=True, help="Lab address is required")
-        parser.add_argument('lab_mail', type=str, required=True, help="Lab mail is required")
-        parser.add_argument('lab_phone_num', type=str, required=True, help="Lab phone number is required")
-        args = parser.parse_args()
+        try:
+            # Parse JSON request body
+       # Parse incoming JSON data
+            data = request.get_json()
 
-        domain = args['domain']
-        about_us = args['about_us']
-        lab_address = args['lab_address']
-        lab_mail = args['lab_mail']
-        lab_phone_num = args['lab_phone_num']
-        contact_info = ContactInfo(lab_address, lab_mail, lab_phone_num)
-        try: 
+            # Ensure required fields exist
+            required_fields = ['domain', 'about_us', 'lab_address', 'lab_mail', 'lab_phone_num', 'participants']
+            for field in required_fields:
+                if field not in data:
+                    return jsonify({"error": f"Missing required field: {field}", "response": "false"})
 
-           
-            excel_file_path = os.path.join(GENERATED_WEBSITES_FOLDER, domain ,'participants.csv')
-            print(excel_file_path)
-            lab_members, lab_managers, siteCreator = read_lab_info(excel_file_path)
+            domain = data['domain']
+            about_us = data['about_us']
+            lab_address = data['lab_address']
+            lab_mail = data['lab_mail']
+            lab_phone_num = data['lab_phone_num']
+            participants = data['participants']
+            contact_info = ContactInfo(lab_address, lab_mail, lab_phone_num)
+            # Extract lab members, managers, and site creator
+            lab_members = {}
+            lab_managers = {}
+            site_creator = None
+
+
+            for participant in participants:
+                email = participant.get("email", "").strip()
+                full_name = participant.get("fullName", "").strip()
+                degree = participant.get("degree", "").strip()
+                is_lab_manager = participant.get("isLabManager", False)
+
+                if not email or not full_name or not degree:
+                    return jsonify({"error": "All participants must have an email, full name, and degree.", "response": "false"})
+
+                # Add to lab members
+                lab_members[email] = {"full_name": full_name, "degree": degree}
+
+                # Add to lab managers if applicable
+                if is_lab_manager:
+                    lab_managers[email] = {"full_name": full_name, "degree": degree}
+
+            # Set the site creator (there is exactly one due to check above)
+            site_creator = {
+                "email": participants[0]["email"],
+                "full_name": participants[0]["fullName"],
+                "degree": participants[0]["degree"]
+            }
+
+            # Debugging Output
             print(f"Lab Members: {lab_members}")
             print(f"Lab Managers: {lab_managers}")
-            print(f"Site Creator: {siteCreator}")
+            print(f"Site Creator: {site_creator}")
 
-            if lab_members is None:
-                return jsonify({"error": f"An error occurred: {lab_managers}"})
-            
-            # if not os.path.exists(TEMPLATE_1_PATH):
-            #     return jsonify({"error": f"Path {TEMPLATE_1_PATH} does not exist."})
+            # Call generator system to create a new lab website
+            response = generator_system.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
 
-           
-            response = generator_system.create_new_lab_website(domain,lab_members,lab_managers,siteCreator)
             if response.is_success():
                 response2 = generator_system.set_site_about_us_on_creation_from_generator(domain, about_us)
                 if response2.is_success():
-                    response3 = generator_system.set_site_contact_info_on_creation_from_generator(domain,contact_info)
+                    response3 = generator_system.set_site_contact_info_on_creation_from_generator(domain, contact_info)
                     if response3.is_success():
-                        command = ['start', 'cmd', '/K', 'npm', 'start']  # Command to open a new terminal and run npm start
+                        # Start npm server in a new terminal
+                        command = ['start', 'cmd', '/K', 'npm', 'start']
                         process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH, shell=True)
+
                         return jsonify({"message": "Website generated successfully!", "response": "true"})
                     return jsonify({"error": f"An error occurred: {response3.get_message()}", "response": "false"})
-
                 return jsonify({"error": f"An error occurred: {response2.get_message()}", "response": "false"})
             return jsonify({"error": f"An error occurred: {response.get_message()}", "response": "false"})
-        except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"})
 
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}", "response": "false"})
 class ChooseDomain(Resource):
     def post(self):
         """
