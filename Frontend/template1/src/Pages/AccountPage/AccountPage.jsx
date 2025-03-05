@@ -203,7 +203,7 @@ const[notifications,setnoti] = useState([])
       <div className="main-content">
         {activeSection === 'personal-info' && (
         <form id="personal-info" className="personal-info" onSubmit={(e) => e.preventDefault()}>
-        <h2>Personal Information</h2>
+        <h2 className='title_account'>Personal Information</h2>
         <div className="info">
           <div className="user-photo-div">
             <img src={uploadedPhoto} alt="User" className="user-photo" />

@@ -1,5 +1,7 @@
 .account-page {
   display: flex;
+  height: 100vh;
+
 }
 
 .sidebar {
@@ -426,4 +428,9 @@ button {
   color: #ccc;
   height: min-content;
   
+}
+
+.title_account{
+  font-family: 'Oswald', sans-serif;
+
 }

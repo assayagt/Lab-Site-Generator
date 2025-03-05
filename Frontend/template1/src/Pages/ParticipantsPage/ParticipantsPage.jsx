@@ -1,70 +1,51 @@
-import React, { useState,useEffect } from 'react';
-import participants from '../../participants.json'; // Replace with your correct JSON file path
+import React, { useState, useEffect } from 'react';
 import "./ParticipantsPage.css";
-import {getAllAlumni,getAllLabManagers,getAllLabMembers} from "../../services/websiteService";
+import { getAllAlumni, getAllLabManagers, getAllLabMembers } from "../../services/websiteService";
 
 const ParticipantsPage = () => {
   const [selectedDegree, setSelectedDegree] = useState('All');
-  const [participants, setParticipants] = useState([]); // State for combined participants
-  const [loading, setLoading] = useState(true); // Loading state
-
+  const [participants, setParticipants] = useState([]); // State for participants (excluding alumni)
+  const [alumni, setAlumni] = useState([]); // Separate state for alumni
+  const [loading, setLoading] = useState(true);
 
   const degreeOrder = {
     "PhD": 1,
     "MSc": 2,
     "Research Assistant": 3,
-    "BSc": 4,
-    "Alumni": 5,
+    "BSc": 4
+    
   };
 
+  useEffect(() => {
+    const fetchParticipants = async () => {
+      setLoading(true);
+      try {
+        let domain = window.location.hostname.replace(/^https?:\/\//, '').replace(":3001", '');
 
-    // Fetch participants data
-    useEffect(() => {
-      const fetchParticipants = async () => {
-        setLoading(true);
-  
-        try {
-          let domain = window.location.hostname; // Extract domain dynamically
-          domain = domain.replace(/^https?:\/\//, '');
-          domain= domain.replace(":3001",'')
-          console.log(domain);
-      // Add "www." if missing
-          if (!domain.startsWith('www.')) {
-            domain = `www.${domain}`;
-          }
+        // Add "www." if missing
+        if (!domain.startsWith('www.')) domain = `www.${domain}`;
+        // Add ".com" if missing
+        if (!domain.endsWith('.com')) domain = `${domain}.com`;
 
-          // Add ".com" if missing
-          if (!domain.endsWith('.com')) {
-            domain = `${domain}.com`;
-          }
-          const [managers, members, alumni] = await Promise.all([
-            getAllLabManagers(domain),
-            getAllLabMembers(domain),
-            getAllAlumni(domain),
-          ]);
-  
-          const safeManagers = Array.isArray(managers) ? managers : [];
-          const safeMembers = Array.isArray(members) ? members : [];
-          const safeAlumni = Array.isArray(alumni) ? alumni : [];
+        const [managers, members, alumniData] = await Promise.all([
+          getAllLabManagers(domain),
+          getAllLabMembers(domain),
+          getAllAlumni(domain),
+        ]);
 
-          // Combine all participants without modifying their structure
-          const combinedParticipants = [
-            ...safeManagers,
-            ...safeMembers,
-            ...safeAlumni,
-          ];
-  
-          setParticipants(combinedParticipants);
-        } catch (err) {
-          console.error('Error fetching participants:', err);
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      fetchParticipants();
-    }, []);
+        setParticipants([...managers, ...members]); // Store only non-alumni
+        setAlumni(alumniData || []); // Store alumni separately
+      } catch (err) {
+        console.error('Error fetching participants:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchParticipants();
+  }, []);
+
+  // Grouping participants by degree
   const groupedParticipants = participants.reduce((acc, participant) => {
     const { degree } = participant;
     if (!acc[degree]) acc[degree] = [];
@@ -72,20 +53,20 @@ const ParticipantsPage = () => {
     return acc;
   }, {});
 
-  // Sort degrees by the defined hierarchy
+  // Sort degrees by defined hierarchy
   const sortedDegrees = Object.keys(groupedParticipants).sort(
-    (a, b) => (degreeOrder[a] || 999) - (degreeOrder[b] || 999) // Fallback to 999 for undefined degrees
+    (a, b) => (degreeOrder[a] || 999) - (degreeOrder[b] || 999)
   );
 
+  // Filtering participants
   const filteredParticipants = selectedDegree === 'All'
     ? groupedParticipants
     : { [selectedDegree]: groupedParticipants[selectedDegree] };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-    if (loading) {
-      return <div>Loading...</div>;
-    }
-  
   return (
     <div className="participants-page">
       <h1>Participants</h1>
@@ -103,11 +84,14 @@ const ParticipantsPage = () => {
             <option key={degree} value={degree}>
               {degree}
             </option>
-          ))}
+          ))}"
+          <option  value="Alumni">
+              Alumni
+            </option>
         </select>
       </div>
 
-      {/* Display Participants */}
+      {/* Display Participants by Degree */}
       {sortedDegrees.map((degree) =>
         filteredParticipants[degree] ? (
           <div key={degree} className="degree-section">
@@ -128,6 +112,28 @@ const ParticipantsPage = () => {
             </div>
           </div>
         ) : null
+      )}
+
+      {/* Alumni Section (Separate) */}
+      {alumni.length > 0 && (
+        <div className="degree-section">
+          <h2>Alumni</h2>
+          <div className="degree-section-items">
+            {alumni.map((member) => (
+              <div key={member.email} className="participant">
+                <div className="personal_photo"></div>
+                <div>
+                  <strong>{member.fullName}</strong>
+                  <span className="alumni-degree">  [{member.degree}]</span>
+                  <p>{member.bio}</p>
+                  <a href={`mailto:${member.email}`} className="email-link">
+                    {member.email}
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

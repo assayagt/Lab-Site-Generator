@@ -198,7 +198,7 @@ height: 18px;
   
   display: flex;
   flex-direction: row;
-  background-color: #D9D9D9;
+  background: rgba(69, 69, 69, 0.1);
   border-radius: 30px;
   width: 450px; /* Starts small */
   max-width: fit-content; /* Expands up to this */

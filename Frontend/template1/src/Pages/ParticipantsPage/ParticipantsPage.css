@@ -1,4 +1,6 @@
 .participants-page {
+    height: fit-content;
+    min-height: 100vh;
     padding: 0 20px 20px;
     margin:  0 20px;
     font-family: Arial, sans-serif;
@@ -9,7 +11,7 @@
   .degree-section-items {
     margin-bottom: 30px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust column width dynamically */
+    grid-template-columns: repeat(3,1fr); /* Adjust column width dynamically */
     gap: 10px;
     width: 100%; /* Ensures the grid doesn't exceed its container */
     box-sizing: border-box;
@@ -19,14 +21,18 @@
     list-style: none;
     padding: 15px;
     border-radius: 10px;
-    background-color: #C4D2E5;
+    background: rgba(69, 69, 69, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
     display: flex;
     flex-direction: row;
     gap: 20px;
     align-items: flex-start;
     max-width: 100%; 
   }
-  
+  .participant:hover {
+    transform: translateY(-3px); /* Moves up slightly */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Adds a more pronounced shadow */
+}
   .personal_photo {
     background-color: #e9e9e9;
     height: 160px;
@@ -54,7 +60,12 @@
   #degree-filter {
     padding: 5px 5px;  
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid #000000;
     background-color: transparent;
+
+  }
+
+  .title-parti{
+    font-family: 'Oswald', sans-serif;
 
   }

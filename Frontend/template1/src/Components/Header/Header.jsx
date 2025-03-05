@@ -17,7 +17,11 @@ function Header(props) {
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false); // Track expansion
 
   const handleClick = (item) => {
-    navigate(`/${item.replace(" ", "")}`);
+    if (item === "Home") {
+      navigate("/");
+    } else {
+      navigate(`/${item.replace(" ", "")}`);
+    }
   };
 
   const handleLogin = async (e) => {
