@@ -7,6 +7,7 @@
     height: 100vh;
     color: #1c2c3d;
     font-family: Arial, sans-serif;
+    margin-top: 20px;
   }
   
 /* Intro Card */
@@ -42,15 +43,21 @@
     margin-top: 10px;
     background: #FFC147;
     border: none;
-    border-radius: 5px;
+    border-radius: 20px;
     cursor: pointer;
     font-size: 14px; /* Smaller font */
-    transition: background 0.3s ease;
-  }
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(31, 51, 71, 0.8);
+    transition: background 0.5s ease, border 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
+}
+
+.continue_button:hover {
+    background: rgba(228, 240, 247, 0.3);
+    border: 1px solid rgba(31, 51, 71, 1);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
   
-  .continue_button:hover {
-    background: #e0a035;
-  }
+
   /* Sidebar Layout */
   .main_layout {
     display: flex;
@@ -119,12 +126,15 @@
   }
   .input_name_domain.edit {
     width: 60%;
-    background: rgba(255, 255, 255, 0.1);
+    /* background: rgba(255, 255, 255, 0.1); */
+    background: rgba(255, 255, 255, 0.45);
+
 
   }   
   .input_name_domain{
     width: 60%;
-    background: rgba(255, 255, 255, 0.1);
+    /* background: rgba(255, 255, 255, 0.1); */
+    background: rgba(255, 255, 255, 0.45);
 
   }   
 
@@ -329,7 +339,9 @@
   width: 80%;
   padding: 8px;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.1);
+  /* background: rgba(255, 255, 255, 0.1); */
+  background: rgba(255, 255, 255, 0.45);
+
   text-align: center;
 }
 
@@ -377,7 +389,8 @@
   padding: 10px;
   font-size: 16px;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.1);
+  /* background: rgba(255, 255, 255, 0.1); */
+  background: rgba(255, 255, 255, 0.45);
   border: none;
 }
 .about_contact_input:focus, .contact_us_input:focus , .input_parti:focus{
@@ -390,7 +403,9 @@
   height: 150px; /* Adjust height as needed */
   font-size: 16px;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.1);
+  /* background: rgba(255, 255, 255, 0.1); */
+  background: rgba(255, 255, 255, 0.45);
+
   text-align: left; /* Align text to the left */
   vertical-align: top; /* Ensures text starts from the top */
   resize: none; /* Allows user to resize the textarea vertically */
@@ -540,19 +555,7 @@
   color: #1c2c3d;
 }
 
-.add-participant-form button {
-  padding: 8px 16px;
-  background: #FFC147;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.3s ease;
-}
 
-.add-participant-form button:hover {
-  background: #e0a035;
-}
 
 .input_parti{
   background: rgba(255, 255, 255, 0.1);
@@ -577,7 +580,7 @@
 
 /* Modal Box */
 .modal-content {
-  background: rgb(187, 187, 187);
+  background: rgb(213, 213, 213);
   padding: 20px;
   width: 40%;
   border-radius: 10px;

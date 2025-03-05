@@ -10,7 +10,7 @@ code {
     monospace;
 }
 body {
-  background-image: url('./images/backg.jpg');
+  background-image: url('./images/backg1.jpg');
   background-size: cover; /* Covers the entire viewport */
   background-position: center; /* Centers the image */
   background-repeat: no-repeat; /* Prevents repeating */

@@ -35,7 +35,9 @@
   display: none;  /* Initially hidden */
   position: absolute;
   left: -100%;
-  background: rgb(187, 187, 187);
+  /* background: rgb(187, 187, 187); */
+  background: rgb(213, 213, 213);
+
   padding: 20px;
   width: 150px; /* Adjust width as needed */
   border-radius: 10px; /* Rounded corners to match the shape of the menu */

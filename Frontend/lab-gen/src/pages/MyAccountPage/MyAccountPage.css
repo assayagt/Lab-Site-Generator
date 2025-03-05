@@ -118,19 +118,22 @@
   
   /* Start New Website Button */
   .newWebsiteButton {
-    padding: 12px 20px;
-    font-size: 16px;
-    background-color: #4d5761;
-    color: white;
+    padding: 8px 16px; /* Smaller button */
+    margin-top: 10px;
+    background: #FFC147;
     border: none;
-    border-radius: 5px;
+    border-radius: 20px;
     cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
-    max-width: 250px;
-    text-align: center;
-  }
-  
-  .newWebsiteButton:hover {
-    background-color: #16212b;
+    font-size: 14px; /* Smaller font */
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(31, 51, 71, 0.8);
+    transition: background 0.5s ease, border 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
+}
+
+.newWebsiteButton:hover{
+    background: rgba(228, 240, 247, 0.3);
+    border: 1px solid rgba(31, 51, 71, 1);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+
     transform: translateY(-2px);
   }
