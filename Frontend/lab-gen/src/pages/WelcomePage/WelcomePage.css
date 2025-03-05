@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;600&display=swap');
+
+
 .landing-container {
   display: flex;
   flex-direction: column;
@@ -7,6 +10,14 @@
   padding: 80px 20px;
 }
 
+.welcome{
+  font-family: 'Oswald', sans-serif;
+  font-size: 60px; /* Adjust size as needed */
+  font-weight: 600; /* Bold look */
+}
+.welcome_message{
+  font-weight: 500;
+}
 
 .main-section {
   max-width: 800px;

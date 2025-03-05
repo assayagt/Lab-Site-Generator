@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import logoIcon from "../../images/launcher.svg";
+import logoIcon from "../../images/logo.svg";
 import "./Header.css";
 import { useAuth } from "../../Context/AuthContext";
 import logOutIcon from "../../images/logout.svg";
@@ -34,52 +34,73 @@ function Header(props) {
     }
   };
 
-  const doSomething = () => {
-     
-  };
 
   const onIconClick = () => {
     console.log("h");
     navigate("/my-account");
   };
 
+  const handleNavigateHome = () => {
+    navigate("/");
+    window.location.reload();
+  };
+  
   return (
     <div className="header">
-      <img alt="Logo" src={logoIcon} className="img_logo" />
-      <div className="header_title">{props.title}</div>
-      <div className="menu">
-            <div className="hidden-box">
-            <div className="personal_menu">
-                <div className="icon_photo">
-                    {!sessionStorage.getItem('isLoggedIn')?<img src ={accountIcon} alt= "icon"></img>:
-                    <img src ={accountIcon} alt= "icon" ></img>
-                    }
-                </div>
-                <hr className="hr_line" />
-                {sessionStorage.getItem('isLoggedIn') ? (
-                <div className="choose_item">
-                    <button className ="my_sites_button" onClick={onIconClick}>
-                        <img className = "my_sites_icon "src ={myWebsitesIcon} alt= "logout" ></img>
-                        My Websites
-                    </button> 
-                    <button className ="logout_button" onClick={handleLogout}>
-                        <img src ={logOutIcon} alt= "logout"></img>
-                        Logout
-                    </button>
-                </div>
-
-                ) : ( <div className="choose_item">
-                    <button className ="login_button"onClick={handleLogin}>Login</button>
-                    </div>
-                )}
-                </div>
-            </div>
+      {/* Clicking Logo navigates to home */}
+      <img 
+        alt="Logo" 
+        src={logoIcon} 
+        className="img_logo" 
+        onClick={handleNavigateHome} 
+        style={{ cursor: "pointer" }} // Makes it clear it's clickable
+      />
+      
+      {/* Clicking Title navigates to home */}
+      <div 
+        className="header_title" 
+        onClick={handleNavigateHome} 
+        style={{ cursor: "pointer" }}
+      >
+        {props.title}
       </div>
-
+  
+      <div className="menu">
+        <div className="hidden-box">
+          <div className="personal_menu">
+            <div className="icon_photo">
+              {!sessionStorage.getItem('isLoggedIn') ? 
+                <img src={accountIcon} alt="icon" /> :
+                <img src={accountIcon} alt="icon" />
+              }
+            </div>
+            <hr className="hr_line" />
+            {sessionStorage.getItem('isLoggedIn') ? (
+              <div className="choose_item">
+                <button className="my_sites_button" onClick={onIconClick}>
+                  <img className="my_sites_icon" src={myWebsitesIcon} alt="logout" />
+                  My Websites
+                </button> 
+                <button className="logout_button" onClick={handleLogout}>
+                  <img src={logOutIcon} alt="logout" />
+                  Logout
+                </button>
+              </div>
+            ) : ( 
+              <div className="choose_item">
+                <button className="login_button" onClick={handleLogin}>
+                  <img src={logOutIcon} alt="login" />
+                  Login</button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+  
       {/* Conditional rendering of the login popup */}
       {showLoginPopup && <LoginPopup onClose={() => setShowLoginPopup(false)} />}
-
     </div>
   );
+  
 }
 export default Header;

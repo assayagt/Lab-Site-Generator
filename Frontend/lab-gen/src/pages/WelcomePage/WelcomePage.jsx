@@ -41,8 +41,8 @@ const WelcomePage = () => {
       <div className='landing-container'>
       <main className='main-section'>
         <div className='text-content'>
-          <h1>Your research website should do more than exist</h1>
-          <p>
+          <div className='welcome'>Your research website should do more than exist</div>
+          <p className='welcome_message'>
             Effortlessly create and maintain a professional website for your lab or research group. Our platform is easy to use, updates automatically, and requires minimal maintenance.
           </p>
           <button className='start-button' onClick={handleStartClick}>Start Building</button>

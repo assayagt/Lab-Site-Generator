@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap');
+
+
 .header{
     height: 70px;
     display: flex;
@@ -8,6 +11,9 @@
     font-size: 3rem;
     font-weight: 500;
     /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 2px; /* Adds spacing for a modern look */
+    text-transform: uppercase;
 }
 .img_logo{
     height: 40px;
