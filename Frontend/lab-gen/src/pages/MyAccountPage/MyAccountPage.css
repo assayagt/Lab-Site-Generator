@@ -32,14 +32,20 @@
     margin-bottom: 15px;
 }
 
-/* Website List */
 .websiteList {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Responsive grid */
     gap: 15px;
     margin-top: 10px;
+    width: 100%;
 }
 
+/* Ensure website items take full width in smaller screens */
+@media (max-width: 768px) {
+    .websiteList {
+        grid-template-columns: 1fr; /* Full width on smaller screens */
+    }
+}
 /* Individual Website Item */
 .websiteItem {
     background: rgba(255, 255, 255, 0.1);
@@ -54,7 +60,7 @@
     flex-direction: column;
     align-items: center;
     gap: 5px;
-    width: 20%;
+    
 }
 
 .websiteItem:hover {
