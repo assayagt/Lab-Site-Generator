@@ -67,7 +67,7 @@ function App() {
     return <div>Loading...</div>; // Show loading indicator
   }
 
-  const components = websiteData.components ? [...websiteData.components, 'Home'] : ['Home'];
+  const components = [...new Set(websiteData.components)];
 
   return (
     

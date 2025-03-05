@@ -1,14 +1,53 @@
-.AboutUsComponent{
-    display:flex;
+.AboutUsComponent {
+    display: flex;
     flex-direction: column;
-    gap:10px;
+    gap: 10px;
+    border-radius: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #34495e;
+    transition: transform 0.3s ease-in-out;
+    width: 100%;
+    max-width: 400px; /* Adjust width as needed */
 }
 
-.aboutUsTitle{
-    font-size: 20px;
-    font-weight: 600;
+/* About Us Title - Always Visible */
+.aboutUsTitle {
+    font-family: 'Oswald', sans-serif;
+
+    font-size: 28px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 10px;
 }
-.aboutUsParagraph{
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
+
+/* About Us Paragraph - Scrollable when long */
+.aboutUsParagraph {
+    max-height: 300px; /* Set max height */
+    overflow-y: auto;
+    padding-right: 10px; /* Space for scrollbar */
+}
+
+/* Scrollbar Styling */
+.aboutUsParagraph::-webkit-scrollbar {
+    width: 8px;
+}
+
+.aboutUsParagraph::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 5px;
+}
+
+.aboutUsParagraph::-webkit-scrollbar-thumb {
+    background: rgba(44, 62, 80, 0.05);
+    border-radius: 5px;
+}
+
+.aboutUsParagraph::-webkit-scrollbar-thumb:hover {
+    background: rgba(22, 29, 37, 0.1);
+}
+
+/* Hover Effect */
+.AboutUsComponent:hover {
+    transform: translateY(-3px);
 }
