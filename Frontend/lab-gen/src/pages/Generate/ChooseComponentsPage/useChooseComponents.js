@@ -23,7 +23,11 @@ const useChooseComponents = () => {
   const [showContentSidebar, setShowContentSidebar] = useState(false);
   const [componentsSaved, setComponentsSaved] = useState(websiteData.components.length>1 );
   const [isComponentsSaved, setIsComponentsSaved] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(""); // Store error messages
 
+  const showError = (message) => {
+    setErrorMessage(message);
+  };
 
   const [formData, setFormData] = useState({
     domain: websiteData.domain || '',
@@ -139,7 +143,7 @@ const useChooseComponents = () => {
     
     } catch (error) {
       console.error('Error toggling lab manager:', error);
-      alert('An error occurred while updating the lab manager.');
+      showError('An error occurred while updating the lab manager.');
     }
   };
 
@@ -173,7 +177,7 @@ const useChooseComponents = () => {
     
     } catch (error) {
       console.error('Error toggling lab manager:', error);
-      alert('An error occurred while updating the lab manager.');
+      showError('An error occurred while updating the lab manager.');
     }
   };
 
@@ -210,14 +214,14 @@ const useChooseComponents = () => {
           setNewParticipant({ fullName: '', degree: '', email: '' }); 
           setShowAddForm(false);
         } else {
-          alert(`Error: ${response.message}`);
+          showError(`Error: ${response.message}`);
         }
       } catch (error) {
         console.error('Error adding participant:', error);
-        alert('An error occurred while adding the lab member.');
+        showError('An error occurred while adding the lab member.');
       }
     } else {
-      alert("Please fill all fields.");
+      showError("Please fill all fields.");
     }
   };
 
@@ -272,9 +276,9 @@ const useChooseComponents = () => {
     if (websiteData.generated) {
       const response = await setSiteAboutUs(sessionStorage.getItem('sid'), websiteData.domain, aboutUsContent);
       if (response.response === 'true') {
-        alert('About Us saved successfully');
+        // alert('About Us saved successfully');
       } else {
-        alert('Error updating About Us: ' + response.message);
+        showError('Error updating About Us: ' + response.message);
       }
     } 
       setAboutUsSaved(true);
@@ -295,9 +299,9 @@ const useChooseComponents = () => {
     if (websiteData.generated) {
       const response = await setSiteContactInfo(sessionStorage.getItem('sid'), websiteData.domain, contactUsData.address, contactUsData.email, contactUsData.phoneNumber);
       if (response.response === 'true') {
-        alert('Contact information saved successfully');
+        // alert('Contact information saved successfully');
       } else {
-        alert('Error updating Contact Information: ' + response.message);
+        showError('Error updating Contact Information: ' + response.message);
       }
     } 
       setcontactUs(true);
@@ -344,7 +348,7 @@ const useChooseComponents = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        alert(`${component} data saved successfully!`);
+        // alert(`${component} data saved successfully!`);
         setWebsite({ ...formData });
         if (websiteData.generated) {
       
@@ -354,10 +358,10 @@ const useChooseComponents = () => {
           console.log(savePhotoResponse)
       }
       } else {
-        alert('Error: ' + data.error);
+        showError('Error: ' + data.error);
       }
     } catch (error) {
-      alert('Error: ' + error.message);
+      showError('Error: ' + error.message);
     }
   };
 
@@ -414,10 +418,10 @@ const useChooseComponents = () => {
             sessionStorage.removeItem("ContactUs");
             navigate("/my-account");
         } else {
-            alert('Error: ' + (data.error || "Unknown error occurred"));
+          showError('Error: ' + (data.error || "Unknown error occurred"));
         }
     } catch (error) {
-        console.error("Error in handleGenerate:", error);
+        showError( error);
         alert('Error: ' + (error.response?.data?.message || error.message));
     }
 };
@@ -432,7 +436,7 @@ const useChooseComponents = () => {
 
   const handleContinue = async () => {
     if (!domain || !websiteName) {
-      alert("Please enter a domain and website name");
+      showError("Please enter a domain and website name");
       return;
     }
     let data = await createCustomSite(domain, websiteName, components, template);
@@ -467,8 +471,8 @@ const useChooseComponents = () => {
   const isValidDomain = (domain) => /^(?!:\/\/)([A-Za-z0-9-]+\.)+[A-Za-z]{2,6}$/.test(domain);
 
   const handleSaveComponents = async () => {
-    if (components.length === 0) {
-      alert('Please select components');
+    if (components.length <=1) {
+      showError('Please select components');
       return;
     }
     let data = await changeComponents(domain, components);
@@ -539,7 +543,8 @@ const useChooseComponents = () => {
     toggleLabManager,
     toggleAlumni,
     handleParticipantChange,
-    componentsSaved, setComponentsSaved,handleGenerate,addParticipantGen,removeParticipant,isComponentsSaved
+    componentsSaved, setComponentsSaved,handleGenerate,addParticipantGen,removeParticipant,isComponentsSaved, errorMessage,
+    setErrorMessage,
   };
 };
 

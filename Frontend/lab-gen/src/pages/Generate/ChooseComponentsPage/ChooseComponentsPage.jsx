@@ -2,7 +2,7 @@ import React from 'react';
 import useChooseComponents from './useChooseComponents';
 import Tamplate from "../../../images/tamplate.svg";
 import './ChooseComponentsPage.css';
-
+import ErrorPopup from '../../../components/Popups/ErrorPopup';
 const ChooseComponentsPage = () => {
   const {
     domain,
@@ -46,7 +46,9 @@ const ChooseComponentsPage = () => {
     toggleAlumni,
     handleParticipantChange,
     componentsSaved,handleGenerate,
-    addParticipantGen,isComponentsSaved
+    addParticipantGen,isComponentsSaved,
+    errorMessage,
+    setErrorMessage
   } = useChooseComponents();
   
 
@@ -401,6 +403,8 @@ const ChooseComponentsPage = () => {
             </div>
             )
             }
+            <ErrorPopup message={errorMessage} onClose={() => setErrorMessage("")} />
+
 {step === 8 && 
   (<div className="file-upload-item">
     <h3 className="file-upload_title">Lab Members</h3>
@@ -625,6 +629,7 @@ const ChooseComponentsPage = () => {
           </div>
         </div>
       )}
+     
     </div>
   );
   
