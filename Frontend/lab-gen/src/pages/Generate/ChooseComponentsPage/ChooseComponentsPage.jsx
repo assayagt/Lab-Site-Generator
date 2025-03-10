@@ -402,7 +402,7 @@ const ChooseComponentsPage = () => {
             }
 {step === 8 && 
   (<div className="file-upload-item">
-    <div className="file-upload_title">Participants</div>
+    <h3 className="file-upload_title">Lab Members</h3>
 
     {!websiteData.generated ? (
       // Table format before website is generated
@@ -519,7 +519,7 @@ const ChooseComponentsPage = () => {
 
         {/* "+" Button to add new participants */}
         <button className="add-row-button" onClick={addParticipant}>
-          + Add Participant
+          + Add Member
         </button>
       </div>
     ) : (
@@ -560,7 +560,7 @@ const ChooseComponentsPage = () => {
 
         {/* "Add Participant" button opens the modal */}
         <button className="add-row-button" onClick={() => setShowAddForm(true)}>
-          + Add Participant
+          + Add Member
         </button>
 
         {/* Modal Popup Form */}

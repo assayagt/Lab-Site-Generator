@@ -28,11 +28,12 @@ const PublicationPage = () => {
   }, []);
 
   useEffect(() => {
-    const years = Array.from(new Set(publications.map((pub) => {
-      // Ensure to extract only the year if it's a full date
-      const year = new Date(pub.publication_year).getFullYear();
-      return year;
-    }))).sort((a, b) => b - a); // Sort in descending order
+    const years = Array.from(new Set(
+      publications.map((pub) => {
+        const date = new Date(pub.publication_year);
+        return isNaN(date.getFullYear()) ? pub.publication_year : date.getFullYear(); 
+      })
+    )).sort((a, b) => b - a);
     setAvailableYears(years);
 
     const authors = Array.from(
@@ -53,7 +54,9 @@ const PublicationPage = () => {
 
   const filteredPublications = publications
   .filter((pub) => {
-    const publicationYear = new Date(pub.publication_year).getFullYear(); // Extract year
+    const publicationYear = isNaN(new Date(pub.publication_year).getFullYear()) 
+      ? pub.publication_year 
+      : new Date(pub.publication_year).getFullYear();
     const matchesYear = yearFilter
       ? publicationYear === parseInt(yearFilter, 10)
       : true;
@@ -138,8 +141,10 @@ const PublicationPage = () => {
               )}
               <div>
                 <p><strong>Authors:</strong> {pub.authors.join(', ') || "Unknown Authors"}</p>
-                <p><strong>Year:</strong> {pub.publication_year}</p>
-                <p className="description">{pub.description}</p>
+                <p><strong>Year:</strong> {isNaN(new Date(pub.publication_year).getFullYear()) 
+                    ? pub.publication_year 
+                    : new Date(pub.publication_year).getFullYear()}</p>
+                  <p className="description">{pub.description}</p>
                 <div className='links'>
                   {pub.git_link&&(<a href={pub.git_link} target="_blank" rel="noopener noreferrer" className="git">Git</a>)}
                   {pub.presentation_link&&<a href={pub.presentation_link} target="_blank" rel="noopener noreferrer" className="git">Presentation</a>}

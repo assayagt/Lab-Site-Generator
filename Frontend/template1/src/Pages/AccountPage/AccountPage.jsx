@@ -45,6 +45,7 @@ const[notifications,setnoti] = useState([])
 
     const fetchPublications = async () => { //TODO: change it
       const data = await getMemberPublications(sessionStorage.getItem("domain"));
+      
       setPublications(data ||[]);
       
     };
@@ -370,8 +371,7 @@ const[notifications,setnoti] = useState([])
           >
            X
           </button>
-          <AddPublicationForm />
-        </div>
+          <AddPublicationForm onSuccess={() => setIsAddPublicationModalOpen(false)} />        </div>
       </div>
     )}
           </div>

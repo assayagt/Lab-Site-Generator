@@ -82,8 +82,7 @@ function ContactUsPage() {
         <div>
           <strong>Phone:</strong> {phoneNum}
         </div>
-      </div>
-      <div className="map_container">
+        <div className="map_container">
         {coordinates ? (
           <iframe
             title="OpenStreetMap"
@@ -100,6 +99,8 @@ function ContactUsPage() {
           <p>Loading map...</p>
         )}
       </div>
+      </div>
+      
     </div>
   );
 }
