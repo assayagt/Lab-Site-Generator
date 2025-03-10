@@ -160,7 +160,7 @@ export const createNewSiteManager = async (nominatorManagerUserId, nominatedMana
       return response.data;
   } catch (error) {
     console.error('Error creating new site manager:', error);
-    alert('An error occurred while adding the site manager.');
+    //alert('An error occurred while adding the site manager.');
   }
 };
 
@@ -194,7 +194,7 @@ export const removeSiteManager = async (nominatorManagerUserId, managerToRemoveE
     return response.data;
   } catch (error) {
     console.error('Error removing site manager:', error);
-    alert('An error occurred while removing the site manager.');
+    //alert('An error occurred while removing the site manager.');
   }
 };
 
@@ -213,7 +213,7 @@ export const addLabMember = async (managerUserId, emailToRegister, labMemberFull
     return response.data;
   } catch (error) {
     console.error('Error adding lab member:', error);
-    alert('An error occurred while adding the lab member.');
+    //alert('An error occurred while adding the lab member.');
   }
 };
 
@@ -229,7 +229,7 @@ export const setSiteAboutUs = async (userId, domain, aboutUs) => {
     return response.data;
   } catch (error) {
     console.error('Error setting About Us:', error);
-    alert('An error occurred while setting the About Us section.');
+    //alert('An error occurred while setting the About Us section.');
   }
 };
 
@@ -248,7 +248,7 @@ export const setSiteContactInfo = async (userId, domain, labAddress, labMail, la
     return response.data;
   } catch (error) {
     console.error('Error setting contact info:', error);
-    alert('An error occurred while setting the contact information.');
+    //alert('An error occurred while setting the contact information.');
   }
 };
 
@@ -262,7 +262,7 @@ export const saveLogo = async (userId, domain) => {
 
       return response.data;
   } catch (error) {
-      alert('Error saving logo: ' + error.message);
+      //alert('Error saving logo: ' + error.message);
   }
 };
 
@@ -277,7 +277,7 @@ export const saveHomePicture = async (userId, domain) => {
       return response.data;
 
   } catch (error) {
-      alert('Error saving home picture: ' + error.message);
+     // alert('Error saving home picture: ' + error.message);
   }
 };
 

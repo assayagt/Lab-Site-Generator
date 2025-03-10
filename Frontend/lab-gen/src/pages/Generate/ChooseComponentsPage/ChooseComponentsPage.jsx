@@ -46,7 +46,7 @@ const ChooseComponentsPage = () => {
     toggleAlumni,
     handleParticipantChange,
     componentsSaved,handleGenerate,
-    addParticipantGen
+    addParticipantGen,isComponentsSaved
   } = useChooseComponents();
   
 
@@ -279,8 +279,9 @@ const ChooseComponentsPage = () => {
               <button
                 className="save_domain_name_button"
                 onClick={handleSaveComponents}
+                disabled={isComponentsSaved}
               >
-                Save Components
+                {isComponentsSaved ? "Saved" : "Save Components"}
               </button>
             )}
               </div>

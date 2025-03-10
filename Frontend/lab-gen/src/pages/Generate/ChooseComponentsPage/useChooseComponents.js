@@ -22,6 +22,7 @@ const useChooseComponents = () => {
   const [step, setStep] = useState(!domain ? 1 : 3);
   const [showContentSidebar, setShowContentSidebar] = useState(false);
   const [componentsSaved, setComponentsSaved] = useState(websiteData.components.length>1 );
+  const [isComponentsSaved, setIsComponentsSaved] = useState(false);
 
 
   const [formData, setFormData] = useState({
@@ -204,7 +205,6 @@ const useChooseComponents = () => {
         );
   
         if (response.response === 'true') {
-          alert('Lab member added successfully');
         
           setParticipants([...participants, { ...newParticipant, isLabManager: false }]);
           setNewParticipant({ fullName: '', degree: '', email: '' }); 
@@ -410,7 +410,6 @@ const useChooseComponents = () => {
         console.log("Response Data:", data);
 
         if (data.response === "true") {
-            alert(data.message);
             sessionStorage.removeItem("AboutUs");
             sessionStorage.removeItem("ContactUs");
             navigate("/my-account");
@@ -456,6 +455,7 @@ const useChooseComponents = () => {
 
   const handleComponentChange = (component) => {
     setComponents(prev => prev.includes(component) ? prev.filter(c => c !== component) : [...prev, component]);
+    setIsComponentsSaved(false); // Reset button to "Save"
     setIsChanged(true);
   };
 
@@ -474,7 +474,7 @@ const useChooseComponents = () => {
     let data = await changeComponents(domain, components);
     if (data.response === "true") {
       setWebsite({ ...websiteData, components });
-      alert('Components saved successfully!');
+      setIsComponentsSaved(true); // Reset button to "Save"
       setIsChanged(false);
       setComponentsSaved(true);
     }
@@ -539,7 +539,7 @@ const useChooseComponents = () => {
     toggleLabManager,
     toggleAlumni,
     handleParticipantChange,
-    componentsSaved, setComponentsSaved,handleGenerate,addParticipantGen,removeParticipant
+    componentsSaved, setComponentsSaved,handleGenerate,addParticipantGen,removeParticipant,isComponentsSaved
   };
 };
 
