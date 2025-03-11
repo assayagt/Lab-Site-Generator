@@ -13,11 +13,12 @@ function Header(props) {
   const { hasNewNotifications } = useContext(NotificationContext);
   const [showLogin, setShowLogin] = useState(false);
   const [email, setEmail] = useState("");
-  const [loginError, setLoginError] = useState(""); 
-  const [isLoggedIn, setIsLoggedIn] = useState(sessionStorage.getItem("isLoggedIn"));
+  const [loginError, setLoginError] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    sessionStorage.getItem("isLoggedIn")
+  );
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false); // Track expansion
-  const { editMode, toggleEditMode } = useEditMode();  // 🔹 Get Edit Mode state from context
-
+  const { editMode, toggleEditMode } = useEditMode(); // 🔹 Get Edit Mode state from context
 
   const handleClick = (item) => {
     if (item === "Home") {
@@ -48,18 +49,27 @@ function Header(props) {
       sessionStorage.removeItem("isLoggedIn");
       sessionStorage.removeItem("userEmail");
       setIsLoggedIn(false);
-      location.pathname === "/Account" ? navigate("/") : window.location.reload();
+      location.pathname === "/Account"
+        ? navigate("/")
+        : window.location.reload();
     }
   };
 
   return (
     <div className="header">
       {/* Logo & Title */}
-      <img className="header_logo" src={props.logo} alt="logo" onClick={() => navigate("/")} />
-      <div className="header_title" onClick={() => navigate("/")}>{props.title}</div>
+      <img
+        className="header_logo"
+        src={props.logo}
+        alt="logo"
+        onClick={() => navigate("/")}
+      />
+      <div className="header_title" onClick={() => navigate("/")}>
+        {props.title}
+      </div>
 
       {/* Navbar - Expands on Hover */}
-      <div 
+      <div
         className={`navbar ${isNavbarExpanded ? "expanded" : ""}`}
         onMouseEnter={() => setIsNavbarExpanded(true)}
         onMouseLeave={() => setIsNavbarExpanded(false)}
@@ -68,10 +78,15 @@ function Header(props) {
           .filter((item) => item !== "About Us")
           .map((item, index, filteredArray) => (
             <div className="navbar-item" key={index}>
-              <button onClick={() => handleClick(item)} className="navbar-item-button">
+              <button
+                onClick={() => handleClick(item)}
+                className="navbar-item-button"
+              >
                 {item}
               </button>
-              {index !== filteredArray.length - 1 && <div className="line-nav">|</div>}
+              {index !== filteredArray.length - 1 && (
+                <div className="line-nav">|</div>
+              )}
             </div>
           ))}
       </div>
@@ -80,26 +95,32 @@ function Header(props) {
       <div className="icon_photo">
         <div className="menu">
           {hasNewNotifications && <div className="notification-dot"></div>}
-          
+
           <div className="hidden-box">
             <div className="personal_menu">
               <div className="icon_photo">
                 <img src={accountIcon} alt="icon" />
               </div>
               <hr className="hr_line" />
+              {/* 🔹 ADD THIS TOGGLE SWITCH */}
               {isLoggedIn && (
                 <div className="edit-mode-toggle">
-                  <span className="edit-mode-label">Edit Mode</span> {/* Better positioning */}
                   <label className="switch">
-                    <input type="checkbox" checked={editMode} onChange={toggleEditMode} />
+                    <input
+                      type="checkbox"
+                      checked={editMode}
+                      onChange={toggleEditMode}
+                    />
                     <span className="slider round"></span>
                   </label>
                 </div>
               )}
               {isLoggedIn ? (
-                
                 <div className="choose_item">
-                  <button className="my_sites_button" onClick={() => navigate("Account")}>
+                  <button
+                    className="my_sites_button"
+                    onClick={() => navigate("Account")}
+                  >
                     My Account
                   </button>
                   <button className="logout_button" onClick={handleLogout}>
@@ -108,7 +129,12 @@ function Header(props) {
                 </div>
               ) : (
                 <div className="choose_item">
-                  <button className="login_button" onClick={() => setShowLogin(true)}>Login</button>
+                  <button
+                    className="login_button"
+                    onClick={() => setShowLogin(true)}
+                  >
+                    Login
+                  </button>
                 </div>
               )}
             </div>
@@ -120,11 +146,18 @@ function Header(props) {
       {showLogin && (
         <div className="login-modal">
           <div className="login-content">
-            <div className="close-button" onClick={() => setShowLogin(false)}>X</div>
+            <div className="close-button" onClick={() => setShowLogin(false)}>
+              X
+            </div>
             <h2>Login</h2>
             {loginError && <div className="login-error">{loginError}</div>}
             <form onSubmit={handleLogin}>
-              <input type="text" placeholder="Username" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <input
+                type="text"
+                placeholder="Username"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
               <button type="submit">Login</button>
             </form>
           </div>
