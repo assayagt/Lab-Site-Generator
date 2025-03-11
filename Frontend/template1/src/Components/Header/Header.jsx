@@ -4,6 +4,7 @@ import "./Header.css";
 import accountIcon from "../../images/account_avatar.svg";
 import { useAuth } from "../../Context/AuthContext";
 import { NotificationContext } from "../../Context/NotificationContext";
+import { useEditMode } from "../../Context/EditModeContext";
 
 function Header(props) {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ function Header(props) {
   const [loginError, setLoginError] = useState(""); 
   const [isLoggedIn, setIsLoggedIn] = useState(sessionStorage.getItem("isLoggedIn"));
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false); // Track expansion
+  const { editMode, toggleEditMode } = useEditMode();  // 🔹 Get Edit Mode state from context
+
 
   const handleClick = (item) => {
     if (item === "Home") {
@@ -77,13 +80,24 @@ function Header(props) {
       <div className="icon_photo">
         <div className="menu">
           {hasNewNotifications && <div className="notification-dot"></div>}
+          
           <div className="hidden-box">
             <div className="personal_menu">
               <div className="icon_photo">
                 <img src={accountIcon} alt="icon" />
               </div>
               <hr className="hr_line" />
+              {isLoggedIn && (
+                <div className="edit-mode-toggle">
+                  <span className="edit-mode-label">Edit Mode</span> {/* Better positioning */}
+                  <label className="switch">
+                    <input type="checkbox" checked={editMode} onChange={toggleEditMode} />
+                    <span className="slider round"></span>
+                  </label>
+                </div>
+              )}
               {isLoggedIn ? (
+                
                 <div className="choose_item">
                   <button className="my_sites_button" onClick={() => navigate("Account")}>
                     My Account

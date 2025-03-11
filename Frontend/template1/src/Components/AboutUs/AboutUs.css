@@ -51,3 +51,33 @@
 .AboutUsComponent:hover {
     transform: translateY(-3px);
 }
+
+.aboutUsTextarea {
+    width: 100%;
+    min-height: 200px;
+    max-height: 400px;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    resize: vertical;
+    background: rgba(44, 62, 80, 0.05);
+    
+}
+
+.saveButton {
+    width: 100px;
+    padding: 5px;
+    border-radius: 25px;
+    background: transparent;
+    border: 1px solid #000000;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    font-size: 16px;
+  }
+  
+  .saveButton:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  }
