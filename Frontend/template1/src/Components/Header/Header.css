@@ -55,8 +55,18 @@
   width: 150px; /* Adjust width as needed */
   border-radius: 10px; /* Rounded corners to match the shape of the menu */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
-  transform: translateX(-10%) translateY(20px); /* Adjust horizontally */
+  transform: translateX(-15px) translateY(13.5px); /* Adjust horizontally */
   z-index: 1;
+  -webkit-mask-image: radial-gradient(
+    circle at top right,
+    transparent 40px,
+    /* Cutout starts */ black 40px /* Solid color starts */
+  );
+  mask-image: radial-gradient(
+    circle at top right,
+    transparent 28px,
+    /* Cutout starts */ black 28px /* Solid color starts */
+  );
 }
 .menu:hover .hidden-box {
   display: block;
