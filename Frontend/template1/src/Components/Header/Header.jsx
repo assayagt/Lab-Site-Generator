@@ -91,30 +91,30 @@ function Header(props) {
           ))}
       </div>
 
-      {/* Profile Menu */}
       <div className="icon_photo">
+        {isLoggedIn && (
+          <div className="edit-mode-container">
+            <span className="edit-mode-label">Edit Mode</span>
+            <label className="switch">
+              <input
+                type="checkbox"
+                checked={editMode}
+                onChange={toggleEditMode}
+              />
+              <span className="slider round"></span>
+            </label>
+          </div>
+        )}
         <div className="menu">
           {hasNewNotifications && <div className="notification-dot"></div>}
 
           <div className="hidden-box">
             <div className="personal_menu">
-              <div className="icon_photo">
+              <div className="icon_photo2">
                 <img src={accountIcon} alt="icon" />
               </div>
               <hr className="hr_line" />
-              {/* 🔹 ADD THIS TOGGLE SWITCH */}
-              {isLoggedIn && (
-                <div className="edit-mode-toggle">
-                  <label className="switch">
-                    <input
-                      type="checkbox"
-                      checked={editMode}
-                      onChange={toggleEditMode}
-                    />
-                    <span className="slider round"></span>
-                  </label>
-                </div>
-              )}
+
               {isLoggedIn ? (
                 <div className="choose_item">
                   <button

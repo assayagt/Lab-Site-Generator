@@ -17,30 +17,45 @@
 .navbar-item-button:hover {
   color: black;
 }
+
+.edit-mode-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
 .icon_photo {
+  /* height: 40px;
+  width: 40px; */
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 0;
+  gap: 20px;
+}
+.icon_photo2 {
   height: 40px;
   width: 40px;
 }
-
 .menu {
   height: 40px;
   width: 40px;
   border-radius: 50%;
-  position: absolute;
-  right: 0;
+  position: relative;
+  /* position: absolute;
+  right: 0; */
   margin-right: 15px;
   background-image: url("../../images/account_avatar.svg");
 }
 .hidden-box {
   display: none; /* Initially hidden */
   position: absolute;
-  left: -100%;
+  right: 0;
   background-color: white;
   padding: 20px;
   width: 150px; /* Adjust width as needed */
   border-radius: 10px; /* Rounded corners to match the shape of the menu */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
-  transform: translateX(-70%) translateY(10px); /* Adjust horizontally */
+  transform: translateX(-10%) translateY(20px); /* Adjust horizontally */
   z-index: 1;
 }
 .menu:hover .hidden-box {
@@ -261,7 +276,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #bbb;
+  background: rgba(69, 69, 69, 0.3);
   transition: 0.4s;
   border-radius: 25px;
 }
