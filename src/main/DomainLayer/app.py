@@ -10,6 +10,13 @@ import pandas as pd
 from flask_socketio import SocketIO, emit
 import threading
 
+def send_test_notifications():
+    while True:
+        socketio.emit('registration-notification', {'message': 'Test notification'})
+        print("Test notification sent")
+        time.sleep(60)  # Wait for 60 seconds
+
+
 
 from src.main.DomainLayer.LabGenerator.GeneratorSystemService import GeneratorSystemService
 from src.main.DomainLayer.LabWebsites.LabSystemService import LabSystemService
@@ -19,10 +26,11 @@ from src.main.DomainLayer.LabWebsites.Website.ContactInfo import ContactInfo
 app_secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app = Flask(__name__)
 app.config["SECRET_KEY"] = app_secret_key
-CORS(app)
-api = Api(app)
-socketio = SocketIO(app, cors_allowed_origins="*")
+# CORS(app)
 
+CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "http://localhost:3001"]}})  # Allow both frontends
+api = Api(app)
+socketio = SocketIO(app, cors_allowed_origins=["http://localhost:3000", "http://localhost:3001"], async_mode="threading")
 # Directories for file storage and website generation
 UPLOAD_FOLDER = './uploads'
 GENERATED_WEBSITES_FOLDER = './LabWebsitesUploads'
@@ -1437,7 +1445,9 @@ api.add_resource(GetContactUs, '/api/getContactUs')
 ##
 
 if __name__ == '__main__':
- socketio.run(app, host='0.0.0.0', port=5000, debug=True)    ##app.run(debug=True)
+    notification_thread = threading.Thread(target=send_test_notifications, daemon=True)
+    notification_thread.start()
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True)    ##app.run(debug=True)
 
 
 def helper():

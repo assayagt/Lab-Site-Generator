@@ -6,40 +6,43 @@ export const NotificationContext = createContext();
 export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
   const [hasNewNotifications, setHasNewNotifications] = useState(false);
-  const socket = io("http://localhost:5000/socket.io/",
-   {transports: ["websocket", "polling"],}
-  );
+
   useEffect(() => {
-    
-    
-    
-      socket.on("registration-notification", () => {
-        setHasNewNotifications(true);
-        console.log("harray");
-      });
-      socket.on("connect", () => {
-        console.log("harray");
-      });
+    const socket = io("http://localhost:5000", {
+      transports: ["websocket", "polling"],
+    });
 
-    //   socket.on("connect_error", (error) => {
-    //     console.error("Socket.IO connection error. Retrying in 2 seconds...", error);
-    //     //setTimeout(connectSocket, 2000);
-    //   });
+    socket.on("connect", () => {
+      console.log("Connected to WebSocket server.");
+    });
 
-    //   socket.on("disconnect", (reason) => {
-    //     console.log("Socket.IO disconnected:", reason);
-    //   });
+    socket.on("registration-notification", (data) => {
+      console.log("Received notification:", data);
+      setHasNewNotifications(true);
+      setNotifications((prev) => [...prev, data]);
+    });
 
-      // Clean up connection on unmount
-      return () => {
-        socket.off("registration-notification");
-        
-      };
+    socket.on("disconnect", () => {
+      console.log("Disconnected from WebSocket server.");
+    });
 
+    // Clean up connection on unmount
+    return () => {
+      socket.off("registration-notification");
+      socket.disconnect();
+    };
   }, []); // Run only on component mount
 
-  const markNotificationsAsRead = () => {
-    setHasNewNotifications(false);
+  const markNotificationAsRead = (id) => {
+    const updatedNotifications = notifications.filter(
+      (notif) => notif.id !== id
+    );
+    setNotifications(updatedNotifications);
+    // localStorage.setItem("notifications", JSON.stringify(updatedNotifications));
+
+    if (updatedNotifications.length === 0) {
+      setHasNewNotifications(false);
+    }
   };
 
   return (
@@ -47,7 +50,7 @@ export const NotificationProvider = ({ children }) => {
       value={{
         notifications,
         hasNewNotifications,
-        markNotificationsAsRead,
+        markNotificationAsRead,
       }}
     >
       {children}

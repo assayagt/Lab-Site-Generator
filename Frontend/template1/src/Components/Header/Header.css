@@ -158,11 +158,10 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 10px;
-  height: 10px;
-  background-color: red;
+  width: 12px;
+  height: 12px;
+  background-color: rgb(227, 0, 0);
   border-radius: 50%;
-  border: 2px solid white; /* Matches the background */
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
 }
 

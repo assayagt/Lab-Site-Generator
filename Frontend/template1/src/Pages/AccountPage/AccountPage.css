@@ -1,7 +1,6 @@
 .account-page {
   display: flex;
-  height: 100vh;
-
+  min-height: 100vh;
 }
 
 .sidebar {
@@ -61,7 +60,6 @@
   background-color: rgba(255, 255, 255, 0.2); /* Blue background on hover */
   color: #000000; /* White text on hover */
   border: 1px solid #080808;
-
 }
 
 .user-photo {
@@ -80,26 +78,30 @@ button {
   margin-left: 10px;
 }
 
-.notifications .notification {
-  padding: 10px;
+.notifications_section,
+.notifications {
+  padding: 20px;
   margin: 5px 0;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 5px;
 }
-
-.notifications .notification.approved {
-  background-color: #547e5e;
+.notification_info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.notifications .notification.rejected {
-  background-color: #a06368;
+.notification_buttons {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  margin-left: 10px;
 }
-
 .sidebar {
   width: 200px;
   background: rgba(31, 33, 66, 0.1);
   padding: 20px;
-  border-radius:  0 10px;
+  border-radius: 0 10px;
 }
 
 .sidebar h3 {
@@ -112,8 +114,7 @@ button {
 }
 
 .sidebar li {
-  margin-bottom:4px;
-
+  margin-bottom: 4px;
 }
 
 .sidebar button {
@@ -155,7 +156,6 @@ button {
   border: 1px solid transparent;
 }
 
-
 .user-photo-div {
   display: flex;
   align-items: center;
@@ -170,7 +170,6 @@ button {
   border: none;
   cursor: pointer;
   background: transparent;
-
 }
 
 .save-photo:hover {
@@ -189,9 +188,8 @@ button {
   align-items: center;
 }
 
-.camera-icon:hover{
+.camera-icon:hover {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-
 }
 
 .camera-icon img {
@@ -277,7 +275,7 @@ button {
   pointer-events: none;
 }
 
-.coolinput input[type=text].input {
+.coolinput input[type="text"].input {
   padding: 11px 10px;
   font-size: 0.75rem;
   border: 2px #818e97 solid;
@@ -285,15 +283,15 @@ button {
   background: transparent;
   height: max-content;
   resize: none; /* Disable resizing for text inputs (useful for textareas) */
-  box-sizing: border-box; 
+  box-sizing: border-box;
 }
 
-.coolinput input[type=text].input:focus {
+.coolinput input[type="text"].input:focus {
   outline: none;
 }
 
 .coolinput:focus-within label.text,
-.coolinput input[type=text].input:not(:placeholder-shown) + label.text {
+.coolinput input[type="text"].input:not(:placeholder-shown) + label.text {
   opacity: 1;
   top: -8px;
   background: rgba(255, 255, 255, 0.2);
@@ -301,12 +299,10 @@ button {
   transform: translateY(1);
 }
 
-
-
-.upload-publication-form{
+.upload-publication-form {
   display: flex;
   flex-direction: column;
-  gap:20px;
+  gap: 20px;
   align-items: center;
 }
 .collapsible-section {
@@ -353,30 +349,28 @@ button {
 
 /* Modal Box */
 
-.search-add{
+.search-add {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
-.account_sidebar{
-  font-family: 'Oswald', sans-serif;
-
+.account_sidebar {
+  font-family: "Oswald", sans-serif;
 }
-.add-publication-button{
+.add-publication-button {
   width: max-content;
   height: max-content;
   padding: 8px;
-  border-radius: 25px ;
+  border-radius: 25px;
   background: transparent;
-  border: 1px solid #000000; 
+  border: 1px solid #000000;
   right: 20px;
   position: relative;
   cursor: pointer;
 }
-.add-publication-button:hover{
+.add-publication-button:hover {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
   background-color: rgba(255, 255, 255, 0.2);
-
 }
 .custom-modal-overlay {
   position: fixed;
@@ -396,13 +390,13 @@ button {
   background: #efefef;
   border-radius: 10px;
   padding: 20px;
-  
+
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   position: relative;
   animation: fadeIn 0.3s ease-in-out;
   display: flex;
   flex-direction: column;
-  gap:10px;
+  gap: 10px;
   align-items: center;
 }
 
@@ -424,13 +418,13 @@ button {
   color: #5090d4;
 }
 
-.upload-publication-section{
+.upload-publication-section {
   display: flex;
   flex-direction: column;
   gap: 20px;
   align-items: center;
 }
-.pagination{
+.pagination {
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -438,17 +432,31 @@ button {
   margin: 10px;
 }
 
-.pagination-buttons{
+.pagination-buttons {
   width: 80px;
   padding: 8px;
   border-radius: 20px;
   border: 1px solid #ccc;
   color: #ccc;
   height: min-content;
-  
 }
 
-.title_account{
-  font-family: 'Oswald', sans-serif;
+.title_account {
+  font-family: "Oswald", sans-serif;
+}
 
+.notification_button {
+  width: max-content;
+  height: max-content;
+  padding: 8px;
+  border-radius: 25px;
+  background: transparent;
+  border: 1px solid #000000;
+  right: 20px;
+  position: relative;
+  cursor: pointer;
+}
+.notification_button:hover {
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  background-color: rgba(255, 255, 255, 0.2);
 }
