@@ -1,90 +1,264 @@
 .participants-page {
-    height: fit-content;
-    color: #090c10;
-    min-height: 100vh;
-    padding-bottom:  20px;
-    padding-top:  20px;
-    margin:  0 50px;
-    font-family: Arial, sans-serif;
-    overflow-x: hidden; /* Prevents horizontal scroll */
-    box-sizing: border-box; /* Ensures padding and border are included in the element's width */
-  }
-  
-  .participant_title {
-    font-family: 'Oswald', sans-serif;
-    font-size: 30px;
-    font-weight: bold;
+  height: fit-content;
+  color: #090c10;
+  min-height: 100vh;
+  padding-bottom: 20px;
+  padding-top: 20px;
+  margin: 0 50px;
+  font-family: Arial, sans-serif;
+  overflow-x: hidden; /* Prevents horizontal scroll */
+  box-sizing: border-box; /* Ensures padding and border are included in the element's width */
+}
+
+.participant_title {
+  font-family: "Oswald", sans-serif;
+  font-size: 30px;
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+}
+
+.fullname {
+  font-family: "Oswald", sans-serif;
+  font-size: 18px;
+  font-weight: bold;
 }
 .degree {
-  font-family: 'Oswald', sans-serif;
+  font-family: "Oswald", sans-serif;
   font-size: 24px;
   font-weight: bold;
-  
 }
-  .degree-section-items {
-    margin-bottom: 30px;
-    display: grid;
-    grid-template-columns: repeat(3,1fr); /* Adjust column width dynamically */
-    gap: 10px;
-    width: 100%; /* Ensures the grid doesn't exceed its container */
-    box-sizing: border-box;
-  }
-  .degree-section{
-    display: flex;
-    flex-direction: column;
-    gap:20px;
-    padding: 10px;
-  }
-  
-  .participant {
-    list-style: none;
-    padding: 15px;
-    border-radius: 10px;
-    background: rgba(69, 69, 69, 0.1);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-    align-items: flex-start;
-    max-width: 100%; 
-  }
-  .participant:hover {
-    transform: translateY(-3px); /* Moves up slightly */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Adds a more pronounced shadow */
+.degree-section-items {
+  margin-bottom: 30px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Adjust column width dynamically */
+  gap: 10px;
+  width: 100%; /* Ensures the grid doesn't exceed its container */
+  box-sizing: border-box;
 }
-  .personal_photo {
-    background-color: #e9e9e9;
-    height: 160px;
-    width: 120px; /* Reduce the width to fit smaller columns */
-    flex-shrink: 0; /* Prevents the photo from shrinking in smaller spaces */
-    border-radius: 10px;
-  }
-  
-  .email-link {
-    color: black;
-    text-decoration: none;
-    font-size: 14px;
-  }
-  
-  .email-link:hover {
-    text-decoration: underline;
-  }
-  .filter-container {
-    display: flex;
-    justify-content: flex-end; /* Aligns the filter to the right */
-    gap: 10px;
-    align-items: center;
-  }
-  
-  #degree-filter {
-    padding: 5px 5px;  
-    border-radius: 10px;
-    border: 1px solid #000000;
-    background-color: transparent;
+.degree-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 10px;
+}
 
-  }
+.participant {
+  list-style: none;
+  padding: 15px;
+  border-radius: 10px;
+  background: rgba(69, 69, 69, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: flex-start;
+  position: relative;
+  height: 100%;
+  max-width: 100%;
+}
+.participant:hover {
+  transform: translateY(-3px); /* Moves up slightly */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Adds a more pronounced shadow */
+}
+.personal_photo {
+  margin: 10px;
+  background-color: #e9e9e9;
+  height: 160px;
+  width: 120px; /* Reduce the width to fit smaller columns */
+  flex-shrink: 0; /* Prevents the photo from shrinking in smaller spaces */
+  border-radius: 10px;
+}
 
-  .title-parti{
-    font-family: 'Oswald', sans-serif;
+.email-link {
+  color: black;
+  text-decoration: none;
+  font-size: 14px;
+}
 
-  }
+.email-link:hover {
+  text-decoration: underline;
+}
+.filter-container {
+  display: flex;
+  justify-content: flex-end; /* Aligns the filter to the right */
+  gap: 10px;
+  align-items: center;
+}
+
+#degree-filter {
+  padding: 5px 5px;
+  border-radius: 10px;
+  border: 1px solid #000000;
+  background-color: transparent;
+}
+
+.title-parti {
+  font-family: "Oswald", sans-serif;
+}
+
+.personal_info_member {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: 100%;
+  gap: 10px;
+}
+
+.personal_info_member {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: 100%;
+}
+
+/* This forces the checkboxes to always stay at the bottom */
+.edit-options {
+  position: absolute;
+  bottom: 10px; /* Moves the checkboxes to the bottom */
+  /* width: calc(100% - 30px);  */
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: flex-start;
+}
+.add-participant-btn {
+  border-radius: 100%;
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: 1px solid #000000;
+  right: 20px;
+  cursor: pointer;
+}
+.add-participant-btn:hover {
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.tooltip-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  background-color: rgba(255, 255, 255, 0.2);
+  text-align: center;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: sans-serif;
+  position: absolute;
+  top: 110%; /* Moves the tooltip below the button */
+  left: 50%;
+  transform: translateX(-10%);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.tooltip-container:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+/* Modal Background - Dark Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Dark transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Box */
+.modal-content {
+  background: white;
+  padding: 20px;
+  width: 400px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Form Fields */
+.form-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.form-group label {
+  font-size: 16px;
+  font-weight: bold;
+  width: 120px; /* Ensures all labels are the same width */
+  text-align: left;
+}
+
+.modal-content-item {
+  flex-grow: 1; /* Makes inputs take up the remaining space */
+  padding: 8px;
+  border: 1px solid #1c2c3d;
+  border-radius: 5px;
+  background-color: transparent;
+}
+
+/* Modal Buttons Container */
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+/* Base Style for All Modal Buttons */
+.modal-buttons button,
+.modal-buttons .modal-button,
+.delete-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 20px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(31, 51, 71, 0.8);
+  cursor: pointer;
+  transition: background 0.5s ease, border 0.5s ease, box-shadow 0.5s ease;
+}
+
+/* Hover Effect */
+.modal-buttons button:hover,
+.modal-buttons .modal-button:hover,
+.delete-button:hover {
+  background: rgba(228, 240, 247, 0.3);
+  border: 1px solid rgba(31, 51, 71, 1);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Specific Style for the Add Button */
+.modal-buttons .add_button {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: black;
+  border: 1px solid rgba(31, 51, 71, 0.8);
+}
+
+/* Specific Style for the Cancel Button */
+.modal-buttons .cancel-button {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: black;
+  border: 1px solid rgba(31, 51, 71, 0.8);
+}

@@ -1,169 +1,168 @@
 /* General Page Styling */
 .choose_components_main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    color: #1c2c3d;
-    font-family: Arial, sans-serif;
-    margin-top: 20px;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: #1c2c3d;
+  font-family: Arial, sans-serif;
+  margin-top: 20px;
+}
+
 /* Intro Card */
 .intro_card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    animation: fadeIn 0.5s ease-in-out;
-    width: 50%; /* Adjusted width */
-  }
-  
-  /* Input Fields */
-  .input_name_domain{
-    width: 60%; /* Smaller width */
-    height: 30px; /* Increased height */
-    font-size: 16px;
-    padding: 5px;
-    margin: 10px 0;
-    border-radius: 5px;
-    border: none;
-  }
-  
-  
-  /* Continue Button */
-  .continue_button {
-    padding: 8px 16px; /* Smaller button */
-    margin-top: 10px;
-    background: #FFC147;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 14px; /* Smaller font */
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(31, 51, 71, 0.8);
-    transition: background 0.5s ease, border 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: fadeIn 0.5s ease-in-out;
+  width: 50%; /* Adjusted width */
+}
+
+/* Input Fields */
+.input_name_domain {
+  width: 60%; /* Smaller width */
+  height: 30px; /* Increased height */
+  font-size: 16px;
+  padding: 5px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: none;
+}
+
+/* Continue Button */
+.continue_button {
+  padding: 8px 16px; /* Smaller button */
+  margin-top: 10px;
+  background: #ffc147;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px; /* Smaller font */
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(31, 51, 71, 0.8);
+  transition: background 0.5s ease, border 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
 }
 
 .continue_button:hover {
-    background: rgba(228, 240, 247, 0.3);
-    border: 1px solid rgba(31, 51, 71, 1);
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  background: rgba(228, 240, 247, 0.3);
+  border: 1px solid rgba(31, 51, 71, 1);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 }
-  
 
-  /* Sidebar Layout */
-  .main_layout {
-    display: flex;
-    width: 100%;
-  }
-  
-  .sidebar{
-    width: 200px;
-    padding: 10px;
-    height: 100vh;
-    background: rgba(31, 33, 66, 0.1);
-    margin-top: 40px;
-    border-radius: 0 20px 0 0 ;
-  }
-  
-  .sidebar ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .sidebar li {
-    padding: 10px;
-    cursor: pointer;
-    color: #1c2c3d;
-    transition: background 0.3s ease;
-  }
-  
-  .sidebar li:hover .selected {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 5px;
-  }
+/* Sidebar Layout */
+.main_layout {
+  display: flex;
+  width: 100%;
+}
+
+.sidebar {
+  width: 200px;
+  padding: 10px;
+  height: 100vh;
+  background: rgba(31, 33, 66, 0.1);
+  margin-top: 40px;
+  border-radius: 0 20px 0 0;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 10px;
+  cursor: pointer;
+  color: #1c2c3d;
+  transition: background 0.3s ease;
+}
+
+.sidebar li:hover .selected {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+}
 .sidebar li.selected {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 5px;
 }
-  
-  .content {
-    flex: 1;
-    padding: 20px;
-    margin: 20px;
+
+.content {
+  flex: 1;
+  padding: 20px;
+  margin: 20px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
+}
+
 .input_name_domain.error_domain {
-    border: 1.5px solid b50c0c;  
-}   
+  border: 1.5px solid b50c0c;
+}
 .domain-error-message {
-    font-size: 12px;
-    color: #b50c0c;
-    margin-top: 4px; /* Adds some space between the input and the error message */
-  }
+  font-size: 12px;
+  color: #b50c0c;
+  margin-top: 4px; /* Adds some space between the input and the error message */
+}
 
-.domain_section{
-    display: flex;
-    flex-direction: column;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-    width: 70%;
-    position: relative;
-  }
-  .input_name_domain.edit {
-    width: 60%;
-    /* background: rgba(255, 255, 255, 0.1); */
-    background: rgba(255, 255, 255, 0.45);
+.domain_section {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  width: 70%;
+  position: relative;
+}
+.input_name_domain.edit {
+  width: 60%;
+  /* background: rgba(255, 255, 255, 0.1); */
+  background: rgba(255, 255, 255, 0.45);
+}
+.input_name_domain {
+  width: 60%;
+  /* background: rgba(255, 255, 255, 0.1); */
+  background: rgba(255, 255, 255, 0.45);
+}
 
-
-  }   
-  .input_name_domain{
-    width: 60%;
-    /* background: rgba(255, 255, 255, 0.1); */
-    background: rgba(255, 255, 255, 0.45);
-
-  }   
-
-  .save_domain_name_button {
-    position: absolute;
-    bottom: 10px;  
-    right: 10px;
-    margin: 10px;
-    border-radius: 20px;
-    width: 15%;
-    min-width: 150px;
-    height: 30px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(31, 51, 71, 0.8);
-    transition: background 0.5s ease, border 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
+.save_domain_name_button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  margin: 10px;
+  border-radius: 20px;
+  width: 15%;
+  min-width: 150px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(31, 51, 71, 0.8);
+  transition: background 0.5s ease, border 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
 }
 
 .save_domain_name_button:hover {
-    background: rgba(228, 240, 247, 0.3);
-    border: 1px solid rgba(31, 51, 71, 1);
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  background: rgba(228, 240, 247, 0.3);
+  border: 1px solid rgba(31, 51, 71, 1);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .input_container {
   position: relative;
   margin-bottom: 20px;
 }
-
-
 
 .floating_label {
   position: absolute;
@@ -190,29 +189,27 @@
   top: 5px;
   font-size: 12px;
   color: #25272a;
-  
 }
 
-.components_section{
+.components_section {
   display: flex;
-    flex-direction: column;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-    width: 70%;
-    position: relative;
-    gap:20px;
-
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  width: 70%;
+  position: relative;
+  gap: 20px;
 }
 
 .template {
-  width: 70%;  /* Make it responsive */
+  width: 70%; /* Make it responsive */
   height: 200px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   overflow: hidden;
-  padding: 10px;  /* Hide any overflow */
+  padding: 10px; /* Hide any overflow */
 }
 
 .template:hover {
@@ -221,12 +218,12 @@
 
 .disabled {
   opacity: 0.5;
-  pointer-events: none;  
+  pointer-events: none;
 }
 
 .template.selected {
-  border: 2px solid #1c2c3d; 
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  border: 2px solid #1c2c3d;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Content Sidebar (Opens when 'Manage Content' is Clicked) */
@@ -267,8 +264,6 @@
   font-weight: bold;
 }
 
-
-
 /* Expandable Content Section */
 .content-submenu {
   list-style: none;
@@ -295,8 +290,6 @@
   font-weight: bold;
 }
 
-
-
 .media_section {
   display: flex;
   flex-direction: column;
@@ -316,10 +309,9 @@
   gap: 10px;
   width: 100%;
   align-items: flex-end;
-  justify-content: space-between
-
+  justify-content: space-between;
 }
-.media_item_upload{
+.media_item_upload {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -330,9 +322,8 @@
   font-weight: bold;
   display: flex;
   flex-direction: column;
-  gap:10px;
+  gap: 10px;
   width: 100%;
-
 }
 
 .media_input {
@@ -346,16 +337,14 @@
 }
 
 .media_button {
-    
-    border-radius: 20px;
-    width: 15%;
-   
-    height: 30px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(31, 51, 71, 0.8);
-    transition: background 0.5s ease, border 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
-}
+  border-radius: 20px;
+  width: 15%;
 
+  height: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(31, 51, 71, 0.8);
+  transition: background 0.5s ease, border 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
+}
 
 .media_button:hover {
   background: rgba(228, 240, 247, 0.3);
@@ -363,15 +352,20 @@
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 }
 
-
-
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* About Us & Contact Us Section */
-.about_contact_section, .contact_us_section {
+.about_contact_section,
+.contact_us_section {
   display: flex;
   flex-direction: column;
   position: relative;
@@ -384,7 +378,8 @@
   animation: fadeIn 0.5s ease-in-out;
 }
 
-.about_contact_input, .contact_us_input {
+.about_contact_input,
+.contact_us_input {
   width: 95%;
   padding: 10px;
   font-size: 16px;
@@ -393,7 +388,9 @@
   background: rgba(255, 255, 255, 0.45);
   border: none;
 }
-.about_contact_input:focus, .contact_us_input:focus , .input_parti:focus{
+.about_contact_input:focus,
+.contact_us_input:focus,
+.input_parti:focus {
   border: none; /* No border */
   outline: none; /* No default focus outline */
   box-shadow: none; /* Prevent any shadow */
@@ -411,19 +408,21 @@
   resize: none; /* Allows user to resize the textarea vertically */
 }
 
-.about_contact_button{
-    position: absolute;
-    bottom: 10px;
-    right: 20px;
-    border-radius: 20px;
-    width: 15%;
-    height: 30px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(31, 51, 71, 0.8);
-    transition: background 0.5s ease, border 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
+.about_contact_button {
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+  border-radius: 20px;
+  width: 15%;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(31, 51, 71, 0.8);
+  transition: background 0.5s ease, border 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
 }
 
-.about_contact_button:hover, .add-row-button:hover, .generate_button:hover {
+.about_contact_button:hover,
+.add-row-button:hover,
+.generate_button:hover {
   background: rgba(228, 240, 247, 0.3);
   border: 1px solid rgba(31, 51, 71, 1);
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
@@ -432,7 +431,7 @@
 .input_container {
   position: relative;
   width: 100%;
-  padding-bottom:20px;
+  padding-bottom: 20px;
 }
 
 .floating_label {
@@ -497,7 +496,7 @@
   margin: 0 auto;
   margin-left: 31px;
 }
-.add-row-button{
+.add-row-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -512,7 +511,7 @@
   border: 1px solid rgba(31, 51, 71, 0.8);
   transition: background 0.5s ease, border 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
 }
-.generate_button{
+.generate_button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -555,14 +554,10 @@
   color: #1c2c3d;
 }
 
-
-
-.input_parti{
+.input_parti {
   background: rgba(255, 255, 255, 0.1);
   border: none;
 }
-
-
 
 /* Modal Background */
 .modal-overlay {
@@ -588,11 +583,11 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap:10px;
+  gap: 10px;
 }
 
 /* Modal Input Fields */
-.modal-content-item, 
+.modal-content-item,
 .modal-content select {
   width: 90%;
   padding: 10px;
@@ -617,7 +612,8 @@
   font-size: 14px;
 }
 
-.modal-buttons button:first-child, .modal-buttons .cancel-button  {
+.modal-buttons button:first-child,
+.modal-buttons .cancel-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -629,7 +625,6 @@
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(31, 51, 71, 0.8);
   transition: background 0.5s ease, border 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
-
 }
 
 /* Smooth Modal Fade-in Effect */
@@ -637,10 +632,13 @@
   animation: fadeIn 0.3s ease-in-out;
 }
 
-
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 /* Style for the delete button */
 .delete-button {
@@ -654,6 +652,26 @@
 
 .delete-button:hover {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-
 }
 
+/* Specific Style for the Add Button */
+.modal-buttons .save_button {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: black;
+  border: 1px solid rgba(31, 51, 71, 0.8);
+}
+
+/* Specific Style for the Cancel Button */
+.modal-buttons .cancel-button {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: black;
+  border: 1px solid rgba(31, 51, 71, 0.8);
+}
+/* Hover Effect */
+.modal-buttons button:hover,
+.modal-buttons .modal-button:hover,
+.delete-button:hover {
+  background: rgba(228, 240, 247, 0.3);
+  border: 1px solid rgba(31, 51, 71, 1);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
