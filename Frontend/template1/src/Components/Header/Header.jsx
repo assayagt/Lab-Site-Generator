@@ -14,12 +14,11 @@ function Header(props) {
   const [showLogin, setShowLogin] = useState(false);
   const [email, setEmail] = useState("");
   const [loginError, setLoginError] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    sessionStorage.getItem("isLoggedIn")
-  );
-  const [isNavbarExpanded, setIsNavbarExpanded] = useState(false); // Track expansion
-  const { editMode, toggleEditMode } = useEditMode(); // 🔹 Get Edit Mode state from context
-
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return sessionStorage.getItem("isLoggedIn") === "true" ? true : false;
+  });
+  const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
+  const { editMode, toggleEditMode } = useEditMode();
   const handleClick = (item) => {
     if (item === "Home") {
       navigate("/");
@@ -106,7 +105,9 @@ function Header(props) {
           </div>
         )}
         <div className="menu">
-          {hasNewNotifications && <div className="notification-dot"></div>}
+          {isLoggedIn && hasNewNotifications && (
+            <div className="notification-dot"></div>
+          )}
 
           <div className="hidden-box">
             <div className="personal_menu">

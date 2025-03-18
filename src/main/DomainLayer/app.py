@@ -637,13 +637,7 @@ class EnterLabWebsite(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
-def login_task(domain, user_id, email, result_queue):
-    try:
-        # Simulate a variable time delay for the login process
-        response = lab_system_service.login(domain, user_id, email)
-        result_queue.put(response)  # Place the result in the queue
-    except Exception as e:
-        result_queue.put({"status": "error", "message": str(e)})    
+
 
 class LoginWebsite(Resource):
     def post(self):
@@ -653,37 +647,17 @@ class LoginWebsite(Resource):
         parser.add_argument('email', type=str, required=True, help="Email is required")
         args = parser.parse_args()
 
-        result_queue = Queue()
-
-        # Start the login process in a background thread
-        thread = threading.Thread(target=login_task, args=(args['domain'], args['user_id'], args['email'], result_queue))
-        thread.start()
-
-        # Wait briefly to see if the thread finishes quickly
-        thread.join(timeout=1)  # Wait up to 1 second for the thread to complete
-
-        if not result_queue.empty():
-            # If the queue is not empty, the thread has completed
-            result = result_queue.get()
-            print(result)
-            return jsonify({"message": "lih", "response": "true"})
-        else:
-            # If the queue is empty, the thread is still running
-            return jsonify({"message": "Yoy are not registered wait", "response": "false"})
-
-        # try:
-        #     threading.Thread(target=login_task, args=(args['domain'], args['user_id'], args['email'])).start()
-        #     return jsonify({"message": "Login process started", "response": "true"})
-        #     response = lab_system_service.login(args['domain'], args['user_id'], args['email'])
-        #     if response.is_success():
-        #         if response.get_data():
-        #             return jsonify({"message": response.get_message(), "response": "true"})
-        #         else:
-        #             notify_registration(args['email'])
-        #             return jsonify({"message": response.get_message(), "response": "false"})
-        #     return jsonify({"message": response.get_message(), "response": "false"})
-        # except Exception as e:
-        #     return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+        try:
+            response = lab_system_service.login(args['domain'], args['user_id'], args['email'])
+            if response.is_success():
+                if response.get_data():
+                    return jsonify({"message": response.get_message(), "response": "true"})
+                else:
+                    notify_registration(args['email'])
+                    return jsonify({"message": response.get_message(), "response": "false"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
         
 class LogoutWebsite(Resource):
     def post(self):
@@ -1450,8 +1424,3 @@ if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5000, debug=True)    ##app.run(debug=True)
 
 
-def helper():
-     response = generator_system.enter_generator_system()
-     user_id = response.get_data()
-     response = generator_system.login(user_id, "liza_demo@gmail.com")
-     response = generator_system.create_website(user_id, "SPL", "www.localhost.com",["About Us"],"tamplate_1")
