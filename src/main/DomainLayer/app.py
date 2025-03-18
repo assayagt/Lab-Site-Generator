@@ -1419,8 +1419,8 @@ api.add_resource(GetContactUs, '/api/getContactUs')
 ##
 
 if __name__ == '__main__':
-    notification_thread = threading.Thread(target=send_test_notifications, daemon=True)
-    notification_thread.start()
+    # notification_thread = threading.Thread(target=send_test_notifications, daemon=True)
+    # notification_thread.start()
     socketio.run(app, host='0.0.0.0', port=5000, debug=True)    ##app.run(debug=True)
 
 
