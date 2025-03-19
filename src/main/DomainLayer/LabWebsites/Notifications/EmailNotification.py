@@ -1,4 +1,5 @@
 import smtplib
+import uuid
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -13,9 +14,11 @@ password = "ijtb kvpg efep srbu"
 
 class EmailNotification:
     def __init__(self, recipient, subject, body):
+        self.id = str(uuid.uuid4())  # Generate a unique ID for the notification
         self.recipient = recipient
         self.subject = subject
         self.body = body
+        self.isRead = False
 
     def send_email(self):
         """Authenticate and send the email."""
@@ -34,3 +37,22 @@ class EmailNotification:
         server.login(login, password)
         server.sendmail(sender_email, self.recipient, message.as_string())
         server.quit()
+
+    def get_is_read(self):
+        return self.isRead
+
+    #get subject
+    def get_subject(self):
+        return self.subject
+
+    #get body
+    def get_body(self):
+        return self.body
+
+    def to_dict(self):
+        """Convert the notification to a dictionary for easy JSON conversion."""
+        return {
+            "id": self.id,
+            "subject": self.subject,
+            "body": self.body
+        }

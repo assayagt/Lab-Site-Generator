@@ -17,11 +17,14 @@ class Website:
                 self.members_publications[author_email] = []
             self.members_publications[author_email].append(publicationDTO)
 
-    def add_publication_manually(self, publication_link, publication_details, git_link, video_link, presentation_link, authors_emails):
-        publication_dto = PublicationDTO(publication_details["title"], publication_details["authors"], publication_details["publication_year"], ApprovalStatus.FINAL_PENDING, publication_link, git_link, video_link, presentation_link, publication_details["description"])
+    def add_publication_manually(self, publication_link, publication_details, git_link, video_link, presentation_link,
+                                 authors_emails):
+        publication_dto = PublicationDTO(publication_details["title"], publication_details["authors"],
+                                         publication_details["publication_year"], ApprovalStatus.FINAL_PENDING,
+                                         publication_link, git_link, video_link, presentation_link,
+                                         publication_details["description"])
         self.create_publication(publication_dto, authors_emails)
         return publication_dto.get_paper_id()
-
 
     def check_publication_exist(self, publication):
         for author_publications in self.members_publications.values():
@@ -111,7 +114,6 @@ class Website:
 
     def get_contact_us(self):
         return self.contact_info.to_dict()
-    
 
     def set_contact_info(self, contact_info_dto):
         self.contact_info = contact_info_dto
@@ -179,3 +181,6 @@ class Website:
     def reject_publication(self, publication_id):
         publication = self.get_publication_by_paper_id(publication_id)
         publication.approved = ApprovalStatus.REJECTED
+
+    def get_domain(self):
+        return self.domain

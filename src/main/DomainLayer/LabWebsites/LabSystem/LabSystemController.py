@@ -4,6 +4,8 @@ from src.main.DomainLayer.LabWebsites.Website.WebsiteFacade import WebsiteFacade
 from src.main.DomainLayer.LabWebsites.Notifications.NotificationsFacade import NotificationsFacade
 from src.main.DomainLayer.LabWebsites.User.AllWebsitesUserFacade import AllWebsitesUserFacade
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
+
+
 class LabSystemController:
     _singleton_instance = None
 
@@ -87,7 +89,7 @@ class LabSystemController:
         siteCreator = userFacade.getSiteCreator()
         recipients = {**managers, **siteCreator}
         for managerEmail in recipients:
-            self.notificationsFacade.send_registration_request_notification(requestedEmail, managerEmail)
+            self.notificationsFacade.send_registration_request_notification(requestedEmail, managerEmail, domain)
 
     def logout(self, domain, userId):
         """
@@ -95,11 +97,13 @@ class LabSystemController:
         """
         self.allWebsitesUserFacade.logout(domain, userId)
 
-    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name, requested_degree):
+    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name,
+                                     requested_degree):
         """
         Approve registration request of a specific email, by a lab manager
         """
-        self.allWebsitesUserFacade.approve_registration_request(domain, manager_userId, requested_email, requested_full_name, requested_degree)
+        self.allWebsitesUserFacade.approve_registration_request(domain, manager_userId, requested_email,
+                                                                requested_full_name, requested_degree)
 
     def reject_registration_request(self, domain, manager_userId, requested_email):
         """
@@ -113,16 +117,20 @@ class LabSystemController:
         The given nominated_manager_email must be associated with a Lab Member of the given website.
         This operation can be done only by lab manager
         """
-        self.allWebsitesUserFacade.create_new_site_manager_from_labWebsite(nominator_manager_userId, nominated_manager_email, domain)
+        self.allWebsitesUserFacade.create_new_site_manager_from_labWebsite(nominator_manager_userId,
+                                                                           nominated_manager_email, domain)
 
-    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain):
+    def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName,
+                                               lab_member_degree, domain):
 
         """
         Define a new lab member in a specific website, directly from the lab website.
         The given email_to_register must not be associated with a member(manager/lab member/creator..) of the given website.
         This operation can be done only by lab manager
         """
-        self.allWebsitesUserFacade.register_new_LabMember_from_labWebsite(manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain)
+        self.allWebsitesUserFacade.register_new_LabMember_from_labWebsite(manager_userId, email_to_register,
+                                                                          lab_member_fullName, lab_member_degree,
+                                                                          domain)
 
     def create_new_site_manager_from_generator(self, domain, nominated_manager_email):
         """
@@ -131,12 +139,13 @@ class LabSystemController:
         """
         self.allWebsitesUserFacade.create_new_site_manager_from_generator(nominated_manager_email, domain)
 
-    def register_new_LabMember_from_generator(self, email_to_register, lab_member_fullName,lab_member_degree, domain):
+    def register_new_LabMember_from_generator(self, email_to_register, lab_member_fullName, lab_member_degree, domain):
         """
         Define a new lab member in a specific website, from generator site.
         The given email_to_register must not be associated with a member(manager/lab member/creator..) of the given website.
         """
-        self.allWebsitesUserFacade.register_new_LabMember_from_generator(email_to_register, lab_member_fullName, lab_member_degree, domain)
+        self.allWebsitesUserFacade.register_new_LabMember_from_generator(email_to_register, lab_member_fullName,
+                                                                         lab_member_degree, domain)
 
     def crawl_for_publications(self):
         """
@@ -161,7 +170,8 @@ class LabSystemController:
 
                     # send notifications to the website authors about the new publications, for initial approve
                     for authorEmail in authorsEmails:
-                        self.notificationsFacade.send_publication_notification(publication, authorEmail)
+                        self.notificationsFacade.send_publication_notification(publication, authorEmail,
+                                                                               website.get_domain())
 
     def initial_approve_publication_by_author(self, userId, domain, publication_id):
         """
@@ -181,7 +191,8 @@ class LabSystemController:
                 self.websiteFacade.initial_approve_publication(domain, publication_id)
                 for manager_email in managers_emails:
                     publicationDTO = self.websiteFacade.get_publication_by_paper_id(domain, publication_id)
-                    self.notificationsFacade.send_publication_notification_for_final_approval(publicationDTO, manager_email)
+                    self.notificationsFacade.send_publication_notification_for_final_approval(publicationDTO,
+                                                                                              manager_email, domain)
             else:
                 self.final_approve_publication_by_manager(userId, domain, publication_id)
         else:
@@ -233,10 +244,10 @@ class LabSystemController:
             managers_emails = list(userFacade.getManagers().keys())
             for manager_email in managers_emails:
                 publicationDTO = self.websiteFacade.get_publication_by_paper_id(domain, publication_id)
-                self.notificationsFacade.send_publication_notification_for_final_approval(publicationDTO, manager_email)
+                self.notificationsFacade.send_publication_notification_for_final_approval(publicationDTO, manager_email,
+                                                                                          domain)
         else:
             self.final_approve_publication_by_manager(user_id, domain, publication_id)
-
 
     def get_all_approved_publication(self, domain):
         """
@@ -270,7 +281,7 @@ class LabSystemController:
         Only managers can perform this operation.
         Site creator cant be defined as alumni.
         """
-        #TODO: Change it so site creator can be defined as alumni if he is replaced by another site creator
+        # TODO: Change it so site creator can be defined as alumni if he is replaced by another site creator
         return self.allWebsitesUserFacade.define_member_as_alumni(manager_userId, member_email, domain)
 
     def remove_manager_permission(self, manager_userId, manager_toRemove_email, domain):
@@ -362,7 +373,7 @@ class LabSystemController:
         else:
             self.websiteFacade.error_if_member_is_not_publication_author(domain, publication_id, email)
             self.websiteFacade.set_publication_presentation_link(domain, publication_id, presentation_link)
-            #TODO: in the future, send notification to lab manager for approve
+            # TODO: in the future, send notification to lab manager for approve
 
     def get_all_members_names(self, domain):
         '''
@@ -437,8 +448,8 @@ class LabSystemController:
         Get user details.
         """
         return self.allWebsitesUserFacade.get_user_details(userId, domain)
-    
-    def get_contact_us(self,domain):
+
+    def get_contact_us(self, domain):
         return self.websiteFacade.get_contact_us(domain)
 
     def site_creator_resignation(self, user_id, domain, nominate_email):
@@ -446,3 +457,23 @@ class LabSystemController:
         Site creator resignation.
         """
         self.allWebsitesUserFacade.site_creator_resignation(user_id, domain, nominate_email)
+
+    def get_all_member_notifications(self, userId, domain):
+        """
+        Get all notifications of a specific user.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId)
+        userFacade.error_if_user_not_logged_in(userId)
+        email = userFacade.get_email_by_userId(userId)
+        return self.notificationsFacade.get_notifications_for_user(domain, email)
+
+    def mark_as_read(self, userId, domain, notification_id):
+        """
+        Mark notification as read.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId)
+        userFacade.error_if_user_not_logged_in(userId)
+        email = userFacade.get_email_by_userId(userId)
+        #TODO: implement this function in the future
