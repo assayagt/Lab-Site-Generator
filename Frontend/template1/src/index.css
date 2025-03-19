@@ -1,10 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;600&display=swap');
+
 body {
+  background-image: url('./images/backg.jpg');
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-size: cover; /* Ensures the whole image fits inside */
+  background-repeat: no-repeat; /* Prevents repeating */
+  background-position: center; /* Centers the image */
 }
 
 code {

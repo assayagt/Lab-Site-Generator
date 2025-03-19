@@ -1,22 +1,96 @@
-.HomePage{
+
+.HomePage {
     display: flex;
     flex-direction: column;
-    gap:10px;
-}
-.subTitle{
-    font-size: 20px;
+    /* gap: 20px; */
+    color: #090c10;
+    padding: 40px;
+    margin-left: 30px;
+    height: 100vh;
 }
 
-.main_section_homePage{
-    margin: 20px 50px 50px 50px;
-    padding: 10px;
+/* Welcome Title */
+.subTitle {
+    font-size:32px;
+    font-weight: 500;
+    color: #090c10;
+    letter-spacing: 1px;
+    margin-bottom: 30px;
+    font-family: 'Oswald', sans-serif;
+
+}
+
+/* Main Section Layout */
+.main_section_homePage {
     display: flex;
     flex-direction: column;
-    gap:30px;
+    align-items: center;
+    gap: 40px;
+    width: 90%;
+    max-width: 1200px;
+    /* background: #ffffff; */
+    /* padding: 30px; */
+    border-radius: 12px;
+    /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); */
+    transition: all 0.3s ease-in-out;
 }
-.homeImg{
-    background-color: #C4D2E5;
-    height: 300px;
-    border-radius: 20px;
-    
+
+/* If both About Us and Image exist - Side by Side */
+.main_section_homePage.hasAboutUs {
+    display: grid;
+    grid-template-columns: 1.5fr 2.2fr; /* 1/3 About Us | 2/3 Image */
+    align-items: start;
+    gap: 30px;
 }
+
+/* About Us Styling */
+.aboutUsContainer {
+    /* background: rgba(44, 62, 80, 0.05); */
+    /* padding: 20px; */
+    border-radius: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #090c10;
+    /* box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.08); */
+    transition: transform 0.3s ease-in-out;
+}
+
+.aboutUsContainer:hover {
+    transform: translateY(-3px);
+}
+
+/* Image Styling */
+.homeImg {
+    /* background-color: #C4D2E5; */
+    margin-top: 20px;
+    border-radius: 15px;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* Add a slight zoom effect when hovering */
+.homeImg:hover {
+    transform: scale(1.02);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* When there's no About Us, image takes full width */
+.main_section_homePage.noAboutUs .homeImg {
+    width: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .main_section_homePage.hasAboutUs {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .aboutUsContainer {
+        text-align: center;
+    }
+}
+

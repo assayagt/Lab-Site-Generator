@@ -1,22 +1,139 @@
-.websiteItem{
-    display: flex;
-    flex-direction: row;
-    gap:20px;
-    background-color: rgb(225, 225, 225);
-    justify-content:space-around;
-    height: 50px;
+/* My Account Page */
+.myAccountPage {
+    height: 100vh;
+    color: #1c2c3d;
+    font-family: Arial, sans-serif;
+    padding: 30px;
+}
+
+/* Title Styling */
+.myAccountPage h2 {
+    font-size: 28px;
+    color: #1c2c3d;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Websites Container */
+.myWebsites {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
     border-radius: 10px;
-    align-items:center;
-}
-
-.websiteItem:hover{
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-}
-
-.websiteList{
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    width: 90%;
     display: flex;
     flex-direction: column;
-    gap:10px;
-    margin: 20px;
 }
+
+/* Websites Title */
+.myWebsites h3 {
+    font-size: 22px;
+    color: #1c2c3d;
+    margin-bottom: 15px;
+}
+
+.websiteList {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Responsive grid */
+    gap: 15px;
+    margin-top: 10px;
+    width: 100%;
+}
+
+/* Ensure website items take full width in smaller screens */
+@media (max-width: 768px) {
+    .websiteList {
+        grid-template-columns: 1fr; /* Full width on smaller screens */
+    }
+}
+/* Individual Website Item */
+.websiteItem {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-align: center;
+    border-left: 5px solid #575f67;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    
+}
+
+.websiteItem:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Website Name */
+.websiteItem div {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 5px 0;
+}
+
+.websiteItem div:first-child {
+    font-size: 18px;
+    font-weight: bold;
+    color: #1c2c3d;
+}
+
+/* Status Badge */
+.status-badge {
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-top: 8px;
+}
+
+.status-badge.generated {
+    background-color: #28a745;
+}
+
+.status-badge.not-generated {
+    background-color: #dc3545;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .myAccountPage {
+        padding: 20px;
+    }
+    
+    .websiteList {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Container for New Website Button */
+.newWebsiteContainer {
+    display: flex;
+    margin-top: 20px;
+  }
+  
+  /* Start New Website Button */
+  .newWebsiteButton {
+    padding: 8px 16px; /* Smaller button */
+    margin-top: 10px;
+    background: #FFC147;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px; /* Smaller font */
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(31, 51, 71, 0.8);
+    transition: background 0.5s ease, border 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
+}
+
+.newWebsiteButton:hover{
+    background: rgba(228, 240, 247, 0.3);
+    border: 1px solid rgba(31, 51, 71, 1);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+
+    transform: translateY(-2px);
+  }

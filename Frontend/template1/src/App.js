@@ -14,6 +14,9 @@ import { AuthProvider } from './Context/AuthContext';
 import { useWebsite } from './Context/WebsiteContext';
 import { getHomepageDetails} from  "./services/websiteService"
 import { NotificationProvider } from './Context/NotificationContext';
+import { EditModeProvider
+  
+ } from './Context/EditModeContext';
 function App() {
 
 
@@ -67,35 +70,37 @@ function App() {
     return <div>Loading...</div>; // Show loading indicator
   }
 
-  const components = websiteData.components ? [...websiteData.components, 'Home'] : ['Home'];
+  const components = [...new Set(websiteData.components)];
 
   return (
     
     <AuthProvider>
        <NotificationProvider>
-       <Router>
-              <Header components={components} title={websiteData.websiteName} logo = {websiteData.logo}>       
-              </Header>
-              <Routes>
-                <Route path="/" element={<HomePage about_us={websiteData.about_us} photo = {websiteData.home_picture}/>} />
-                <Route
-                  path="/Participants"
-                  element= {<ParticipantsPage />}
-                />
-                <Route
-                  path="/ContactUs"
-                  element= {<ContactUsPage address = "Ben Gurion University of the Negev" email ="roni@bgu.ac.il" phone="+972 523456789"/>}
-                />
-            <Route
-                  path="/Account"
-                  element= {<AccountPage/>}
-                />
-                <Route
-                  path="/Publications"
-                  element= {<PublicationsPage />}
-                />
-              </Routes>
-        </Router>
+       <EditModeProvider> 
+          <Router>
+                <Header components={components} title={websiteData.websiteName} logo = {websiteData.logo}>       
+                </Header>
+                <Routes>
+                  <Route path="/" element={<HomePage about_us={websiteData.about_us} photo = {websiteData.home_picture}/>} />
+                  <Route
+                    path="/Participants"
+                    element= {<ParticipantsPage />}
+                  />
+                  <Route
+                    path="/ContactUs"
+                    element= {<ContactUsPage address = "Ben Gurion University of the Negev" email ="roni@bgu.ac.il" phone="+972 523456789"/>}
+                  />
+              <Route
+                    path="/Account"
+                    element= {<AccountPage/>}
+                  />
+                  <Route
+                    path="/Publications"
+                    element= {<PublicationsPage />}
+                  />
+                </Routes>
+          </Router>
+        </EditModeProvider> 
        </NotificationProvider>
 
     </AuthProvider>

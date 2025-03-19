@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
+import { io } from "socket.io-client";
 
 export const NotificationContext = createContext();
 
@@ -7,47 +8,41 @@ export const NotificationProvider = ({ children }) => {
   const [hasNewNotifications, setHasNewNotifications] = useState(false);
 
   useEffect(() => {
-    // Only create WebSocket connection once
-    const socket = new WebSocket("ws://localhost:5000/ws/notifications");
+    const socket = io("http://localhost:5000", {
+      transports: ["websocket", "polling"],
+    });
 
-    // Handle WebSocket open event
-    socket.onopen = () => {
-      console.log("WebSocket connected");
-    };
+    socket.on("connect", () => {
+      console.log("Connected to WebSocket server.");
+    });
 
-    // Handle WebSocket message event
-    socket.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (data.type === "registration-notification") {
-          setNotifications((prev) => [...prev, data]);
-          setHasNewNotifications(true);
-        }
-      } catch (error) {
-        console.error("Error parsing WebSocket message:", error);
-      }
-    };
+    socket.on("registration-notification", (data) => {
+      console.log("Received notification:", data);
+      setHasNewNotifications(true);
+      setNotifications((prev) => [...prev, data]);
+    });
 
-    // Handle WebSocket error event
-    socket.onerror = (error) => {
-      console.log("WebSocket error:", error);
-    };
+    socket.on("disconnect", () => {
+      console.log("Disconnected from WebSocket server.");
+    });
 
-    // Handle WebSocket close event
-    socket.onclose = () => {
-      console.log("WebSocket connection closed");
-    };
-
-    // Cleanup WebSocket on component unmount
+    // Clean up connection on unmount
     return () => {
-      socket.close();
-      console.log("WebSocket closed");
+      socket.off("registration-notification");
+      socket.disconnect();
     };
-  }, []); // The empty dependency array ensures this effect only runs once when the component mounts
+  }, []); // Run only on component mount
 
-  // Mark notifications as read
-  const markNotificationsAsRead = () => {
-    setHasNewNotifications(false);
+  const markNotificationAsRead = (id) => {
+    const updatedNotifications = notifications.filter(
+      (notif) => notif.id !== id
+    );
+    setNotifications(updatedNotifications);
+    // localStorage.setItem("notifications", JSON.stringify(updatedNotifications));
+
+    if (updatedNotifications.length === 0) {
+      setHasNewNotifications(false);
+    }
   };
 
   return (
@@ -55,7 +50,7 @@ export const NotificationProvider = ({ children }) => {
       value={{
         notifications,
         hasNewNotifications,
-        markNotificationsAsRead,
+        markNotificationAsRead,
       }}
     >
       {children}
