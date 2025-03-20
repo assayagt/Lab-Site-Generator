@@ -186,42 +186,6 @@ class UploadFilesAndData(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
-# class GenerateWebsiteResource(Resource):
-#     def post(self):
-#         parser = reqparse.RequestParser()
-#         parser.add_argument('domain', type=str, required=True, help="Domain is required")
-#         parser.add_argument('about_us', type=str, required=True, help="About us content is required")
-#         parser.add_argument('lab_address', type=str, required=True, help="Lab address is required")
-#         parser.add_argument('lab_mail', type=str, required=True, help="Lab mail is required")
-#         parser.add_argument('lab_phone_num', type=str, required=True, help="Lab phone number is required")
-        
-#         args = parser.parse_args()
-
-#         domain = args['domain']
-#         about_us = args['about_us']
-#         lab_address = args['lab_address']
-#         lab_mail = args['lab_mail']
-#         lab_phone_num = args['lab_phone_num']
-#         contact_info = ContactInfo(lab_address, lab_mail, lab_phone_num)
-#         try: 
-
-           
-#             participants = request.json.get('participants', [])
-#             response = generator_system.create_new_lab_website(domain,lab_members,lab_managers,siteCreator)
-#             if response.is_success():
-#                 response2 = generator_system.set_site_about_us_on_creation_from_generator(domain, about_us)
-#                 if response2.is_success():
-#                     response3 = generator_system.set_site_contact_info_on_creation_from_generator(domain,contact_info)
-#                     if response3.is_success():
-#                         command = ['start', 'cmd', '/K', 'npm', 'start']  # Command to open a new terminal and run npm start
-#                         process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH, shell=True)
-#                         return jsonify({"message": "Website generated successfully!", "response": "true"})
-#                     return jsonify({"error": f"An error occurred: {response3.get_message()}", "response": "false"})
-
-#                 return jsonify({"error": f"An error occurred: {response2.get_message()}", "response": "false"})
-#             return jsonify({"error": f"An error occurred: {response.get_message()}", "response": "false"})
-#         except Exception as e:
-#             return jsonify({"error": f"An error occurred: {str(e)}"})
 
 
 class GenerateWebsiteResource(Resource):
@@ -853,7 +817,6 @@ class GetAllCustomWebsites(Resource):
 
 class GetMemberPublications(Resource):
     def get(self):
-    
         domain = request.args.get('domain')
         user_id = domain = request.args.get('user_id')
         try:

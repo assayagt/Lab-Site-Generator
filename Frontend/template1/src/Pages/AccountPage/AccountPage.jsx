@@ -61,11 +61,9 @@ const AccountPage = () => {
     };
 
     const fetchPublications = async () => {
-      //TODO: change it
-      const data = await getMemberPublications(
-        sessionStorage.getItem("domain")
-      );
-
+      const domain = sessionStorage.getItem("domain");
+      const data = await getMemberPublications(domain);
+      console.log("Fetched Publications:", data); // Debugging log
       setPublications(data || []);
     };
     fetchUserDetails();
