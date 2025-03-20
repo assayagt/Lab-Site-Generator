@@ -55,10 +55,14 @@
 }
 
 .publication-item {
+  position: relative;
   padding: 20px;
   border-radius: 10px;
   margin-bottom: 10px;
   background: rgba(69, 69, 69, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 .pub_item_link {
   text-decoration: none; /* Removes underline */
@@ -156,74 +160,66 @@
 
 .input-container {
   position: relative;
-  width: 100%;
+  width: 50%;
   margin-bottom: 20px;
 }
 
-.hidden-label {
+/* Correct class name and improved positioning */
+.hidden-label_pg {
   position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: white;
+  left: 14px;
+  top: 0px; /* Adjust this value if needed */
+  background: transparent;
   padding: 0 5px;
   color: black;
   font-size: 16px;
   opacity: 0;
-  transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
   pointer-events: none;
 }
 
-/* When input is focused, show label */
-.submit-pub:focus + .hidden-label,
-.submit-pub:not(:placeholder-shown) + .hidden-label {
+/* When input is focused or has text, show label */
+.submit-pub_pg:focus ~ .hidden-label_pg,
+.submit-pub_pg:not(:placeholder-shown) ~ .hidden-label_pg {
   opacity: 1;
-  transform: translateY(-150%);
-  font-size: 14px;
-  color: #007bff;
+  transform: translateY(-12px);
+  font-size: 12px;
+  color: #000000;
 }
 
 /* Input styling */
-.submit-pub {
+.submit-pub_pg {
   width: 100%;
-  padding: 12px 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  padding: 12px 8px;
+  border: 1px solid #000000;
+  border-radius: 50px;
   font-size: 16px;
   transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
   background: transparent;
 }
 
-.submit-pub:focus {
-  border-color: #007bff;
+.submit-pub_pg:focus {
+  border-color: #000000;
   outline: none;
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
 }
 
 /* Save button positioned at the bottom left of the publication div */
-.publication-save-btn {
+.save-btn {
   position: absolute;
-  bottom: 10px;
-  left: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
+  width: 100px;
+  bottom: 20px;
+  right: 20px;
+  background-color: rgba(44, 62, 80, 0.1);
+  color: rgb(0, 0, 0);
+  border: 1px solid #000000;
+  border-radius: 50px;
   padding: 8px 12px;
   cursor: pointer;
   font-size: 14px;
   transition: background 0.3s ease-in-out;
 }
 
-.publication-save-btn:hover {
-  background-color: #0056b3;
-}
-
-/* Ensure the publication item has relative positioning for button placement */
-.publication-item {
-  position: relative;
-  padding: 20px;
-  border-radius: 10px;
-  background: rgba(69, 69, 69, 0.1);
-  margin-bottom: 15px;
+.save-btn:hover {
+  background-color: rgba(199, 204, 209, 0.05);
 }

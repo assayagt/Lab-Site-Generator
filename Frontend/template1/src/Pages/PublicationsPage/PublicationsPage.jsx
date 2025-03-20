@@ -142,7 +142,7 @@ const PublicationPage = () => {
 
       alert("Links updated successfully!");
       setEditedLinks((prev) => ({ ...prev, [paperId]: {} }));
-      // window.location.reload(); // Refresh the page after saving
+      window.location.reload(); // Refresh the page after saving
     } catch (error) {
       console.error("Error updating publication links:", error);
     }
@@ -260,7 +260,7 @@ const PublicationPage = () => {
                 <div className="input-container">
                   <input
                     type="url"
-                    className="submit-pub"
+                    className="submit-pub_pg"
                     placeholder="Enter GitHub link"
                     defaultValue={pub.git_link || ""}
                     onChange={(e) =>
@@ -271,13 +271,13 @@ const PublicationPage = () => {
                       )
                     }
                   />
-                  <label className="hidden-label">GitHub</label>
+                  <label className="hidden-label_pg">GitHub</label>
                 </div>
 
                 <div className="input-container">
                   <input
                     type="url"
-                    className="submit-pub"
+                    className="submit-pub_pg"
                     placeholder="Enter Presentation link"
                     defaultValue={pub.presentation_link || ""}
                     onChange={(e) =>
@@ -288,20 +288,20 @@ const PublicationPage = () => {
                       )
                     }
                   />
-                  <label className="hidden-label">Presentation</label>
+                  <label className="hidden-label_pg">Presentation</label>
                 </div>
 
                 <div className="input-container">
                   <input
                     type="url"
-                    className="submit-pub"
+                    className="submit-pub_pg"
                     placeholder="Enter Video link"
                     defaultValue={pub.video || ""}
                     onChange={(e) =>
                       handleInputChange(pub.paper_id, "video", e.target.value)
                     }
                   />
-                  <label className="hidden-label">Video</label>
+                  <label className="hidden-label_pg">Video</label>
                 </div>
                 <button
                   type="button"
