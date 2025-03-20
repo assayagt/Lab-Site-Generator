@@ -855,7 +855,7 @@ class GetMemberPublications(Resource):
     def get(self):
     
         domain = request.args.get('domain')
-        user_id = domain = request.args.get('user_id')
+        user_id = request.args.get('user_id')
         try:
             response = lab_system_service.get_all_approved_publications_of_member(domain, user_id)
             if response.is_success():
