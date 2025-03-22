@@ -18,9 +18,8 @@ import {
   saveHomePicture,
   addAlumni,
   changeTemplate,
+  generate,
 } from "../../../services/Generator";
-import axios from "axios";
-const baseApiUrl = "http://127.0.0.1:5000/api/";
 
 const useChooseComponents = () => {
   const navigate = useNavigate();
@@ -429,29 +428,12 @@ const useChooseComponents = () => {
   const handleGenerate = async () => {
     try {
       console.log(participants);
-      const response = await axios.post(
-        `${baseApiUrl}generateWebsite`,
-        {
-          domain: websiteData.domain,
-          about_us: aboutUsContent,
-          lab_address: contactUsData.address,
-          lab_mail: contactUsData.email,
-          lab_phone_num: contactUsData.phoneNumber,
-          participants: participants.map((p) => ({
-            fullName: p.fullName,
-            email: p.email,
-            degree: p.degree,
-            isLabManager: p.isLabManager,
-            alumni: p.alumni || false,
-          })),
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
-      const data = response.data;
-      console.log("Response Data:", data);
+      const data = await (websiteData.domain,
+      aboutUsContent,
+      contactUsData.email,
+      contactUsData.address,
+      contactUsData.phoneNumber,
+      participants);
 
       if (data.response === "true") {
         sessionStorage.removeItem("AboutUs");
