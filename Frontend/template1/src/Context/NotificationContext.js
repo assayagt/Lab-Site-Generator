@@ -44,6 +44,10 @@ export const NotificationProvider = ({ children }) => {
       setHasNewNotifications(false);
     }
   };
+  const updateNotifications = (newNotifs) => {
+    setNotifications(newNotifs);
+    setHasNewNotifications(true);
+  };
 
   return (
     <NotificationContext.Provider
@@ -51,6 +55,7 @@ export const NotificationProvider = ({ children }) => {
         notifications,
         hasNewNotifications,
         markNotificationAsRead,
+        updateNotifications,
       }}
     >
       {children}
