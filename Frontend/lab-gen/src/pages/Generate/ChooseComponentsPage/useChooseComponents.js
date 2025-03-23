@@ -42,7 +42,7 @@ const useChooseComponents = () => {
   );
   const [isComponentsSaved, setIsComponentsSaved] = useState(false);
   const [errorMessage, setErrorMessage] = useState(""); // Store error messages
-
+  const [isTempSaved, setTempSaved] = useState(false);
   const showError = (message) => {
     setErrorMessage(message);
   };
@@ -502,6 +502,7 @@ const useChooseComponents = () => {
 
   const handleTemplateClick = (templateName) => {
     setTemplate(templateName === template ? "" : templateName);
+    setTempSaved(false);
   };
   const handleSveTemplate = async () => {
     console.log(template);
@@ -510,6 +511,7 @@ const useChooseComponents = () => {
     console.log(data);
     if (data.response === "true") {
       setIsChanged(true);
+      setTempSaved(true);
       console.log(template);
     } else {
       showError("Couldn't change template");
@@ -601,6 +603,8 @@ const useChooseComponents = () => {
     errorMessage,
     setErrorMessage,
     handleSveTemplate,
+    isTempSaved,
+    setTempSaved,
   };
 };
 

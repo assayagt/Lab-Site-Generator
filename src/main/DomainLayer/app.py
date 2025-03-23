@@ -18,6 +18,7 @@ def send_test_notifications():
 
 
 
+from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
 from src.main.DomainLayer.LabGenerator.GeneratorSystemService import GeneratorSystemService
 from src.main.DomainLayer.LabWebsites.LabSystemService import LabSystemService
 from src.main.DomainLayer.LabWebsites.Website.ContactInfo import ContactInfo
@@ -322,14 +323,16 @@ class ChooseTemplate(Resource):
 
         user_id = args['user_id']
         domain = args['domain']
-        selected_template = args['template']
+        template_str = args['template']
+        selected_template = Template(template_str)
+
         try:
             response = generator_system.change_website_template(user_id, domain, selected_template)
             if response.is_success():
-                return jsonify({"message": "Template selected", "template": selected_template})
+                return jsonify({"message": "Template selected", "response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}"})
 
 
 # Handles setting the name for the lab website

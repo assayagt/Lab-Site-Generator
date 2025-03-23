@@ -52,6 +52,8 @@ const ChooseComponentsPage = () => {
     errorMessage,
     setErrorMessage,
     handleSveTemplate,
+    isTempSaved,
+    setTempSaved,
   } = useChooseComponents();
 
   const MediaForm = () => (
@@ -329,7 +331,7 @@ const ChooseComponentsPage = () => {
                     className="save_template_button"
                     onClick={handleSveTemplate}
                   >
-                    {isComponentsSaved ? "Saved" : "Save Template"}
+                    {isTempSaved ? "Saved" : "Save Template"}
                   </button>
                 </div>
               </div>

@@ -91,7 +91,6 @@ export const createCustomSite = async (domain, name, components, template) => {
 export const changeTemplate = async (domain, template) => {
   let data;
   const sid = sessionStorage.getItem("sid");
-  console.log(sid);
   return axios
     .post(`${baseApiUrl}chooseTemplate`, {
       user_id: sid,
@@ -100,11 +99,10 @@ export const changeTemplate = async (domain, template) => {
     })
     .then((response) => {
       data = response.data;
-
       return data;
     })
     .catch((err) => {
-      console.error("Error sending to login: " + err);
+      console.error("Error templte: " + err);
       return null;
     });
 };
