@@ -37,21 +37,40 @@ export const addLabManager = async (userId, email, domain) => {
   return data;
 };
 
-export const approveRegistration = async (data) => {
-  let data2;
+export const approveRegistration = async ({
+  domain,
+  manager_userId,
+  requested_email,
+  requested_full_name,
+  requested_degree,
+}) => {
   try {
-    const response = await axios.post(`${baseApiUrl}approveRegistration`, data);
-    data2 = response.data.message;
+    const response = await axios.post(`${baseApiUrl}approveRegistration`, {
+      domain,
+      manager_userId,
+      requested_email,
+      requested_full_name,
+      requested_degree,
+    });
+    return response.data.message;
   } catch (error) {
     console.error("Error approving registration:", error);
     return null;
   }
-  return data2;
 };
 
-export const rejectRegistration = async (data) => {
+export const rejectRegistration = async ({
+  domain,
+  manager_userId,
+  requested_email,
+}) => {
   try {
-    const response = await axios.post(`${baseApiUrl}rejectRegistration`, data);
+    const response = await axios.post(`${baseApiUrl}rejectRegistration`, {
+      domain,
+      manager_userId,
+      requested_email,
+    });
+    console.log(response.data);
     return response.data.message;
   } catch (error) {
     console.error("Error rejecting registration:", error);

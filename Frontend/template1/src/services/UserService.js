@@ -51,19 +51,19 @@ export const EnterSystem = async () => {
 };
 
 export const fetchUserNotifications = async (email) => {
-  // try {
-  //   // const response = await fetch(
-  //   //   `http://localhost:5000/api/getPendingRegistrationEmails?userid=${sessionStorage.getItem(
-  //   //     "userId"
-  //   //   )}&domain=${sessionStorage.getItem("currentDomain")}`
-  //   // );
-  //   // const data = await response.json();
-  //   // if (data.response === "true") {
-  //   //   return data.emails || [];
-  //   // }
-  //   return [];
-  // } catch (error) {
-  //   // console.error("Failed to fetch notifications:", error);
-  //   // return [];
-  // }
+  try {
+    const data = await axios.get(
+      `http://127.0.0.1:5000/api/getAllMembersNotifications?user_id=${sessionStorage.getItem(
+        "sid"
+      )}&domain=${sessionStorage.getItem("domain")}`
+    );
+    console.log(data.data);
+    if (data.data.response === "true") {
+      return data.data.notifications || [];
+    }
+    return [];
+  } catch (error) {
+    console.error("Failed to fetch notifications:", error);
+    return [];
+  }
 };

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useWebsite } from "../../../Context/WebsiteContext";
+
 import {
   createCustomSite,
   changeComponents,
@@ -20,6 +21,9 @@ import {
   changeTemplate,
   generate,
 } from "../../../services/Generator";
+
+import axios from "axios";
+const baseApiUrl = "http://127.0.0.1:5000/api/";
 
 const useChooseComponents = () => {
   const navigate = useNavigate();
@@ -425,15 +429,57 @@ const useChooseComponents = () => {
   //   }
   // };
 
+  // const handleGenerate = async () => {
+  //   try {
+  //     console.log(participants);
+  //     const data = await generate(
+  //       websiteData.domain,
+  //       aboutUsContent,
+  //       contactUsData.email,
+  //       contactUsData.address,
+  //       contactUsData.phoneNumber,
+  //       participants
+  //     );
+  //     console.log(data);
+  //     if (data.response === "true") {
+  //       sessionStorage.removeItem("AboutUs");
+  //       sessionStorage.removeItem("ContactUs");
+  //       navigate("/my-account");
+  //     } else {
+  //       showError("Error: " + (data.error || "Unknown error occurred"));
+  //     }
+  //   } catch (error) {
+  //     showError(error);
+  //     alert("Error!!!: " + (error.response?.data?.message || error.message));
+  //   }
+  // };
+
   const handleGenerate = async () => {
     try {
       console.log(participants);
-      const data = await (websiteData.domain,
-      aboutUsContent,
-      contactUsData.email,
-      contactUsData.address,
-      contactUsData.phoneNumber,
-      participants);
+      const response = await axios.post(
+        `${baseApiUrl}generateWebsite`,
+        {
+          domain: websiteData.domain,
+          about_us: aboutUsContent,
+          lab_address: contactUsData.address,
+          lab_mail: contactUsData.email,
+          lab_phone_num: contactUsData.phoneNumber,
+          participants: participants.map((p) => ({
+            fullName: p.fullName,
+            email: p.email,
+            degree: p.degree,
+            isLabManager: p.isLabManager,
+            alumni: p.alumni || false,
+          })),
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      const data = response.data;
+      console.log("Response Data:", data);
 
       if (data.response === "true") {
         sessionStorage.removeItem("AboutUs");

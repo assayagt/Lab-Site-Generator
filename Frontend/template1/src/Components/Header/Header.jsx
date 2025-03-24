@@ -37,6 +37,7 @@ function Header(props) {
       setLoginError("");
       setIsLoggedIn(true);
       const notifications = await fetchUserNotifications(email);
+      console.log(notifications);
       updateNotifications(notifications);
     } else {
       setIsLoggedIn(false);

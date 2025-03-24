@@ -1,52 +1,69 @@
 import React, { createContext, useState, useEffect } from "react";
 import { io } from "socket.io-client";
+import { useAuth } from "../Context/AuthContext";
 
 export const NotificationContext = createContext();
 
 export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
   const [hasNewNotifications, setHasNewNotifications] = useState(false);
+  const { user } = useAuth(); // get user email
+  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const socket = io("http://localhost:5000", {
+    const newSocket = io("http://localhost:5000", {
       transports: ["websocket", "polling"],
     });
 
-    socket.on("connect", () => {
+    newSocket.on("connect", () => {
       console.log("Connected to WebSocket server.");
     });
 
-    socket.on("registration-notification", (data) => {
+    newSocket.on("registration-notification", (data) => {
       console.log("Received notification:", data);
-      setHasNewNotifications(true);
+
       setNotifications((prev) => [...prev, data]);
+      if (notifications.length !== 0) {
+        setHasNewNotifications(true);
+      }
     });
 
-    socket.on("disconnect", () => {
+    newSocket.on("disconnect", () => {
       console.log("Disconnected from WebSocket server.");
     });
 
-    // Clean up connection on unmount
+    setSocket(newSocket);
+
     return () => {
-      socket.off("registration-notification");
-      socket.disconnect();
+      newSocket.off("registration-notification");
+      newSocket.disconnect();
     };
-  }, []); // Run only on component mount
+  }, []);
+
+  // 2️⃣ Once user is logged in and socket is ready, register the user
+  useEffect(() => {
+    if (socket && user?.email) {
+      console.log("Registering user to socket:", user.email);
+      socket.emit("register_manager", { email: user.email });
+    }
+  }, [socket, user]);
 
   const markNotificationAsRead = (id) => {
     const updatedNotifications = notifications.filter(
       (notif) => notif.id !== id
     );
     setNotifications(updatedNotifications);
-    // localStorage.setItem("notifications", JSON.stringify(updatedNotifications));
 
     if (updatedNotifications.length === 0) {
       setHasNewNotifications(false);
     }
   };
+
   const updateNotifications = (newNotifs) => {
     setNotifications(newNotifs);
-    setHasNewNotifications(true);
+    if (newNotifs != null && newNotifs) {
+      setHasNewNotifications(true);
+    }
   };
 
   return (

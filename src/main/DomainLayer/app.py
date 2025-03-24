@@ -44,17 +44,56 @@ lab_system_service = LabSystemService.get_instance(generator_system.get_lab_syst
 
 TEMPLATE_1_PATH = os.path.join(os.getcwd(), 'Frontend', 'template1')
 
+# @socketio.on('connect')
+# def handle_connect():
+#     print('Client connected')
+
+# @socketio.on('disconnect')
+# def handle_disconnect():
+#     print('Client disconnected')
+
+# def notify_registration(email):
+#     socketio.emit('registration-notification', {'message': f'New registration request from: {email}'})
+
+connected_users = {}
+
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
 
 @socketio.on('disconnect')
 def handle_disconnect():
+    disconnected_sid = request.sid
+    for email, sid in list(connected_users.items()):
+        if sid == disconnected_sid:
+            print(f"{email} disconnected")
+            del connected_users[email]
+            break
     print('Client disconnected')
 
-def notify_registration(email):
-    socketio.emit('registration-notification', {'message': f'New registration request from: {email}'})
-    
+
+@socketio.on('register_user')
+def handle_register_user(data):
+    """
+    Expects: { "email": "user@example.com" }
+    """
+    email = data.get("email")
+    if email:
+        connected_users[email] = request.sid
+        print(f"Registered user {email} to SID {request.sid}")
+
+def notify_registration(requested_email, domain):
+    manager_emails_response = lab_system_service.get_all_lab_managers_details(domain)
+    if manager_emails_response.is_success():
+        manager_emails = manager_emails_response.get_data().keys()  # Assuming keys are manager emails
+        for manager_email in manager_emails:
+            sid = connected_users.get(manager_email)
+            if sid:
+                socketio.emit('registration-notification', {
+                    'message': f'New registration request from: {requested_email}'
+                }, to=sid)
+            else:
+                print(f"Manager {manager_email} is not connected via socket.")
 # Service for uploading file
 
 def read_lab_info(excel_path):
@@ -613,14 +652,15 @@ class LoginWebsite(Resource):
         parser.add_argument('user_id', type=str, required=True, help="User ID is required")
         parser.add_argument('email', type=str, required=True, help="Email is required")
         args = parser.parse_args()
-
+        email = args['email']
+        domain = args['domain']
         try:
-            response = lab_system_service.login(args['domain'], args['user_id'], args['email'])
+            response = lab_system_service.login(domain, args['user_id'], email)
             if response.is_success():
                 if response.get_data():
                     return jsonify({"message": response.get_message(), "response": "true"})
                 else:
-                    notify_registration(args['email'])
+                    notify_registration(email, domain)
                     return jsonify({"message": response.get_message(), "response": "false"})
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
