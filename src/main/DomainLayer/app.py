@@ -869,13 +869,13 @@ class ApproveRegistration(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('domain', required=True, help="Domain is required.")
         parser.add_argument('manager_userId', required=True, help="Manager User ID is required.")
-        parser.add_argument('requested_email', required=True, help="Requested user email is required.")
         parser.add_argument('requested_full_name', required=True)
         parser.add_argument('requested_degree', required=True)
+        parser.add_argument('notification_id', required=False)
         args = parser.parse_args()
 
         try:
-            response = lab_system_service.approve_registration_request(args['domain'], args['manager_userId'], args['requested_email'], args['requested_full_name'], args['requested_degree'])
+            response = lab_system_service.approve_registration_request(args['domain'], args['manager_userId'], args['requested_full_name'], args['requested_degree'], args['notification_id'])
             if response.is_success():
                 return jsonify({"message": "Registration approved successfully.", "response": "true"})
             return jsonify({"error": response.get_message(), "response": "false"})
@@ -887,11 +887,11 @@ class RejectRegistration(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('domain', required=True, help="Domain is required.")
         parser.add_argument('manager_userId', required=True, help="Manager User ID is required.")
-        parser.add_argument('requested_email', required=True, help="Requested user email is required.")
+        parser.add_argument('notification_id', required=True, help="Requested user email is required.")
         args = parser.parse_args()
 
         try:
-            response = lab_system_service.reject_registration_request(args['domain'], args['manager_userId'], args['requested_email'])
+            response = lab_system_service.reject_registration_request(args['domain'], args['manager_userId'], args['notification_id'])
             if response.is_success():
                 return jsonify({"message": "Registration rejected successfully.", "response": "true"})
             return jsonify({"error": response.get_message(), "response": "false"})

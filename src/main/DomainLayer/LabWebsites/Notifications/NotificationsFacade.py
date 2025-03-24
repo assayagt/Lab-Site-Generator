@@ -72,7 +72,7 @@ class NotificationsFacade:
         )
 
         # Create the email notification
-        email_notification = EmailNotification(recipientEmail, "New Registration Request Pending Approval", body)
+        email_notification = EmailNotification(recipientEmail, "New Registration Request Pending Approval", body, requestedEmail)
 
         self.notify_user(email_notification, domain, recipientEmail)
 
@@ -100,5 +100,5 @@ class NotificationsFacade:
             for n in notifications:
                 if n.id == notification_id:
                     n.mark_as_read()
-                    break  # Stop searching once found
+                    return n.get_request_email()
 
