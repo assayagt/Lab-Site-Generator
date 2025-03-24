@@ -50,6 +50,7 @@ const AccountPage = () => {
     hasNewNotifications,
     markNotificationAsRead,
     updateNotifications,
+    setHasNewNotifications,
   } = useContext(NotificationContext); // Get notifications
 
   useEffect(() => {
@@ -145,6 +146,12 @@ const AccountPage = () => {
       alert("Approval failed.");
     }
   };
+
+  useEffect(() => {
+    if (activeSection === "notifications") {
+      setHasNewNotifications(false); // ✅ Now inside an effect, safe to call
+    }
+  }, [activeSection, setHasNewNotifications]);
 
   const handleRejectNotification = async (notifId) => {
     const payload = {

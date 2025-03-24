@@ -40,7 +40,6 @@ export const NotificationProvider = ({ children }) => {
     };
   }, []);
 
-  // 2️⃣ Once user is logged in and socket is ready, register the user
   useEffect(() => {
     if (socket && user?.email) {
       console.log("Registering user to socket:", user.email);
@@ -73,6 +72,7 @@ export const NotificationProvider = ({ children }) => {
         hasNewNotifications,
         markNotificationAsRead,
         updateNotifications,
+        setHasNewNotifications,
       }}
     >
       {children}

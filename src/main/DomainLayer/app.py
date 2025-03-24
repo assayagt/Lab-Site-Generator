@@ -72,7 +72,7 @@ def handle_disconnect():
     print('Client disconnected')
 
 
-@socketio.on('register_user')
+@socketio.on('register_manager')
 def handle_register_user(data):
     """
     Expects: { "email": "user@example.com" }
@@ -84,16 +84,26 @@ def handle_register_user(data):
 
 def notify_registration(requested_email, domain):
     manager_emails_response = lab_system_service.get_all_lab_managers_details(domain)
+    print(manager_emails_response.is_success())
+
     if manager_emails_response.is_success():
-        manager_emails = manager_emails_response.get_data().keys()  # Assuming keys are manager emails
-        for manager_email in manager_emails:
+        manager_data_list = manager_emails_response.get_data()  # List of dicts
+        print(manager_data_list)
+        for manager in manager_data_list:
+            manager_email = manager.get("email")
             sid = connected_users.get(manager_email)
             if sid:
                 socketio.emit('registration-notification', {
-                    'message': f'New registration request from: {requested_email}'
+                    'id': requested_email,
+                    'body': f'New registration request from: {requested_email}',
+                    'subject': 'Registration Request'
                 }, to=sid)
+                print(f"📣 Sent notification to {manager_email} (sid: {sid})")
             else:
-                print(f"Manager {manager_email} is not connected via socket.")
+                print(f"⚠️ Manager {manager_email} is not connected via socket.")
+    else:
+            print("no")
+
 # Service for uploading file
 
 def read_lab_info(excel_path):
@@ -654,6 +664,7 @@ class LoginWebsite(Resource):
         args = parser.parse_args()
         email = args['email']
         domain = args['domain']
+        
         try:
             response = lab_system_service.login(domain, args['user_id'], email)
             if response.is_success():
@@ -662,6 +673,7 @@ class LoginWebsite(Resource):
                 else:
                     notify_registration(email, domain)
                     return jsonify({"message": response.get_message(), "response": "false"})
+            notify_registration(email, domain)
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500

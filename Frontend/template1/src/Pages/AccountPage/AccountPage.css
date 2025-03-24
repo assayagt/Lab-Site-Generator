@@ -263,7 +263,7 @@ button {
 
 .coolinput label.text {
   font-size: 0.75rem;
-  color: #818e97;
+  color: #3f464b;
   font-weight: 700;
   position: absolute;
   top: 50%;
@@ -278,7 +278,7 @@ button {
 .coolinput input[type="text"].input {
   padding: 11px 10px;
   font-size: 0.75rem;
-  border: 2px #818e97 solid;
+  border: 2px #3f464b solid;
   border-radius: 5px;
   background: transparent;
   height: max-content;
@@ -493,6 +493,7 @@ button {
 
 .approval-modal select {
   cursor: pointer;
+  width: 107%;
 }
 
 .approval-modal button.approve-button {

@@ -11,7 +11,7 @@ function Header(props) {
   const navigate = useNavigate();
   const location = useLocation();
   const { login, logout } = useAuth();
-  const { hasNewNotifications, updateNotifications } =
+  const { hasNewNotifications, updateNotifications, notifications } =
     useContext(NotificationContext);
   const [showLogin, setShowLogin] = useState(false);
   const [email, setEmail] = useState("");
@@ -110,7 +110,7 @@ function Header(props) {
           </div>
         )}
         <div className="menu">
-          {isLoggedIn && hasNewNotifications && (
+          {isLoggedIn && hasNewNotifications && notifications.length !== 0 && (
             <div className="notification-dot"></div>
           )}
 

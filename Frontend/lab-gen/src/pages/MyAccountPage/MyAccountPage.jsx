@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './MyAccountPage.css';
-import { getCustomWebsites, getCustomSite } from '../../services/MyAccount';
-import { useWebsite } from '../../Context/WebsiteContext';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./MyAccountPage.css";
+import { getCustomWebsites, getCustomSite } from "../../services/MyAccount";
+import { useWebsite } from "../../Context/WebsiteContext";
 
 const MyAccountPage = () => {
   const [websites, setWebsites] = useState([]);
@@ -28,10 +28,12 @@ const MyAccountPage = () => {
         if (data.response === "false") {
           throw new Error("Failed to fetch websites");
         }
-        const websitesArray = Object.entries(data.websites || {}).map(([domain, details]) => ({
-          domain,
-          ...details,
-        }));
+        const websitesArray = Object.entries(data.websites || {}).map(
+          ([domain, details]) => ({
+            domain,
+            ...details,
+          })
+        );
         setWebsites(websitesArray);
       } catch (err) {
         setError(err.message);
@@ -44,14 +46,19 @@ const MyAccountPage = () => {
   }, []);
 
   const handleWebsiteClick = async (websiteDomain) => {
-    const selectedWebsite = websites.find((site) => site.domain === websiteDomain);
-    const data = await getCustomSite(sessionStorage.getItem("sid"), websiteDomain);
-
+    const selectedWebsite = websites.find(
+      (site) => site.domain === websiteDomain
+    );
+    const data = await getCustomSite(
+      sessionStorage.getItem("sid"),
+      websiteDomain
+    );
+    console.log(data);
     setWebsite({
       components: data.data.components || [],
-      template: data.data.template || '',
-      domain: data.data.domain || '',
-      websiteName: data.data.name || '',
+      template: data.data.template || "",
+      domain: data.data.domain || "",
+      websiteName: data.data.name || "",
       created: true,
       generated: selectedWebsite.generated || false,
     });
@@ -88,11 +95,11 @@ const MyAccountPage = () => {
         )}
       </div>
       {/* Start New Website Button */}
-    <div className="newWebsiteContainer">
-      <button className="newWebsiteButton" onClick={handleStartNewWebsite}>
-        + Start New Website
-      </button>
-    </div>
+      <div className="newWebsiteContainer">
+        <button className="newWebsiteButton" onClick={handleStartNewWebsite}>
+          + Start New Website
+        </button>
+      </div>
     </div>
   );
 };
