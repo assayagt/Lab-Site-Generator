@@ -97,18 +97,19 @@ class LabSystemController:
         """
         self.allWebsitesUserFacade.logout(domain, userId)
 
-    def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name,
-                                     requested_degree):
+    def approve_registration_request(self, domain, manager_userId, requested_full_name, requested_degree, notification_id):
         """
         Approve registration request of a specific email, by a lab manager
         """
+        requested_email = self.mark_as_read(manager_userId, domain, notification_id)
         self.allWebsitesUserFacade.approve_registration_request(domain, manager_userId, requested_email,
                                                                 requested_full_name, requested_degree)
 
-    def reject_registration_request(self, domain, manager_userId, requested_email):
+    def reject_registration_request(self, domain, manager_userId, notification_id):
         """
         Reject registration request of a specific email, by a lab manager
         """
+        requested_email = self.mark_as_read(manager_userId, domain, notification_id)
         self.allWebsitesUserFacade.reject_registration_request(domain, manager_userId, requested_email)
 
     def create_new_site_manager_from_labWebsite(self, nominator_manager_userId, domain, nominated_manager_email):
@@ -476,4 +477,4 @@ class LabSystemController:
         userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
         email = userFacade.get_email_by_userId(userId)
-        self.notificationsFacade.mark_notification_as_read(domain, email, notification_id)
+        return self.notificationsFacade.mark_notification_as_read(domain, email, notification_id)
