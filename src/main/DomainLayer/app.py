@@ -1322,6 +1322,19 @@ class AddAlumniFromGenerator(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
+class GetAllMembersNotifications(Resource):
+    def get(self):
+        user_id = request.args.get('user_id')
+        domain = request.args.get('domain')
+
+        try:
+            response = lab_system_service.get_all_member_notifications(user_id, domain)
+            if response.is_success():
+                return jsonify({"notifications": response.get_data(), "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
 # Add resources to the API of lab
 api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')#
 api.add_resource(LoginWebsite, '/api/loginWebsite')#
@@ -1382,6 +1395,7 @@ api.add_resource(ChangeSiteLogoByManager, '/api/ChangeSiteLogoByManager')
 api.add_resource(RemoveSiteManagerFromGenerator, '/api/removeSiteManager')
 api.add_resource(GetUserDetails, '/api/getUserDetails')
 api.add_resource(GetContactUs, '/api/getContactUs')
+api.add_resource(GetAllMembersNotifications, '/api/getAllMembersNotifications')
 ##
 
 if __name__ == '__main__':
