@@ -131,9 +131,9 @@ const AccountPage = () => {
     const payload = {
       domain: sessionStorage.getItem("domain"),
       manager_userId: sessionStorage.getItem("sid"),
-      requested_email: selectedNotification.id,
       requested_full_name: approvalForm.fullName,
       requested_degree: approvalForm.degree,
+      notification_id: selectedNotification.id,
     };
 
     const response = await approveRegistration(payload);
@@ -157,7 +157,7 @@ const AccountPage = () => {
     const payload = {
       domain: sessionStorage.getItem("domain"),
       manager_userId: sessionStorage.getItem("sid"),
-      requested_email: notifId,
+      notification_id: notifId,
     };
 
     const response = await rejectRegistration(payload);

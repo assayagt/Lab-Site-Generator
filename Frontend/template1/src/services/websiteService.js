@@ -40,7 +40,7 @@ export const addLabManager = async (userId, email, domain) => {
 export const approveRegistration = async ({
   domain,
   manager_userId,
-  requested_email,
+  notification_id,
   requested_full_name,
   requested_degree,
 }) => {
@@ -48,9 +48,9 @@ export const approveRegistration = async ({
     const response = await axios.post(`${baseApiUrl}approveRegistration`, {
       domain,
       manager_userId,
-      requested_email,
       requested_full_name,
       requested_degree,
+      notification_id,
     });
     return response.data.message;
   } catch (error) {
@@ -62,13 +62,13 @@ export const approveRegistration = async ({
 export const rejectRegistration = async ({
   domain,
   manager_userId,
-  requested_email,
+  notification_id,
 }) => {
   try {
     const response = await axios.post(`${baseApiUrl}rejectRegistration`, {
       domain,
       manager_userId,
-      requested_email,
+      notification_id,
     });
     console.log(response.data);
     return response.data.message;
