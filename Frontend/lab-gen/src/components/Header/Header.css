@@ -1,14 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap');
+
+
 .header{
-    background-color: darkgrey;
     height: 70px;
     display: flex;
     align-items:center;
     position: relative;
-    background: linear-gradient(90deg, #cacde3, #597a9c); /* Blue gradient */
-    color: black;
+    color: #1c2c3d;
     text-align: center;
-    font-size: 1.5rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-size: 3rem;
+    font-weight: 500;
+    /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 2px; /* Adds spacing for a modern look */
+    text-transform: uppercase;
 }
 .img_logo{
     height: 40px;
@@ -30,7 +35,9 @@
   display: none;  /* Initially hidden */
   position: absolute;
   left: -100%;
-  background-color: white;
+  /* background: rgb(187, 187, 187); */
+  background: rgb(213, 213, 213);
+
   padding: 20px;
   width: 150px; /* Adjust width as needed */
   border-radius: 10px; /* Rounded corners to match the shape of the menu */
@@ -56,9 +63,10 @@
   margin: 10px;
 }
 .hr_line{
-  height: 1px;
+  height: 2px;
   width: 100%;
-  background-color: gray;
+  border: 0;
+  background-color: #1c2c3d;
 }
 
 .choose_item{

@@ -1,77 +1,107 @@
 import React, { useState } from 'react';
 import { addPublication } from '../../services/websiteService';
+import "./AddPublicationFrom.css";
 
-const AddPublicationForm = () => {
-
+const AddPublicationForm = ({ onSuccess }) => {
   const [publication, setPublication] = useState('');
   const [githubLink, setGithubLink] = useState('');
   const [presentationLink, setPresentationLink] = useState('');
   const [videoLink, setVideoLink] = useState('');
+  const [error, setError] = useState(null); // Error message state
+  const [loading, setLoading] = useState(false); // Loading state
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (publication) {
+    setError(null); 
+    setLoading(true);
+
+    if (!publication.trim()) {
+      setError('Publication link is required.');
+      setLoading(false);
+      return;
+    }
+
+    try {
       const domain = sessionStorage.getItem('domain');
-      const data = await addPublication(publication, domain, githubLink, videoLink, presentationLink);
-      console.log(data);
-      //if(data.response === "true"){
+      const response = await addPublication(publication, domain, githubLink, videoLink, presentationLink);
+
+      if (response.response === "true") {
+        // Reset fields on success
         setPublication('');
         setGithubLink('');
         setPresentationLink('');
         setVideoLink('');
-      //}
-     // else{
-       // alert(data.data);
-      //}
+        setError(null);
 
-      
-    } else {
-      alert('Publication Link is required.');
+        // Close the form if onSuccess function is provided
+        if (onSuccess) {
+          onSuccess();
+        }
+      } else {
+        setError(response.data || "Failed to add publication. Try again.");
+      }
+    } catch (error) {
+      setError("An error occurred while adding the publication.");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="upload-publication-section">
       <h3>Add New Publication</h3>
+      
+      {error && <p className="error-message">{error}</p>} {/* Show error message if exists */}
+
       <form className="upload-publication-form" onSubmit={handleSubmit}>
-        <label>
-          <strong>publication-link:</strong>
+        <div className="coolinput">
+          <label className="text">Publication Link:</label>
           <input
             type="text"
+            placeholder="Publication link"
+            className="input"
             value={publication}
             onChange={(e) => setPublication(e.target.value)}
-            placeholder="Publication link"
-            required
           />
-        </label>
-        <label>
-          <strong>GitHub Link:</strong>
+        </div>
+
+        <div className="coolinput">
+          <label className="text">GitHub Link:</label>
           <input
-            type="url"
+            type="text"
+            placeholder="GitHub link"
+            className="input"
             value={githubLink}
             onChange={(e) => setGithubLink(e.target.value)}
-            placeholder="GitHub URL"
           />
-        </label>
-        <label>
-          <strong>Presentation Link:</strong>
+        </div>
+
+        <div className="coolinput">
+          <label className="text">Presentation Link:</label>
           <input
-            type="url"
+            type="text"
+            placeholder="Presentation link"
+            className="input"
             value={presentationLink}
             onChange={(e) => setPresentationLink(e.target.value)}
-            placeholder="Presentation URL"
           />
-        </label>
-        <label>
-          <strong>Video Link:</strong>
+        </div>
+
+        <div className="coolinput">
+          <label className="text">Video Link:</label>
           <input
-            type="url"
+            type="text"
+            placeholder="Video link"
+            className="input"
             value={videoLink}
             onChange={(e) => setVideoLink(e.target.value)}
-            placeholder="Video URL"
           />
-        </label>
-        <button type="submit">Add Publication</button>
+        </div>
+
+        <button type="submit" className="submit-pub" disabled={loading}>
+          {loading ? "Adding..." : "Add Publication"}
+        </button>
       </form>
     </div>
   );

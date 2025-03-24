@@ -1,0 +1,11 @@
+.submit-pub{
+  max-width: max-content;
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  color: #ccc;
+}
+.submit-pub:hover{
+  border: 1px solid #7b7b7b;
+  color: #7b7b7b;
+}

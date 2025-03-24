@@ -1,148 +1,139 @@
-import React, { useRef, useEffect, useState,useContext } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Header.css";
 import accountIcon from "../../images/account_avatar.svg";
 import { useAuth } from "../../Context/AuthContext";
-import {NotificationContext} from "../../Context/NotificationContext"
+import { NotificationContext } from "../../Context/NotificationContext";
+import { useEditMode } from "../../Context/EditModeContext";
 
 function Header(props) {
-  const navbarRef = useRef(null);
   const navigate = useNavigate();
-  const location = useLocation(); // Get current location
+  const location = useLocation();
   const { login, logout } = useAuth();
-  const { hasNewNotifications } = useContext(NotificationContext); 
+  const { hasNewNotifications } = useContext(NotificationContext);
   const [showLogin, setShowLogin] = useState(false);
   const [email, setEmail] = useState("");
-  const [loginError, setLoginError] = useState(""); // State to store login error messages
-  const [isLoggedIn, setIsLoggedIn] = useState(sessionStorage.getItem("isLoggedIn"));
-
-
-  let scrollAnimationFrame = null;
-
-  const smoothScroll = (direction) => {
-    const navbar = navbarRef.current;
-    const scrollSpeed = 1;
-    const maxScroll = navbar.scrollWidth - navbar.clientWidth;
-
-    const scrollStep = () => {
-      if (direction === "right") {
-        if (navbar.scrollLeft < maxScroll) {
-          navbar.scrollLeft += scrollSpeed;
-          scrollAnimationFrame = requestAnimationFrame(scrollStep);
-        }
-      } else if (direction === "left") {
-        if (navbar.scrollLeft > 0) {
-          navbar.scrollLeft -= scrollSpeed;
-          scrollAnimationFrame = requestAnimationFrame(scrollStep);
-        }
-      }
-    };
-
-    scrollStep();
-  };
-
-  const handleMouseEnter = (e) => {
-    const { left, right } = navbarRef.current.getBoundingClientRect();
-    const center = (left + right) / 2; // Calculate the center of the navbar
-    const mouseX = e.clientX;
-
-    if (mouseX <= center - 150) {
-      smoothScroll("left");
-    }
-    if (mouseX >= center + 150) {
-      smoothScroll("right");
-    }
-  };
-
+  const [loginError, setLoginError] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return sessionStorage.getItem("isLoggedIn") === "true" ? true : false;
+  });
+  const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
+  const { editMode, toggleEditMode } = useEditMode();
   const handleClick = (item) => {
     if (item === "Home") {
       navigate("/");
-    } else if (item === "Participants") {
-      navigate("/Participants");
-    } else if (item === "Contact Us") {
-      navigate("/ContactUs");
-    } else if (item === "Publications") {
-      navigate("/Publications");
+    } else {
+      navigate(`/${item.replace(" ", "")}`);
     }
   };
 
-  const handleLoginClick = () => {
-    setShowLogin(true); // Show login popup
-  };
-
-   const handleLogin = async(e) => {
-    e.preventDefault(); // Prevent form submission from reloading the page
+  const handleLogin = async (e) => {
+    e.preventDefault();
     let data = await login(email);
     if (data) {
-      setShowLogin(false); 
-      setLoginError(""); 
+      setShowLogin(false);
+      setLoginError("");
       setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);
-      setShowLogin(true); 
-      setLoginError("Login failed. Please check your username and try again."); 
+      setShowLogin(true);
+      setLoginError("Login failed. Please check your username.");
     }
     setEmail("");
   };
 
   const handleLogout = () => {
-    
-
-    let ans = logout(); 
-    if(ans){
-       sessionStorage.removeItem("isLoggedIn");
-       sessionStorage.removeItem("userEmail");
-       setIsLoggedIn(false);
-    if (location.pathname === "/Account") {
-      // If user is currently on "/Account", navigate to "/"
-      navigate("/");
-    } else {
-      // Otherwise, reload the page
-      window.location.reload();
+    let ans = logout();
+    if (ans) {
+      sessionStorage.removeItem("isLoggedIn");
+      sessionStorage.removeItem("userEmail");
+      setIsLoggedIn(false);
+      location.pathname === "/Account"
+        ? navigate("/")
+        : window.location.reload();
     }
-    }
-   
-   
-    
   };
 
   return (
     <div className="header">
-      <img className="header_logo" src={props.logo} alt="logo" />
-      <div className="header_title">{props.title}</div>
-      <div className="navbar" ref={navbarRef} onMouseMove={handleMouseEnter}>
+      {/* Logo & Title */}
+      <img
+        className="header_logo"
+        src={props.logo}
+        alt="logo"
+        onClick={() => navigate("/")}
+      />
+      <div className="header_title" onClick={() => navigate("/")}>
+        {props.title}
+      </div>
+
+      {/* Navbar - Expands on Hover */}
+      <div
+        className={`navbar ${isNavbarExpanded ? "expanded" : ""}`}
+        onMouseEnter={() => setIsNavbarExpanded(true)}
+        onMouseLeave={() => setIsNavbarExpanded(false)}
+      >
         {props.components
           .filter((item) => item !== "About Us")
           .map((item, index, filteredArray) => (
-            <div className="navbar-item" key={item.id || index}>
-              <button onClick={() => handleClick(item)} className="navbar-item-button">
+            <div className="navbar-item" key={index}>
+              <button
+                onClick={() => handleClick(item)}
+                className="navbar-item-button"
+              >
                 {item}
               </button>
-              {index !== filteredArray.length - 1 && <div>|</div>}
+              {index !== filteredArray.length - 1 && (
+                <div className="line-nav">|</div>
+              )}
             </div>
           ))}
       </div>
+
       <div className="icon_photo">
+        {isLoggedIn && (
+          <div className="edit-mode-container">
+            <span className="edit-mode-label">Edit Mode</span>
+            <label className="switch">
+              <input
+                type="checkbox"
+                checked={editMode}
+                onChange={toggleEditMode}
+              />
+              <span className="slider round"></span>
+            </label>
+          </div>
+        )}
         <div className="menu">
-          {hasNewNotifications && <div className="notification-dot"></div>}
+          {isLoggedIn && hasNewNotifications && (
+            <div className="notification-dot"></div>
+          )}
+
           <div className="hidden-box">
             <div className="personal_menu">
-              <div className="icon_photo">
+              <div className="icon_photo2">
                 <img src={accountIcon} alt="icon" />
               </div>
               <hr className="hr_line" />
+
               {isLoggedIn ? (
                 <div className="choose_item">
-                  <button className="my_sites_button" onClick={() => navigate("Account")}>
+                  <button
+                    className="my_sites_button"
+                    onClick={() => navigate("Account")}
+                  >
                     My Account
                   </button>
-                  <button className="logout_button" onClick={() => handleLogout()}>
+                  <button className="logout_button" onClick={handleLogout}>
                     Logout
                   </button>
                 </div>
               ) : (
                 <div className="choose_item">
-                  <button className="login_button" onClick={handleLoginClick}>
+                  <button
+                    className="login_button"
+                    onClick={() => setShowLogin(true)}
+                  >
                     Login
                   </button>
                 </div>
@@ -152,14 +143,22 @@ function Header(props) {
         </div>
       </div>
 
+      {/* Login Popup */}
       {showLogin && (
         <div className="login-modal">
           <div className="login-content">
-            <div className="close-button" onClick={() => setShowLogin(false)}>X</div>
+            <div className="close-button" onClick={() => setShowLogin(false)}>
+              X
+            </div>
             <h2>Login</h2>
-            {loginError && <div className="login-error">{loginError}</div>} {/* Display login error if present */}
+            {loginError && <div className="login-error">{loginError}</div>}
             <form onSubmit={handleLogin}>
-              <input type="text" placeholder="Username" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <input
+                type="text"
+                placeholder="Username"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
               <button type="submit">Login</button>
             </form>
           </div>
@@ -170,4 +169,3 @@ function Header(props) {
 }
 
 export default Header;
-///onClick={() => navigate("Account")}

@@ -15,21 +15,22 @@ function HomePage(props) {
   }
 
   return (
-      <div className='HomePage'>
-          {fetchData()}
-        <div className="main_section_homePage">
-            <div className="subTitle">Welcome to our lab website.</div>
-            <img src ={props.photo} className="homeImg" alt="home_page_photo"/>
-            {props.about_us?(
-                   <AboutUs info={props.about_us}/> ):
-                   (<div> </div>
-            )
-            }
-           
-        </div>
-       
+    <div className="HomePage">
+      {fetchData()}
+      
+      {/* Keep the welcome message always at the top */}
+      <div className="subTitle">Welcome to our lab website.</div>
+
+      {/* Main section with dynamic layout */}
+      <div className={`main_section_homePage ${props.about_us ? "hasAboutUs" : "noAboutUs"}`}>
+        {props.about_us && (
+          <div className="aboutUsContainer">
+            <AboutUs info={props.about_us} />
+          </div>
+        )}
+        <img src={props.photo} className="homeImg" alt="home_page_photo" />
       </div>
-    
+    </div>
   );
 }
 

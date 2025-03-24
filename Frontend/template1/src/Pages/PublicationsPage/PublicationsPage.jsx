@@ -28,11 +28,12 @@ const PublicationPage = () => {
   }, []);
 
   useEffect(() => {
-    const years = Array.from(new Set(publications.map((pub) => {
-      // Ensure to extract only the year if it's a full date
-      const year = new Date(pub.publication_year).getFullYear();
-      return year;
-    }))).sort((a, b) => b - a); // Sort in descending order
+    const years = Array.from(new Set(
+      publications.map((pub) => {
+        const date = new Date(pub.publication_year);
+        return isNaN(date.getFullYear()) ? pub.publication_year : date.getFullYear(); 
+      })
+    )).sort((a, b) => b - a);
     setAvailableYears(years);
 
     const authors = Array.from(
@@ -53,20 +54,27 @@ const PublicationPage = () => {
 
   const filteredPublications = publications
   .filter((pub) => {
-    const publicationYear = new Date(pub.publication_year).getFullYear(); // Extract the year from the full date
+    const publicationYear = isNaN(new Date(pub.publication_year).getFullYear()) 
+      ? pub.publication_year 
+      : new Date(pub.publication_year).getFullYear();
     const matchesYear = yearFilter
-      ? publicationYear === parseInt(yearFilter, 10) // Compare the extracted year with the yearFilter
+      ? publicationYear === parseInt(yearFilter, 10)
       : true;
+    
     const matchesAuthor = authorFilter
-      ? typeof pub.authors === 'string' && pub.authors.toLowerCase().includes(authorFilter.toLowerCase())
+      ? Array.isArray(pub.authors)  // Check if authors field is an array
+        ? pub.authors.some(author => author.toLowerCase().includes(authorFilter.toLowerCase()))
+        : pub.authors.toLowerCase().includes(authorFilter.toLowerCase())  // If it's a string
       : true;
+
     return matchesYear && matchesAuthor;
   })
   .sort((a, b) => {
     const yearA = new Date(a.publication_year).getFullYear();
     const yearB = new Date(b.publication_year).getFullYear();
-    return yearB - yearA; // Sort based on the extracted year
+    return yearB - yearA;
   });
+
 
   const paginatedPublications = filteredPublications.slice(
     (currentPage - 1) * itemsPerPage,
@@ -89,7 +97,8 @@ const PublicationPage = () => {
 
   return (
     <div className="publication-page">
-      <h1>Publications</h1>
+      <div className="publication-header">
+      <div className='publication_title'>Publications</div>
       <div className="filters">
         <label className='specific-filter'>
           Filter by Year:
@@ -114,10 +123,12 @@ const PublicationPage = () => {
           </select>
         </label>
       </div>
+      </div>
       <div className="publication-list">
         {paginatedPublications.map((pub) => (
           <div key={pub.paper_id} className="publication-item">
-            <h2>{pub.title}</h2>
+           <a href={pub.publication_link} target="_blank" rel="noopener noreferrer" className='pub_item_link'>
+            <div className="pub_item_title">{pub.title}</div>
             <div className="publication-item-info">
               {pub.video && (
                 <iframe
@@ -130,26 +141,28 @@ const PublicationPage = () => {
               )}
               <div>
                 <p><strong>Authors:</strong> {pub.authors.join(', ') || "Unknown Authors"}</p>
-                <p><strong>Year:</strong> {pub.publication_year}</p>
-                <p className="description">{pub.description}</p>
+                <p><strong>Year:</strong> {isNaN(new Date(pub.publication_year).getFullYear()) 
+                    ? pub.publication_year 
+                    : new Date(pub.publication_year).getFullYear()}</p>
+                  <p className="description">{pub.description}</p>
                 <div className='links'>
                   {pub.git_link&&(<a href={pub.git_link} target="_blank" rel="noopener noreferrer" className="git">Git</a>)}
                   {pub.presentation_link&&<a href={pub.presentation_link} target="_blank" rel="noopener noreferrer" className="git">Presentation</a>}
-                  <a href={pub.publication_link} target="_blank" rel="noopener noreferrer">Read More</a>
                 </div>
               </div>
             </div>
+            </a>
           </div>
         ))}
       </div>
       <div className="pagination">
-        <button onClick={handlePrevPage} disabled={currentPage === 1}>
+        <button className = "pagination-buttons" onClick={handlePrevPage} disabled={currentPage === 1}>
           Previous
         </button>
         <span>
           Page {currentPage} of {totalPages}
         </span>
-        <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+        <button className = "pagination-buttons" onClick={handleNextPage} disabled={currentPage === totalPages}>
           Next
         </button>
       </div>
