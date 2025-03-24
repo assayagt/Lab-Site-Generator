@@ -263,7 +263,7 @@ button {
 
 .coolinput label.text {
   font-size: 0.75rem;
-  color: #818e97;
+  color: #3f464b;
   font-weight: 700;
   position: absolute;
   top: 50%;
@@ -278,7 +278,7 @@ button {
 .coolinput input[type="text"].input {
   padding: 11px 10px;
   font-size: 0.75rem;
-  border: 2px #818e97 solid;
+  border: 2px #3f464b solid;
   border-radius: 5px;
   background: transparent;
   height: max-content;
@@ -459,4 +459,54 @@ button {
 .notification_button:hover {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
   background-color: rgba(255, 255, 255, 0.2);
+}
+
+.approval-modal {
+  background: #efefef;
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+  width: 300px;
+  position: relative;
+}
+
+.approval-modal h3 {
+  margin-top: 0;
+  font-family: "Oswald", sans-serif;
+  color: #1f1f1f;
+}
+
+.approval-modal input[type="text"],
+.approval-modal select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background-color: white;
+}
+
+.approval-modal select {
+  cursor: pointer;
+  width: 107%;
+}
+
+.approval-modal button.approve-button {
+  padding: 8px 16px;
+  border-radius: 20px;
+  background-color: transparent;
+  color: #272727;
+  cursor: pointer;
+  border: 1px solid #262626;
+  transition: all 0.3s ease;
+}
+
+.approval-modal button.approve-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid #080808;
 }

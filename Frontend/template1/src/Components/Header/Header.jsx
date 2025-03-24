@@ -5,12 +5,14 @@ import accountIcon from "../../images/account_avatar.svg";
 import { useAuth } from "../../Context/AuthContext";
 import { NotificationContext } from "../../Context/NotificationContext";
 import { useEditMode } from "../../Context/EditModeContext";
+import { fetchUserNotifications } from "../../services/UserService";
 
 function Header(props) {
   const navigate = useNavigate();
   const location = useLocation();
   const { login, logout } = useAuth();
-  const { hasNewNotifications } = useContext(NotificationContext);
+  const { hasNewNotifications, updateNotifications, notifications } =
+    useContext(NotificationContext);
   const [showLogin, setShowLogin] = useState(false);
   const [email, setEmail] = useState("");
   const [loginError, setLoginError] = useState("");
@@ -34,6 +36,9 @@ function Header(props) {
       setShowLogin(false);
       setLoginError("");
       setIsLoggedIn(true);
+      const notifications = await fetchUserNotifications(email);
+      console.log(notifications);
+      updateNotifications(notifications);
     } else {
       setIsLoggedIn(false);
       setShowLogin(true);
@@ -105,7 +110,7 @@ function Header(props) {
           </div>
         )}
         <div className="menu">
-          {isLoggedIn && hasNewNotifications && (
+          {isLoggedIn && hasNewNotifications && notifications.length !== 0 && (
             <div className="notification-dot"></div>
           )}
 

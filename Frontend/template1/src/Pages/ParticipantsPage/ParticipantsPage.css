@@ -10,7 +10,8 @@
   box-sizing: border-box; /* Ensures padding and border are included in the element's width */
 }
 
-.participant_title {
+.participant_title,
+.publication_title {
   font-family: "Oswald", sans-serif;
   font-size: 30px;
   font-weight: bold;

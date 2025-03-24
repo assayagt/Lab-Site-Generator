@@ -18,6 +18,7 @@ def send_test_notifications():
 
 
 
+from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
 from src.main.DomainLayer.LabGenerator.GeneratorSystemService import GeneratorSystemService
 from src.main.DomainLayer.LabWebsites.LabSystemService import LabSystemService
 from src.main.DomainLayer.LabWebsites.Website.ContactInfo import ContactInfo
@@ -43,17 +44,66 @@ lab_system_service = LabSystemService.get_instance(generator_system.get_lab_syst
 
 TEMPLATE_1_PATH = os.path.join(os.getcwd(), 'Frontend', 'template1')
 
+# @socketio.on('connect')
+# def handle_connect():
+#     print('Client connected')
+
+# @socketio.on('disconnect')
+# def handle_disconnect():
+#     print('Client disconnected')
+
+# def notify_registration(email):
+#     socketio.emit('registration-notification', {'message': f'New registration request from: {email}'})
+
+connected_users = {}
+
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
 
 @socketio.on('disconnect')
 def handle_disconnect():
+    disconnected_sid = request.sid
+    for email, sid in list(connected_users.items()):
+        if sid == disconnected_sid:
+            print(f"{email} disconnected")
+            del connected_users[email]
+            break
     print('Client disconnected')
 
-def notify_registration(email):
-    socketio.emit('registration-notification', {'message': f'New registration request from: {email}'})
-    
+
+@socketio.on('register_manager')
+def handle_register_user(data):
+    """
+    Expects: { "email": "user@example.com" }
+    """
+    email = data.get("email")
+    if email:
+        connected_users[email] = request.sid
+        print(f"Registered user {email} to SID {request.sid}")
+
+def notify_registration(requested_email, domain):
+    manager_emails_response = lab_system_service.get_all_lab_managers_details(domain)
+    print(manager_emails_response.is_success())
+
+    if manager_emails_response.is_success():
+        manager_data_list = manager_emails_response.get_data()  # List of dicts
+        print(manager_data_list)
+        for manager in manager_data_list:
+            manager_email = manager.get("email")
+            sid = connected_users.get(manager_email)
+            if sid:
+                socketio.emit('registration-notification', {
+                    'id': requested_email,
+                    'body': f'New registration request from: {requested_email}',
+                    'subject': 'Registration Request'
+                }, to=sid)
+                print(f"📣 Sent notification to {manager_email} (sid: {sid})")
+            else:
+                print(f"⚠️ Manager {manager_email} is not connected via socket.")
+    else:
+            print("no")
+
 # Service for uploading file
 
 def read_lab_info(excel_path):
@@ -186,42 +236,6 @@ class UploadFilesAndData(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
-# class GenerateWebsiteResource(Resource):
-#     def post(self):
-#         parser = reqparse.RequestParser()
-#         parser.add_argument('domain', type=str, required=True, help="Domain is required")
-#         parser.add_argument('about_us', type=str, required=True, help="About us content is required")
-#         parser.add_argument('lab_address', type=str, required=True, help="Lab address is required")
-#         parser.add_argument('lab_mail', type=str, required=True, help="Lab mail is required")
-#         parser.add_argument('lab_phone_num', type=str, required=True, help="Lab phone number is required")
-        
-#         args = parser.parse_args()
-
-#         domain = args['domain']
-#         about_us = args['about_us']
-#         lab_address = args['lab_address']
-#         lab_mail = args['lab_mail']
-#         lab_phone_num = args['lab_phone_num']
-#         contact_info = ContactInfo(lab_address, lab_mail, lab_phone_num)
-#         try: 
-
-           
-#             participants = request.json.get('participants', [])
-#             response = generator_system.create_new_lab_website(domain,lab_members,lab_managers,siteCreator)
-#             if response.is_success():
-#                 response2 = generator_system.set_site_about_us_on_creation_from_generator(domain, about_us)
-#                 if response2.is_success():
-#                     response3 = generator_system.set_site_contact_info_on_creation_from_generator(domain,contact_info)
-#                     if response3.is_success():
-#                         command = ['start', 'cmd', '/K', 'npm', 'start']  # Command to open a new terminal and run npm start
-#                         process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH, shell=True)
-#                         return jsonify({"message": "Website generated successfully!", "response": "true"})
-#                     return jsonify({"error": f"An error occurred: {response3.get_message()}", "response": "false"})
-
-#                 return jsonify({"error": f"An error occurred: {response2.get_message()}", "response": "false"})
-#             return jsonify({"error": f"An error occurred: {response.get_message()}", "response": "false"})
-#         except Exception as e:
-#             return jsonify({"error": f"An error occurred: {str(e)}"})
 
 
 class GenerateWebsiteResource(Resource):
@@ -358,14 +372,16 @@ class ChooseTemplate(Resource):
 
         user_id = args['user_id']
         domain = args['domain']
-        selected_template = args['template']
+        template_str = args['template']
+        selected_template = Template(template_str)
+
         try:
             response = generator_system.change_website_template(user_id, domain, selected_template)
             if response.is_success():
-                return jsonify({"message": "Template selected", "template": selected_template})
+                return jsonify({"message": "Template selected", "response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}"})
 
 
 # Handles setting the name for the lab website
@@ -646,15 +662,18 @@ class LoginWebsite(Resource):
         parser.add_argument('user_id', type=str, required=True, help="User ID is required")
         parser.add_argument('email', type=str, required=True, help="Email is required")
         args = parser.parse_args()
-
+        email = args['email']
+        domain = args['domain']
+        
         try:
-            response = lab_system_service.login(args['domain'], args['user_id'], args['email'])
+            response = lab_system_service.login(domain, args['user_id'], email)
             if response.is_success():
                 if response.get_data():
                     return jsonify({"message": response.get_message(), "response": "true"})
                 else:
-                    notify_registration(args['email'])
+                    notify_registration(email, domain)
                     return jsonify({"message": response.get_message(), "response": "false"})
+            notify_registration(email, domain)
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
@@ -853,7 +872,6 @@ class GetAllCustomWebsites(Resource):
 
 class GetMemberPublications(Resource):
     def get(self):
-    
         domain = request.args.get('domain')
         user_id = request.args.get('user_id')
         try:

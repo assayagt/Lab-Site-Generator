@@ -1,7 +1,27 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useWebsite } from '../../../Context/WebsiteContext';
-import { createCustomSite, changeComponents, changeDomain, changeName,getAllAlumni,getAllLabManagers,getAllLabMembers,createNewSiteManager, removeSiteManager,addLabMember,setSiteContactInfo, setSiteAboutUs ,saveLogo,saveHomePicture,addAlumni } from '../../../services/Generator';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useWebsite } from "../../../Context/WebsiteContext";
+
+import {
+  createCustomSite,
+  changeComponents,
+  changeDomain,
+  changeName,
+  getAllAlumni,
+  getAllLabManagers,
+  getAllLabMembers,
+  createNewSiteManager,
+  removeSiteManager,
+  addLabMember,
+  setSiteContactInfo,
+  setSiteAboutUs,
+  saveLogo,
+  saveHomePicture,
+  addAlumni,
+  changeTemplate,
+  generate,
+} from "../../../services/Generator";
+
 import axios from "axios";
 const baseApiUrl = "http://127.0.0.1:5000/api/";
 
@@ -9,29 +29,31 @@ const useChooseComponents = () => {
   const navigate = useNavigate();
   const { websiteData, setWebsite } = useWebsite();
 
-  const [domain, setDomain] = useState(websiteData.domain || '');
-  const [websiteName, setWebsiteName] = useState(websiteData.websiteName || '');
+  const [domain, setDomain] = useState(websiteData.domain || "");
+  const [websiteName, setWebsiteName] = useState(websiteData.websiteName || "");
   const [components, setComponents] = useState(() => {
     return websiteData.components && websiteData.components.length > 0
       ? websiteData.components
       : ["Home"];
   });
-  const [template, setTemplate] = useState(websiteData.template || '');
+  const [template, setTemplate] = useState(websiteData.template || "");
   const [isChanged, setIsChanged] = useState(false);
   const [domainError, setDomainError] = useState(false);
   const [step, setStep] = useState(!domain ? 1 : 3);
   const [showContentSidebar, setShowContentSidebar] = useState(false);
-  const [componentsSaved, setComponentsSaved] = useState(websiteData.components.length>1 );
+  const [componentsSaved, setComponentsSaved] = useState(
+    websiteData.components.length > 1
+  );
   const [isComponentsSaved, setIsComponentsSaved] = useState(false);
   const [errorMessage, setErrorMessage] = useState(""); // Store error messages
-
+  const [isTempSaved, setTempSaved] = useState(false);
   const showError = (message) => {
     setErrorMessage(message);
   };
 
   const [formData, setFormData] = useState({
-    domain: websiteData.domain || '',
-    websiteName: websiteData.websiteName || '',
+    domain: websiteData.domain || "",
+    websiteName: websiteData.websiteName || "",
     components: websiteData.components || [],
     files: {},
     publicationsFile: null,
@@ -40,38 +62,37 @@ const useChooseComponents = () => {
     homepagephoto: null,
   });
 
-
   const [participants, setParticipants] = useState([
     {
-      fullName:  '', // Initially empty if not set
-      email: sessionStorage.getItem("userEmail") || '',
-      degree: '',
+      fullName: "", // Initially empty if not set
+      email: sessionStorage.getItem("userEmail") || "",
+      degree: "",
       isLabManager: true, // The creator is always a manager
-    }
+    },
   ]);
-    const degreeOptions = ["Ph.D.", "M.Sc.",  "B.Sc.", "Postdoc"];
+  const degreeOptions = ["Ph.D.", "M.Sc.", "B.Sc.", "Postdoc"];
 
-
-  const [selectedComponent, setSelectedComponent] = useState('AboutUs');  // Default to About Us
+  const [selectedComponent, setSelectedComponent] = useState("AboutUs"); // Default to About Us
   const [showAddForm, setShowAddForm] = useState(false);
   const [newParticipant, setNewParticipant] = useState({
-    fullName: '',
-    email:'',
-    degree: '',
-    isLabManager: false
+    fullName: "",
+    email: "",
+    degree: "",
+    isLabManager: false,
   });
 
   const [aboutUsContent, setAboutUsContent] = useState(() => {
-    return sessionStorage.getItem('AboutUs') || ''; // Load from sessionStorage initially
+    return sessionStorage.getItem("AboutUs") || ""; // Load from sessionStorage initially
   });
 
   const [contactUsData, setContactUsData] = useState(() => {
-    const savedData = sessionStorage.getItem('ContactUs');
-    return savedData ? JSON.parse(savedData) : { email: '', phoneNumber: '', address: '' };
+    const savedData = sessionStorage.getItem("ContactUs");
+    return savedData
+      ? JSON.parse(savedData)
+      : { email: "", phoneNumber: "", address: "" };
   });
   const [about_usSave, setAboutUsSaved] = useState(false);
   const [contactUs_usSave, setcontactUs] = useState(false);
-
 
   useEffect(() => {
     const fetchParticipants = async () => {
@@ -82,90 +103,99 @@ const useChooseComponents = () => {
           getAllLabMembers(domain),
           getAllAlumni(domain),
         ]);
-  
-      
+
         const allParticipants = [
-          ...managers.map((participant) => ({ ...participant, isLabManager: true, alumni:false })),
-          ...members.map((participant) => ({ ...participant, isLabManager: false ,alumni:false })),
-          ...alumni.map((participant) => ({ ...participant, isLabManager: false, alumni:true  }))
+          ...managers.map((participant) => ({
+            ...participant,
+            isLabManager: true,
+            alumni: false,
+          })),
+          ...members.map((participant) => ({
+            ...participant,
+            isLabManager: false,
+            alumni: false,
+          })),
+          ...alumni.map((participant) => ({
+            ...participant,
+            isLabManager: false,
+            alumni: true,
+          })),
         ];
-  
+
         setParticipants(allParticipants);
       } catch (err) {
-        console.error('Error fetching participants:', err);
+        console.error("Error fetching participants:", err);
       }
     };
-  
+
     fetchParticipants();
   }, [websiteData.domain]);
 
-
   useEffect(() => {
-    if (sessionStorage.getItem('isLoggedIn') !== 'true') {
-      navigate('/');
+    if (sessionStorage.getItem("isLoggedIn") !== "true") {
+      navigate("/");
     }
   }, [navigate]);
-
-
-
 
   const handleNavClick = (componentName) => {
     setSelectedComponent(componentName);
   };
 
-
   const toggleLabManager = async (index) => {
     const updatedParticipants = [...participants];
     const participant = updatedParticipants[index];
-  
+
     const email = participant.email;
     const isLabManager = participant.isLabManager;
-  
-    
+
     try {
       if (!isLabManager) {
-        
-        let data = await createNewSiteManager(sessionStorage.getItem("sid"), email, websiteData.domain);
-        if(data.response==="true"){
+        let data = await createNewSiteManager(
+          sessionStorage.getItem("sid"),
+          email,
+          websiteData.domain
+        );
+        if (data.response === "true") {
           participant.isLabManager = !isLabManager;
           setParticipants(updatedParticipants);
         }
       } else {
-       
-        let data =await removeSiteManager(sessionStorage.getItem("sid"), email, websiteData.domain);
+        let data = await removeSiteManager(
+          sessionStorage.getItem("sid"),
+          email,
+          websiteData.domain
+        );
         console.log(email);
-        if(data.response==="true"){
+        if (data.response === "true") {
           participant.isLabManager = !isLabManager;
           setParticipants(updatedParticipants);
         }
       }
-  
-    
     } catch (error) {
-      console.error('Error toggling lab manager:', error);
-      showError('An error occurred while updating the lab manager.');
+      console.error("Error toggling lab manager:", error);
+      showError("An error occurred while updating the lab manager.");
     }
   };
-
 
   const toggleAlumni = async (index) => {
     const updatedParticipants = [...participants];
     const participant = updatedParticipants[index];
-  
+
     const email = participant.email;
     const islumi = participant.alumni;
-  
-    
+
     try {
-    if (!islumi) {
-        
-       let data = await addAlumni(sessionStorage.getItem("sid"), email, websiteData.domain);
-        if(data.response==="true"){
+      if (!islumi) {
+        let data = await addAlumni(
+          sessionStorage.getItem("sid"),
+          email,
+          websiteData.domain
+        );
+        if (data.response === "true") {
           participant.alumni = !islumi;
-           setParticipants(updatedParticipants);
-         }
-       } else {
-       
+          setParticipants(updatedParticipants);
+        }
+      } else {
         // let data =await removeSiteManager(sessionStorage.getItem("sid"), email, websiteData.domain);
         // console.log(email);
         // if(data.response==="true"){
@@ -173,11 +203,9 @@ const useChooseComponents = () => {
         //   setParticipants(updatedParticipants);
         // }
       }
-  
-    
     } catch (error) {
-      console.error('Error toggling lab manager:', error);
-      showError('An error occurred while updating the lab manager.');
+      console.error("Error toggling lab manager:", error);
+      showError("An error occurred while updating the lab manager.");
     }
   };
 
@@ -186,19 +214,21 @@ const useChooseComponents = () => {
       prevParticipants.filter((_, i) => i !== index)
     );
   };
-  
-  
+
   const handleInputChangeParticipant = (e) => {
     const { name, value, type, checked } = e.target;
-    setNewParticipant(prev => ({
+    setNewParticipant((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const addParticipantGen = async () => {
-    if (newParticipant.fullName && newParticipant.degree && newParticipant.email) {
-     
+    if (
+      newParticipant.fullName &&
+      newParticipant.degree &&
+      newParticipant.email
+    ) {
       try {
         const response = await addLabMember(
           sessionStorage.getItem("sid"), // Manager's User ID, assuming this is stored in sessionStorage
@@ -207,18 +237,20 @@ const useChooseComponents = () => {
           newParticipant.degree, // Degree of the new participant
           websiteData.domain // Domain of the lab
         );
-  
-        if (response.response === 'true') {
-        
-          setParticipants([...participants, { ...newParticipant, isLabManager: false }]);
-          setNewParticipant({ fullName: '', degree: '', email: '' }); 
+
+        if (response.response === "true") {
+          setParticipants([
+            ...participants,
+            { ...newParticipant, isLabManager: false },
+          ]);
+          setNewParticipant({ fullName: "", degree: "", email: "" });
           setShowAddForm(false);
         } else {
           showError(`Error: ${response.message}`);
         }
       } catch (error) {
-        console.error('Error adding participant:', error);
-        showError('An error occurred while adding the lab member.');
+        console.error("Error adding participant:", error);
+        showError("An error occurred while adding the lab member.");
       }
     } else {
       showError("Please fill all fields.");
@@ -231,40 +263,36 @@ const useChooseComponents = () => {
         // First row: Set the creator info (name is empty at first)
         return [
           {
-            fullName: '',
-            email: sessionStorage.getItem("userEmail") || '',
-            degree: '',
-            isLabManager: true,  // Creator is always a manager
-          }
+            fullName: "",
+            email: sessionStorage.getItem("userEmail") || "",
+            degree: "",
+            isLabManager: true, // Creator is always a manager
+          },
         ];
       } else {
         // Add a new empty row for additional participants
         return [
           ...prevParticipants,
-          { fullName: '', email: '', degree: '', isLabManager: false }
+          { fullName: "", email: "", degree: "", isLabManager: false },
         ];
       }
     });
   };
-  
+
   const handleParticipantChange = (index, field, value) => {
     setParticipants((prevParticipants) => {
       const updatedParticipants = [...prevParticipants]; // Copy array
-  
+
       if (!updatedParticipants[index]) return prevParticipants; // Avoid errors
-  
+
       updatedParticipants[index] = {
         ...updatedParticipants[index], // Copy object
         [field]: value, // Update specific field
       };
-  
+
       return updatedParticipants;
     });
   };
-  
-  
-  
-  
 
   const handleAboutUsChange = (e) => {
     setAboutUsSaved(false);
@@ -272,17 +300,20 @@ const useChooseComponents = () => {
   };
 
   const saveAboutUs = async () => {
-    sessionStorage.setItem('AboutUs', aboutUsContent);
+    sessionStorage.setItem("AboutUs", aboutUsContent);
     if (websiteData.generated) {
-      const response = await setSiteAboutUs(sessionStorage.getItem('sid'), websiteData.domain, aboutUsContent);
-      if (response.response === 'true') {
+      const response = await setSiteAboutUs(
+        sessionStorage.getItem("sid"),
+        websiteData.domain,
+        aboutUsContent
+      );
+      if (response.response === "true") {
         // alert('About Us saved successfully');
       } else {
-        showError('Error updating About Us: ' + response.message);
+        showError("Error updating About Us: " + response.message);
       }
-    } 
-      setAboutUsSaved(true);
-    
+    }
+    setAboutUsSaved(true);
   };
 
   const handleContactUsChange = (e) => {
@@ -295,20 +326,24 @@ const useChooseComponents = () => {
   };
 
   const saveContactUs = async () => {
-    sessionStorage.setItem('ContactUs', JSON.stringify(contactUsData));
+    sessionStorage.setItem("ContactUs", JSON.stringify(contactUsData));
     if (websiteData.generated) {
-      const response = await setSiteContactInfo(sessionStorage.getItem('sid'), websiteData.domain, contactUsData.address, contactUsData.email, contactUsData.phoneNumber);
-      if (response.response === 'true') {
+      const response = await setSiteContactInfo(
+        sessionStorage.getItem("sid"),
+        websiteData.domain,
+        contactUsData.address,
+        contactUsData.email,
+        contactUsData.phoneNumber
+      );
+      if (response.response === "true") {
         // alert('Contact information saved successfully');
       } else {
-        showError('Error updating Contact Information: ' + response.message);
+        showError("Error updating Contact Information: " + response.message);
       }
-    } 
-      setcontactUs(true);
-    
+    }
+    setcontactUs(true);
+  };
 
-  }
-  
   const handleFileChange = (e, component) => {
     const file = e.target.files[0];
     if (file) {
@@ -322,28 +357,27 @@ const useChooseComponents = () => {
     }
   };
 
-
   const handleDownload = (component) => {
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = `C:\SE\Lab-Site-Generator\Frontend\lab-gen\src\participants.csv`; // Modify as needed
     link.download = `${component}.xlsx`;
     link.click();
   };
 
   const handleSubmit = async (component) => {
-    const component_new = component.replace(" ", '').toLowerCase();
+    const component_new = component.replace(" ", "").toLowerCase();
 
     const formDataToSend = new FormData();
-    formDataToSend.append('domain', formData.domain);
-    formDataToSend.append('website_name', formData.websiteName);
-    
+    formDataToSend.append("domain", formData.domain);
+    formDataToSend.append("website_name", formData.websiteName);
+
     if (formData.files[component_new]) {
       formDataToSend.append(component_new, formData.files[component_new]);
     }
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/uploadFile', {
-        method: 'POST',
+      const response = await fetch("http://127.0.0.1:5000/api/uploadFile", {
+        method: "POST",
         body: formDataToSend,
       });
       const data = await response.json();
@@ -351,17 +385,22 @@ const useChooseComponents = () => {
         // alert(`${component} data saved successfully!`);
         setWebsite({ ...formData });
         if (websiteData.generated) {
-      
-          const saveLogoResponse = await saveLogo(sessionStorage.getItem("sid"), websiteData.domain);
+          const saveLogoResponse = await saveLogo(
+            sessionStorage.getItem("sid"),
+            websiteData.domain
+          );
           console.log(saveLogoResponse);
-          const savePhotoResponse = await saveHomePicture(sessionStorage.getItem("sid"), websiteData.domain);
-          console.log(savePhotoResponse)
-      }
+          const savePhotoResponse = await saveHomePicture(
+            sessionStorage.getItem("sid"),
+            websiteData.domain
+          );
+          console.log(savePhotoResponse);
+        }
       } else {
-        showError('Error: ' + data.error);
+        showError("Error: " + data.error);
       }
     } catch (error) {
-      showError('Error: ' + error.message);
+      showError("Error: " + error.message);
     }
   };
 
@@ -390,46 +429,74 @@ const useChooseComponents = () => {
   //   }
   // };
 
+  // const handleGenerate = async () => {
+  //   try {
+  //     console.log(participants);
+  //     const data = await generate(
+  //       websiteData.domain,
+  //       aboutUsContent,
+  //       contactUsData.email,
+  //       contactUsData.address,
+  //       contactUsData.phoneNumber,
+  //       participants
+  //     );
+  //     console.log(data);
+  //     if (data.response === "true") {
+  //       sessionStorage.removeItem("AboutUs");
+  //       sessionStorage.removeItem("ContactUs");
+  //       navigate("/my-account");
+  //     } else {
+  //       showError("Error: " + (data.error || "Unknown error occurred"));
+  //     }
+  //   } catch (error) {
+  //     showError(error);
+  //     alert("Error!!!: " + (error.response?.data?.message || error.message));
+  //   }
+  // };
+
   const handleGenerate = async () => {
     try {
-        console.log(participants);
-        const response = await axios.post(`${baseApiUrl}generateWebsite`, {
-            domain: websiteData.domain,
-            about_us: aboutUsContent,
-            lab_address: contactUsData.address,
-            lab_mail: contactUsData.email,
-            lab_phone_num: contactUsData.phoneNumber,
-            participants: participants.map(p => ({
-                fullName: p.fullName,
-                email: p.email,
-                degree: p.degree,
-                isLabManager: p.isLabManager,
-                alumni: p.alumni || false
-            }))
-        }, {
-            headers: { "Content-Type": "application/json" }
-        });
-
-        const data = response.data;
-        console.log("Response Data:", data);
-
-        if (data.response === "true") {
-            sessionStorage.removeItem("AboutUs");
-            sessionStorage.removeItem("ContactUs");
-            navigate("/my-account");
-        } else {
-          showError('Error: ' + (data.error || "Unknown error occurred"));
+      console.log(participants);
+      const response = await axios.post(
+        `${baseApiUrl}generateWebsite`,
+        {
+          domain: websiteData.domain,
+          about_us: aboutUsContent,
+          lab_address: contactUsData.address,
+          lab_mail: contactUsData.email,
+          lab_phone_num: contactUsData.phoneNumber,
+          participants: participants.map((p) => ({
+            fullName: p.fullName,
+            email: p.email,
+            degree: p.degree,
+            isLabManager: p.isLabManager,
+            alumni: p.alumni || false,
+          })),
+        },
+        {
+          headers: { "Content-Type": "application/json" },
         }
-    } catch (error) {
-        showError( error);
-        alert('Error: ' + (error.response?.data?.message || error.message));
-    }
-};
+      );
 
+      const data = response.data;
+      console.log("Response Data:", data);
+
+      if (data.response === "true") {
+        sessionStorage.removeItem("AboutUs");
+        sessionStorage.removeItem("ContactUs");
+        navigate("/my-account");
+      } else {
+        showError("Error: " + (data.error || "Unknown error occurred"));
+      }
+    } catch (error) {
+      showError(error);
+      alert("Error: " + (error.response?.data?.message || error.message));
+    }
+  };
 
   /////////////////////////
   useEffect(() => {
-    if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+    if (sessionStorage.getItem("isLoggedIn") !== "true") {
       navigate("/");
     }
   }, [navigate]);
@@ -439,9 +506,21 @@ const useChooseComponents = () => {
       showError("Please enter a domain and website name");
       return;
     }
-    let data = await createCustomSite(domain, websiteName, components, template);
+    let data = await createCustomSite(
+      domain,
+      websiteName,
+      components,
+      template
+    );
     if (data.response === "true") {
-      setWebsite({ ...websiteData, domain, websiteName, components, template, created: true });
+      setWebsite({
+        ...websiteData,
+        domain,
+        websiteName,
+        components,
+        template,
+        created: true,
+      });
       setIsChanged(false);
       setStep(2);
     }
@@ -458,21 +537,39 @@ const useChooseComponents = () => {
   };
 
   const handleComponentChange = (component) => {
-    setComponents(prev => prev.includes(component) ? prev.filter(c => c !== component) : [...prev, component]);
+    setComponents((prev) =>
+      prev.includes(component)
+        ? prev.filter((c) => c !== component)
+        : [...prev, component]
+    );
     setIsComponentsSaved(false); // Reset button to "Save"
     setIsChanged(true);
   };
 
   const handleTemplateClick = (templateName) => {
-    setTemplate(templateName === template ? '' : templateName);
-    setIsChanged(true);
+    setTemplate(templateName === template ? "" : templateName);
+    setTempSaved(false);
+  };
+  const handleSveTemplate = async () => {
+    console.log(template);
+
+    let data = await changeTemplate(domain, template);
+    console.log(data);
+    if (data.response === "true") {
+      setIsChanged(true);
+      setTempSaved(true);
+      console.log(template);
+    } else {
+      showError("Couldn't change template");
+    }
   };
 
-  const isValidDomain = (domain) => /^(?!:\/\/)([A-Za-z0-9-]+\.)+[A-Za-z]{2,6}$/.test(domain);
+  const isValidDomain = (domain) =>
+    /^(?!:\/\/)([A-Za-z0-9-]+\.)+[A-Za-z]{2,6}$/.test(domain);
 
   const handleSaveComponents = async () => {
-    if (components.length <=1) {
-      showError('Please select components');
+    if (components.length <= 1) {
+      showError("Please select components");
       return;
     }
     let data = await changeComponents(domain, components);
@@ -543,8 +640,17 @@ const useChooseComponents = () => {
     toggleLabManager,
     toggleAlumni,
     handleParticipantChange,
-    componentsSaved, setComponentsSaved,handleGenerate,addParticipantGen,removeParticipant,isComponentsSaved, errorMessage,
+    componentsSaved,
+    setComponentsSaved,
+    handleGenerate,
+    addParticipantGen,
+    removeParticipant,
+    isComponentsSaved,
+    errorMessage,
     setErrorMessage,
+    handleSveTemplate,
+    isTempSaved,
+    setTempSaved,
   };
 };
 

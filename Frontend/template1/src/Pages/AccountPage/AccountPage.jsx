@@ -17,6 +17,7 @@ import {
   setLinkedInLinkByMember,
   getMemberPublications,
 } from "../../services/websiteService";
+import { fetchUserNotifications } from "../../services/UserService";
 import { NotificationContext } from "../../Context/NotificationContext";
 
 const AccountPage = () => {
@@ -29,6 +30,13 @@ const AccountPage = () => {
     linkedIn: "",
     fullname: "",
   });
+  const [showApprovalModal, setShowApprovalModal] = useState(false);
+
+  const [selectedNotification, setSelectedNotification] = useState(null);
+  const [approvalForm, setApprovalForm] = useState({
+    fullName: "",
+    degree: "",
+  });
 
   const [publications, setPublications] = useState([]);
   const [uploadedPhoto, setUploadedPhoto] = useState(accountIcon);
@@ -37,8 +45,13 @@ const AccountPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddPublicationModalOpen, setIsAddPublicationModalOpen] =
     useState(false);
-  const { notifications, hasNewNotifications, markNotificationAsRead } =
-    useContext(NotificationContext); // Get notifications
+  const {
+    notifications,
+    hasNewNotifications,
+    markNotificationAsRead,
+    updateNotifications,
+    setHasNewNotifications,
+  } = useContext(NotificationContext); // Get notifications
 
   useEffect(() => {
     // Fetch user details
@@ -61,11 +74,9 @@ const AccountPage = () => {
     };
 
     const fetchPublications = async () => {
-      //TODO: change it
-      const data = await getMemberPublications(
-        sessionStorage.getItem("domain")
-      );
-
+      const domain = sessionStorage.getItem("domain");
+      const data = await getMemberPublications(domain);
+      console.log("Fetched Publications:", data); // Debugging log
       setPublications(data || []);
     };
     fetchUserDetails();
@@ -75,6 +86,20 @@ const AccountPage = () => {
   const handleSectionChange = (section) => {
     setActiveSection(section);
   };
+
+  useEffect(() => {
+    const fetchAndUpdateNotifications = async () => {
+      if (activeSection === "notifications") {
+        const email = sessionStorage.getItem("userEmail");
+        if (email) {
+          const updatedNotifications = await fetchUserNotifications(email);
+          updateNotifications(updatedNotifications);
+        }
+      }
+    };
+
+    fetchAndUpdateNotifications();
+  }, [activeSection]);
 
   const handleUploadPhoto = () => {
     const fileInput = document.createElement("input");
@@ -97,14 +122,50 @@ const AccountPage = () => {
     alert("Photo saved successfully!");
   };
 
-  const handleApproveNotification = async (id) => {
-    // await approveNotification(id); // API call to approve notification
-    markNotificationAsRead(id);
+  const handleApproveNotification = async (notif) => {
+    setSelectedNotification(notif);
+    setShowApprovalModal(true);
   };
 
-  const handleRejectNotification = async (id) => {
-    // await rejectNotification(id); // API call to reject notification
-    markNotificationAsRead(id);
+  const handleSubmitApproval = async () => {
+    const payload = {
+      domain: sessionStorage.getItem("domain"),
+      manager_userId: sessionStorage.getItem("sid"),
+      requested_full_name: approvalForm.fullName,
+      requested_degree: approvalForm.degree,
+      notification_id: selectedNotification.id,
+    };
+
+    const response = await approveRegistration(payload);
+    if (response) {
+      markNotificationAsRead(selectedNotification.id);
+      setShowApprovalModal(false);
+      setApprovalForm({ fullName: "", degree: "" });
+      setSelectedNotification(null);
+    } else {
+      alert("Approval failed.");
+    }
+  };
+
+  useEffect(() => {
+    if (activeSection === "notifications") {
+      setHasNewNotifications(false); // ✅ Now inside an effect, safe to call
+    }
+  }, [activeSection, setHasNewNotifications]);
+
+  const handleRejectNotification = async (notifId) => {
+    const payload = {
+      domain: sessionStorage.getItem("domain"),
+      manager_userId: sessionStorage.getItem("sid"),
+      notification_id: notifId,
+    };
+
+    const response = await rejectRegistration(payload);
+    if (response) {
+      markNotificationAsRead(notifId);
+    } else {
+      alert("Rejection failed.");
+    }
   };
 
   const filteredPublications = publications.filter((pub) =>
@@ -441,13 +502,13 @@ const AccountPage = () => {
         {activeSection === "notifications" && (
           <div id="notifications" className="notifications_section">
             <h2>Notifications</h2>
-            {notifications.length === 0 ? (
+            {!notifications || notifications.length === 0 ? (
               <p>No notifications available.</p>
             ) : (
-              notifications.map((notif) => (
+              notifications?.map((notif) => (
                 <div key={notif.id} className="notifications">
                   <div className="notification_info">
-                    <div>{notif.message}</div>
+                    <div>{notif.body}</div>
                     <div className="notification_buttons">
                       <button
                         className="notification_button"
@@ -457,7 +518,7 @@ const AccountPage = () => {
                       </button>
                       <button
                         className="notification_button"
-                        onClick={() => handleApproveNotification(notif.id)}
+                        onClick={() => handleApproveNotification(notif)}
                       >
                         Approve
                       </button>
@@ -465,6 +526,51 @@ const AccountPage = () => {
                   </div>
                 </div>
               ))
+            )}
+            {showApprovalModal && (
+              <div className="custom-modal-overlay">
+                <div className="approval-modal">
+                  <button
+                    className="close-button"
+                    onClick={() => setShowApprovalModal(false)}
+                  >
+                    X
+                  </button>
+                  <h3>Approve Registration</h3>
+                  <input
+                    type="text"
+                    placeholder="Full Name"
+                    value={approvalForm.fullName}
+                    onChange={(e) =>
+                      setApprovalForm({
+                        ...approvalForm,
+                        fullName: e.target.value,
+                      })
+                    }
+                  />
+                  <select
+                    value={approvalForm.degree}
+                    onChange={(e) =>
+                      setApprovalForm({
+                        ...approvalForm,
+                        degree: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="">Select Degree</option>
+                    <option value="B.Sc.">B.Sc.</option>
+                    <option value="M.Sc.">M.Sc.</option>
+                    <option value="Ph.D.">Ph.D.</option>
+                    <option value="Postdoc">Postdoc</option>
+                  </select>
+                  <button
+                    className="approve-button"
+                    onClick={handleSubmitApproval}
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
             )}
           </div>
         )}

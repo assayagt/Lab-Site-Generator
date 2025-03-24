@@ -77,11 +77,11 @@ class Website:
                     publication.set_git_link(git_link)
                     return
 
-    def set_publication_presentation_link(self, publication_paper_id):
+    def set_publication_presentation_link(self, publication_paper_id,link):
         for author_email in self.members_publications:
             for publication in self.members_publications[author_email]:
                 if publication.get_paper_id() == publication_paper_id:
-                    publication.set_presentation_link()
+                    publication.set_presentation_link(link)
                     return
 
     def check_if_member_is_publication_author(self, email, publication_paper_id):
