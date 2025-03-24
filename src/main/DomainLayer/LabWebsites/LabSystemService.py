@@ -347,3 +347,10 @@ class LabSystemService:
             return Response(notifications, "Retrieved all notifications successfully")
         except Exception as e:
             return Response(None, str(e))
+
+    def mark_as_read(self, user_id, domain, notification_id):
+        try:
+            self.lab_system_controller.mark_as_read(user_id, domain, notification_id)
+            return Response(True, "Notification marked as read successfully")
+        except Exception as e:
+            return Response(None, str(e))

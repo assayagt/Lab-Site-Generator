@@ -476,4 +476,4 @@ class LabSystemController:
         userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
         email = userFacade.get_email_by_userId(userId)
-        #TODO: implement this function in the future
+        self.notificationsFacade.mark_notification_as_read(domain, email, notification_id)

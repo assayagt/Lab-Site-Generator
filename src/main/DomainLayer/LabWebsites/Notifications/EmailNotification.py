@@ -56,3 +56,7 @@ class EmailNotification:
             "subject": self.subject,
             "body": self.body
         }
+
+    def mark_as_read(self):
+        """Mark the notification as read."""
+        self.isRead = True
