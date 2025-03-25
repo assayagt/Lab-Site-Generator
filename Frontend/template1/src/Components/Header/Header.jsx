@@ -62,14 +62,16 @@ function Header(props) {
   return (
     <div className="header">
       {/* Logo & Title */}
-      <img
-        className="header_logo"
-        src={props.logo}
-        alt="logo"
-        onClick={() => navigate("/")}
-      />
-      <div className="header_title" onClick={() => navigate("/")}>
-        {props.title}
+      <div className="header_title_name">
+        <img
+          className="header_logo"
+          src={props.logo}
+          alt="logo"
+          onClick={() => navigate("/")}
+        />
+        <div className="header_title" onClick={() => navigate("/")}>
+          {props.title}
+        </div>
       </div>
 
       {/* Navbar - Expands on Hover */}

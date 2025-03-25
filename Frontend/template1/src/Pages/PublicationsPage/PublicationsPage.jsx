@@ -98,7 +98,7 @@ const PublicationPage = () => {
     currentPage * itemsPerPage
   );
 
-  const totalPages = Math.ceil(filteredPublications.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredPublications.length / itemsPerPage) + 1;
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {

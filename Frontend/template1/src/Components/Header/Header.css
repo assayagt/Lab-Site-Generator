@@ -208,13 +208,19 @@
   gap: 30px;
 }
 
+.header_title_name {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
 /* NAVBAR */
 .navbar {
   display: flex;
   flex-direction: row;
   background: rgba(69, 69, 69, 0.1);
   border-radius: 30px;
-  width: 450px; /* Starts small */
+  min-width: fit-content; /* Starts small */
   max-width: fit-content; /* Expands up to this */
 
   height: 40px;
