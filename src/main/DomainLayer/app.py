@@ -823,7 +823,7 @@ class SetPublicationPttxLink(Resource):
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 
-class AddLabMemberFromWebsiteFromWebsite(Resource):
+class AddLabMemberFromWebsite(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('user_id', type=str, required=True, help="User ID of the manager adding the member is required")
@@ -834,7 +834,7 @@ class AddLabMemberFromWebsiteFromWebsite(Resource):
         args = parser.parse_args()
 
         try:
-            response = generator_system.register_new_LabMember_from_labWebsite(args['user_id'], args['email'], args['full_name'], args['degree'], args['domain'])
+            response = lab_system_service.register_new_LabMember_from_labWebsite(args['user_id'], args['email'], args['full_name'], args['degree'], args['domain'])
             if response.is_success():
                     return jsonify({"message": response.get_message(), "response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})
@@ -1466,7 +1466,7 @@ api.add_resource(RejectRegistration, '/api/rejectRegistration') #
 api.add_resource(GetAllLabManagers, '/api/getAllLabManagers')#
 api.add_resource(GetAllLabMembers, '/api/getAllLabMembers')#
 api.add_resource(GetAllAlumni, '/api/getAllAlumni')#
-# api.add_resource(AddLabMemberFromWebsite, '/api/addLabMember') #
+api.add_resource(AddLabMemberFromWebsite, '/api/addLabMemberFromWebsite') #
 api.add_resource(AddLabMemberFromGenerator, '/api/addLabMemberFromGenerator')#
 api.add_resource(CreateNewSiteManagerFromLabWebsite, '/api/createNewSiteManagerFromLabWebsite')#
 api.add_resource(SiteCreatorResignationFromLabWebsite, '/api/siteCreatorResignationFromLabWebsite')#
