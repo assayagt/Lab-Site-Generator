@@ -181,6 +181,13 @@ class GeneratorSystemController:
         self.user_facade.create_new_site_manager(nominated_manager_email, domain)
         self.labSystem.create_new_site_manager_from_generator(domain, nominated_manager_email)
 
+    def create_new_site_manager_from_lab_website(self, nominated_manager_email, domain):
+        """
+        Define and add new manager to a specific website, from lab website.
+        The given nominated_manager_email must be associated with a Lab Member of the given website.
+        """
+        self.user_facade.create_new_site_manager(nominated_manager_email, domain)
+
     def add_alumni_from_generator(self, manager_userId, email_toSetAlumni, domain):
         """
         Define a lab member or lab manager as alumni in a specific website, from generator site.

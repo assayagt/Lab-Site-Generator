@@ -427,6 +427,30 @@ class CreateNewSiteManagerFromGenerator(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
+class CreateNewSiteManagerFromLabWebsite(Resource):
+    """
+    Define and add new manager to a specific website, from specific lab website.
+    The given nominated_manager_email must be associated with a Lab Member of the given website.
+    """
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User ID of the nominating manager is required")
+        parser.add_argument('email', type=str, required=True, help="Email of the new manager is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain of the lab is required")
+        args = parser.parse_args()
+
+        try:
+            response1 = lab_system_service.create_new_site_manager_from_labWebsite(args['user_id'], args['domain'],
+                                                                                   args['email'])
+            if response1.is_success():
+                response2 = generator_system.create_new_site_manager_from_lab_website(args['email'], args['domain'])
+                if response2.is_success():
+                    return jsonify({"message": "Lab manager added successfully", "response": "true"})
+                return jsonify({"message": response2.get_message(), "response": "false"})
+            return jsonify({"message": response1.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
 
 class RemoveSiteManagerFromGenerator(Resource):
     """
@@ -813,22 +837,6 @@ class AddLabMemberFromWebsiteFromWebsite(Resource):
             response = generator_system.register_new_LabMember_from_labWebsite(args['user_id'], args['email'], args['full_name'], args['degree'], args['domain'])
             if response.is_success():
                     return jsonify({"message": response.get_message(), "response": "true"})
-            return jsonify({"message": response.get_message(), "response": "false"})
-        except Exception as e:
-            return jsonify({"error": str(e)})
-        
-class AddLabManager(Resource):
-    def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('user_id', type=str, required=True, help="User ID of the nominating manager is required")
-        parser.add_argument('email', type=str, required=True, help="Email of the new manager is required")
-        parser.add_argument('domain', type=str, required=True, help="Domain of the lab is required")
-        args = parser.parse_args()
-
-        try:
-            response = generator_system.create_new_site_manager_from_labWebsite(args['user_id'], args['domain'], args['email'])
-            if response.is_success():
-                return jsonify({"message": "Lab manager added successfully", "response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
@@ -1429,7 +1437,7 @@ api.add_resource(GetAllLabMembers, '/api/getAllLabMembers')#
 api.add_resource(GetAllAlumni, '/api/getAllAlumni')#
 # api.add_resource(AddLabMemberFromWebsite, '/api/addLabMember') #
 api.add_resource(AddLabMemberFromGenerator, '/api/addLabMemberFromGenerator')#
-api.add_resource(AddLabManager, '/api/addLabManager')#
+api.add_resource(CreateNewSiteManagerFromLabWebsite, '/api/createNewSiteManagerFromLabWebsite')#
 
 api.add_resource(SetSecondEmail, '/api/setSecondEmail')#
 api.add_resource(SetLinkedInLink, '/api/setLinkedInLink')#
