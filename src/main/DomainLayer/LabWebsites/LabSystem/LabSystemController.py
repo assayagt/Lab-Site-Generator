@@ -453,11 +453,17 @@ class LabSystemController:
     def get_contact_us(self, domain):
         return self.websiteFacade.get_contact_us(domain)
 
-    def site_creator_resignation(self, user_id, domain, nominate_email):
+    def site_creator_resignation_from_lab_website(self, user_id, domain, nominate_email, new_role):
         """
-        Site creator resignation.
+        Site creator resignation from lab website.
         """
-        self.allWebsitesUserFacade.site_creator_resignation(user_id, domain, nominate_email)
+        self.allWebsitesUserFacade.site_creator_resignation_from_lab_website(user_id, domain, nominate_email, new_role)
+
+    def site_creator_resignation_from_generator(self, domain, nominate_email, new_role):
+        """
+        Site creator resignation from generator.
+        """
+        self.allWebsitesUserFacade.site_creator_resignation_from_generator(domain, nominate_email, new_role)
 
     def get_all_member_notifications(self, userId, domain):
         """

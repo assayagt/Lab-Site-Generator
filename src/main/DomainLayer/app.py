@@ -1136,27 +1136,6 @@ class FinalApprovePublicationByManager(Resource):
             return jsonify({"error": str(e)})
 
 
-class DefineMemberAsAlumni(Resource):
-    """
-    define member (lab manager or lab member) as alumni
-    Only managers can perform this operation.
-    """
-    def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('manager_user_id', required=True, help="Manager User ID is required")
-        parser.add_argument('member_email', required=True, help="Member email is required")
-        parser.add_argument('domain', required=True, help="Domain is required")
-        args = parser.parse_args()
-
-        try:
-            response = lab_system_service.define_member_as_alumni(args['manager_user_id'], args['member_email'], args['domain'])
-            if response.is_success():
-                return jsonify({"message": response.get_message(), "response": "true"})
-            return jsonify({"message": response.get_message(), "response": "false"})
-        except Exception as e:
-            return jsonify({"error": str(e)})
-
-
 class RemoveManagerPermission(Resource):
     """A Lab Manager(manager_userId) removes the administrative permissions of another Lab Manager,
     reverting their role to a Lab Member.
@@ -1329,21 +1308,50 @@ class GetContactUs(Resource):
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
 
-class SiteCreatorResignation(Resource):
+class SiteCreatorResignationFromGenerator(Resource):
+    """
+    Resignation of the site creator through GeneratorSystemController.
+    new_role is the new role of the current site creator after resignation - can be 'manager' or 'member' or 'alumni'
+    email is the mail of the newly nominated member (must be a current lab member/manager)
+    """
+
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('user_id', required=True, help="User ID is required")
         parser.add_argument('domain', required=True, help="Domain is required")
         parser.add_argument('email', required=True, help="Email is required")
+        parser.add_argument('new_role', required=True, help="New role is required")
         args = parser.parse_args()
 
         try:
-            response1 = generator_system.site_creator_resignation(args['user_id'], args['domain'], args['email'])
+            response = generator_system.site_creator_resignation_from_generator(args['user_id'], args['domain'], args['email'], args['new_role'])
+            if response.is_success():
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class SiteCreatorResignationFromLabWebsite(Resource):
+    """
+    Resignation of the site creator through Lab Website.
+    new_role is the new role of the current site creator after resignation - can be 'manager' or 'member' or 'alumni'
+    email is the mail of the newly nominated member (must be a current lab member/manager)
+    """
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', required=True, help="User ID is required")
+        parser.add_argument('domain', required=True, help="Domain is required")
+        parser.add_argument('email', required=True, help="Email is required")
+        parser.add_argument('new_role', required=True, help="New role is required")
+        args = parser.parse_args()
+
+        try:
+            response1 = lab_system_service.site_creator_resignation_from_lab_website(args['user_id'], args['domain'], args['email'], args['new_role'])
             if response1.is_success():
-                response2 = lab_system_service.site_creator_resignation(args['user_id'], args['domain'], args['email'])
+                response2 = generator_system.site_creator_resignation_from_lab_website(args['domain'], args['email'], args['new_role'])
                 if response2.is_success():
-                    return jsonify({"message": response1.get_message(), "response": "true"})
-                return jsonify({"error": f"An error occurred: {response2.get_message()}", "response": "false"})
+                    return jsonify({"message": response2.get_message(), "response": "true"})
+                return jsonify({"message": f"An error occurred: {response2.get_message()}", "response": "false"})
             return jsonify({"message": response1.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
@@ -1373,7 +1381,6 @@ class AddAlumniFromGenerator(Resource):
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
         args = parser.parse_args()
 
-
         try:
             response = generator_system.add_alumni_from_generator(args['manager_userId'], args['email_toSetAlumni'], args['domain'])
             if response.is_success():
@@ -1381,6 +1388,29 @@ class AddAlumniFromGenerator(Resource):
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
+
+class AddAlumniFromLabWebsite(Resource):
+    """
+    define member (lab manager or lab member) as alumni
+    Only managers can perform this operation.
+    """
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('manager_user_id', required=True, help="Manager User ID is required")
+        parser.add_argument('member_email', required=True, help="Member email is required")
+        parser.add_argument('domain', required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response1 = lab_system_service.define_member_as_alumni(args['manager_user_id'], args['member_email'], args['domain'])
+            if response1.is_success():
+                response2 = generator_system.add_alumni_from_lab_website(args['member_email'], args['domain'])
+                if response2.is_success():
+                    return jsonify({"message": response2.get_message(), "response": "true"})
+                return jsonify({"message": response2.get_message(), "response": "false"})
+            return jsonify({"message": response1.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
 
 class GetAllMembersNotifications(Resource):
     def get(self):
@@ -1406,7 +1436,7 @@ api.add_resource(SetPublicationGitLink, '/api/setPublicationGitLink')
 api.add_resource(SetPublicationPttxLink, '/api/setPublicationPttxLink')
 api.add_resource(InitialApprovePublicationByAuthor, '/api/initialApprovePublicationByAuthor')
 api.add_resource(FinalApprovePublicationByManager, '/api/finalApprovePublicationByManager')
-api.add_resource(DefineMemberAsAlumni, '/api/defineMemberAsAlumni')
+api.add_resource(AddAlumniFromLabWebsite, '/api/addAlumniFromLabWebsite')
 api.add_resource(RemoveManagerPermission, '/api/removeManagerPermission')
 api.add_resource(GetAllMembersNames, '/api/getAllMembersNames')
 api.add_resource(GetPendingRegistrationEmails, '/api/getPendingRegistrationEmails')
@@ -1428,6 +1458,7 @@ api.add_resource(GetCustomSite, '/api/getCustomSite')
 api.add_resource(CreateNewSiteManagerFromGenerator, '/api/CreateNewSiteManagerFromGenerator')
 api.add_resource(RemoveAlumniFromGenerator, '/api/RemoveAlumniFromGenerator')
 api.add_resource(AddAlumniFromGenerator, '/api/AddAlumniFromGenerator')
+api.add_resource(SiteCreatorResignationFromGenerator, '/api/siteCreatorResignationFromGenerator')
 
 api.add_resource(GetMemberPublications, '/api/getMemberPublications')
 api.add_resource(ApproveRegistration, '/api/approveRegistration') #
@@ -1438,6 +1469,7 @@ api.add_resource(GetAllAlumni, '/api/getAllAlumni')#
 # api.add_resource(AddLabMemberFromWebsite, '/api/addLabMember') #
 api.add_resource(AddLabMemberFromGenerator, '/api/addLabMemberFromGenerator')#
 api.add_resource(CreateNewSiteManagerFromLabWebsite, '/api/createNewSiteManagerFromLabWebsite')#
+api.add_resource(SiteCreatorResignationFromLabWebsite, '/api/siteCreatorResignationFromLabWebsite')#
 
 api.add_resource(SetSecondEmail, '/api/setSecondEmail')#
 api.add_resource(SetLinkedInLink, '/api/setLinkedInLink')#
