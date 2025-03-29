@@ -137,6 +137,14 @@ class GeneratorSystemService:
         except Exception as e:
             return Response(None, str(e))
 
+    def create_new_site_manager_from_lab_website(self, nominated_manager_email, domain):
+        """Create a new site manager from lab website"""
+        try:
+            self.generator_system_controller.create_new_site_manager_from_lab_website(nominated_manager_email, domain)
+            return Response(nominated_manager_email, "Site manager created successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
     def remove_site_manager_from_generator(self, nominator_manager_userId, manager_toRemove_email, domain):
         """
         Remove a manager from a specific website, from generator site.
