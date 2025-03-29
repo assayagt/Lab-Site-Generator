@@ -331,12 +331,22 @@ class LabSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def site_creator_resignation(self, user_id, domain, nominate_email):
+    def site_creator_resignation_from_lab_website(self, user_id, domain, nominate_email, new_role):
         """
-        Site creator resignation.
+        Site creator resignation from lab website.
         """
         try:
-            self.lab_system_controller.site_creator_resignation(user_id, domain, nominate_email)
+            self.lab_system_controller.site_creator_resignation_from_lab_website(user_id, domain, nominate_email, new_role)
+            return Response(True, "Site creator resigned successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def site_creator_resignation_from_generator(self, domain, nominate_email, new_role):
+        """
+        Site creator resignation from generator.
+        """
+        try:
+            self.lab_system_controller.site_creator_resignation_from_generator(domain, nominate_email, new_role)
             return Response(True, "Site creator resigned successfully")
         except Exception as e:
             return Response(None, str(e))

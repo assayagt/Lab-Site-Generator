@@ -294,10 +294,18 @@ class GeneratorSystemService:
             return Response(None, str(e))
 
 
-    def site_creator_resignation(self, user_id, domain, nominated_email):
+    def site_creator_resignation_from_generator(self, site_creator_user_id, domain, nominated_email, new_role):
         """Resignation of the site creator through GeneratorSystemController."""
         try:
-            self.generator_system_controller.site_creator_resignation(user_id, domain, nominated_email)
+            self.generator_system_controller.site_creator_resignation_from_generator(site_creator_user_id, domain, nominated_email, new_role)
+            return Response(domain, "Site creator resigned successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def site_creator_resignation_from_lab_website(self, domain, nominated_email, new_role):
+        """Resignation of the site creator from lab website."""
+        try:
+            self.generator_system_controller.site_creator_resignation_from_lab_website(domain, nominated_email, new_role)
             return Response(domain, "Site creator resigned successfully")
         except Exception as e:
             return Response(None, str(e))
@@ -306,6 +314,14 @@ class GeneratorSystemService:
         """Set a lab member as alumni through GeneratorSystemController."""
         try:
             self.generator_system_controller.add_alumni_from_generator(manager_userId, email_toSetAlumni, domain)
+            return Response(email_toSetAlumni, "Lab member set as alumni successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def add_alumni_from_lab_website(self, email_toSetAlumni, domain):
+        """Set a lab member as alumni from lab website."""
+        try:
+            self.generator_system_controller.add_alumni_from_lab_website(email_toSetAlumni, domain)
             return Response(email_toSetAlumni, "Lab member set as alumni successfully")
         except Exception as e:
             return Response(None, str(e))
