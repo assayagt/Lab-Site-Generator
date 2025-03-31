@@ -1,4 +1,4 @@
-from DTOs.Publication_dto import PublicationDTO
+from DTOs.Publication_dto import Publication_dto
 
 
 class PublicationRepository:
@@ -12,7 +12,7 @@ class PublicationRepository:
         result = self.db_manager.execute_query(query, (paper_id,))
         if not result: return None
         row = result[0]
-        return PublicationDTO(
+        return Publication_dto(
             paper_id=row['paper_id'],
             title=row['title'],
             authors=row['authors'],
@@ -30,16 +30,16 @@ class PublicationRepository:
         Find all publications
             
         Returns:
-            list: List of Publication objects
+            list: List of Publication_dto objects
         """
         query = "SELECT * FROM publications ORDER BY publication_year DESC, title ASC"
         
         results = self.db_manager.execute_query(query)
         
-        # Convert rows to Publication objects
+        # Convert rows to Publication_dto objects
         publications = []
         for row in results:
-            publication = PublicationDTO(
+            publication = Publication_dto(
                 paper_id=row['paper_id'],
                 title=row['title'],
                 authors=row['authors'],
@@ -55,7 +55,7 @@ class PublicationRepository:
         
         return publications
     
-    def save(self, publication):
+    def save(self, publication_dto: Publication_dto):
         """
         Save a publication (insert or update)
         
@@ -66,7 +66,7 @@ class PublicationRepository:
             bool: True if successful, False otherwise
         """
         # Check if the publication exists
-        existing = self.find_by_id(publication.paper_id)
+        existing = self.find_by_id(publication_dto.paper_id)
         
         if existing:
             # Update existing publication
@@ -79,16 +79,16 @@ class PublicationRepository:
             """
             
             parameters = (
-                publication.title,
-                publication.authors,
-                publication.publication_year,
-                publication.approved,
-                publication.publication_link,
-                publication.video_link,
-                publication.git_link,
-                publication.presentation_link,
-                publication.description,
-                publication.paper_id
+                publication_dto.title,
+                publication_dto.authors,
+                publication_dto.publication_year,
+                publication_dto.approved,
+                publication_dto.publication_link,
+                publication_dto.video_link,
+                publication_dto.git_link,
+                publication_dto.presentation_link,
+                publication_dto.description,
+                publication_dto.paper_id
             )
         else:
             # Insert new publication
@@ -100,16 +100,16 @@ class PublicationRepository:
             """
             
             parameters = (
-                publication.paper_id,
-                publication.title,
-                publication.authors,
-                publication.publication_year,
-                publication.approved,
-                publication.publication_link,
-                publication.video_link,
-                publication.git_link,
-                publication.presentation_link,
-                publication.description
+                publication_dto.paper_id,
+                publication_dto.title,
+                publication_dto.authors,
+                publication_dto.publication_year,
+                publication_dto.approved,
+                publication_dto.publication_link,
+                publication_dto.video_link,
+                publication_dto.git_link,
+                publication_dto.presentation_link,
+                publication_dto.description
             )
         
         rows_affected = self.db_manager.execute_update(query, parameters)

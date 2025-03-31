@@ -111,6 +111,47 @@ class DatabaseManager:
         );
         '''
         self.execute_script(publications_table)
+
+        domain_paperID_table = '''
+        CREATE TABLE IF NOT EXISTS domain_paperID(
+        domain TEXT,
+        paper_id TEXT
+        );
+        '''
+        self.execute_script(domain_paperID_table)
+        
+
+        member_domain_table = '''
+        CREATE TABLE IF NOT EXISTS members(
+        email TEXT,
+        domain TEXT
+        );
+        '''
+        self.execute_script(member_domain_table)
+        
+        SiteCustoms_table = '''
+        CREATE TABLE IF NOT EXISTS site_customs(
+        domain TEXT PRIMARY KEY,
+        name TEXT,
+        creator_email TEXT,
+        components TEXT,
+        template TEXT,
+        logo BLOB,
+        home_pic BLOB,
+        generated INTEGER
+        );
+        '''
+        self.execute_script(SiteCustoms_table)
+
+        Websites_table = '''
+        CREATE TABLE IF NOT EXISTS websites(
+        domain TEXT PRIMARY KEY,
+        contact_info TEXT,
+        about_us TEXT,
+        );
+        '''
+        self.execute_script(Websites_table)
+
         self.logger.info("Database tables created successfully")
 
     def close(self):

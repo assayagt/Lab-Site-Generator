@@ -1,6 +1,6 @@
 import uuid
 
-class PublicationDTO:
+class Publication_dto:
     def __init__(self, paper_id: str, title: str, authors: str,
                  publication_year: int, approved: str,
                  publication_link, git_link=None, video_link=None, presentation_link=None,
