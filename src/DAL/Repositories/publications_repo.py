@@ -10,7 +10,8 @@ class PublicationRepository:
         "Retrieve publication by ID"
         query = "SELECT * FROM publications WHERE paper_id = ?"
         result = self.db_manager.execute_query(query, (paper_id,))
-        if not result: return None
+        if not result:
+            return None
         row = result[0]
         return Publication_dto(
             paper_id=row['paper_id'],
