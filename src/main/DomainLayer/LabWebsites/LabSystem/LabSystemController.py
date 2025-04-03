@@ -174,7 +174,7 @@ class LabSystemController:
                         self.notificationsFacade.send_publication_notification(publication, authorEmail,
                                                                                website.get_domain())
 
-    def initial_approve_publication_by_author(self, userId, domain, publication_id):
+    def initial_approve_publication_by_author(self, userId, domain, notification_id):
         """
         Approve a publication by its author in the initial review stage.
         If the publication has not yet been final approved by a lab manager,
@@ -184,6 +184,7 @@ class LabSystemController:
         userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
         email = userFacade.get_email_by_userId(userId)
+        publication_id = self.mark_as_read(userId, domain, notification_id)
         self.websiteFacade.error_if_member_is_not_publication_author(domain, publication_id, email)
         if not self.websiteFacade.check_if_publication_approved(domain, publication_id):
             managers_emails = list(userFacade.getManagers().keys())
@@ -199,7 +200,7 @@ class LabSystemController:
         else:
             raise Exception(ExceptionsEnum.PUBLICATION_ALREADY_APPROVED.value)
 
-    def final_approve_publication_by_manager(self, userId, domain, publication_id):
+    def final_approve_publication_by_manager(self, userId, domain, notification_id):
         """
         Approve a publication by a lab manager in the final review stage.
         """
@@ -207,15 +208,17 @@ class LabSystemController:
         userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
         userFacade.error_if_user_is_not_manager(userId)
+        publication_id = self.mark_as_read(userId, domain, notification_id)
         self.websiteFacade.final_approve_publication(domain, publication_id)
 
-    def reject_publication(self, userId, domain, publication_id):
+    def reject_publication(self, userId, domain, notification_id):
         """
         Reject a publication by a lab manager in the final review stage.
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
+        publication_id = self.mark_as_read(userId, domain, notification_id)
         self.websiteFacade.reject_publication(domain, publication_id)
 
     def add_publication_manually(self, user_id, domain, publication_link, git_link, video_link, presentation_link):
@@ -453,11 +456,17 @@ class LabSystemController:
     def get_contact_us(self, domain):
         return self.websiteFacade.get_contact_us(domain)
 
-    def site_creator_resignation(self, user_id, domain, nominate_email):
+    def site_creator_resignation_from_lab_website(self, user_id, domain, nominate_email, new_role):
         """
-        Site creator resignation.
+        Site creator resignation from lab website.
         """
-        self.allWebsitesUserFacade.site_creator_resignation(user_id, domain, nominate_email)
+        self.allWebsitesUserFacade.site_creator_resignation_from_lab_website(user_id, domain, nominate_email, new_role)
+
+    def site_creator_resignation_from_generator(self, domain, nominate_email, new_role):
+        """
+        Site creator resignation from generator.
+        """
+        self.allWebsitesUserFacade.site_creator_resignation_from_generator(domain, nominate_email, new_role)
 
     def get_all_member_notifications(self, userId, domain):
         """
@@ -471,7 +480,7 @@ class LabSystemController:
 
     def mark_as_read(self, userId, domain, notification_id):
         """
-        Mark notification as read.
+        Mark notification as read, and return the email\publication id of the notification.
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userId)

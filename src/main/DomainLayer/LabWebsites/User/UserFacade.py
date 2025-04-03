@@ -330,9 +330,6 @@ class UserFacade:
         self.users[user_id] = user
         return user_id
 
-    import re
-    from src.main.Util.ExceptionsEnum import ExceptionsEnum
-
     def error_if_linkedin_link_not_valid(self, linkedin_link):
         """
         Validates if the given LinkedIn link is in the correct format.
@@ -371,14 +368,31 @@ class UserFacade:
         member = self.get_member_by_email(email)
         return member.get_details()
 
-    def site_creator_to_alumni(self, creator_email):
-        site_creator = self.siteCreator[creator_email]
-        self.alumnis[creator_email] = site_creator
-        del self.siteCreator[creator_email]
+    def resign_site_creator(self, new_role):
+        if new_role == "alumni":
+            self.site_creator_to_alumni()
+        if new_role == "manager":
+            self.site_creator_to_manager()
+        elif new_role == "member":
+            self.site_creator_to_member()
+
+    def site_creator_to_alumni(self):
+        site_creator_email, site_creator = next(iter(self.siteCreator.items()))
+        self.alumnis[site_creator_email] = site_creator
+        del self.siteCreator[site_creator_email]
+
+    def site_creator_to_manager(self):
+        site_creator_email, site_creator = next(iter(self.siteCreator.items()))
+        self.managers[site_creator_email] = site_creator
+        del self.siteCreator[site_creator_email]
+
+    def site_creator_to_member(self):
+        site_creator_email, site_creator = next(iter(self.siteCreator.items()))
+        self.members[site_creator_email] = site_creator
+        del self.siteCreator[site_creator_email]
 
     def define_member_as_site_creator(self, nominate_email):
         member = self.get_member_by_email(nominate_email)
-        self.remove_manager_permissions(nominate_email)
         self.siteCreator[nominate_email] = member
 
 

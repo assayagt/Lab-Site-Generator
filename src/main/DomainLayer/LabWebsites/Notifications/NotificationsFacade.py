@@ -37,7 +37,7 @@ class NotificationsFacade:
         )
 
         # Create the email notification
-        email_notification = EmailNotification(recipientEmail, "New Publication Pending Approval", body)
+        email_notification = EmailNotification(recipientEmail, "New Publication Pending Approval", body, publication_id=publicationDto.get_paper_id())
 
         self.notify_user(email_notification, domain, recipientEmail)
 
@@ -56,7 +56,7 @@ class NotificationsFacade:
         )
 
         # Create the email notification
-        email_notification = EmailNotification(recipientEmail, "New Publication Pending Final Approval", body)
+        email_notification = EmailNotification(recipientEmail, "New Publication Pending Final Approval", body, publication_id=publicationDto.get_paper_id())
 
         self.notify_user(email_notification, domain, recipientEmail)
 
@@ -72,7 +72,7 @@ class NotificationsFacade:
         )
 
         # Create the email notification
-        email_notification = EmailNotification(recipientEmail, "New Registration Request Pending Approval", body, requestedEmail)
+        email_notification = EmailNotification(recipientEmail, "New Registration Request Pending Approval", body, request_email=requestedEmail)
 
         self.notify_user(email_notification, domain, recipientEmail)
 
@@ -93,6 +93,7 @@ class NotificationsFacade:
     def mark_notification_as_read(self, domain, user_email, notification_id):
         """
         Marks a specific notification as read using its ID.
+        Returns the request_email or publication_id based on which one is set.
         """
         if domain in self.notifications_center and user_email in self.notifications_center[domain]:
             notifications = self.notifications_center[domain][user_email]
@@ -100,5 +101,5 @@ class NotificationsFacade:
             for n in notifications:
                 if n.id == notification_id:
                     n.mark_as_read()
-                    return n.get_request_email()
+                    return n.request_email or n.publication_id
 

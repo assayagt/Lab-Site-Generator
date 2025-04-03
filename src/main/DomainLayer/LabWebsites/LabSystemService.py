@@ -61,26 +61,26 @@ class LabSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def initial_approve_publication_by_author(self, user_id, domain, publication_id):
+    def initial_approve_publication_by_author(self, user_id, domain, notification_id):
         """Initial approve a publication by its author."""
         try:
-            self.lab_system_controller.initial_approve_publication_by_author(user_id, domain, publication_id)
+            self.lab_system_controller.initial_approve_publication_by_author(user_id, domain, notification_id)
             return Response(True, "Publication approved successfully by author")
         except Exception as e:
             return Response(None, str(e))
 
-    def final_approve_publication_by_manager(self, user_id, domain, publication_id):
+    def final_approve_publication_by_manager(self, user_id, domain, notification_id):
         """Final approve a publication by a lab manager."""
         try:
-            self.lab_system_controller.final_approve_publication_by_manager(user_id, domain, publication_id)
+            self.lab_system_controller.final_approve_publication_by_manager(user_id, domain, notification_id)
             return Response(True, "Publication approved successfully by manager")
         except Exception as e:
             return Response(None, str(e))
 
-    def reject_publication(self, user_id, domain, publication_id):
+    def reject_publication(self, user_id, domain, notification_id):
         """Reject a publication."""
         try:
-            self.lab_system_controller.reject_publication(user_id, domain, publication_id)
+            self.lab_system_controller.reject_publication(user_id, domain, notification_id)
             return Response(True, "Publication rejected successfully")
         except Exception as e:
             return Response(None, str(e))
@@ -331,12 +331,22 @@ class LabSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def site_creator_resignation(self, user_id, domain, nominate_email):
+    def site_creator_resignation_from_lab_website(self, user_id, domain, nominate_email, new_role):
         """
-        Site creator resignation.
+        Site creator resignation from lab website.
         """
         try:
-            self.lab_system_controller.site_creator_resignation(user_id, domain, nominate_email)
+            self.lab_system_controller.site_creator_resignation_from_lab_website(user_id, domain, nominate_email, new_role)
+            return Response(True, "Site creator resigned successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def site_creator_resignation_from_generator(self, domain, nominate_email, new_role):
+        """
+        Site creator resignation from generator.
+        """
+        try:
+            self.lab_system_controller.site_creator_resignation_from_generator(domain, nominate_email, new_role)
             return Response(True, "Site creator resigned successfully")
         except Exception as e:
             return Response(None, str(e))
@@ -345,12 +355,5 @@ class LabSystemService:
         try:
             notifications = self.lab_system_controller.get_all_member_notifications(user_id, domain)
             return Response(notifications, "Retrieved all notifications successfully")
-        except Exception as e:
-            return Response(None, str(e))
-
-    def mark_as_read(self, user_id, domain, notification_id):
-        try:
-            self.lab_system_controller.mark_as_read(user_id, domain, notification_id)
-            return Response(True, "Notification marked as read successfully")
         except Exception as e:
             return Response(None, str(e))
