@@ -4,62 +4,89 @@ import {
   getAllAlumni,
   getAllLabManagers,
   getAllLabMembers,
+  addLabMemberFromWebsite,
+  createNewSiteManagerFromLabWebsite,
+  addAlumniFromLabWebsite,
 } from "../../services/websiteService";
 import { useEditMode } from "../../Context/EditModeContext";
 
 const ParticipantsPage = () => {
   const [selectedDegree, setSelectedDegree] = useState("All");
-  const [participants, setParticipants] = useState([]); // State for participants (excluding alumni)
-  const [alumni, setAlumni] = useState([]); // Separate state for alumni
+  const [participants, setParticipants] = useState([]);
+  const [alumni, setAlumni] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { editMode } = useEditMode(); // Get edit mode state
+  const { editMode } = useEditMode();
   const [showAddForm, setShowAddForm] = useState(false);
   const [newParticipant, setNewParticipant] = useState({
     fullName: "",
     email: "",
     degree: "",
+    isManager: false,
+    isAlumni: false,
   });
+
   const degreeOrder = {
-    PhD: 1,
-    MSc: 2,
-    "Research Assistant": 3,
-    BSc: 4,
+    "Ph.D.": 1,
+    "M.Sc.": 2,
+    Postdoc: 3,
+    "B.Sc.": 4,
   };
 
   const degreeOptions = ["Ph.D.", "M.Sc.", "B.Sc.", "Postdoc"];
 
+  const formatDomain = () => {
+    let domain = window.location.hostname
+      .replace(/^https?:\/\//, "")
+      .replace(":3001", "");
+    if (!domain.startsWith("www.")) domain = `www.${domain}`;
+    if (!domain.endsWith(".com")) domain = `${domain}.com`;
+    return domain;
+  };
+
+  const fetchParticipants = async () => {
+    setLoading(true);
+    try {
+      const domain = formatDomain();
+
+      const [managers, members, alumniData] = await Promise.all([
+        getAllLabManagers(domain),
+        getAllLabMembers(domain),
+        getAllAlumni(domain),
+      ]);
+
+      // Tag each manager and member properly
+      const taggedManagers = managers.map((m) => ({
+        ...m,
+        isManager: true,
+        isAlumni: false,
+      }));
+      const taggedMembers = members.map((m) => ({
+        ...m,
+        isManager: false,
+        isAlumni: false,
+      }));
+
+      // Merge them into a single participants array
+      setParticipants([...taggedManagers, ...taggedMembers]);
+
+      // Mark alumni explicitly too
+      const taggedAlumni = (alumniData || []).map((a) => ({
+        ...a,
+        isAlumni: true,
+        isManager: false,
+      }));
+      setAlumni(taggedAlumni);
+    } catch (err) {
+      console.error("Error fetching participants:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchParticipants = async () => {
-      setLoading(true);
-      try {
-        let domain = window.location.hostname
-          .replace(/^https?:\/\//, "")
-          .replace(":3001", "");
-
-        // Add "www." if missing
-        if (!domain.startsWith("www.")) domain = `www.${domain}`;
-        // Add ".com" if missing
-        if (!domain.endsWith(".com")) domain = `${domain}.com`;
-
-        const [managers, members, alumniData] = await Promise.all([
-          getAllLabManagers(domain),
-          getAllLabMembers(domain),
-          getAllAlumni(domain),
-        ]);
-
-        setParticipants([...managers, ...members]); // Store only non-alumni
-        setAlumni(alumniData || []); // Store alumni separately
-      } catch (err) {
-        console.error("Error fetching participants:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchParticipants();
   }, []);
 
-  // Grouping participants by degree
   const groupedParticipants = participants.reduce((acc, participant) => {
     const { degree } = participant;
     if (!acc[degree]) acc[degree] = [];
@@ -72,11 +99,19 @@ const ParticipantsPage = () => {
       editMode && (
         <div className="edit-options">
           <label>
-            <input type="checkbox" defaultChecked={member.isManager} />
+            <input
+              type="checkbox"
+              checked={member.isManager}
+              onChange={() => handleToggleManager(member)}
+            />
             Manager
           </label>
           <label>
-            <input type="checkbox" defaultChecked={member.isAlumni} />
+            <input
+              type="checkbox"
+              checked={member.isAlumni}
+              onChange={() => handleToggleAlumni(member)}
+            />
             Alumni
           </label>
         </div>
@@ -84,43 +119,134 @@ const ParticipantsPage = () => {
     );
   };
 
-  // Sort degrees by defined hierarchy
+  const handleToggleManager = async (member) => {
+    const userId = sessionStorage.getItem("sid");
+    const domain = formatDomain();
+
+    try {
+      if (!member.isManager) {
+        // Promote to manager
+        const response = await createNewSiteManagerFromLabWebsite(
+          userId,
+          member.email,
+          domain
+        );
+        if (response?.response === "true") {
+          fetchParticipants();
+        } else {
+          console.error("Failed to promote to manager:", response?.message);
+        }
+      } else {
+        // Demote from manager
+      }
+    } catch (err) {
+      console.error("Error toggling manager:", err);
+    }
+  };
+
+  const handleToggleAlumni = async (member) => {
+    const userId = sessionStorage.getItem("sid");
+    const domain = formatDomain();
+
+    try {
+      if (!member.isAlumni) {
+        // Promote to alumni
+        const response = await addAlumniFromLabWebsite(
+          userId,
+          member.email,
+          domain
+        );
+        if (response?.response === "true") {
+          fetchParticipants();
+        } else {
+          console.error("Failed to promote to alumni:", response?.message);
+        }
+      } else {
+      }
+    } catch (err) {
+      console.error("Error toggling alumni:", err);
+    }
+  };
   const sortedDegrees = Object.keys(groupedParticipants).sort(
     (a, b) => (degreeOrder[a] || 999) - (degreeOrder[b] || 999)
   );
 
-  // Filtering participants
   const filteredParticipants =
     selectedDegree === "All"
       ? groupedParticipants
       : { [selectedDegree]: groupedParticipants[selectedDegree] };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  // Handle input changes for the form
   const handleInputChangeParticipant = (e) => {
-    const { name, value } = e.target;
-    setNewParticipant((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setNewParticipant((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
-  // Function to handle adding a new participant (Temporary, replace with API call)
-  const handleAddParticipant = () => {
-    // if (newParticipant.fullName && newParticipant.email && newParticipant.degree) {
-    //   setParticipants([...participants, newParticipant]); // Add to the participants list
-    //   setNewParticipant({ fullName: "", email: "", degree: "" }); // Reset form
-    //   setShowAddForm(false); // Close modal
-    // } else {
-    //   alert("Please fill in all fields!");
-    // }if (newParticipant.fullName && newParticipant.email && newParticipant.degree) {
-    //   setParticipants([...participants, newParticipant]); // Add to the participants list
-    //   setNewParticipant({ fullName: "", email: "", degree: "" }); // Reset form
-    //   setShowAddForm(false); // Close modal
-    // } else {
-    //   alert("Please fill in all fields!");
-    // }
+  const handleAddParticipant = async () => {
+    const { fullName, email, degree, isManager, isAlumni } = newParticipant;
+    const userId = sessionStorage.getItem("sid");
+    const domain = formatDomain();
+
+    if (!fullName || !email || !degree) {
+      console.error("Please fill in all fields.");
+      return;
+    }
+
+    try {
+      const addMemberResponse = await addLabMemberFromWebsite(
+        userId,
+        email,
+        fullName,
+        degree,
+        domain
+      );
+
+      if (addMemberResponse?.response !== "true") {
+        console.error("Failed to add lab member:", addMemberResponse?.message);
+        return;
+      }
+
+      if (isManager) {
+        const managerResponse = await createNewSiteManagerFromLabWebsite(
+          userId,
+          email,
+          domain
+        );
+        if (managerResponse?.response !== "true") {
+          console.error("Failed to add manager:", managerResponse?.message);
+          return;
+        }
+      }
+
+      if (isAlumni) {
+        const alumniResponse = await addAlumniFromLabWebsite(
+          userId,
+          email,
+          domain
+        );
+        if (alumniResponse?.response !== "true") {
+          console.error("Failed to mark as alumni:", alumniResponse?.message);
+          return;
+        }
+      }
+
+      setNewParticipant({
+        fullName: "",
+        email: "",
+        degree: "",
+        isManager: false,
+        isAlumni: false,
+      });
+      setShowAddForm(false);
+      fetchParticipants(); // Refresh full list from backend
+    } catch (error) {
+      console.error("Error adding participant:", error);
+    }
   };
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="participants-page">
@@ -131,7 +257,6 @@ const ParticipantsPage = () => {
             <button
               className="add-participant-btn"
               onClick={() => setShowAddForm(true)}
-              s
             >
               +
             </button>
@@ -140,7 +265,6 @@ const ParticipantsPage = () => {
         )}
       </div>
 
-      {/* Degree Filter Dropdown */}
       <div className="filter-container">
         <label htmlFor="degree-filter">Filter by Degree:</label>
         <select
@@ -154,35 +278,34 @@ const ParticipantsPage = () => {
               {degree}
             </option>
           ))}
-          "<option value="Alumni">Alumni</option>
+          <option value="Alumni">Alumni</option>
         </select>
       </div>
 
-      {/* Display Participants by Degree */}
-      {sortedDegrees.map((degree) =>
-        filteredParticipants[degree] ? (
-          <div key={degree} className="degree-section">
-            <div className="degree">{degree}</div>
-            <div className="degree-section-items">
-              {filteredParticipants[degree].map((member) => (
-                <div key={member.email} className="participant">
-                  <div className="personal_photo"></div>
-                  <div className="personal_info_member">
-                    <div className="fullname">{member.fullName}</div>
-                    <div>{member.bio}</div>
-                    <a href={`mailto:${member.email}`} className="email-link">
-                      {member.email}
-                    </a>
-                    {editModeOption(member)}
+      {sortedDegrees.map(
+        (degree) =>
+          filteredParticipants[degree] && (
+            <div key={degree} className="degree-section">
+              <div className="degree">{degree}</div>
+              <div className="degree-section-items">
+                {filteredParticipants[degree].map((member) => (
+                  <div key={member.email} className="participant">
+                    <div className="personal_photo"></div>
+                    <div className="personal_info_member">
+                      <div className="fullname">{member.fullName}</div>
+                      <div>{member.bio}</div>
+                      <a href={`mailto:${member.email}`} className="email-link">
+                        {member.email}
+                      </a>
+                      {editModeOption(member)}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        ) : null
+          )
       )}
 
-      {/* Alumni Section (Separate) */}
       {alumni.length > 0 && (
         <div className="degree-section">
           <div className="degree">Alumni</div>
@@ -203,6 +326,7 @@ const ParticipantsPage = () => {
           </div>
         </div>
       )}
+
       {showAddForm && (
         <div className="modal-overlay" onClick={() => setShowAddForm(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -212,12 +336,11 @@ const ParticipantsPage = () => {
               <label htmlFor="fullName">Full Name:</label>
               <input
                 id="fullName"
-                type="text"
-                placeholder="Full Name"
                 name="fullName"
                 value={newParticipant.fullName}
                 onChange={handleInputChangeParticipant}
                 className="modal-content-item"
+                placeholder="Full Name"
               />
             </div>
 
@@ -225,12 +348,11 @@ const ParticipantsPage = () => {
               <label htmlFor="email">Email:</label>
               <input
                 id="email"
-                type="text"
-                placeholder="Email"
                 name="email"
                 value={newParticipant.email}
                 onChange={handleInputChangeParticipant}
                 className="modal-content-item"
+                placeholder="Email"
               />
             </div>
 
@@ -238,14 +360,14 @@ const ParticipantsPage = () => {
               <label htmlFor="degree">Degree:</label>
               <select
                 id="degree"
-                className="modal-content-item"
                 name="degree"
                 value={newParticipant.degree}
                 onChange={handleInputChangeParticipant}
+                className="modal-content-item"
               >
                 <option value="">Select Degree</option>
-                {degreeOptions.map((degree, index) => (
-                  <option key={index} value={degree}>
+                {degreeOptions.map((degree) => (
+                  <option key={degree} value={degree}>
                     {degree}
                   </option>
                 ))}

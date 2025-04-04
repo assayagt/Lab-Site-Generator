@@ -201,10 +201,64 @@ def read_lab_info(excel_path):
 
 
 
+# class UploadFilesAndData(Resource):
+#     def post(self):
+#         try:
+#             # Get the data from the frontend
+#             domain = request.form['domain']
+#             website_name = request.form['website_name']
+
+#             website_folder = os.path.join(GENERATED_WEBSITES_FOLDER, domain)
+#             os.makedirs(website_folder, exist_ok=True)
+
+#             files = request.files
+#             for component in files:
+#                 file = files[component]
+#                 print(f"Processing {component}")
+
+#                 if file:
+#                     # Get file extension
+#                     extension = os.path.splitext(file.filename)[1].lower()
+
+#                     # Handle logo upload
+#                     if component == 'logo':
+#                         if extension in ['.svg', '.png', '.jpg', '.jpeg']:
+#                             # Save the logo with the correct extension
+#                             file_path = os.path.join(website_folder, f"logo{extension}")  # Save with the original extension
+#                         else:
+#                             return jsonify({"error": "Invalid file type for logo, only SVG, PNG, JPG are allowed."})
+
+#                     # Handle homepage photo upload
+#                     elif component == 'homepagephoto':
+#                         if extension in ['.jpg', '.jpeg', '.png']:
+#                             # Save homepage photo with the correct extension
+#                             file_path = os.path.join(website_folder, f"homepagephoto{extension}")
+#                         else:
+#                             return jsonify({"error": "Invalid file type for homepage photo, only JPG, PNG, and JPEG are allowed."})
+
+#                     else:
+#                         # Default case for other files (e.g., CSV files)
+#                         if extension == '.csv':
+#                             file_path = os.path.join(website_folder, f"{component}.csv")
+#                         else:
+#                             return jsonify({"error": "Invalid file type for component."})
+
+#                     # Check if a file with the same name exists and overwrite it
+#                     if os.path.exists(file_path):
+#                         print(f"File {component} already exists. Replacing it.")
+#                     else:
+#                         print(f"Uploading new file: {component}")
+
+#                     # Save or replace the file
+#                     file.save(file_path)
+
+#             return jsonify({'message': 'Files and data uploaded successfully!'})
+#         except Exception as e:
+#             return jsonify({"error": f"An error occurred: {str(e)}"})
+
 class UploadFilesAndData(Resource):
     def post(self):
         try:
-            # Get the data from the frontend
             domain = request.form['domain']
             website_name = request.form['website_name']
 
@@ -212,51 +266,58 @@ class UploadFilesAndData(Resource):
             os.makedirs(website_folder, exist_ok=True)
 
             files = request.files
+            uploaded_files = []
+
             for component in files:
                 file = files[component]
-                print(f"Processing {component}")
+                print(f"Processing: {component}")
 
-                if file:
-                    # Get file extension
-                    extension = os.path.splitext(file.filename)[1].lower()
+                if not file:
+                    continue  # skip if file is empty
 
-                    # Handle logo upload
-                    if component == 'logo':
-                        if extension in ['.svg', '.png', '.jpg', '.jpeg']:
-                            # Save the logo with the correct extension
-                            file_path = os.path.join(website_folder, f"logo{extension}")  # Save with the original extension
-                        else:
-                            return jsonify({"error": "Invalid file type for logo, only SVG, PNG, JPG are allowed."})
+                extension = os.path.splitext(file.filename)[1].lower()
+                file_path = None
 
-                    # Handle homepage photo upload
-                    elif component == 'homepagephoto':
-                        if extension in ['.jpg', '.jpeg', '.png']:
-                            # Save homepage photo with the correct extension
-                            file_path = os.path.join(website_folder, f"homepagephoto{extension}")
-                        else:
-                            return jsonify({"error": "Invalid file type for homepage photo, only JPG, PNG, and JPEG are allowed."})
-
+                # Handle logo
+                if component == 'logo':
+                    if extension in ['.svg', '.png', '.jpg', '.jpeg']:
+                        file_path = os.path.join(website_folder, f"logo{extension}")
                     else:
-                        # Default case for other files (e.g., CSV files)
-                        if extension == '.csv':
-                            file_path = os.path.join(website_folder, f"{component}.csv")
-                        else:
-                            return jsonify({"error": "Invalid file type for component."})
+                        return jsonify({"error": "Invalid file type for logo. Allowed: SVG, PNG, JPG, JPEG"})
 
-                    # Check if a file with the same name exists and overwrite it
-                    if os.path.exists(file_path):
-                        print(f"File {component} already exists. Replacing it.")
+                # Handle homepage photo
+                elif component == 'homepagephoto':
+                    if extension in ['.jpg', '.jpeg', '.png']:
+                        file_path = os.path.join(website_folder, f"homepagephoto{extension}")
                     else:
-                        print(f"Uploading new file: {component}")
+                        return jsonify({"error": "Invalid file type for homepage photo. Allowed: JPG, JPEG, PNG"})
 
-                    # Save or replace the file
-                    file.save(file_path)
+                # Default case: assume CSV
+                elif extension == '.csv':
+                    file_path = os.path.join(website_folder, f"{component}.csv")
+                else:
+                    return jsonify({"error": f"Invalid file type for component: {component} ({extension})"})
 
-            return jsonify({'message': 'Files and data uploaded successfully!'})
+                if file_path is None:
+                    return jsonify({"error": f"Failed to resolve file path for: {component}"})
+
+                print(f"Saving (or replacing): {file_path}")
+                file.save(file_path)
+                uploaded_files.append(os.path.basename(file_path))
+
+            # Optional: save metadata (like website name)
+            metadata_path = os.path.join(website_folder, "website_info.json")
+            with open(metadata_path, "w") as f:
+                json.dump({"website_name": website_name}, f)
+
+            return jsonify({
+                "message": "Files and data uploaded successfully!",
+                "uploaded": uploaded_files
+            })
+
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
-
-
+    
 
 class GenerateWebsiteResource(Resource):
     def post(self):
@@ -307,11 +368,7 @@ class GenerateWebsiteResource(Resource):
                 "degree": participants[0]["degree"]
             }
 
-            # Debugging Output
-            print(f"Lab Members: {lab_members}")
-            print(f"Lab Managers: {lab_managers}")
-            print(f"Site Creator: {site_creator}")
-
+          
             # Call generator system to create a new lab website
             response = generator_system.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
 
