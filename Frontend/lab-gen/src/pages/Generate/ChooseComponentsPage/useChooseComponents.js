@@ -383,7 +383,10 @@ const useChooseComponents = () => {
       const data = await response.json();
       if (response.ok) {
         // alert(`${component} data saved successfully!`);
-        setWebsite({ ...formData });
+        setWebsite((prev) => ({
+          ...prev,
+          files: formData.files,
+        }));
         if (websiteData.generated) {
           const saveLogoResponse = await saveLogo(
             sessionStorage.getItem("sid"),
@@ -406,7 +409,9 @@ const useChooseComponents = () => {
 
   const handleGenerate = async () => {
     try {
-      console.log(participants);
+      console.log(websiteData.domain);
+      console.log(domain);
+
       const response = await axios.post(
         `${baseApiUrl}generateWebsite`,
         {

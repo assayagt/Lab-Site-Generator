@@ -292,9 +292,6 @@ class UploadFilesAndData(Resource):
                     else:
                         return jsonify({"error": "Invalid file type for homepage photo. Allowed: JPG, JPEG, PNG"})
 
-                # Default case: assume CSV
-                elif extension == '.csv':
-                    file_path = os.path.join(website_folder, f"{component}.csv")
                 else:
                     return jsonify({"error": f"Invalid file type for component: {component} ({extension})"})
 

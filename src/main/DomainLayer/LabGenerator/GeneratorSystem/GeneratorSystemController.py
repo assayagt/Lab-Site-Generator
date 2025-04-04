@@ -99,7 +99,9 @@ class GeneratorSystemController:
                 logo_path = possible_path  # Set the correct logo path if it exists
                 break  # Stop as soon as a matching file is found
 
-        logo = logo_path if logo_path else None
+        logo = None
+        if logo_path and os.path.exists(logo_path):
+            logo = logo_path
         self.site_custom_facade.set_logo(domain, logo)
 
     def change_site_logo_by_manager(self, user_id, domain):
@@ -126,7 +128,9 @@ class GeneratorSystemController:
             if os.path.exists(possible_path):
                 home_picture_path = possible_path  # Set the correct logo path if it exists
                 break  # Stop as soon as a matching file is found
-        home_picture = home_picture_path if os.path.exists(home_picture_path) else None
+        home_picture = None
+        if home_picture_path and os.path.exists(home_picture_path):
+            home_picture = home_picture_path
         self.site_custom_facade.set_home_picture(domain, home_picture)
 
     def change_site_home_picture_by_manager(self, user_id, domain):
