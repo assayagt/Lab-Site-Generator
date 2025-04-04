@@ -69,7 +69,13 @@ const ChooseComponentsPage = () => {
               onChange={(e) => handleFileChange(e, "logo")}
             />
           </label>
-          <button className="media_button" onClick={() => handleSubmit("logo")}>
+          <button
+            className="media_button"
+            onClick={(e) => {
+              e.preventDefault(); // ✅ this prevents the page from reloading
+              handleSubmit("logo");
+            }}
+          >
             Save
           </button>
         </div>
@@ -85,7 +91,10 @@ const ChooseComponentsPage = () => {
 
           <button
             className="media_button"
-            onClick={() => handleSubmit("homepagephoto")}
+            onClick={(e) => {
+              e.preventDefault(); // ✅ prevent default form behavior
+              handleSubmit("homepagephoto");
+            }}
           >
             Save
           </button>

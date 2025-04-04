@@ -368,8 +368,8 @@ const useChooseComponents = () => {
     const component_new = component.replace(" ", "").toLowerCase();
 
     const formDataToSend = new FormData();
-    formDataToSend.append("domain", formData.domain);
-    formDataToSend.append("website_name", formData.websiteName);
+    formDataToSend.append("domain", domain);
+    formDataToSend.append("website_name", websiteName);
 
     if (formData.files[component_new]) {
       formDataToSend.append(component_new, formData.files[component_new]);
@@ -403,56 +403,6 @@ const useChooseComponents = () => {
       showError("Error: " + error.message);
     }
   };
-
-  // const handleGenerate = async () => {
-  //   try {
-  //     const response = await axios.post(`${baseApiUrl}generateWebsite`, {
-  //       domain: formData.domain,
-  //       about_us: aboutUsContent,
-  //       lab_address: contactUsData.address,
-  //       lab_mail:contactUsData.email,
-  //       lab_phone_num:contactUsData.phoneNumber,
-  //     });
-  //     const data =  response.data;
-  //     console.log(data);
-  //     if (data.response==="true") {
-  //       console.log(data.message);
-  //       alert(data.message);
-  //       sessionStorage.removeItem("AboutUs");
-  //       sessionStorage.removeItem("ContactUs");
-  //       navigate("/my-account");
-  //     } else {
-  //       alert('Error: ' + data.error);
-  //     }
-  //   } catch (error) {
-  //     alert('Error: ' + error.message);
-  //   }
-  // };
-
-  // const handleGenerate = async () => {
-  //   try {
-  //     console.log(participants);
-  //     const data = await generate(
-  //       websiteData.domain,
-  //       aboutUsContent,
-  //       contactUsData.email,
-  //       contactUsData.address,
-  //       contactUsData.phoneNumber,
-  //       participants
-  //     );
-  //     console.log(data);
-  //     if (data.response === "true") {
-  //       sessionStorage.removeItem("AboutUs");
-  //       sessionStorage.removeItem("ContactUs");
-  //       navigate("/my-account");
-  //     } else {
-  //       showError("Error: " + (data.error || "Unknown error occurred"));
-  //     }
-  //   } catch (error) {
-  //     showError(error);
-  //     alert("Error!!!: " + (error.response?.data?.message || error.message));
-  //   }
-  // };
 
   const handleGenerate = async () => {
     try {

@@ -273,7 +273,7 @@ class UploadFilesAndData(Resource):
                 print(f"Processing: {component}")
 
                 if not file:
-                    continue  # skip if file is empty
+                    continue  
 
                 extension = os.path.splitext(file.filename)[1].lower()
                 file_path = None
@@ -306,9 +306,7 @@ class UploadFilesAndData(Resource):
                 uploaded_files.append(os.path.basename(file_path))
 
             # Optional: save metadata (like website name)
-            metadata_path = os.path.join(website_folder, "website_info.json")
-            with open(metadata_path, "w") as f:
-                json.dump({"website_name": website_name}, f)
+            
 
             return jsonify({
                 "message": "Files and data uploaded successfully!",
