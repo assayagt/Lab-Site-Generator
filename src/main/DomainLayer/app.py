@@ -104,6 +104,26 @@ def notify_registration(requested_email, domain):
     else:
             print("no")
 
+def notify_publication_final(message, domain):
+    manager_emails_response = lab_system_service.get_all_lab_managers_details(domain)
+
+    if manager_emails_response.is_success():
+        manager_data_list = manager_emails_response.get_data()  # List of dicts
+        for manager in manager_data_list:
+            manager_email = manager.get("email")
+            sid = connected_users.get(manager_email)
+            if sid:
+                socketio.emit('publication-notification-final', {
+                    'id': requested_email,
+                    'body': f'{message}',
+                    'subject': 'Final Approval Request'
+                }, to=sid)
+                print(f"📣 Sent notification to {manager_email} (sid: {sid})")
+            else:
+                print(f"⚠️ Manager {manager_email} is not connected via socket.")
+    else:
+            print("no")
+
 # Service for uploading file
 
 def read_lab_info(excel_path):
