@@ -1,7 +1,7 @@
 import logging
 import uuid
 import os
-from DTOs.Publication_dto import PublicationDTO
+from DTOs.Publication_dto import Publication_dto
 from Repositories.publications_repo import PublicationRepository
 from database_manager import DatabaseManager
 
@@ -32,7 +32,7 @@ def main():
     
     # Create a sample publication
     pub_id = str(uuid.uuid4())
-    sample_pub = PublicationDTO(
+    sample_pub = Publication_dto(
         paper_id=pub_id,
         title="Lab Site Generator: A Modern Approach to Research Website Creation",
         authors="Jane Doe, John Smith",

@@ -2,7 +2,7 @@ from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
 from src.main.DomainLayer.LabGenerator.SiteCustom.SiteCustom import SiteCustom
 import json
 
-class SiteCustom_dto:
+class siteCustom_dto:
     def __init__(self, domain=None, name=None, components_str:str=None, components_list:list=None, template=None, site_creator_email=None,
                   logo=None, home_picture=None, generated=False):
         self.domain = domain
