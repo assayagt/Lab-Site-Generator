@@ -125,7 +125,7 @@ class DatabaseManager:
     def create_tables(self):
         """Create database tables if they don't exist"""
         self.execute_script('PRAGMA foreign_keys = ON;') # Enable foreign keys in SQLite
-        
+
         publications_table = '''
         CREATE TABLE IF NOT EXISTS publications (
             paper_id TEXT PRIMARY KEY,
@@ -146,8 +146,8 @@ class DatabaseManager:
         CREATE TABLE IF NOT EXISTS domain_paperID(
             domain TEXT,
             paper_id TEXT,
-            FOREIGN KEY (domain) REFERECES websites(domain) ON DELETE CASCADE,
-            FOREIGN KEY (paper_id) REFERENCES publicatios(paper_id) ON DELETE CASCADE
+            FOREIGN KEY (domain) REFERENCES websites(domain) ON DELETE CASCADE,
+            FOREIGN KEY (paper_id) REFERENCES publications(paper_id) ON DELETE CASCADE
         );
         '''
         self.execute_script(domain_paperID_table)

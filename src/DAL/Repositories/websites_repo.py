@@ -1,4 +1,4 @@
-from DTOs.website_dto import Website_dto
+from DTOs.Website_dto import website_dto
 
 class WebsiteRepository:
     def __init__(self, db_manager):
@@ -7,31 +7,58 @@ class WebsiteRepository:
     def find_by_domain(self, domain):
         query = "SELECT * FROM websites WHERE domain = ?"
         result = self.db_manager.execute_query(query, (domain,))
-        if not result: return None
+        if not result:
+            return None
         row = result[0]
-        return Website_dto(
+        return website_dto(
             domain=row['domain'],
             contact_info=row['contact_info'],
             about_us=row['about_us']
         )
     
-    def save(self, website_dto: Website_dto):
-        # Check if the website exists
-        existing = self.find_by_domain(website_dto.domain)
-        if existing:
-            # Update exsisting website
-            query = """
-            UPDATE websites
-            SET contact_info = ?, about_us = ?
-            WHERE domain = ?
-            """
-            parameters = (
-                website_dto.contact_info,
-                website_dto.about_us
+    def find_by_email(self, email):
+        query = """
+        SELECT w.domain, w.contact_info, w.about_us
+        FROM member_domain m
+        JOIN websites w ON m.domain = w.domain
+        WHERE m.email = ?
+        """
+        result = self.db_manager.execute_query(query, (email,))
+        if not result:
+            return None
+
+        websites = []
+        for row in result:
+            website = website_dto(
+                domain=row['domain'],
+                contact_info=row['contact_info'],
+                about_us=row['about_us']
             )
-        else:
+            websites.append(website)
+        return websites
+
+
+    def save(self, website_dto: website_dto, user_email: str = None):
+        """
+        Save a website entry. If it exists, it is replaced. Otherwise, a new entry is inserted.
+
+        Args:
+            website_dto (WebsiteDTO): The website data transfer object.
+            user_email (str, optional): The email of the user creating the website.
+
+        Returns:
+            bool: True if the operation was successful, False otherwise.
+        """
+        if user_email is None:
+            raise ValueError("User email is required when inserting a new website.")
+
+        with self.db_manager.lock:  # Ensures thread safety
+            conn = self.db_manager.connect()
+            cursor = conn.cursor()
+
+            # Use INSERT OR REPLACE to update or insert
             query = """
-            INSERT INTO websites
+            INSERT OR REPLACE INTO websites
             (domain, contact_info, about_us)
             VALUES (?, ?, ?)
             """
@@ -40,5 +67,31 @@ class WebsiteRepository:
                 website_dto.contact_info,
                 website_dto.about_us
             )
-        rows_affected = self.db_manager.exectute_update(query, parameters)
+            cursor.execute(query, parameters)
+
+            # Ensure membership exists in member_domain (INSERT OR IGNORE prevents duplicates)
+            query2 = """
+            INSERT OR IGNORE INTO member_domain
+            (email, domain)
+            VALUES(?, ?)
+            """
+            parameters2 = (user_email, website_dto.domain)
+            cursor.execute(query2, parameters2)
+
+            conn.commit()  # Commit both operations atomically
+            return cursor.rowcount > 0  # Returns True if any rows were affected
+        
+    def delete_website(self, domain):
+        """
+        Delete a website
+        
+        Args:
+            domain (str): website's domain
+            
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        query = "DELETE FROM websites WHERE domain = ?"
+        rows_affected = self.db_manager.execute_update(query, (domain,))
         return rows_affected > 0
+
