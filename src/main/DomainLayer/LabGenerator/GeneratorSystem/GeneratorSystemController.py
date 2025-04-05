@@ -98,7 +98,6 @@ class GeneratorSystemController:
             if os.path.exists(possible_path):
                 logo_path = possible_path  # Set the correct logo path if it exists
                 break  # Stop as soon as a matching file is found
-
         logo = None
         if logo_path and os.path.exists(logo_path):
             logo = logo_path
