@@ -19,6 +19,7 @@ class DatabaseManager:
                 cls._instance.lock = threading.Lock() # Lock for concurrent DB operations
                 cls._instance.logger =logging.getLogger(__name__)
                 cls._instance.logger.info(f"Database manager initialized with database at {cls._instance.db_path}")
+                cls._instance.create_tables()
             return cls._instance
 
 
@@ -170,7 +171,7 @@ class DatabaseManager:
         );
         '''
         self.execute_script(member_domain_table)
-        
+        # ====================================== pictures represented as path and not a BLOB
         SiteCustoms_table = '''
         CREATE TABLE IF NOT EXISTS site_customs(
             domain TEXT PRIMARY KEY,
@@ -178,8 +179,8 @@ class DatabaseManager:
             creator_email TEXT,
             components TEXT,
             template TEXT,
-            logo BLOB,
-            home_pic BLOB,
+            logo TEXT,
+            home_pic TEXT,
             generated INTEGER,
             FOREIGN KEY (domain) REFERENCES websites(domain) ON DELETE CASCADE
         );
@@ -270,6 +271,19 @@ class DatabaseManager:
         );
         '''
         self.execute_script(emails_pending_table)
+
+        notifications_table='''
+        CREATE TABLE IF NOT EXISTS notifications(
+            id TEXT,
+            recipient TEXT,
+            subject TEXT,
+            body TEXT,
+            request_email TEXT,
+            publication_id TEXT,
+            isRead INTEGER
+        );
+        '''
+        self.execute_script(notifications_table)
 
         self.logger.info("Database tables created successfully")
 
