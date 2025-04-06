@@ -26,9 +26,9 @@ function App() {
 
   useEffect(() => {
     const fetchHomepageDetails = async () => {
-      let domain = window.location.hostname;
-      domain = domain.replace(/^https?:\/\//, "");
-      domain = domain.replace(":3001", "");
+      let pathParts = window.location.pathname.split('/');
+      let domain = pathParts[2]; // "/labs-beta/beta4/" → ['', 'labs-beta', 'beta4', '']
+      console.log("Detected lab domain:", domain);
       console.log(domain);
       // Add "www." if missing
       //if (!domain.startsWith("www.")) {
