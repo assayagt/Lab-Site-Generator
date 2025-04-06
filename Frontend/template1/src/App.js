@@ -31,14 +31,14 @@ function App() {
       domain = domain.replace(":3001", "");
       console.log(domain);
       // Add "www." if missing
-      if (!domain.startsWith("www.")) {
-        domain = `www.${domain}`;
-      }
+      //if (!domain.startsWith("www.")) {
+      //  domain = `www.${domain}`;
+      //}
 
       // Add ".com" if missing
-      if (!domain.endsWith(".com")) {
-        domain = `${domain}.com`;
-      }
+      //if (!domain.endsWith(".com")) {
+      //  domain = `${domain}.com`;
+      //}
       console.log(domain);
       try {
         const data = await getHomepageDetails(domain);
