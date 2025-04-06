@@ -373,8 +373,8 @@ class GenerateWebsiteResource(Resource):
                     response3 = generator_system.set_site_contact_info_on_creation_from_generator(domain, contact_info)
                     if response3.is_success():
                         # Start npm server in a new terminal
-                        command = ['start', 'cmd', '/K', 'npm', 'start']
-                        process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH, shell=True)
+                        command = ['npm', 'start']
+                        process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH)
 
                         return jsonify({"message": "Website generated successfully!", "response": "true"})
                     return jsonify({"error": f"An error occurred: {response3.get_message()}", "response": "false"})
