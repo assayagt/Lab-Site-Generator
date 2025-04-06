@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseApiUrl = "http://127.0.0.1:5000/api/";
+import { baseApiUrl } from "./BaseUrl"; // Ensure the path is correct relative to this file
 
 export const SendLogin = async (email, sid, domain) => {
   let data;
