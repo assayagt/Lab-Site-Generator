@@ -31,7 +31,7 @@ app.config["SECRET_KEY"] = app_secret_key
 
 CORS(app, resources={r"/*": {"origins": ["http://132.72.116.69"]}})
 api = Api(app)
-socketio = SocketIO(app, cors_allowed_origins=["http://132.72.116.69"], async_mode="threading")
+socketio = SocketIO(app, cors_allowed_origins=["http://132.72.116.69"], async_mode="gevent")
 # Directories for file storage and website generation
 UPLOAD_FOLDER = './uploads'
 GENERATED_WEBSITES_FOLDER = './LabWebsitesUploads'
