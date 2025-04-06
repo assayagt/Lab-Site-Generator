@@ -112,6 +112,7 @@ const ChooseComponentsPage = () => {
           <h2>Get Started</h2>
           <label>Enter your website domain:</label>
           <input
+            placeholder="www.example.com"
             type="text"
             value={domain}
             onChange={handleDomainChange}
@@ -128,6 +129,11 @@ const ChooseComponentsPage = () => {
               }
             }}
           />
+          {domainError && (
+            <p className="error_message">
+              Please enter a valid domain name (e.g., example.com)
+            </p>
+          )}
           <label>Enter your website name:</label>
           <input
             type="text"
@@ -185,7 +191,7 @@ const ChooseComponentsPage = () => {
 
               {showContentSidebar && (
                 <ul className="content-submenu">
-                  {components.includes("About Us") && (
+                  {components?.includes("About Us") && (
                     <li
                       className={step === 6 ? "selected" : ""}
                       onClick={() => setStep(6)}
@@ -193,7 +199,7 @@ const ChooseComponentsPage = () => {
                       About Us
                     </li>
                   )}
-                  {components.includes("Contact Us") && (
+                  {components?.includes("Contact Us") && (
                     <li
                       className={step === 7 ? "selected" : ""}
                       onClick={() => setStep(7)}
@@ -201,7 +207,7 @@ const ChooseComponentsPage = () => {
                       Contact Us
                     </li>
                   )}
-                  {components.includes("Participants") && (
+                  {components?.includes("Participants") && (
                     <li
                       className={step === 8 ? "selected" : ""}
                       onClick={() => setStep(8)}
@@ -237,8 +243,16 @@ const ChooseComponentsPage = () => {
                       domainError ? "error_domain" : "edit"
                     }`}
                     id="domainInput"
-                    placeholder=" " // Necessary for floating label effect
+                    placeholder="www.example.com" // Necessary for floating label effect
+                    onBlur={() => {
+                      if (!isValidDomain(domain)) {
+                        setDomainError(true);
+                      } else {
+                        setDomainError(false);
+                      }
+                    }}
                   />
+
                   <label htmlFor="domainInput" className="floating_label">
                     Enter domain name
                   </label>
@@ -275,7 +289,7 @@ const ChooseComponentsPage = () => {
                 <label>
                   <input
                     type="checkbox"
-                    checked={components.includes("About Us")}
+                    checked={components?.includes("About Us")}
                     onChange={() => handleComponentChange("About Us")}
                   />
                   About Us
@@ -283,7 +297,7 @@ const ChooseComponentsPage = () => {
                 <label>
                   <input
                     type="checkbox"
-                    checked={components.includes("Participants")}
+                    checked={components?.includes("Participants")}
                     onChange={() => handleComponentChange("Participants")}
                   />
                   Participants
@@ -291,7 +305,7 @@ const ChooseComponentsPage = () => {
                 <label>
                   <input
                     type="checkbox"
-                    checked={components.includes("Contact Us")}
+                    checked={components?.includes("Contact Us")}
                     onChange={() => handleComponentChange("Contact Us")}
                   />
                   Contact Us
@@ -299,7 +313,7 @@ const ChooseComponentsPage = () => {
                 <label>
                   <input
                     type="checkbox"
-                    checked={components.includes("Publications")}
+                    checked={components?.includes("Publications")}
                     onChange={() => handleComponentChange("Publications")}
                   />
                   Publications
@@ -780,6 +794,7 @@ const ChooseComponentsPage = () => {
           </div>
         </div>
       )}
+      <ErrorPopup message={errorMessage} onClose={() => setErrorMessage("")} />
     </div>
   );
 };

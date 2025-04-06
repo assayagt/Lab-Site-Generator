@@ -478,6 +478,8 @@ const useChooseComponents = () => {
       });
       setIsChanged(false);
       setStep(2);
+    } else {
+      setErrorMessage("Could not save. Domain name is invalid.");
     }
   };
 
@@ -539,9 +541,14 @@ const useChooseComponents = () => {
   const handleSaveNameAndDomain = async () => {
     if (!isValidDomain(domain)) {
       setDomainError(true);
+
       return;
     }
-    await changeDomain(websiteData.domain, domain);
+    const response1 = await changeDomain(websiteData.domain, domain);
+    if (response1.response === "false") {
+      setErrorMessage("Could not save. Domain name is invalid.");
+      return;
+    }
     await changeName(domain, websiteName);
     setWebsite({ ...websiteData, domain, websiteName });
     setIsChanged(false);
