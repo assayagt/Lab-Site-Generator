@@ -29,9 +29,9 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = app_secret_key
 # CORS(app)
 
-CORS(app, resources={r"/*": {"origins": ["http://132.72.116.69:3000"]}})
+CORS(app, resources={r"/*": {"origins": ["http://132.72.116.69"]}})
 api = Api(app)
-socketio = SocketIO(app, cors_allowed_origins=["http://132.72.116.69:3000", "http://132.72.116.69:3001"], async_mode="threading")
+socketio = SocketIO(app, cors_allowed_origins=["http://132.72.116.69"], async_mode="threading")
 # Directories for file storage and website generation
 UPLOAD_FOLDER = './uploads'
 GENERATED_WEBSITES_FOLDER = './LabWebsitesUploads'
@@ -1563,8 +1563,6 @@ api.add_resource(GetAllMembersNotifications, '/api/getAllMembersNotifications')
 ##
 
 if __name__ == '__main__':
-    # notification_thread = threading.Thread(target=send_test_notifications, daemon=True)
-    # notification_thread.start()
-    socketio.run(app, host='0.0.0.0', port=5000, debug=True)    ##app.run(debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000)  # <-- No debug
 
 
