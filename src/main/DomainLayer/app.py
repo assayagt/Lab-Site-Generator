@@ -376,7 +376,16 @@ class GenerateWebsiteResource(Resource):
                     response3 = generator_system.set_site_contact_info_on_creation_from_generator(domain, contact_info)
                     if response3.is_success():
                         # Start npm server in a new terminal
+
                         TEMPLATE_1_PATH = "/home/admin/project/Lab-Site-Generator/Frontend/template1"
+                        # Set homepage in package.json
+                        package_json_path = os.path.join(TEMPLATE_1_PATH, 'package.json')
+                        with open(package_json_path, 'r+') as f:
+                            pkg = json.load(f)
+                            pkg['homepage'] = f'/labs-beta/{domain}'  # dynamic path
+                            f.seek(0)
+                            json.dump(pkg, f, indent=2)
+                            f.truncate()
                         BUILD_PATH = os.path.join(TEMPLATE_1_PATH, 'build')
                         TARGET_PATH = f"/var/www/labs-beta/{domain}"
 
