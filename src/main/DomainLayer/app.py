@@ -376,7 +376,7 @@ class GenerateWebsiteResource(Resource):
 
                         subprocess.run(['npm', 'run', 'build'], cwd=TEMPLATE_1_PATH, check=True)
 
-                        target_path = f"/var/www/labs/{domain}"
+                        target_path = f"/var/www/labs-beta/{domain}"
                         if os.path.exists(target_path):
                             shutil.rmtree(target_path)
                         shutil.copytree(os.path.join(TEMPLATE_1_PATH, 'build'), target_path)
