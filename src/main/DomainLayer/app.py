@@ -9,6 +9,9 @@ import subprocess
 import pandas as pd
 from flask_socketio import SocketIO, emit
 import threading
+import subprocess
+import shutil
+import os
 
 def send_test_notifications():
     while True:
@@ -373,8 +376,17 @@ class GenerateWebsiteResource(Resource):
                     response3 = generator_system.set_site_contact_info_on_creation_from_generator(domain, contact_info)
                     if response3.is_success():
                         # Start npm server in a new terminal
-                        command = ['npm', 'start']
-                        process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH)
+                        TEMPLATE_1_PATH = "/home/admin/project/Lab-Site-Generator/Frontend/template1"
+                        BUILD_PATH = os.path.join(TEMPLATE_1_PATH, 'build')
+                        TARGET_PATH = f"/var/www/labs-beta/{domain}"
+
+                        # 1. Build the React app
+                        subprocess.run(['npm', 'run', 'build'], cwd=TEMPLATE_1_PATH, check=True)
+
+                        # 2. Copy the build output
+                        if os.path.exists(TARGET_PATH):
+                            shutil.rmtree(TARGET_PATH)
+                        shutil.copytree(BUILD_PATH, TARGET_PATH)
 
                         return jsonify({"message": "Website generated successfully!", "response": "true"})
                     return jsonify({"error": f"An error occurred: {response3.get_message()}", "response": "false"})
