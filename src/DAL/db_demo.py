@@ -2,8 +2,10 @@ import logging
 import uuid
 import os
 from DTOs.Publication_dto import Publication_dto
-from Repositories.publications_repo import PublicationRepository
+from Repositories.Publications_repo import PublicationRepository
 from database_manager import DatabaseManager
+
+from DAL_controller import DAL_controller
 
 def main():
     # Configure logging
@@ -19,17 +21,17 @@ def main():
     if os.path.exists(db_path):
         os.remove(db_path)
         logger.info(f"Removed existing database file: {db_path}")
+
+    dal_controller = DAL_controller()
+    pub_repo = dal_controller.publications_repo
     
     # Initialize database manager
-    db_manager = DatabaseManager(db_path)
+    #db_manager = DatabaseManager(db_path)
 
     # Create tables
-    db_manager.create_tables()
+    dal_controller._db_manager.create_tables()
     logger.info("Database tables created")
 
-    # Initialize repository
-    pub_repo = PublicationRepository(db_manager=db_manager)
-    
     # Create a sample publication
     pub_id = str(uuid.uuid4())
     sample_pub = Publication_dto(
@@ -50,7 +52,7 @@ def main():
     logger.info(f"Publication saved: {success}")
 
     # Create another sample publication
-    sample_pub2 = PublicationDTO(
+    sample_pub2 = Publication_dto(
        paper_id=str(uuid.uuid4()),
         title="User Experience in Academic Websites",
         authors="Alice Johnson, Bob Brown",
@@ -99,7 +101,7 @@ def main():
     # logger.info(f"Publications after deletion: {len(all_pubs)}")
     
     # Close the connection
-    db_manager.close()
+    dal_controller._db_manager.close()
     logger.info("Database connection closed")
 
 if __name__ == "__main__":

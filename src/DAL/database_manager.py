@@ -151,14 +151,22 @@ class DatabaseManager:
         );
         '''
         self.execute_script(domain_paperID_table)
-        
+
+        members_table='''
+        CREATE TABLE IF NOT EXISTS member_emails(
+        email TEXT
+        PRIMARY KEY(email)
+        );
+        '''
+        self.execute_script(members_table)
 
         member_domain_table = '''
         CREATE TABLE IF NOT EXISTS member_domain(
         email TEXT,
         domain TEXT,
         PRIMARY KEY (email, domain),
-        FOREIGN KEY (domain) REFERENCES websites(domain) ON DELETE CASCADE
+        FOREIGN KEY (domain) REFERENCES websites(domain) ON DELETE CASCADE,
+        FOREIGN KEY (email) REFERENCES member_emails(email) ON DELETE CASCADE
         );
         '''
         self.execute_script(member_domain_table)
@@ -172,7 +180,7 @@ class DatabaseManager:
             template TEXT,
             logo BLOB,
             home_pic BLOB,
-            generated INTEGER
+            generated INTEGER,
             FOREIGN KEY (domain) REFERENCES websites(domain) ON DELETE CASCADE
         );
         '''
@@ -180,12 +188,88 @@ class DatabaseManager:
 
         Websites_table = '''
         CREATE TABLE IF NOT EXISTS websites(
-            domain TEXT PRIMARY KEY,
+            domain TEXT,
             contact_info TEXT,
-            about_us TEXT
+            about_us TEXT,
+            PRIMARY KEY (domain)
         );
         '''
         self.execute_script(Websites_table)
+
+        LabMembers_table='''
+        CREATE TABLE IF NOT EXISTS lab_members(
+            domain TEXT,
+            email TEXT,
+            linkedin_link TEXT,
+            media TEXT,
+            full_name TEXT,
+            degree TEXT,
+            bio TEXT,
+            PRIMARY KEY (domain, email),
+            FOREIGN KEY (domain) REFERENCES websites(domain) ON DELETE CASCADE
+        );
+        '''
+        self.execute_script(LabMembers_table)
+
+        LabRoles_users_table='''
+        CREATE TABLE IF NOT EXISTS LabRoles_users(
+            domain TEXT,
+            email TEXT,
+            FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE,
+            FOREIGN KEY (email) REFERENCES lab_members (email) ON DELETE CASCADE
+        );
+        '''
+        self.execute_script(LabRoles_users_table)
+
+        LabRoles_members_table='''
+        CREATE TABLE IF NOT EXISTS LabRoles_members(
+            domain TEXT,
+            email TEXT,
+            FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE,
+            FOREIGN KEY (email) REFERENCES lab_members (email) ON DELETE CASCADE
+        );
+        '''
+        self.execute_script(LabRoles_members_table)
+
+        LabRoles_managers_table='''
+        CREATE TABLE IF NOT EXISTS LabRoles_managers(
+            domain TEXT,
+            email TEXT,
+            FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE,
+            FOREIGN KEY (email) REFERENCES lab_members (email) ON DELETE CASCADE
+        );
+        '''
+        self.execute_script(LabRoles_managers_table)
+
+        LabRoles_siteCreator_table='''
+        CREATE TABLE IF NOT EXISTS LabRoles_siteCreator(
+            domain TEXT,
+            email TEXT,
+            FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE,
+            FOREIGN KEY (email) REFERENCES lab_members (email) ON DELETE CASCADE
+        );
+        '''
+        self.execute_script(LabRoles_siteCreator_table)
+
+        LabRoles_alumnis_table='''
+        CREATE TABLE IF NOT EXISTS LabRoles_alumnis(
+            domain TEXT,
+            email TEXT,
+            FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE,
+            FOREIGN KEY (email) REFERENCES lab_members (email) ON DELETE CASCADE
+        );
+        '''
+        self.execute_script(LabRoles_alumnis_table)
+
+        emails_pending_table='''
+        CREATE TABLE IF NOT EXISTS emails_pending(
+            domain TEXT,
+            email TEXT,
+            FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE,
+            FOREIGN KEY (email) REFERENCES lab_members (email) ON DELETE CASCADE
+        );
+        '''
+        self.execute_script(emails_pending_table)
 
         self.logger.info("Database tables created successfully")
 
