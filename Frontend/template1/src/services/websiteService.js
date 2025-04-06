@@ -371,3 +371,129 @@ export const getUserDetails = async (domain, user_id) => {
     return {}; // Return an empty object if there's an error
   }
 };
+
+export const addAlumniFromLabWebsite = async (
+  managerUserId,
+  memberEmail,
+  domain
+) => {
+  try {
+    const response = await axios.post(`${baseApiUrl}addAlumniFromLabWebsite`, {
+      manager_user_id: managerUserId,
+      member_email: memberEmail,
+      domain,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error adding alumni from lab website:", error);
+    return null;
+  }
+};
+
+export const addLabMemberFromWebsite = async (
+  userId,
+  email,
+  fullName,
+  degree,
+  domain
+) => {
+  try {
+    const response = await axios.post(`${baseApiUrl}addLabMemberFromWebsite`, {
+      user_id: userId,
+      email,
+      full_name: fullName,
+      degree,
+      domain,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error adding lab member from website:", error);
+    return null;
+  }
+};
+
+export const createNewSiteManagerFromLabWebsite = async (
+  userId,
+  email,
+  domain
+) => {
+  try {
+    const response = await axios.post(
+      `${baseApiUrl}createNewSiteManagerFromLabWebsite`,
+      {
+        user_id: userId,
+        email,
+        domain,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error creating new site manager from lab website:", error);
+    return null;
+  }
+};
+
+export const siteCreatorResignationFromLabWebsite = async (
+  userId,
+  domain,
+  email,
+  newRole
+) => {
+  try {
+    const response = await axios.post(
+      `${baseApiUrl}siteCreatorResignationFromLabWebsite`,
+      {
+        user_id: userId,
+        domain,
+        email,
+        new_role: newRole,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error processing site creator resignation:", error);
+    return null;
+  }
+};
+
+export const setSiteAboutUsByManager = async (userId, domain, aboutUs) => {
+  try {
+    const response = await axios.post(
+      `${baseApiUrl}setSiteAboutUsByManagerFromLabWebsite`,
+      {
+        user_id: userId,
+        domain,
+        about_us: aboutUs,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error setting About Us info:", error);
+    return null;
+  }
+};
+
+export const setSiteContactInfoByManager = async (
+  userId,
+  domain,
+  labAddress,
+  labMail,
+  labPhoneNum
+) => {
+  try {
+    const response = await axios.post(
+      `${baseApiUrl}setSiteContactInfoByManagerFromLabWebsite`,
+      {
+        user_id: userId,
+        domain,
+        lab_address: labAddress,
+        lab_mail: labMail,
+        lab_phone_num: labPhoneNum,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error setting site contact info:", error);
+    return null;
+  }
+};

@@ -13,12 +13,13 @@ password = "ijtb kvpg efep srbu"
 
 
 class EmailNotification:
-    def __init__(self, recipient, subject, body, request_email=None):
+    def __init__(self, recipient, subject, body, request_email=None, publication_id=None):
         self.id = str(uuid.uuid4())  # Generate a unique ID for the notification
         self.recipient = recipient
         self.subject = subject
         self.body = body
         self.request_email = request_email
+        self.publication_id = publication_id
         self.isRead = False
 
     def send_email(self):

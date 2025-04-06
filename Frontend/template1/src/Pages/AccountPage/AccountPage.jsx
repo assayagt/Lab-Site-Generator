@@ -426,31 +426,26 @@ const AccountPage = () => {
               <div key={publication.id} className="publication-item">
                 <form className="publication-form">
                   <strong>{publication.title}</strong>
-                  <div>{publication.publication_year}</div>
-                  <label className="detail-bio">
-                    <strong>GitHub:</strong>
+                  <div className="pub-year">{publication.publication_year}</div>
+
+                  <div className="field-group">
+                    <label>GitHub:</label>
+                    <input type="url" defaultValue={publication.github || ""} />
+                  </div>
+
+                  <div className="field-group">
+                    <label>Presentation:</label>
                     <input
-                      className="text-detail"
-                      type="url"
-                      defaultValue={publication.github || ""}
-                    />
-                  </label>
-                  <label className="detail-bio">
-                    <strong>Presentation:</strong>
-                    <input
-                      className="text-detail"
                       type="url"
                       defaultValue={publication.presentation || ""}
                     />
-                  </label>
-                  <label className="detail-bio">
-                    <strong>Video:</strong>
-                    <input
-                      className="text-detail"
-                      type="url"
-                      defaultValue={publication.video || ""}
-                    />
-                  </label>
+                  </div>
+
+                  <div className="field-group">
+                    <label>Video:</label>
+                    <input type="url" defaultValue={publication.video || ""} />
+                  </div>
+
                   <button
                     className="save-publications"
                     type="button"

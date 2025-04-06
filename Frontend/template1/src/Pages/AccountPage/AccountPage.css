@@ -510,3 +510,61 @@ button {
   background-color: rgba(255, 255, 255, 0.2);
   border: 1px solid #080808;
 }
+.publication-item {
+  position: relative;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 25px;
+  border-radius: 15px;
+  margin-left: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.publication-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding-bottom: 60px; /* for the save button space */
+}
+
+.pub-year {
+  color: #333;
+  font-size: 14px;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field-group label {
+  font-weight: 600;
+  color: #333;
+}
+
+.field-group input[type="url"] {
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid #393131;
+  background: rgba(255, 255, 255, 0.2);
+  font-size: 14px;
+  width: 70%;
+  box-sizing: border-box;
+}
+
+.save-publications {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 18px;
+  border-radius: 25px;
+  border: 1px solid #000;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.save-publications:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}

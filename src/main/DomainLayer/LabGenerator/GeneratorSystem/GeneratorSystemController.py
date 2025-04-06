@@ -98,8 +98,9 @@ class GeneratorSystemController:
             if os.path.exists(possible_path):
                 logo_path = possible_path  # Set the correct logo path if it exists
                 break  # Stop as soon as a matching file is found
-
-        logo = logo_path if logo_path else None
+        logo = None
+        if logo_path and os.path.exists(logo_path):
+            logo = logo_path
         self.site_custom_facade.set_logo(domain, logo)
 
     def change_site_logo_by_manager(self, user_id, domain):
@@ -126,7 +127,9 @@ class GeneratorSystemController:
             if os.path.exists(possible_path):
                 home_picture_path = possible_path  # Set the correct logo path if it exists
                 break  # Stop as soon as a matching file is found
-        home_picture = home_picture_path if os.path.exists(home_picture_path) else None
+        home_picture = None
+        if home_picture_path and os.path.exists(home_picture_path):
+            home_picture = home_picture_path
         self.site_custom_facade.set_home_picture(domain, home_picture)
 
     def change_site_home_picture_by_manager(self, user_id, domain):
@@ -181,6 +184,13 @@ class GeneratorSystemController:
         self.user_facade.create_new_site_manager(nominated_manager_email, domain)
         self.labSystem.create_new_site_manager_from_generator(domain, nominated_manager_email)
 
+    def create_new_site_manager_from_lab_website(self, nominated_manager_email, domain):
+        """
+        Define and add new manager to a specific website, from lab website.
+        The given nominated_manager_email must be associated with a Lab Member of the given website.
+        """
+        self.user_facade.create_new_site_manager(nominated_manager_email, domain)
+
     def add_alumni_from_generator(self, manager_userId, email_toSetAlumni, domain):
         """
         Define a lab member or lab manager as alumni in a specific website, from generator site.
@@ -193,6 +203,15 @@ class GeneratorSystemController:
         if isSiteManager:
             self.user_facade.remove_site_manager(email_toSetAlumni, domain)
         self.labSystem.define_member_as_alumni_from_generator(email_toSetAlumni, domain)
+
+    def add_alumni_from_lab_website(self, email_toSetAlumni, domain):
+        """
+        Define a lab member or lab manager as alumni in a specific website, from lab website.
+        The given email_toSetAlumni must be associated with a Lab Member of the given website.
+        """
+        isSiteManager = self.user_facade.check_if_email_is_site_manager(email_toSetAlumni, domain)
+        if isSiteManager:
+            self.user_facade.remove_site_manager(email_toSetAlumni, domain)
 
     def remove_alumni_from_generator(self, manager_userId, email_toRemoveAlumni, domain):
         """
@@ -277,15 +296,23 @@ class GeneratorSystemController:
         self.user_facade.reset_system()
         self.site_custom_facade.reset_system()
 
-    def site_creator_resignation(self, user_id, domain, nominated_email):
+    def site_creator_resignation_from_generator(self, user_id, domain, nominated_email, new_role):
         """
-        The site creator resigns from the site
+        The site creator resigns from the site - from generator
         """
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
-        site_creator_email = self.site_custom_facade.get_site_creator_email(domain)
-        email_of_user = self.user_facade.get_email_by_userId(user_id)
-        self.site_custom_facade.error_if_user_is_not_site_creator(email_of_user, domain)
+        email = self.user_facade.get_email_by_userId(user_id)
+        self.site_custom_facade.error_if_user_is_not_site_creator(email, domain)
         self.site_custom_facade.set_site_creator(domain, nominated_email)
-        self.user_facade.remove_site_manager(site_creator_email, domain)
-        self.user_facade.logout(user_id)
+        if new_role != "manager":
+            self.user_facade.remove_site_manager(email, domain)
+        self.labSystem.site_creator_resignation_from_generator(domain, nominated_email, new_role)
+
+    def site_creator_resignation_from_lab_website(self, domain, nominated_email, new_role):
+        """
+        The site creator resigns from the site - from lab website
+        """
+        self.site_custom_facade.set_site_creator(domain, nominated_email)
+        if new_role != "manager":
+            self.user_facade.remove_site_manager(nominated_email, domain)
