@@ -59,8 +59,6 @@ class Website:
             for publication in self.members_publications[email]:  # Iterate through the member's publications
                 if publication.approved == ApprovalStatus.APPROVED:  # Check if the publication is approved
                     approved_publications.append(publication.to_dict())
-                # if publication.approved == ApprovalStatus.APPROVED:  # Check if the publication is approved
-                #     approved_publications.append(publication.to_dict())
         return approved_publications
 
     def set_publication_video_link(self, publication_paper_id, video_link):

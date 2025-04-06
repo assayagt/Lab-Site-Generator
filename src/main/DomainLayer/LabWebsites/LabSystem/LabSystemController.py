@@ -251,7 +251,7 @@ class LabSystemController:
                 self.notificationsFacade.send_publication_notification_for_final_approval(publicationDTO, manager_email,
                                                                                           domain)
         else:
-            self.final_approve_publication_by_manager(user_id, domain, publication_id)
+            self.websiteFacade.final_approve_publication(domain, publication_id)
 
     def get_all_approved_publication(self, domain):
         """
