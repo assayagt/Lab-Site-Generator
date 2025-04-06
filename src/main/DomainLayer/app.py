@@ -320,11 +320,8 @@ class UploadFilesAndData(Resource):
 class GenerateWebsiteResource(Resource):
     def post(self):
         try:
-            # Parse JSON request body
-       # Parse incoming JSON data
             data = request.get_json()
 
-            # Ensure required fields exist
             required_fields = ['domain', 'about_us', 'lab_address', 'lab_mail', 'lab_phone_num', 'participants']
             for field in required_fields:
                 if field not in data:
@@ -337,11 +334,9 @@ class GenerateWebsiteResource(Resource):
             lab_phone_num = data['lab_phone_num']
             participants = data['participants']
             contact_info = ContactInfo(lab_address, lab_mail, lab_phone_num)
-            # Extract lab members, managers, and site creator
+
             lab_members = {}
             lab_managers = {}
-            site_creator = None
-
 
             for participant in participants:
                 email = participant.get("email", "").strip()
@@ -352,22 +347,16 @@ class GenerateWebsiteResource(Resource):
                 if not email or not full_name or not degree:
                     return jsonify({"error": "All participants must have an email, full name, and degree.", "response": "false"})
 
-                # Add to lab members
                 lab_members[email] = {"full_name": full_name, "degree": degree}
-
-                # Add to lab managers if applicable
                 if is_lab_manager:
                     lab_managers[email] = {"full_name": full_name, "degree": degree}
 
-            # Set the site creator (there is exactly one due to check above)
             site_creator = {
                 "email": participants[0]["email"],
                 "full_name": participants[0]["fullName"],
                 "degree": participants[0]["degree"]
             }
 
-          
-            # Call generator system to create a new lab website
             response = generator_system.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
 
             if response.is_success():
@@ -375,29 +364,50 @@ class GenerateWebsiteResource(Resource):
                 if response2.is_success():
                     response3 = generator_system.set_site_contact_info_on_creation_from_generator(domain, contact_info)
                     if response3.is_success():
-                        # Start npm server in a new terminal
 
                         TEMPLATE_1_PATH = "/home/admin/project/Lab-Site-Generator/Frontend/template1"
-                        # Set homepage in package.json
                         package_json_path = os.path.join(TEMPLATE_1_PATH, 'package.json')
                         with open(package_json_path, 'r+') as f:
                             pkg = json.load(f)
-                            pkg['homepage'] = f'/labs-beta/{domain}'  # dynamic path
+                            pkg['homepage'] = "/"  # subdomain-based sites are served from root
                             f.seek(0)
                             json.dump(pkg, f, indent=2)
                             f.truncate()
-                        BUILD_PATH = os.path.join(TEMPLATE_1_PATH, 'build')
-                        TARGET_PATH = f"/var/www/labs-beta/{domain}"
 
-                        # 1. Build the React app
                         subprocess.run(['npm', 'run', 'build'], cwd=TEMPLATE_1_PATH, check=True)
 
-                        # 2. Copy the build output
-                        if os.path.exists(TARGET_PATH):
-                            shutil.rmtree(TARGET_PATH)
-                        shutil.copytree(BUILD_PATH, TARGET_PATH)
+                        target_path = f"/var/www/labs/{domain}"
+                        if os.path.exists(target_path):
+                            shutil.rmtree(target_path)
+                        shutil.copytree(os.path.join(TEMPLATE_1_PATH, 'build'), target_path)
 
-                        return jsonify({"message": "Website generated successfully!", "response": "true"})
+                        # Create Nginx config for subdomain
+                        nginx_conf = f"""
+server {{
+    listen 80;
+    server_name {domain}.132.72.116.69;
+
+    root /var/www/labs/{domain};
+    index index.html;
+
+    location / {{
+        try_files $uri /index.html;
+    }}
+}}
+"""
+                        nginx_conf_path = f"/etc/nginx/sites-available/{domain}"
+                        with open(nginx_conf_path, 'w') as f:
+                            f.write(nginx_conf)
+
+                        symlink_path = f"/etc/nginx/sites-enabled/{domain}"
+                        if not os.path.exists(symlink_path):
+                            os.symlink(nginx_conf_path, symlink_path)
+
+                        subprocess.run(['nginx', '-t'])
+                        subprocess.run(['systemctl', 'reload', 'nginx'])
+
+                        return jsonify({"message": "Website generated and deployed on subdomain successfully!", "response": "true"})
+
                     return jsonify({"error": f"An error occurred: {response3.get_message()}", "response": "false"})
                 return jsonify({"error": f"An error occurred: {response2.get_message()}", "response": "false"})
             return jsonify({"error": f"An error occurred: {response.get_message()}", "response": "false"})
