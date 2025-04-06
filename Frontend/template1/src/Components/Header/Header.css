@@ -5,7 +5,7 @@
 .header_title {
   font-size: 45px;
   font-weight: 700;
-  padding-right: 200px;
+  /* padding-right: 100px; */
   color: black;
 }
 
@@ -206,17 +206,30 @@
   align-items: center;
   padding: 15px 30px;
   gap: 30px;
+  justify-content: space-between; /* Even spacing */
+  position: relative;
+}
+
+.header_title_name {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  flex: 1;
 }
 
 /* NAVBAR */
 .navbar {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: row;
   background: rgba(69, 69, 69, 0.1);
   border-radius: 30px;
-  width: 450px; /* Starts small */
-  max-width: fit-content; /* Expands up to this */
-
+  min-width: fit-content;
+  max-width: fit-content;
   height: 40px;
   padding: 6px;
   overflow: hidden;
@@ -224,6 +237,7 @@
   align-items: center;
   transition: max-width 0.8s ease-out, transform 0.5s ease-out,
     height 0.8s ease-out;
+  z-index: 10;
 }
 
 /* NAVBAR EXPANDS ON HOVER */
@@ -308,4 +322,100 @@ input:checked + .slider {
 
 input:checked + .slider:before {
   transform: translateX(25px);
+}
+
+.login-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Popup box */
+.login-popup {
+  background: #fff;
+  padding: 30px 25px;
+  width: 320px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  position: relative;
+  text-align: center;
+  font-family: "Segoe UI", sans-serif;
+  text-transform: none;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.login-title {
+  margin-bottom: 5px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+}
+
+.login-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* Input */
+.login-input {
+  width: 90%;
+  padding: 10px 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.login-input:focus {
+  border-color: #161616;
+}
+
+/* Error message */
+.login-error {
+  color: red;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+/* Login button */
+.login-button {
+  width: 100%;
+  background-color: #2d3035;
+  color: white;
+  border: none;
+  padding: 10px 0;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.login-button:hover {
+  background-color: #45474a;
+}
+
+/* Close button */
+.close-popup {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.close-popup:hover {
+  color: #ff4d4f;
 }

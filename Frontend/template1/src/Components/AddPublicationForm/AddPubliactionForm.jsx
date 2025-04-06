@@ -1,36 +1,42 @@
-import React, { useState } from 'react';
-import { addPublication } from '../../services/websiteService';
+import React, { useState } from "react";
+import { addPublication } from "../../services/websiteService";
 import "./AddPublicationFrom.css";
 
 const AddPublicationForm = ({ onSuccess }) => {
-  const [publication, setPublication] = useState('');
-  const [githubLink, setGithubLink] = useState('');
-  const [presentationLink, setPresentationLink] = useState('');
-  const [videoLink, setVideoLink] = useState('');
+  const [publication, setPublication] = useState("");
+  const [githubLink, setGithubLink] = useState("");
+  const [presentationLink, setPresentationLink] = useState("");
+  const [videoLink, setVideoLink] = useState("");
   const [error, setError] = useState(null); // Error message state
   const [loading, setLoading] = useState(false); // Loading state
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null); 
+    setError(null);
     setLoading(true);
 
     if (!publication.trim()) {
-      setError('Publication link is required.');
+      setError("Publication link is required.");
       setLoading(false);
       return;
     }
 
     try {
-      const domain = sessionStorage.getItem('domain');
-      const response = await addPublication(publication, domain, githubLink, videoLink, presentationLink);
-
+      const domain = sessionStorage.getItem("domain");
+      const response = await addPublication(
+        publication,
+        domain,
+        githubLink,
+        videoLink,
+        presentationLink
+      );
+      console.log(response);
       if (response.response === "true") {
         // Reset fields on success
-        setPublication('');
-        setGithubLink('');
-        setPresentationLink('');
-        setVideoLink('');
+        setPublication("");
+        setGithubLink("");
+        setPresentationLink("");
+        setVideoLink("");
         setError(null);
 
         // Close the form if onSuccess function is provided
@@ -51,9 +57,8 @@ const AddPublicationForm = ({ onSuccess }) => {
   return (
     <div className="upload-publication-section">
       <h3>Add New Publication</h3>
-      
-      {error && <p className="error-message">{error}</p>} {/* Show error message if exists */}
-
+      {error && <p className="error-message">{error}</p>}{" "}
+      {/* Show error message if exists */}
       <form className="upload-publication-form" onSubmit={handleSubmit}>
         <div className="coolinput">
           <label className="text">Publication Link:</label>

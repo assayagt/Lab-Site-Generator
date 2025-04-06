@@ -69,7 +69,14 @@ const ChooseComponentsPage = () => {
               onChange={(e) => handleFileChange(e, "logo")}
             />
           </label>
-          <button className="media_button" onClick={() => handleSubmit("logo")}>
+          <button
+            type="button"
+            className="media_button"
+            onClick={(e) => {
+              e.preventDefault(); // ✅ this prevents the page from reloading
+              handleSubmit("logo");
+            }}
+          >
             Save
           </button>
         </div>
@@ -85,7 +92,11 @@ const ChooseComponentsPage = () => {
 
           <button
             className="media_button"
-            onClick={() => handleSubmit("homepagephoto")}
+            type="button"
+            onClick={(e) => {
+              e.preventDefault(); // ✅ prevent default form behavior
+              handleSubmit("homepagephoto");
+            }}
           >
             Save
           </button>
@@ -336,7 +347,54 @@ const ChooseComponentsPage = () => {
                 </div>
               </div>
             )}
-            {step === 5 && <MediaForm />}
+            {step === 5 && (
+              <div className="file-upload-item">
+                <div className="media_section">
+                  <h2 className="file-upload_title">Media</h2>
+                  <div className="media_item">
+                    <label className="media_label">
+                      Logo
+                      <input
+                        className="media_input"
+                        type="file"
+                        onChange={(e) => handleFileChange(e, "logo")}
+                      />
+                    </label>
+                    <button
+                      type="button"
+                      className="media_button"
+                      onClick={(e) => {
+                        e.preventDefault(); // ✅ this prevents the page from reloading
+                        handleSubmit("logo");
+                      }}
+                    >
+                      Save
+                    </button>
+                  </div>
+                  <div className="media_item">
+                    <label className="media_label">
+                      Home Page Photo
+                      <input
+                        className="media_input"
+                        type="file"
+                        onChange={(e) => handleFileChange(e, "homepagephoto")}
+                      />
+                    </label>
+
+                    <button
+                      className="media_button"
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault(); // ✅ prevent default form behavior
+                        handleSubmit("homepagephoto");
+                      }}
+                    >
+                      Save
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
             {step === 6 && (
               <div className="file-upload-item">
                 <div className="about_contact_section">

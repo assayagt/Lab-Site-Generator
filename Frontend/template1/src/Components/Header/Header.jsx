@@ -62,14 +62,16 @@ function Header(props) {
   return (
     <div className="header">
       {/* Logo & Title */}
-      <img
-        className="header_logo"
-        src={props.logo}
-        alt="logo"
-        onClick={() => navigate("/")}
-      />
-      <div className="header_title" onClick={() => navigate("/")}>
-        {props.title}
+      <div className="header_title_name">
+        <img
+          className="header_logo"
+          src={props.logo}
+          alt="logo"
+          onClick={() => navigate("/")}
+        />
+        <div className="header_title" onClick={() => navigate("/")}>
+          {props.title}
+        </div>
       </div>
 
       {/* Navbar - Expands on Hover */}
@@ -150,22 +152,49 @@ function Header(props) {
 
       {/* Login Popup */}
       {showLogin && (
-        <div className="login-modal">
-          <div className="login-content">
-            <div className="close-button" onClick={() => setShowLogin(false)}>
-              X
-            </div>
-            <h2>Login</h2>
-            {loginError && <div className="login-error">{loginError}</div>}
-            <form onSubmit={handleLogin}>
-              <input
-                type="text"
-                placeholder="Username"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <button type="submit">Login</button>
-            </form>
+        // <div className="login-modal">
+        //   <div className="login-content">
+        //     <div className="close-button" onClick={() => setShowLogin(false)}>
+        //       X
+        //     </div>
+        //     <h2>Login</h2>
+        //     {loginError && <div className="login-error">{loginError}</div>}
+        //     <form onSubmit={handleLogin}>
+        //       <input
+        //         type="text"
+        //         placeholder="Username"
+        //         value={email}
+        //         onChange={(e) => setEmail(e.target.value)}
+        //       />
+        //       <button type="submit">Login</button>
+        //     </form>
+        //   </div>
+        // </div>
+        <div className="login-popup-overlay">
+          <div className="login-popup">
+            <button className="close-popup" onClick={() => setShowLogin(false)}>
+              ×
+            </button>
+            <h2 className="login-title">Welcome Back</h2>
+            <p className="login-subtitle">Enter your email to log in</p>
+
+            <input
+              className="login-input"
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+
+            {loginError && (
+              <div className="login-error">
+                This email does not exist. Request sent to manager
+              </div>
+            )}
+
+            <button className="login-button" onClick={handleLogin}>
+              Login
+            </button>
           </div>
         </div>
       )}

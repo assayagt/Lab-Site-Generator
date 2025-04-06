@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./ContactUsPage.css";
 import { getContactUs } from "../../services/websiteService"; // Adjust the path based on your project structure
 import { useEditMode } from "../../Context/EditModeContext";
+import { setSiteContactInfoByManager } from "../../services/websiteService"; // adjust path if needed
 
 function ContactUsPage() {
   const [coordinates, setCoordinates] = useState(null);
@@ -71,7 +72,31 @@ function ContactUsPage() {
     return <div className="error">{error}</div>;
   }
 
-  const handleSave = async () => {};
+  const handleSave = async () => {
+    setIsSaving(true);
+    const userId = sessionStorage.getItem("sid");
+
+    try {
+      const response = await setSiteContactInfoByManager(
+        userId,
+        domain,
+        address,
+        email,
+        phoneNum
+      );
+
+      if (response?.response === "true") {
+        // optionally show success message
+        console.log("Contact info saved.");
+      } else {
+        console.error("Failed to save contact info:", response?.message);
+      }
+    } catch (error) {
+      console.error("Error saving contact info:", error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <div className="contact_page">
