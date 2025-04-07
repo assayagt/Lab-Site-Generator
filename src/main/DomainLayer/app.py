@@ -369,7 +369,7 @@ class GenerateWebsiteResource(Resource):
                         package_json_path = os.path.join(TEMPLATE_1_PATH, 'package.json')
                         with open(package_json_path, 'r+') as f:
                             pkg = json.load(f)
-                            pkg['homepage'] = f"/{domain}"
+                            pkg['homepage'] = f"/labs/{domain}"
                             f.seek(0)
                             json.dump(pkg, f, indent=2)
                             f.truncate()
