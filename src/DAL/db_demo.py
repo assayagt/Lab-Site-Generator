@@ -9,7 +9,6 @@ from DTOs.Notification_dto import notification_dto
 from DTOs.SiteCustom_dto import siteCustom_dto
 from DTOs.LabMember_dto import lab_member_dto
 
-
 class TestPublicationRepository(unittest.TestCase):
     def setUp(self):
         # Use in-memory SQLite DB for test isolation
