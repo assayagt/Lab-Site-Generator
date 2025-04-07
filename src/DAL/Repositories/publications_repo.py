@@ -1,5 +1,4 @@
-from DTOs.Publication_dto import Publication_dto
-
+from main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
 
 class PublicationRepository:
     """Handles databse operations for publications"""
@@ -49,7 +48,7 @@ class PublicationRepository:
 
     
     
-    def save(self, publication_dto: Publication_dto, domain: str):
+    def save(self, publication_dto: PublicationDTO, domain: str):
         """
         Save a publication and link it to a domain (insert or update)
         
@@ -110,7 +109,7 @@ class PublicationRepository:
     
 
     def _row_to_publication_dto(self, row):
-        return Publication_dto(
+        return PublicationDTO(
             paper_id=row['paper_id'],
                 title=row['title'],
                 authors=row['authors'],

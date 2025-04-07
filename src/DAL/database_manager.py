@@ -201,6 +201,7 @@ class DatabaseManager:
         CREATE TABLE IF NOT EXISTS lab_members(
             domain TEXT,
             email TEXT,
+            second_email TEXT,
             linkedin_link TEXT,
             media TEXT,
             full_name TEXT,
@@ -266,14 +267,14 @@ class DatabaseManager:
         CREATE TABLE IF NOT EXISTS emails_pending(
             domain TEXT,
             email TEXT,
-            FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE,
-            FOREIGN KEY (email) REFERENCES lab_members (email) ON DELETE CASCADE
+            FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE
         );
         '''
         self.execute_script(emails_pending_table)
 
         notifications_table='''
         CREATE TABLE IF NOT EXISTS notifications(
+            domain TEXT,
             id TEXT,
             recipient TEXT,
             subject TEXT,
@@ -281,6 +282,7 @@ class DatabaseManager:
             request_email TEXT,
             publication_id TEXT,
             isRead INTEGER
+            FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE
         );
         '''
         self.execute_script(notifications_table)
