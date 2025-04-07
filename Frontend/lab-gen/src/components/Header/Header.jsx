@@ -26,7 +26,7 @@ function Header(props) {
     if(data===true){
       resetWebsiteData();
       sessionStorage.clear();
-      navigate("/");
+      navigate(process.env.PUBLIC_URL + "/");;
       // window.location.reload();
     }
     else{
@@ -41,7 +41,7 @@ function Header(props) {
   };
 
   const handleNavigateHome = () => {
-    navigate("/");
+    navigate(process.env.PUBLIC_URL + "/");;
     window.location.reload();
   };
   

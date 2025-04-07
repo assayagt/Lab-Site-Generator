@@ -23,7 +23,7 @@ function Header(props) {
   const { editMode, toggleEditMode } = useEditMode();
   const handleClick = (item) => {
     if (item === "Home") {
-      navigate("/");
+      navigate(process.env.PUBLIC_URL + "/");;
     } else {
       navigate(`/${item.replace(" ", "")}`);
     }
@@ -67,9 +67,9 @@ function Header(props) {
           className="header_logo"
           src={props.logo}
           alt="logo"
-          onClick={() => navigate("/")}
+          onClick={() => navigate(process.env.PUBLIC_URL + "/")}
         />
-        <div className="header_title" onClick={() => navigate("/")}>
+        <div className="header_title" onClick={() => navigate(process.env.PUBLIC_URL + "/")}>
           {props.title}
         </div>
       </div>
