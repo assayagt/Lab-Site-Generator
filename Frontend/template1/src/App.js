@@ -23,13 +23,11 @@ function App() {
   const { websiteData, setWebsite } = useWebsite();
 
   const [loading, setLoading] = useState(true);
-  const [domain, setDomain] = useState("");
 
   useEffect(() => {
     const fetchHomepageDetails = async () => {
       let pathParts = window.location.pathname.split('/');
-      let detectedDomain = pathParts[2];
-      setDomain(detectedDomain); // "/labs-beta/beta4/" → ['', 'labs-beta', 'beta4', '']
+      let domain = pathParts[2]; // "/labs-beta/beta4/" → ['', 'labs-beta', 'beta4', '']
       console.log("Detected lab domain:", domain);
       console.log(domain);
       // Add "www." if missing
@@ -85,7 +83,7 @@ function App() {
             ></Header>
             <Routes>
               <Route
-                path={`/labs/${domain}/`}
+                path="/"
                 element={
                   <HomePage
                     about_us={websiteData.about_us}
@@ -93,9 +91,9 @@ function App() {
                   />
                 }
               />
-              <Route path={`/labs/${domain}/Participants`} element={<ParticipantsPage />} />
+              <Route path={`${process.env.PUBLIC_URL}/Participants`} element={<ParticipantsPage />} />
               <Route
-                path={`/labs/${domain}/ContactUs`}
+                path={`${process.env.PUBLIC_URL}/ContactUs`}
                 element={
                   <ContactUsPage
                     address="Ben Gurion University of the Negev"
@@ -104,8 +102,8 @@ function App() {
                   />
                 }
               />
-              <Route path={`/labs/${domain}/Account`} element={<AccountPage />} />
-              <Route path={`/labs/${domain}/Publications`} element={<PublicationsPage />} />
+              <Route path={`${process.env.PUBLIC_URL}/Account`} element={<AccountPage />} />
+              <Route path={`${process.env.PUBLIC_URL}/Publications`} element={<PublicationsPage />} />
             </Routes>
           </Router>
         </EditModeProvider>
