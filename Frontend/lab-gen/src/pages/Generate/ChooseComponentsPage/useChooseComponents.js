@@ -133,7 +133,7 @@ const useChooseComponents = () => {
 
   useEffect(() => {
     if (sessionStorage.getItem("isLoggedIn") !== "true") {
-      navigate(process.env.PUBLIC_URL + "/");;
+      navigate("/");;
     }
   }, [navigate]);
 
@@ -452,7 +452,7 @@ const useChooseComponents = () => {
   /////////////////////////
   useEffect(() => {
     if (sessionStorage.getItem("isLoggedIn") !== "true") {
-      navigate(process.env.PUBLIC_URL + "/");;
+      navigate("/");;
     }
   }, [navigate]);
 
