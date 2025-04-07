@@ -24,7 +24,7 @@ class SiteCustomsRepository:
         #Convert rows to siteCustom_dto objects
         return [self._row_to_SiteCustom_dto(row) for row in results]
     
-    def find_by_email(self, email: str): #TODO: implement this method later
+    def find_by_email(self, email: str):
         query = """
         SELECT sc.*
         FROM member_domain m
@@ -32,10 +32,13 @@ class SiteCustomsRepository:
         WHERE m.email = ?
         """
         result = self.db_manager.execute_query(query, (email,))
+        if not result:
+            return None
         return [self._row_to_SiteCustom_dto(row) for row in result]
     
-    def save(self, siteCustom_dto: siteCustom_dto):
+    def save(self, siteCustom_dto: siteCustom_dto, user_email):
         """This function gets a siteCustom and saves or updates a site custom in the database"""
+
         query = """
         INSERT OR REPLACE INTO site_customs (
             domain, name, components, template, creator_email,
@@ -53,13 +56,31 @@ class SiteCustomsRepository:
             siteCustom_dto.home_picture,
             siteCustom_dto.generated
         )
-        rows_affected = self.db_manager.execute_update(query, parameters)
-        return rows_affected > 0
+
+        # Ensure membership exists in member_domain (INSERT OR IGNORE prevents duplicates)
+        query2 = """
+        INSERT OR IGNORE INTO member_domain
+        (email, domain)
+        VALUES(?, ?)
+        """
+        parameters2 = (user_email, siteCustom_dto.domain)
+        try:
+            self.db_manager.execute_update(query, parameters)
+            self.db_manager.execute_update(query2, parameters2)
+            return True
+        except Exception as e:
+            self.db_manager.logger.error(f"Failed to save publication: {e}")
+            return False
     
     def delete(self, domain):
-        query = "DELETE FROM publications WHERE domain = ?"
+        query = "DELETE FROM site_customs WHERE domain = ?"
         rows_affected = self.db_manager.execute_update(query, (domain,))
         return rows_affected > 0
+    
+    def delete_website_from_member(self, domain, email):
+        query = "DELETE FROM member_domain WHERE email = ? AND domain = ?"
+        rows_affecterd = self.db_manager.execute_update(query, (email, domain))
+        return rows_affecterd > 0
 
 
     def _row_to_SiteCustom_dto(self, row):

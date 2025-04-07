@@ -143,12 +143,28 @@ class DatabaseManager:
         '''
         self.execute_script(publications_table)
 
+        # ====================================== pictures represented as path and not a BLOB
+        SiteCustoms_table = '''
+        CREATE TABLE IF NOT EXISTS site_customs(
+            domain TEXT PRIMARY KEY,
+            name TEXT,
+            creator_email TEXT,
+            components TEXT,
+            template TEXT,
+            logo TEXT,
+            home_pic TEXT,
+            generated INTEGER
+        );
+        '''
+        self.execute_script(SiteCustoms_table)
+
         Websites_table = '''
         CREATE TABLE IF NOT EXISTS websites(
             domain TEXT,
             contact_info TEXT,
             about_us TEXT,
-            PRIMARY KEY (domain)
+            PRIMARY KEY (domain),
+            FOREIGN KEY (domain) REFERENCES site_customs(domain) ON DELETE CASCADE
         );
         '''
         self.execute_script(Websites_table)
@@ -177,26 +193,11 @@ class DatabaseManager:
         email TEXT,
         domain TEXT,
         PRIMARY KEY (email, domain),
-        FOREIGN KEY (domain) REFERENCES websites(domain) ON DELETE CASCADE,
+        FOREIGN KEY (domain) REFERENCES site_customs (domain) ON DELETE CASCADE,
         FOREIGN KEY (email) REFERENCES member_emails(email) ON DELETE CASCADE
         );
         '''
         self.execute_script(member_domain_table)
-        # ====================================== pictures represented as path and not a BLOB
-        SiteCustoms_table = '''
-        CREATE TABLE IF NOT EXISTS site_customs(
-            domain TEXT PRIMARY KEY,
-            name TEXT,
-            creator_email TEXT,
-            components TEXT,
-            template TEXT,
-            logo TEXT,
-            home_pic TEXT,
-            generated INTEGER,
-            FOREIGN KEY (domain) REFERENCES websites(domain) ON DELETE CASCADE
-        );
-        '''
-        self.execute_script(SiteCustoms_table)
 
         LabMembers_table='''
         CREATE TABLE IF NOT EXISTS lab_members(
@@ -209,7 +210,7 @@ class DatabaseManager:
             degree TEXT,
             bio TEXT,
             PRIMARY KEY (domain, email),
-            FOREIGN KEY (domain) REFERENCES websites(domain) ON DELETE CASCADE
+            FOREIGN KEY (domain) REFERENCES site_customs (domain) ON DELETE CASCADE
         );
         '''
         self.execute_script(LabMembers_table)
