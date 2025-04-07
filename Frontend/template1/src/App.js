@@ -75,7 +75,7 @@ function App() {
     <AuthProvider>
       <NotificationProvider>
         <EditModeProvider>
-          <Router>
+          <Router basename={process.env.PUBLIC_URL}>
             <Header
               components={components}
               title={websiteData.websiteName}
