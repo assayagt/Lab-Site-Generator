@@ -369,44 +369,19 @@ class GenerateWebsiteResource(Resource):
                         package_json_path = os.path.join(TEMPLATE_1_PATH, 'package.json')
                         with open(package_json_path, 'r+') as f:
                             pkg = json.load(f)
-                            pkg['homepage'] = "/"  # subdomain-based sites are served from root
+                            pkg['homepage'] = f"/{domain}"
                             f.seek(0)
                             json.dump(pkg, f, indent=2)
                             f.truncate()
 
                         subprocess.run(['npm', 'run', 'build'], cwd=TEMPLATE_1_PATH, check=True)
 
-                        target_path = f"/var/www/labs-beta/{domain}"
+                        target_path = f"/var/www/labs/{domain}"
                         if os.path.exists(target_path):
                             shutil.rmtree(target_path)
                         shutil.copytree(os.path.join(TEMPLATE_1_PATH, 'build'), target_path)
 
-                        # Create Nginx config for subdomain
-                        nginx_conf = f"""
-server {{
-    listen 80;
-    server_name {domain}.132.72.116.69;
-
-    root /var/www/labs/{domain};
-    index index.html;
-
-    location / {{
-        try_files $uri /index.html;
-    }}
-}}
-"""
-                        nginx_conf_path = f"/etc/nginx/sites-available/{domain}"
-                        with open(nginx_conf_path, 'w') as f:
-                            f.write(nginx_conf)
-
-                        symlink_path = f"/etc/nginx/sites-enabled/{domain}"
-                        if not os.path.exists(symlink_path):
-                            os.symlink(nginx_conf_path, symlink_path)
-
-                        subprocess.run(['nginx', '-t'])
-                        subprocess.run(['systemctl', 'reload', 'nginx'])
-
-                        return jsonify({"message": "Website generated and deployed on subdomain successfully!", "response": "true"})
+                        return jsonify({"message": "Website generated successfully!", "response": "true"})
 
                     return jsonify({"error": f"An error occurred: {response3.get_message()}", "response": "false"})
                 return jsonify({"error": f"An error occurred: {response2.get_message()}", "response": "false"})
@@ -414,6 +389,7 @@ server {{
 
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}", "response": "false"})
+
 class ChooseDomain(Resource):
     def post(self):
         """
