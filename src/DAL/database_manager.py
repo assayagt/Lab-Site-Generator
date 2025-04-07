@@ -19,7 +19,7 @@ class DatabaseManager:
                 cls._instance.lock = threading.Lock() # Lock for concurrent DB operations
                 cls._instance.logger =logging.getLogger(__name__)
                 cls._instance.logger.info(f"Database manager initialized with database at {cls._instance.db_path}")
-                cls._instance.create_tables()
+                cls._instance._create_tables()
             return cls._instance
 
 
@@ -123,7 +123,7 @@ class DatabaseManager:
                 self.logger.error(f"Database error: {e}")
                 raise
 
-    def create_tables(self):
+    def _create_tables(self):
         """Create database tables if they don't exist"""
         self.execute_script('PRAGMA foreign_keys = ON;') # Enable foreign keys in SQLite
 
@@ -143,6 +143,16 @@ class DatabaseManager:
         '''
         self.execute_script(publications_table)
 
+        Websites_table = '''
+        CREATE TABLE IF NOT EXISTS websites(
+            domain TEXT,
+            contact_info TEXT,
+            about_us TEXT,
+            PRIMARY KEY (domain)
+        );
+        '''
+        self.execute_script(Websites_table)
+
         domain_paperID_table = '''
         CREATE TABLE IF NOT EXISTS domain_paperID(
             domain TEXT,
@@ -155,7 +165,7 @@ class DatabaseManager:
 
         members_table='''
         CREATE TABLE IF NOT EXISTS member_emails(
-        email TEXT
+        email TEXT,
         PRIMARY KEY(email)
         );
         '''
@@ -187,16 +197,6 @@ class DatabaseManager:
         '''
         self.execute_script(SiteCustoms_table)
 
-        Websites_table = '''
-        CREATE TABLE IF NOT EXISTS websites(
-            domain TEXT,
-            contact_info TEXT,
-            about_us TEXT,
-            PRIMARY KEY (domain)
-        );
-        '''
-        self.execute_script(Websites_table)
-
         LabMembers_table='''
         CREATE TABLE IF NOT EXISTS lab_members(
             domain TEXT,
@@ -217,8 +217,7 @@ class DatabaseManager:
         CREATE TABLE IF NOT EXISTS LabRoles_users(
             domain TEXT,
             email TEXT,
-            FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE,
-            FOREIGN KEY (email) REFERENCES lab_members (email) ON DELETE CASCADE
+            FOREIGN KEY (domain, email) REFERENCES lab_members (domain, email) ON DELETE CASCADE
         );
         '''
         self.execute_script(LabRoles_users_table)
@@ -227,8 +226,7 @@ class DatabaseManager:
         CREATE TABLE IF NOT EXISTS LabRoles_members(
             domain TEXT,
             email TEXT,
-            FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE,
-            FOREIGN KEY (email) REFERENCES lab_members (email) ON DELETE CASCADE
+            FOREIGN KEY (domain, email) REFERENCES lab_members (domain, email) ON DELETE CASCADE
         );
         '''
         self.execute_script(LabRoles_members_table)
@@ -237,8 +235,7 @@ class DatabaseManager:
         CREATE TABLE IF NOT EXISTS LabRoles_managers(
             domain TEXT,
             email TEXT,
-            FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE,
-            FOREIGN KEY (email) REFERENCES lab_members (email) ON DELETE CASCADE
+            FOREIGN KEY (domain, email) REFERENCES lab_members (domain, email) ON DELETE CASCADE
         );
         '''
         self.execute_script(LabRoles_managers_table)
@@ -247,8 +244,7 @@ class DatabaseManager:
         CREATE TABLE IF NOT EXISTS LabRoles_siteCreator(
             domain TEXT,
             email TEXT,
-            FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE,
-            FOREIGN KEY (email) REFERENCES lab_members (email) ON DELETE CASCADE
+           FOREIGN KEY (domain, email) REFERENCES lab_members (domain, email) ON DELETE CASCADE
         );
         '''
         self.execute_script(LabRoles_siteCreator_table)
@@ -257,8 +253,7 @@ class DatabaseManager:
         CREATE TABLE IF NOT EXISTS LabRoles_alumnis(
             domain TEXT,
             email TEXT,
-            FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE,
-            FOREIGN KEY (email) REFERENCES lab_members (email) ON DELETE CASCADE
+            FOREIGN KEY (domain, email) REFERENCES lab_members (domain, email) ON DELETE CASCADE
         );
         '''
         self.execute_script(LabRoles_alumnis_table)
@@ -281,7 +276,7 @@ class DatabaseManager:
             body TEXT,
             request_email TEXT,
             publication_id TEXT,
-            isRead INTEGER
+            isRead INTEGER,
             FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE
         );
         '''

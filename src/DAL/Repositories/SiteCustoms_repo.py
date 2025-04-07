@@ -48,6 +48,11 @@ class SiteCustomsRepository:
         )
         rows_affected = self.db_manager.execute_update(query, parameters)
         return rows_affected > 0
+    
+    def delete(self, domain):
+        query = "DELETE FROM publications WHERE domain = ?"
+        rows_affected = self.db_manager.execute_update(query, (domain,))
+        return rows_affected > 0
 
 
     def _row_to_SiteCustom_dto(self, row):
@@ -59,5 +64,5 @@ class SiteCustomsRepository:
             logo=row['logo'],
             home_picture=row['home_pic'],
             site_creator_email=row['creator_email'],
-            generated=row['generated']
+            generated=bool(row['generated'])
         ) 

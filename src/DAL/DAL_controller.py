@@ -1,8 +1,10 @@
 from Repositories.Members_repo import MembersRepository
+from Repositories.LabMembers_repo import LabMembersRepository
+from Repositories.Notifications_repo import NotificationRepository
 from Repositories.Publications_repo import PublicationRepository
 from Repositories.SiteCustoms_repo import SiteCustomsRepository
 from Repositories.Websites_repo import WebsiteRepository
-from database_manager import DatabaseManager 
+from database_manager import DatabaseManager
 
 class DAL_controller:
 
@@ -23,7 +25,8 @@ class DAL_controller:
         self.publications_repo = PublicationRepository(db_manager=self._db_manager)
         self.siteCustom_repo = SiteCustomsRepository(db_manager=self._db_manager)
         self.website_repo = WebsiteRepository(db_manager=self._db_manager)
-
+        self.notifications_repo = NotificationRepository(db_manager=self._db_manager)
+        self.LabMembers_repo = LabMembersRepository(db_manager=self._db_manager)
         self._initialized = True
 
     

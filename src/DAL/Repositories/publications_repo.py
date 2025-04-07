@@ -1,4 +1,12 @@
-from main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
+import sys
+import os
+# Add project root to path
+# Add project root to path
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+sys.path.append(project_root)
+print(f"Added to path: {project_root}")
+print(f"System path now: {sys.path}")
+from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
 
 class PublicationRepository:
     """Handles databse operations for publications"""
