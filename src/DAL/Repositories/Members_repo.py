@@ -1,4 +1,3 @@
-from DTOs.Member_dto import member_dto
 
 class MembersRepository:
     def __init__(self, db_manager):
@@ -30,13 +29,13 @@ class MembersRepository:
         """
         Find all emails registered to the Generator system
         """
-        query = "SELECT * FROM members"
+        query = "SELECT * FROM member_emails"
         result = self.db_manager.execute_query(query)
         return [row['email'] for row in result]
     
     def save_member(self, email):
         query = """
-        INSERT OR REPLACE INTO members (email)
+        INSERT OR REPLACE INTO member_emails (email)
         VALUES (?)
         """
         rows_affected = self.db_manager.execute_update(query, (email,))

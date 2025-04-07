@@ -6,11 +6,11 @@ class LabMembersRepository:
 
     def find_LabMember_by_domain_email(self, domain, email):
         query="""
-        SELECTE * FROM lab_members
+        SELECT * FROM lab_members
         WHERE domain = ? AND email = ?
         """
         result = self.db_manager.execute_query(query, (domain, email))
-        return self._row_to_labMember_dto(result)
+        return self._row_to_labMember_dto(result[0])
 
     def find_all_users_by_domain(self, domain):
         query="""
@@ -169,12 +169,12 @@ class LabMembersRepository:
 
     def _row_to_labMember_dto(self, row):
         return lab_member_dto(
-        domain=row['domain'],
-        email=row['email'],
-        second_email=row['second_email'],
-        linkedin_link=row['linkedin_link'],
-        media=row['media'],
-        full_name=row['full_name'],
-        degree=row['degree'],
-        bio=row['bio']
-    )
+            domain=row['domain'],
+            email=row['email'],
+            second_email=row['second_email'],
+            linkedin_link=row['linkedin_link'],
+            media=row['media'],
+            full_name=row['full_name'],
+            degree=row['degree'],
+            bio=row['bio']
+        )

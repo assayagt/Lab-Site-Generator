@@ -1,11 +1,10 @@
 import sys
 import os
-# Add project root to path
-# Add project root to path
+
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-sys.path.append(project_root)
-print(f"Added to path: {project_root}")
-print(f"System path now: {sys.path}")
+if project_root not in sys.path:
+    sys.path.append(project_root)
+    
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
 
 class PublicationRepository:
@@ -93,15 +92,14 @@ class PublicationRepository:
         link_parameters = (domain, publication_dto.paper_id)
         # Execute both queries in a single transaction
         try:
-            with self.db_manager.lock:
-                self.db_manager.execute_update(publication_query, publication_parameters)
-                self.db_manager.execute_update(link_query, link_parameters)
+            self.db_manager.execute_update(publication_query, publication_parameters)
+            self.db_manager.execute_update(link_query, link_parameters)
             return True
         except Exception as e:
             self.db_manager.logger.error(f"Failed to save publication: {e}")
             return False
 
-    def delete_publication(self, paper_id):
+    def delete(self, paper_id):
         """
         Delete a publication
         

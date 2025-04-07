@@ -9,7 +9,7 @@ class NotificationRepository:
         SELECT * FROM notifications
         WHERE domain = ? AND recipient = ?
         """
-        results = self.db_manager.execute_query(query, (domain,))
+        results = self.db_manager.execute_query(query, (domain, email))
         return [self._row_to_notification_dto(row) for row in results]
     
     def save_notification(self, notif_dto: notification_dto):
@@ -27,7 +27,7 @@ class NotificationRepository:
             notif_dto.body,
             notif_dto.request_email,
             notif_dto.publication_id,
-            notif_dto.isRead
+            int(notif_dto.isRead)
         )
         rows_affected = self.db_manager.execute_update(query, params)
         return rows_affected > 0

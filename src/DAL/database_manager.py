@@ -12,15 +12,16 @@ class DatabaseManager:
         with cls._instance_lock:
             if cls._instance is None:
                 cls._instance = super(DatabaseManager, cls).__new__(cls)
-                # Initialize instance attributes
-                cls._instance.db_path = os.path.abspath(db_path)
-                os.makedirs(os.path.dirname(cls._instance.db_path) or '.', exist_ok=True)
+                cls._instance.db_path = db_path
+                if db_path != ":memory:":
+                    cls._instance.db_path = os.path.abspath(db_path)
+                    os.makedirs(os.path.dirname(cls._instance.db_path) or '.', exist_ok=True)
                 cls._instance.connection = None
-                cls._instance.lock = threading.Lock() # Lock for concurrent DB operations
-                cls._instance.logger =logging.getLogger(__name__)
+                cls._instance.lock = threading.Lock()
+                cls._instance.logger = logging.getLogger(__name__)
                 cls._instance.logger.info(f"Database manager initialized with database at {cls._instance.db_path}")
                 cls._instance._create_tables()
-            return cls._instance
+        return cls._instance
 
 
 
@@ -47,6 +48,7 @@ class DatabaseManager:
         if self.connection is None:
             self.connection = sqlite3.connect(self.db_path, check_same_thread=False)
             self.connection.row_factory = sqlite3.Row
+            self.connection.execute("PRAGMA foreign_keys = ON") # Enable foreign keys in SQLite
         return self.connection
     
     def get_cursor(self):
@@ -77,7 +79,7 @@ class DatabaseManager:
                 return cursor.fetchall()
             except sqlite3.Error as e:
                 self.logger.error(f"Database error: {e}")
-                raise
+                raise          
 
     def execute_update(self, query, parameters=None):
         """
@@ -103,7 +105,7 @@ class DatabaseManager:
             except sqlite3.Error as e:
                 conn.rollback()
                 self.logger.error(f"Database error: {e}")
-                raise
+                raise         
 
     def execute_script(self, script):
         """
@@ -121,11 +123,9 @@ class DatabaseManager:
             except sqlite3.Error as e:
                 conn.rollback()
                 self.logger.error(f"Database error: {e}")
-                raise
+                raise           
 
-    def _create_tables(self):
-        """Create database tables if they don't exist"""
-        self.execute_script('PRAGMA foreign_keys = ON;') # Enable foreign keys in SQLite
+    def _create_tables(self): 
 
         publications_table = '''
         CREATE TABLE IF NOT EXISTS publications (
@@ -157,6 +157,7 @@ class DatabaseManager:
         CREATE TABLE IF NOT EXISTS domain_paperID(
             domain TEXT,
             paper_id TEXT,
+            PRIMARY KEY (domain, paper_id),
             FOREIGN KEY (domain) REFERENCES websites(domain) ON DELETE CASCADE,
             FOREIGN KEY (paper_id) REFERENCES publications(paper_id) ON DELETE CASCADE
         );

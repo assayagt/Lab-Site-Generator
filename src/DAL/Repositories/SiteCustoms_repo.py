@@ -25,7 +25,14 @@ class SiteCustomsRepository:
         return [self._row_to_SiteCustom_dto(row) for row in results]
     
     def find_by_email(self, email: str): #TODO: implement this method later
-        pass
+        query = """
+        SELECT sc.*
+        FROM member_domain m
+        JOIN site_Customs sc ON m.domain = sc.domain
+        WHERE m.email = ?
+        """
+        result = self.db_manager.execute_query(query, (email,))
+        return [self._row_to_SiteCustom_dto(row) for row in result]
     
     def save(self, siteCustom_dto: siteCustom_dto):
         """This function gets a siteCustom and saves or updates a site custom in the database"""
