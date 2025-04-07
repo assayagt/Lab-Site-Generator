@@ -49,10 +49,16 @@ class MembersRepository:
         rows_affected = self.db_manager.execute_update(query, (email, domain))
         return rows_affected > 0
 
-    def delete_domain(self, email, domain):
+    def delete_domain_from_user(self, email, domain):
         query = "DELETE FROM member_domain WHERE email = ? AND domain = ?"
         rows_affected = self.db_manager.execute_update(query, (email, domain))
         return rows_affected > 0
+    
+    def delete_domain(self, domain):
+        query = "DELETE FROM member_domain WHERE domain = ?"
+        rows_affected = self.db_manager.execute_update(query, (domain,))
+        return rows_affected > 0
+    
 
 
     def delete_member(self, email):
