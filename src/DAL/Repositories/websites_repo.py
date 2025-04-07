@@ -52,34 +52,34 @@ class WebsiteRepository:
         if user_email is None:
             raise ValueError("User email is required when inserting a new website.")
 
-        with self.db_manager.lock:  # Ensures thread safety
-            conn = self.db_manager.connect()
-            cursor = conn.cursor()
+        
+        conn = self.db_manager.connect()
+        cursor = conn.cursor()
 
-            # Use INSERT OR REPLACE to update or insert
-            query = """
-            INSERT OR REPLACE INTO websites
-            (domain, contact_info, about_us)
-            VALUES (?, ?, ?)
-            """
-            parameters = (
-                website_dto.domain,
-                website_dto.contact_info,
-                website_dto.about_us
-            )
-            cursor.execute(query, parameters)
+        # Use INSERT OR REPLACE to update or insert
+        query = """
+        INSERT OR REPLACE INTO websites
+        (domain, contact_info, about_us)
+        VALUES (?, ?, ?)
+        """
+        parameters = (
+            website_dto.domain,
+            website_dto.contact_info,
+            website_dto.about_us
+        )
+        self.db_manager.execute_update(query, parameters)
 
-            # Ensure membership exists in member_domain (INSERT OR IGNORE prevents duplicates)
-            query2 = """
-            INSERT OR IGNORE INTO member_domain
-            (email, domain)
-            VALUES(?, ?)
-            """
-            parameters2 = (user_email, website_dto.domain)
-            cursor.execute(query2, parameters2)
+        # Ensure membership exists in member_domain (INSERT OR IGNORE prevents duplicates)
+        query2 = """
+        INSERT OR IGNORE INTO member_domain
+        (email, domain)
+        VALUES(?, ?)
+        """
+        parameters2 = (user_email, website_dto.domain)
+        self.db_manager.execute_update(query2, parameters2)
 
-            conn.commit()  # Commit both operations atomically
-            return cursor.rowcount > 0  # Returns True if any rows were affected
+        conn.commit()  # Commit both operations atomically
+        return cursor.rowcount > 0  # Returns True if any rows were affected
         
     def delete_website(self, domain):
         """

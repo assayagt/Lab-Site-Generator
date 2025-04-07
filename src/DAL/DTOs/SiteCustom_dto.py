@@ -1,5 +1,5 @@
-from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
-from src.main.DomainLayer.LabGenerator.SiteCustom.SiteCustom import SiteCustom
+# from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
+# from src.main.DomainLayer.LabGenerator.SiteCustom.SiteCustom import SiteCustom
 import json
 
 class siteCustom_dto:
@@ -17,17 +17,17 @@ class siteCustom_dto:
         self.site_creator_email = site_creator_email
         self.generated = generated
 
-    def to_site_custom(self):
-        """Convert a SiteCustomDTO object to a SiteCustom."""
-        return SiteCustom(
-            domain=self.domain,
-            name=self.name,
-            components=json.loads(self.components_str),
-            template=self.template,
-            logo=self.logo,
-            home_picture=self.home_picture,
-            site_creator_email=self.site_creator_email,
-        )
+    # def to_site_custom(self):
+    #     """Convert a SiteCustomDTO object to a SiteCustom."""
+    #     return SiteCustom(
+    #         domain=self.domain,
+    #         name=self.name,
+    #         components=json.loads(self.components_str),
+    #         template=self.template,
+    #         logo=self.logo,
+    #         home_picture=self.home_picture,
+    #         site_creator_email=self.site_creator_email
+    #     )
     
     def get_json(self):
         return {
