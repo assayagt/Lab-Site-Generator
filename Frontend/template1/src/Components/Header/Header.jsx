@@ -54,7 +54,7 @@ function Header(props) {
       sessionStorage.removeItem("userEmail");
       setIsLoggedIn(false);
       location.pathname === "/Account"
-        ? navigate(process.env.PUBLIC_URL + "/");
+        ? navigate(process.env.PUBLIC_URL + "/")
         : window.location.reload();
     }
   };
