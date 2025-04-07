@@ -23,11 +23,13 @@ function App() {
   const { websiteData, setWebsite } = useWebsite();
 
   const [loading, setLoading] = useState(true);
+  const [domain, setDomain] = useState("");
 
   useEffect(() => {
     const fetchHomepageDetails = async () => {
       let pathParts = window.location.pathname.split('/');
-      let domain = pathParts[2]; // "/labs-beta/beta4/" → ['', 'labs-beta', 'beta4', '']
+      let detectedDomain = pathParts[2];
+      setDomain(detectedDomain); // "/labs-beta/beta4/" → ['', 'labs-beta', 'beta4', '']
       console.log("Detected lab domain:", domain);
       console.log(domain);
       // Add "www." if missing
@@ -75,7 +77,7 @@ function App() {
     <AuthProvider>
       <NotificationProvider>
         <EditModeProvider>
-          <Router basename={process.env.PUBLIC_URL}>
+          <Router>
             <Header
               components={components}
               title={websiteData.websiteName}
@@ -83,7 +85,7 @@ function App() {
             ></Header>
             <Routes>
               <Route
-                path="/"
+                path={`/labs/${domain}/`}
                 element={
                   <HomePage
                     about_us={websiteData.about_us}
@@ -91,9 +93,9 @@ function App() {
                   />
                 }
               />
-              <Route path="/Participants" element={<ParticipantsPage />} />
+              <Route path={`/labs/${domain}/Participants`} element={<ParticipantsPage />} />
               <Route
-                path="/ContactUs"
+                path={`/labs/${domain}/ContactUs`}
                 element={
                   <ContactUsPage
                     address="Ben Gurion University of the Negev"
@@ -102,8 +104,8 @@ function App() {
                   />
                 }
               />
-              <Route path="/Account" element={<AccountPage />} />
-              <Route path="/Publications" element={<PublicationsPage />} />
+              <Route path={`/labs/${domain}/Account`} element={<AccountPage />} />
+              <Route path={`/labs/${domain}/Publications`} element={<PublicationsPage />} />
             </Routes>
           </Router>
         </EditModeProvider>
