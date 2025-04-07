@@ -108,6 +108,7 @@ class PublicationRepository:
         rows_affected = self.db_manager.execute_update(query, (paper_id,))
         return rows_affected > 0
     
+
     def _row_to_publication_dto(self, row):
         return Publication_dto(
             paper_id=row['paper_id'],
