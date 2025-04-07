@@ -23,7 +23,7 @@ function Header(props) {
   const { editMode, toggleEditMode } = useEditMode();
   const handleClick = (item) => {
     if (item === "Home") {
-      navigate(process.env.PUBLIC_URL + "/");
+      navigate("/");
     } else {
       navigate(`/${item.replace(" ", "")}`);
     }
@@ -54,7 +54,7 @@ function Header(props) {
       sessionStorage.removeItem("userEmail");
       setIsLoggedIn(false);
       location.pathname === "/Account"
-        ? navigate(process.env.PUBLIC_URL + "/")
+        ? navigate("/")
         : window.location.reload();
     }
   };
@@ -67,9 +67,9 @@ function Header(props) {
           className="header_logo"
           src={props.logo}
           alt="logo"
-          onClick={() => navigate(process.env.PUBLIC_URL + "/")}
+          onClick={() => navigate("/")}
         />
-        <div className="header_title" onClick={() => navigate(process.env.PUBLIC_URL + "/")}>
+        <div className="header_title" onClick={() => navigate("/")}>
           {props.title}
         </div>
       </div>

@@ -75,7 +75,7 @@ function App() {
     <AuthProvider>
       <NotificationProvider>
         <EditModeProvider>
-          <Router>
+          <Router basename={process.env.PUBLIC_URL}>
             <Header
               components={components}
               title={websiteData.websiteName}
@@ -91,9 +91,9 @@ function App() {
                   />
                 }
               />
-              <Route path={`${process.env.PUBLIC_URL}/Participants`} element={<ParticipantsPage />} />
+              <Route path="/Participants" element={<ParticipantsPage />} />
               <Route
-                path={`${process.env.PUBLIC_URL}/ContactUs`}
+                path="/ContactUs"
                 element={
                   <ContactUsPage
                     address="Ben Gurion University of the Negev"
@@ -102,8 +102,8 @@ function App() {
                   />
                 }
               />
-              <Route path={`${process.env.PUBLIC_URL}/Account`} element={<AccountPage />} />
-              <Route path={`${process.env.PUBLIC_URL}/Publications`} element={<PublicationsPage />} />
+              <Route path="/Account" element={<AccountPage />} />
+              <Route path="/Publications" element={<PublicationsPage />} />
             </Routes>
           </Router>
         </EditModeProvider>
