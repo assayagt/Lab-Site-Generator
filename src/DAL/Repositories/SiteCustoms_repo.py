@@ -25,7 +25,14 @@ class SiteCustomsRepository:
         return [self._row_to_SiteCustom_dto(row) for row in results]
     
     def find_by_email(self, email: str): #TODO: implement this method later
-        pass
+        query = """
+        SELECT sc.*
+        FROM member_domain m
+        JOIN site_Customs sc ON m.domain = sc.domain
+        WHERE m.email = ?
+        """
+        result = self.db_manager.execute_query(query, (email,))
+        return [self._row_to_SiteCustom_dto(row) for row in result]
     
     def save(self, siteCustom_dto: siteCustom_dto):
         """This function gets a siteCustom and saves or updates a site custom in the database"""
@@ -48,6 +55,11 @@ class SiteCustomsRepository:
         )
         rows_affected = self.db_manager.execute_update(query, parameters)
         return rows_affected > 0
+    
+    def delete(self, domain):
+        query = "DELETE FROM publications WHERE domain = ?"
+        rows_affected = self.db_manager.execute_update(query, (domain,))
+        return rows_affected > 0
 
 
     def _row_to_SiteCustom_dto(self, row):
@@ -59,5 +71,5 @@ class SiteCustomsRepository:
             logo=row['logo'],
             home_picture=row['home_pic'],
             site_creator_email=row['creator_email'],
-            generated=row['generated']
+            generated=bool(row['generated'])
         ) 

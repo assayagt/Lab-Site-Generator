@@ -1,5 +1,11 @@
-from DTOs.Publication_dto import Publication_dto
+import sys
+import os
 
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+if project_root not in sys.path:
+    sys.path.append(project_root)
+    
+from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
 
 class PublicationRepository:
     """Handles databse operations for publications"""
@@ -49,7 +55,7 @@ class PublicationRepository:
 
     
     
-    def save(self, publication_dto: Publication_dto, domain: str):
+    def save(self, publication_dto: PublicationDTO, domain: str):
         """
         Save a publication and link it to a domain (insert or update)
         
@@ -86,15 +92,14 @@ class PublicationRepository:
         link_parameters = (domain, publication_dto.paper_id)
         # Execute both queries in a single transaction
         try:
-            with self.db_manager.lock:
-                self.db_manager.execute_update(publication_query, publication_parameters)
-                self.db_manager.execute_update(link_query, link_parameters)
+            self.db_manager.execute_update(publication_query, publication_parameters)
+            self.db_manager.execute_update(link_query, link_parameters)
             return True
         except Exception as e:
             self.db_manager.logger.error(f"Failed to save publication: {e}")
             return False
 
-    def delete_publication(self, paper_id):
+    def delete(self, paper_id):
         """
         Delete a publication
         
@@ -108,8 +113,9 @@ class PublicationRepository:
         rows_affected = self.db_manager.execute_update(query, (paper_id,))
         return rows_affected > 0
     
+
     def _row_to_publication_dto(self, row):
-        return Publication_dto(
+        return PublicationDTO(
             paper_id=row['paper_id'],
                 title=row['title'],
                 authors=row['authors'],

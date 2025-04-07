@@ -12,14 +12,16 @@ class DatabaseManager:
         with cls._instance_lock:
             if cls._instance is None:
                 cls._instance = super(DatabaseManager, cls).__new__(cls)
-                # Initialize instance attributes
-                cls._instance.db_path = os.path.abspath(db_path)
-                os.makedirs(os.path.dirname(cls._instance.db_path) or '.', exist_ok=True)
+                cls._instance.db_path = db_path
+                if db_path != ":memory:":
+                    cls._instance.db_path = os.path.abspath(db_path)
+                    os.makedirs(os.path.dirname(cls._instance.db_path) or '.', exist_ok=True)
                 cls._instance.connection = None
-                cls._instance.lock = threading.Lock() # Lock for concurrent DB operations
-                cls._instance.logger =logging.getLogger(__name__)
+                cls._instance.lock = threading.Lock()
+                cls._instance.logger = logging.getLogger(__name__)
                 cls._instance.logger.info(f"Database manager initialized with database at {cls._instance.db_path}")
-            return cls._instance
+                cls._instance._create_tables()
+        return cls._instance
 
 
 
@@ -46,6 +48,7 @@ class DatabaseManager:
         if self.connection is None:
             self.connection = sqlite3.connect(self.db_path, check_same_thread=False)
             self.connection.row_factory = sqlite3.Row
+            self.connection.execute("PRAGMA foreign_keys = ON") # Enable foreign keys in SQLite
         return self.connection
     
     def get_cursor(self):
@@ -76,7 +79,7 @@ class DatabaseManager:
                 return cursor.fetchall()
             except sqlite3.Error as e:
                 self.logger.error(f"Database error: {e}")
-                raise
+                raise          
 
     def execute_update(self, query, parameters=None):
         """
@@ -102,7 +105,7 @@ class DatabaseManager:
             except sqlite3.Error as e:
                 conn.rollback()
                 self.logger.error(f"Database error: {e}")
-                raise
+                raise         
 
     def execute_script(self, script):
         """
@@ -120,11 +123,9 @@ class DatabaseManager:
             except sqlite3.Error as e:
                 conn.rollback()
                 self.logger.error(f"Database error: {e}")
-                raise
+                raise           
 
-    def create_tables(self):
-        """Create database tables if they don't exist"""
-        self.execute_script('PRAGMA foreign_keys = ON;') # Enable foreign keys in SQLite
+    def _create_tables(self): 
 
         publications_table = '''
         CREATE TABLE IF NOT EXISTS publications (
@@ -142,27 +143,46 @@ class DatabaseManager:
         '''
         self.execute_script(publications_table)
 
+        Websites_table = '''
+        CREATE TABLE IF NOT EXISTS websites(
+            domain TEXT,
+            contact_info TEXT,
+            about_us TEXT,
+            PRIMARY KEY (domain)
+        );
+        '''
+        self.execute_script(Websites_table)
+
         domain_paperID_table = '''
         CREATE TABLE IF NOT EXISTS domain_paperID(
             domain TEXT,
             paper_id TEXT,
+            PRIMARY KEY (domain, paper_id),
             FOREIGN KEY (domain) REFERENCES websites(domain) ON DELETE CASCADE,
             FOREIGN KEY (paper_id) REFERENCES publications(paper_id) ON DELETE CASCADE
         );
         '''
         self.execute_script(domain_paperID_table)
-        
+
+        members_table='''
+        CREATE TABLE IF NOT EXISTS member_emails(
+        email TEXT,
+        PRIMARY KEY(email)
+        );
+        '''
+        self.execute_script(members_table)
 
         member_domain_table = '''
         CREATE TABLE IF NOT EXISTS member_domain(
         email TEXT,
         domain TEXT,
         PRIMARY KEY (email, domain),
-        FOREIGN KEY (domain) REFERENCES websites(domain) ON DELETE CASCADE
+        FOREIGN KEY (domain) REFERENCES websites(domain) ON DELETE CASCADE,
+        FOREIGN KEY (email) REFERENCES member_emails(email) ON DELETE CASCADE
         );
         '''
         self.execute_script(member_domain_table)
-        
+        # ====================================== pictures represented as path and not a BLOB
         SiteCustoms_table = '''
         CREATE TABLE IF NOT EXISTS site_customs(
             domain TEXT PRIMARY KEY,
@@ -170,22 +190,98 @@ class DatabaseManager:
             creator_email TEXT,
             components TEXT,
             template TEXT,
-            logo BLOB,
-            home_pic BLOB,
-            generated INTEGER
+            logo TEXT,
+            home_pic TEXT,
+            generated INTEGER,
             FOREIGN KEY (domain) REFERENCES websites(domain) ON DELETE CASCADE
         );
         '''
         self.execute_script(SiteCustoms_table)
 
-        Websites_table = '''
-        CREATE TABLE IF NOT EXISTS websites(
-            domain TEXT PRIMARY KEY,
-            contact_info TEXT,
-            about_us TEXT
+        LabMembers_table='''
+        CREATE TABLE IF NOT EXISTS lab_members(
+            domain TEXT,
+            email TEXT,
+            second_email TEXT,
+            linkedin_link TEXT,
+            media TEXT,
+            full_name TEXT,
+            degree TEXT,
+            bio TEXT,
+            PRIMARY KEY (domain, email),
+            FOREIGN KEY (domain) REFERENCES websites(domain) ON DELETE CASCADE
         );
         '''
-        self.execute_script(Websites_table)
+        self.execute_script(LabMembers_table)
+
+        LabRoles_users_table='''
+        CREATE TABLE IF NOT EXISTS LabRoles_users(
+            domain TEXT,
+            email TEXT,
+            FOREIGN KEY (domain, email) REFERENCES lab_members (domain, email) ON DELETE CASCADE
+        );
+        '''
+        self.execute_script(LabRoles_users_table)
+
+        LabRoles_members_table='''
+        CREATE TABLE IF NOT EXISTS LabRoles_members(
+            domain TEXT,
+            email TEXT,
+            FOREIGN KEY (domain, email) REFERENCES lab_members (domain, email) ON DELETE CASCADE
+        );
+        '''
+        self.execute_script(LabRoles_members_table)
+
+        LabRoles_managers_table='''
+        CREATE TABLE IF NOT EXISTS LabRoles_managers(
+            domain TEXT,
+            email TEXT,
+            FOREIGN KEY (domain, email) REFERENCES lab_members (domain, email) ON DELETE CASCADE
+        );
+        '''
+        self.execute_script(LabRoles_managers_table)
+
+        LabRoles_siteCreator_table='''
+        CREATE TABLE IF NOT EXISTS LabRoles_siteCreator(
+            domain TEXT,
+            email TEXT,
+           FOREIGN KEY (domain, email) REFERENCES lab_members (domain, email) ON DELETE CASCADE
+        );
+        '''
+        self.execute_script(LabRoles_siteCreator_table)
+
+        LabRoles_alumnis_table='''
+        CREATE TABLE IF NOT EXISTS LabRoles_alumnis(
+            domain TEXT,
+            email TEXT,
+            FOREIGN KEY (domain, email) REFERENCES lab_members (domain, email) ON DELETE CASCADE
+        );
+        '''
+        self.execute_script(LabRoles_alumnis_table)
+
+        emails_pending_table='''
+        CREATE TABLE IF NOT EXISTS emails_pending(
+            domain TEXT,
+            email TEXT,
+            FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE
+        );
+        '''
+        self.execute_script(emails_pending_table)
+
+        notifications_table='''
+        CREATE TABLE IF NOT EXISTS notifications(
+            domain TEXT,
+            id TEXT,
+            recipient TEXT,
+            subject TEXT,
+            body TEXT,
+            request_email TEXT,
+            publication_id TEXT,
+            isRead INTEGER,
+            FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE
+        );
+        '''
+        self.execute_script(notifications_table)
 
         self.logger.info("Database tables created successfully")
 
