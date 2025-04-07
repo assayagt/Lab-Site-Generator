@@ -1,106 +1,169 @@
-import logging
+import unittest
 import uuid
-import os
-from DTOs.Publication_dto import Publication_dto
-from Repositories.publications_repo import PublicationRepository
+
 from database_manager import DatabaseManager
+from DAL_controller import DAL_controller
+from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
+from DTOs.Website_dto import website_dto
+from DTOs.Notification_dto import notification_dto
+from DTOs.SiteCustom_dto import siteCustom_dto
+from DTOs.LabMember_dto import lab_member_dto
 
-def main():
-    # Configure logging
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(levelname)s - %(message)s'
-    )
-    
-    logger = logging.getLogger(__name__)
-    
-    # Remove existing database file for a clean demo
-    db_path = 'LSG.db'
-    if os.path.exists(db_path):
-        os.remove(db_path)
-        logger.info(f"Removed existing database file: {db_path}")
-    
-    # Initialize database manager
-    db_manager = DatabaseManager(db_path)
 
-    # Create tables
-    db_manager.create_tables()
-    logger.info("Database tables created")
+class TestPublicationRepository(unittest.TestCase):
+    def setUp(self):
+        # Use in-memory SQLite DB for test isolation
+        self.db_manager = DatabaseManager(db_path=":memory:")
+        DAL_controller.reset_instance()
+        self.controller = DAL_controller(db_manager=self.db_manager)
 
-    # Initialize repository
-    pub_repo = PublicationRepository(db_manager=db_manager)
-    
-    # Create a sample publication
-    pub_id = str(uuid.uuid4())
-    sample_pub = Publication_dto(
-        paper_id=pub_id,
-        title="Lab Site Generator: A Modern Approach to Research Website Creation",
-        authors="Jane Doe, John Smith",
-        publication_year=2024,
-        approved="Yes",
-        publication_link="https://example.com/paper",
-        git_link="https://github.com/example/lsg",
-        video_link="https://youtu.be/example",
-        presentation_link="https://example.com/presentation",
-        description="This paper presents a novel approach to generating research lab websites."
-    )
+        self.pub_repo = self.controller.publications_repo
+        self.members_repo = self.controller.members_repo
+        self.websites_repo = self.controller.website_repo
 
-    # Save the publication
-    success = pub_repo.save(sample_pub)
-    logger.info(f"Publication saved: {success}")
+        self.test_domain = "test-domain"
+        self.test_email = "user@example.com"
+        self.test_email2 = "user2@example.com"
 
-    # Create another sample publication
-    sample_pub2 = PublicationDTO(
-       paper_id=str(uuid.uuid4()),
-        title="User Experience in Academic Websites",
-        authors="Alice Johnson, Bob Brown",
-        publication_year=2023,
-        approved="Yes",
-        publication_link="https://example.com/paper2",
-        description="A study on user experience in academic and research websites."
-    )
-    # Save the second publication
-    success = pub_repo.save(sample_pub2)
-    logger.info(f"Second publication saved: {success}")
+        self.website_dto = website_dto(
+                domain=self.test_domain,
+                contact_info="Some contact info",
+                about_us="About section"
+            )
+        
 
-    # # Find by ID
-    # found_pub = pub_repo.find_by_id(pub_id)
-    # if found_pub:
-    #     logger.info(f"Found publication by ID: {found_pub}")
-    # else:
-    #     logger.error("Publication not found")
+        # Seed required data
+        self.members_repo.save_member(self.test_email)
+        self.websites_repo.save(
+            website_dto=self.website_dto,
+            user_email=self.test_email
+        )
 
-    # # Get all publications
-    # all_pubs = pub_repo.find_all()
-    # logger.info(f"Found {len(all_pubs)} publications")
+    def test_find_websites_by_email(self):
+        second_web_dto = website_dto(
+            domain="self.test_domain",
+            contact_info="Some contact info",
+            about_us="About section"
+        )
+        self.websites_repo.save(
+            website_dto=second_web_dto,
+            user_email=self.test_email
+        )
+        result = self.controller.website_repo.find_by_email(self.test_email)
+        self.assertIsNotNone(result)
+        self.assertEqual(2, len(result))
 
-    # # Print all publications
-    # for i, pub in enumerate(all_pubs, 1):
-    #     logger.info(f"Publication {i}: {pub}")
+    def test_insert_and_find_notification(self):
+        _id = str(uuid.uuid4())
+        _notification_dto = notification_dto(
+            domain=self.test_domain,
+            id=_id,
+            body="Register me",
+            recipient=self.test_email,
+            subject="regregreg",
+            request_email=self.test_email2,
+            isRead= False
+        )
+        self.assertTrue(self.controller.notifications_repo.save_notification(_notification_dto))
+        retrieved = self.controller.notifications_repo.find_notifications_by_domain_email(self.test_domain, self.test_email)
+        self.assertIsNotNone(retrieved)
 
-    # # Update a publication
-    # if found_pub:
-    #     found_pub.title = "UPDATED: " + found_pub.title
-    #     success = pub_repo.save(found_pub)
-    #     logger.info(f"Publication updated: {success}")
-    
-    # # Verify update
-    # updated_pub = pub_repo.find_by_id(pub_id)
-    # if updated_pub:
-    #     logger.info(f"Updated publication: {updated_pub}")
-    
-    # # Delete a publication
-    # if updated_pub:
-    #     success = pub_repo.delete(updated_pub.paper_id)
-    #     logger.info(f"Publication deleted: {success}")
-    
-    # # Verify deletion
-    # all_pubs = pub_repo.find_all()
-    # logger.info(f"Publications after deletion: {len(all_pubs)}")
-    
-    # Close the connection
-    db_manager.close()
-    logger.info("Database connection closed")
+    def test_insert_and_find_siteCustom(self):
+        _siteCustomDTO = siteCustom_dto(
+            domain=self.test_domain,
+            name="some name",
+            components_str="comp1, comp2, comp3",
+            template="template1",
+            site_creator_email=self.test_email,
+            logo="some path to a logo",
+            home_picture="some path to homePic",
+            generated=False
+        )
+        self.assertTrue(self.controller.siteCustom_repo.save(_siteCustomDTO))
+        retrieved = self.controller.siteCustom_repo.find_by_domain(self.test_domain)
+        self.assertIsNotNone(retrieved)
+        retrieved = self.controller.siteCustom_repo.find_by_email(self.test_email)
+        self.assertIsNotNone(retrieved)
+
+    def test_insert_and_find_labMember(self):
+        _labMember_dto = lab_member_dto(
+            domain=self.test_domain,
+            email=self.test_email,
+            second_email=self.test_email2,
+            linkedin_link="linkedin",
+            full_name="website creator",
+            degree = "PHD"
+        )
+        self.assertTrue(self.controller.LabMembers_repo.save_LabMember(_labMember_dto))
+        result = self.controller.LabMembers_repo.find_LabMember_by_domain_email(self.test_domain, self.test_email)
+        self.assertIsNotNone(result)
+
+
+    def test_insert_and_find_publication(self):
+        pub_id = str(uuid.uuid4())
+        pub = PublicationDTO(
+            paper_id=pub_id,
+            title="Test Publication",
+            authors="Alice, Bob",
+            publication_year=2024,
+            approved="Yes",
+            publication_link="https://pub.link",
+            git_link="https://github.com/example",
+            video_link=None,
+            presentation_link=None,
+            description="A study about testing"
+        )
+        success = self.pub_repo.save(pub, self.test_domain)
+        self.assertTrue(success)
+
+        retrieved = self.pub_repo.find_by_id(pub_id)
+        self.assertIsNotNone(retrieved)
+        self.assertEqual(retrieved.title, pub.title)
+
+    def test_update_publication(self):
+        pub_id = str(uuid.uuid4())
+        pub = PublicationDTO(
+            paper_id=pub_id,
+            title="Initial Title",
+            authors="John Smith",
+            publication_year=2023,
+            approved="No",
+            publication_link="http://init.link",
+            git_link="",
+            video_link="",
+            presentation_link="",
+            description="Initial description"
+        )
+        self.pub_repo.save(pub, self.test_domain)
+
+        pub.title = "Updated Title"
+        self.pub_repo.save(pub, self.test_domain)
+
+        updated = self.pub_repo.find_by_id(pub_id)
+        self.assertEqual(updated.title, "Updated Title")
+
+    def test_delete_publication(self):
+        pub_id = str(uuid.uuid4())
+        pub = PublicationDTO(
+            paper_id=pub_id,
+            title="To Be Deleted",
+            authors="Anonymous",
+            publication_year=2022,
+            approved="Yes",
+            publication_link="http://delete.me",
+            git_link="",
+            video_link="",
+            presentation_link="",
+            description="Test delete operation"
+        )
+        self.pub_repo.save(pub, self.test_domain)
+
+        deleted = self.pub_repo.delete(pub_id)
+        self.assertTrue(deleted)
+
+        missing = self.pub_repo.find_by_id(pub_id)
+        self.assertIsNone(missing)
+
 
 if __name__ == "__main__":
-    main()
+    unittest.main()

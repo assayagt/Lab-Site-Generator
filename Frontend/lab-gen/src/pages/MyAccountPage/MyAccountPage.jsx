@@ -55,8 +55,8 @@ const MyAccountPage = () => {
     );
     console.log(data);
     setWebsite({
-      components: data.data.components || [],
-      template: data.data.template || "",
+      components: data?.data?.components || [],
+      template: data?.data?.template || "",
       domain: data.data.domain || "",
       websiteName: data.data.name || "",
       created: true,
@@ -87,6 +87,12 @@ const MyAccountPage = () => {
                 <div className={website.generated ? "" : "notGenerated"}>
                   {website.generated ? "Generated" : "Not Generated"}
                 </div>
+                <button
+                  className="delete-button"
+                  onClick={() => console.log("")}
+                >
+                  🗑️
+                </button>
               </div>
             ))}
           </div>
