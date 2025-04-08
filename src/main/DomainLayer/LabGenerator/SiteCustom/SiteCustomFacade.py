@@ -15,6 +15,7 @@ class SiteCustomFacade:
             raise Exception("This is a singleton class!")
         self.sites = {}
         self.dal_controller = DAL_controller()
+        self._load_all_siteCustoms()
 
     @staticmethod
     def get_instance():
@@ -55,7 +56,7 @@ class SiteCustomFacade:
             raise Exception(ExceptionsEnum.INVALID_SITE_NAME.value)
         site = self.sites[domain]
         site.change_name(new_name)
-        self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto(), user_email=site.site_creator_email)
+        self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto())
 
     def change_site_domain(self, old_domain, new_domain):
         """Changes the domain of a site."""
@@ -66,7 +67,7 @@ class SiteCustomFacade:
         site.change_domain(new_domain)
         self.sites[new_domain] = site
         self.dal_controller.siteCustom_repo.delete(old_domain)
-        self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto(), user_email=site.site_creator_email)
+        self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto())
 
     def change_site_template(self, old_domain, new_template):
         """Changes the template of a site."""
@@ -145,7 +146,7 @@ class SiteCustomFacade:
         self.dal_controller.siteCustom_repo.delete(domain=site.domain)
         self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto())
 
-    def load_all_siteCustoms(self):
+    def _load_all_siteCustoms(self):
         res = self.dal_controller.siteCustom_repo.find_all()
         for dto in res:
             self.sites[dto.domain] = SiteCustom(

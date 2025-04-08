@@ -57,20 +57,24 @@ class PublicationRepository:
     
     def save(self, publication_dto: PublicationDTO, domain: str):
         """
-        Save a publication and link it to a domain (insert or update)
-        
-        Args:
-            publication (Publication): Publication to save
-            
-        Returns:
-            bool: True if successful, False otherwise
+        Save a publication and link it to a domain using FK-safe upsert logic.
         """
         publication_query = """
-        INSERT OR REPLACE INTO publications (
+        INSERT INTO publications (
             paper_id, title, authors, publication_year, approved,
             publication_link, video_link, git_link, presentation_link, description
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(paper_id) DO UPDATE SET
+            title = excluded.title,
+            authors = excluded.authors,
+            publication_year = excluded.publication_year,
+            approved = excluded.approved,
+            publication_link = excluded.publication_link,
+            video_link = excluded.video_link,
+            git_link = excluded.git_link,
+            presentation_link = excluded.presentation_link,
+            description = excluded.description
         """
         publication_parameters = (
             publication_dto.paper_id,
@@ -86,11 +90,12 @@ class PublicationRepository:
         )
 
         link_query = """
-        INSERT OR IGNORE INTO domain_paperID (domain, paper_id)
+        INSERT INTO domain_paperID (domain, paper_id)
         VALUES (?, ?)
+        ON CONFLICT(domain, paper_id) DO NOTHING
         """
         link_parameters = (domain, publication_dto.paper_id)
-        # Execute both queries in a single transaction
+
         try:
             self.db_manager.execute_update(publication_query, publication_parameters)
             self.db_manager.execute_update(link_query, link_parameters)

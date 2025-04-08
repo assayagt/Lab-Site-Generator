@@ -36,15 +36,23 @@ class SiteCustomsRepository:
             return None
         return [self._row_to_SiteCustom_dto(row) for row in result]
     
-    def save(self, siteCustom_dto: siteCustom_dto, user_email):
+    def save(self, siteCustom_dto: siteCustom_dto, user_email=None):
         """This function gets a siteCustom and saves or updates a site custom in the database"""
 
         query = """
-        INSERT OR REPLACE INTO site_customs (
+        INSERT INTO site_customs (
             domain, name, components, template, creator_email,
             logo, home_pic, generated
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(domain) DO UPDATE SET
+            name = excluded.name,
+            components = excluded.components,
+            template = excluded.template,
+            creator_email = excluded.creator_email,
+            logo = excluded.logo,
+            home_pic = excluded.home_pic,
+            generated =excluded.generated
         """
         parameters = (
             siteCustom_dto.domain,
@@ -54,19 +62,21 @@ class SiteCustomsRepository:
             siteCustom_dto.site_creator_email,
             siteCustom_dto.logo,
             siteCustom_dto.home_picture,
-            siteCustom_dto.generated
+            int(siteCustom_dto.generated)
         )
 
         # Ensure membership exists in member_domain (INSERT OR IGNORE prevents duplicates)
         query2 = """
-        INSERT OR IGNORE INTO member_domain
+        INSERT INTO member_domain
         (email, domain)
         VALUES(?, ?)
+        ON CONFLICT(email, domain) DO NOTHING
         """
         parameters2 = (user_email, siteCustom_dto.domain)
         try:
             self.db_manager.execute_update(query, parameters)
-            self.db_manager.execute_update(query2, parameters2)
+            if user_email is not None:
+                self.db_manager.execute_update(query2, parameters2)
             return True
         except Exception as e:
             self.db_manager.logger.error(f"Failed to save publication: {e}")

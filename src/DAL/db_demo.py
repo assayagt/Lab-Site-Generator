@@ -50,6 +50,25 @@ class TestPublicationRepository(unittest.TestCase):
         self.assertIsNotNone(result)
 
 
+    def test_site_creation(self):
+        creatorEmail = "creator@example.com"
+        ex_domain = "example_comain.52.82"
+        self.controller.members_repo.save_member(creatorEmail)
+        _site_custom_dto = siteCustom_dto(
+            domain=ex_domain,
+            name="some name",
+            components_str="comp1, comp2, comp3",
+            template="template1",
+            site_creator_email=creatorEmail,
+            logo="some path to a logo",
+            home_picture="some path to homePic",
+            generated=False
+        )
+        self.assertTrue(self.controller.siteCustom_repo.save(_site_custom_dto, creatorEmail))
+        self.assertFalse(self.controller.members_repo.save_domain(creatorEmail, ex_domain))
+        
+
+
     def test_insert_and_find_notification(self):
         _id = str(uuid.uuid4())
         _notification_dto = notification_dto(

@@ -14,10 +14,18 @@ class NotificationRepository:
     
     def save_notification(self, notif_dto: notification_dto):
         query = """
-        INSERT OR REPLACE INTO notifications(
-        domain, id, recipient, subject, body, request_email, publication_id, isRead
+        INSERT INTO notifications (
+            domain, id, recipient, subject, body, request_email, publication_id, isRead
         )
-        VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(id) DO UPDATE SET
+            domain = excluded.domain,
+            recipient = excluded.recipient,
+            subject = excluded.subject,
+            body = excluded.body,
+            request_email = excluded.request_email,
+            publication_id = excluded.publication_id,
+            isRead = excluded.isRead
         """
         params = (
             notif_dto.domain,
@@ -31,6 +39,7 @@ class NotificationRepository:
         )
         rows_affected = self.db_manager.execute_update(query, params)
         return rows_affected > 0
+
     
 
     def delete_notification(self, domain, id):
