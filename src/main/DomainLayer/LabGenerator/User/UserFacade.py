@@ -25,10 +25,10 @@ class UserFacade:
         if email not in self.members_customSites:
             member = Member(email=email)
             self.members_customSites[email] = {"member": member, "domains": []}
-            self.dal_controller.members_repo.save_member(email)
+            self.dal_controller.members_repo.save_member(email) #=================
         if domain not in self.members_customSites[email]["domains"]:
-            self.members_customSites[email]["domains"].append(domain)
-            self.dal_controller.members_repo.save_domain(email=email, domain=domain)
+            self.members_customSites[email]["domains"].append(domain) 
+            self.dal_controller.members_repo.save_domain(email=email, domain=domain) #=================
             
 
     def create_new_site_managers(self, lab_managers_emails, domain):

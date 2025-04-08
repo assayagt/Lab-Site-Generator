@@ -15,13 +15,10 @@ class WebsiteRepository:
             contact_info=row['contact_info'],
             about_us=row['about_us']
         )
-    
-
 
     def save(self, website_dto: website_dto):
         """
-        Save a website entry. If it exists, it is replaced. Otherwise, a new entry is inserted.
-
+        Save a website entry. Updates if domain exists, otherwise inserts.
         Args:
             website_dto (WebsiteDTO): The website data transfer object.
             user_email (str, optional): The email of the user creating the website.
@@ -31,9 +28,12 @@ class WebsiteRepository:
         """       
         # Use INSERT OR REPLACE to update or insert
         query = """
-        INSERT OR REPLACE INTO websites
+        INSERT INTO websites
         (domain, contact_info, about_us)
         VALUES (?, ?, ?)
+        ON CONFLICT(domain) DO UPDATE SET
+            contact_info = excluded.contact_info,
+            about_us = excluded.about_us
         """
         parameters = (
             website_dto.domain,
