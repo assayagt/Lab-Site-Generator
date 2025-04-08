@@ -43,10 +43,17 @@ Research labs often lack the time or resources to create and maintain a website.
 - **Deployment**: University server infrastructure  
 - **Crawler**: Python-based web scraping for publication data
 
-## 🛠️ Installation & Setup
+## 🛠️ How to Run
 
+To use the Lab Site Generator:
 
+1. **Connect to the Ben-Gurion University VPN**
+2. Open your browser and navigate to: http://132.72.116.69
+3. Your generated website will be on: http://132.72.116.69/labs/<selected-domain>
 
+BGU - VPN instructions: https://in.bgu.ac.il/computing/Pages/vpn-service.aspx
+
+No installation is required for regular users accessing the deployed system.
 ## 🧾 License
 
 This project is licensed for academic use by the Software Engineering Program at **Ben-Gurion University of the Negev**.
