@@ -279,6 +279,7 @@ class DatabaseManager:
             request_email TEXT,
             publication_id TEXT,
             isRead INTEGER,
+            PRIMARY KEY (domain, id),
             FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE
         );
         '''

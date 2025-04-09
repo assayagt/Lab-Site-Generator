@@ -12,14 +12,20 @@ class NotificationRepository:
         results = self.db_manager.execute_query(query, (domain, email))
         return [self._row_to_notification_dto(row) for row in results]
     
+    
+    def find_notifications_by_domain(self, domain):
+        query = "SELECT * FROM  notifications WHERE domain = ?"
+        result = self.db_manager.execute_query(query, (domain,))
+        return [self._row_to_notification_dto(row) for row in result]
+    
+    
     def save_notification(self, notif_dto: notification_dto):
         query = """
         INSERT INTO notifications (
             domain, id, recipient, subject, body, request_email, publication_id, isRead
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ON CONFLICT(id) DO UPDATE SET
-            domain = excluded.domain,
+        ON CONFLICT(domain, id) DO UPDATE SET
             recipient = excluded.recipient,
             subject = excluded.subject,
             body = excluded.body,

@@ -1,8 +1,12 @@
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.main.DomainLayer.LabWebsites.Website.Website import Website
+from src.DAL.DTOs.Website_dto import website_dto
+from DAL.DAL_controller import DAL_controller
+
 class WebsiteFacade:
     def __init__(self):
         self.websites = []
+        self.dal_controller = DAL_controller()
 
     def add_website(self, website):
         self.websites.append(website)
@@ -10,6 +14,7 @@ class WebsiteFacade:
     def create_new_website(self, domain):
         website = Website(domain)
         self.add_website(website)
+        self.dal_controller.website_repo.save(website_dto=website.to_dto())
 
     def get_website(self, domain):
         for website in self.websites:

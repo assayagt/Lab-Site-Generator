@@ -7,6 +7,8 @@ from src.main.DomainLayer.LabWebsites.User.User import User
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.main.DomainLayer.LabWebsites.User.Degree import Degree
 
+from src.DAL.DAL_controller import DAL_controller
+
 
 class UserFacade:
     _singleton_instance = None
@@ -18,6 +20,7 @@ class UserFacade:
         self.siteCreator = {}
         self.alumnis = {}
         self.emails_requests_to_register = {}  #holds all the emails that an email with registration request was already sent to managers
+        self.dal_controller = DAL_controller()
 
     @staticmethod
     def get_instance():
@@ -72,6 +75,7 @@ class UserFacade:
             raise Exception(ExceptionsEnum.EMAIL_IS_ALREADY_ASSOCIATED_WITH_A_MEMBER.value)
         member = LabMember(email, fullName, degree)
         self.members[email] = member
+        # self.dal_controller.LabMembers_repo.save_LabMember(member.get_dto())
         if email in self.emails_requests_to_register:
             del self.emails_requests_to_register[email]
 

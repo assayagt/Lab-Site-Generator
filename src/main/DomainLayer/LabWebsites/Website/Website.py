@@ -1,7 +1,7 @@
 from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
 from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
-
+from src.DAL.DTOs.Website_dto import website_dto 
 
 class Website:
     def __init__(self, domain, contact_info=None, about_us=None):
@@ -182,3 +182,11 @@ class Website:
 
     def get_domain(self):
         return self.domain
+    
+    def to_dto(self) -> website_dto:
+        return website_dto(
+            domain=self.domain,
+            contact_info=self.contact_info,
+            about_us=self.about_us
+        )
+

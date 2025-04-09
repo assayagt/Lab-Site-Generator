@@ -50,7 +50,7 @@ class TestPublicationRepository(unittest.TestCase):
         self.assertIsNotNone(result)
 
 
-    def test_site_creation(self):
+    def test_siteCustom_creation(self):
         creatorEmail = "creator@example.com"
         ex_domain = "example_comain.52.82"
         self.controller.members_repo.save_member(creatorEmail)
@@ -65,7 +65,8 @@ class TestPublicationRepository(unittest.TestCase):
             generated=False
         )
         self.assertTrue(self.controller.siteCustom_repo.save(_site_custom_dto, creatorEmail))
-        self.assertFalse(self.controller.members_repo.save_domain(creatorEmail, ex_domain))
+        _site_custom_dto.components_str = "comp1, comp2"
+        self.assertTrue(self.controller.siteCustom_repo.save(_site_custom_dto))
         
 
 

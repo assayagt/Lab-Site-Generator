@@ -1,7 +1,7 @@
 from src.main.DomainLayer.LabWebsites.User.State import State
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from enum import Enum
-
+from DAL.DTOs.LabMember_dto import lab_member_dto
 class Degree(Enum):
     BACHELOR = "Bachelor's"
     MASTER = "Master's"
@@ -77,4 +77,15 @@ class LabMember(State):
     def get_details(self):
         return {"email": self.email, "secondEmail": self.secondEmail, "linkedin_link": self.linkedin_link, "media": self.media, "fullName": self.fullName, "degree": self.degree, "bio": self.bio}
 
-
+    def get_dto(self, domain) -> lab_member_dto:
+        return lab_member_dto(
+            domain=domain,
+            email=self.email,
+            second_email=self.secondEmail,
+            linkedin_link=self.linkedin_link,
+            media=self.media,
+            full_name=self.fullName,
+            degree=self.degree,
+            bio=self.bio
+        )
+    

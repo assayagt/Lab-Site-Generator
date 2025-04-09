@@ -42,19 +42,19 @@ class LabSystemController:
         for lab_member_email, lab_member_details in lab_members.items():
             full_name = lab_member_details["full_name"]
             degree = lab_member_details["degree"]
-            userFacade.register_new_LabMember(lab_member_email, full_name, degree)
+            userFacade.register_new_LabMember(lab_member_email, full_name, degree) #FOR DATA WE NEED: either return the member to save it here with domain or pass the domain to function
 
         # Add lab managers
         for lab_manager_email, lab_manager_details in lab_managers.items():
             full_name = lab_manager_details["full_name"]
             degree = lab_manager_details["degree"]
-            userFacade.create_new_site_manager(lab_manager_email, full_name, degree)
+            userFacade.create_new_site_manager(lab_manager_email, full_name, degree) #SAME AS ABOVE
 
         # Set site creator
         site_creator_email = site_creator.get("email")
         site_creator_full_name = site_creator.get("full_name")
         site_creator_degree = site_creator.get("degree")
-        userFacade.set_site_creator(site_creator_email, site_creator_full_name, site_creator_degree)
+        userFacade.set_site_creator(site_creator_email, site_creator_full_name, site_creator_degree) #SAME AS ABOVE
 
     def login(self, domain, userId, email):
         """
@@ -74,7 +74,7 @@ class LabSystemController:
                 # error if registration request already sent to managers and rejected:
                 userFacade.error_if_email_is_in_requests_and_rejected(email)
                 # send registration request to all LabManagers:
-                self.send_registration_notification_to_all_LabManagers(domain, email)
+                self.send_registration_notification_to_all_LabManagers(domain, email) #notification here
                 # keep the email in the requests list, so next time the user will login, a registration request wont be sent again:
                 userFacade.add_email_to_requests(email)
                 raise Exception(ExceptionsEnum.USER_NOT_REGISTERED.value)
