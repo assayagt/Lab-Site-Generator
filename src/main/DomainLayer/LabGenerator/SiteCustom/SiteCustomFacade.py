@@ -56,7 +56,7 @@ class SiteCustomFacade:
             raise Exception(ExceptionsEnum.INVALID_SITE_NAME.value)
         site = self.sites[domain]
         site.change_name(new_name)
-        self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto())
+        self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto()) #===========================================
 
     def change_site_domain(self, old_domain, new_domain):
         """Changes the domain of a site."""

@@ -107,12 +107,13 @@ class LabMembersRepository:
     
 
     def _save_role(self, table, domain, email):
+        self.clear_member_role(email=email, domain=domain)
         query = f"""
         INSERT INTO {table} (domain, email)
         VALUES (?, ?)
         ON CONFLICT(domain, email) DO NOTHING
         """
-        return self.db_manager.execute_update(query, (domain, email))
+        return self.db_manager.execute_update(query, (domain, email)) > 0
 
 
     def _find_by_role(self, table, domain):
@@ -124,6 +125,24 @@ class LabMembersRepository:
         """
         results = self.db_manager.execute_query(query, (domain,))
         return [self._row_to_labMember_dto(row) for row in results]
+    
+    def clear_member_role(self, email, domain):
+        """
+        Remove a (domain, email) pair from all LabRoles_* tables and emails_pending.
+        """
+        role_tables = [
+            "LabRoles_users",
+            "LabRoles_members",
+            "LabRoles_managers",
+            "LabRoles_siteCreator",
+            "LabRoles_alumnis",
+            "emails_pending"
+        ]
+        total_deleted = 0
+        for table in role_tables:
+            query = f"DELETE FROM {table} WHERE domain = ? AND email= ?"
+            total_deleted += self.db_manager.execute_update(query, (domain, email))
+        return total_deleted
     
 
     def _row_to_labMember_dto(self, row):
