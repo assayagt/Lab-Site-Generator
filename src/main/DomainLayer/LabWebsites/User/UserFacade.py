@@ -13,7 +13,8 @@ from src.DAL.DAL_controller import DAL_controller
 class UserFacade:
     _singleton_instance = None
 
-    def __init__(self):
+    def __init__(self, domain):
+        self.domain = domain
         self.users = {}
         self.members = {}
         self.managers = {}
@@ -37,9 +38,11 @@ class UserFacade:
         self.managers[nominated_manager_email] = member
         if nominated_manager_email in self.emails_requests_to_register:
             del self.emails_requests_to_register[nominated_manager_email]
+        self.dal_controller.LabMembers_repo.save_to_LabRoles_managers(nominated_manager_email, self.domain)  # ===========================
 
     def add_email_to_requests(self, email):
         self.emails_requests_to_register[email] = RegistrationStatus.PENDING.value
+        self.dal_controller.LabMembers_repo.save_to_emails_pending(email, self.domain, RegistrationStatus.PENDING.value)  # ===========================
 
     def error_if_email_is_in_requests_and_wait_approval(self, email):
         if email in self.emails_requests_to_register:
@@ -75,7 +78,7 @@ class UserFacade:
             raise Exception(ExceptionsEnum.EMAIL_IS_ALREADY_ASSOCIATED_WITH_A_MEMBER.value)
         member = LabMember(email, fullName, degree)
         self.members[email] = member
-        # self.dal_controller.LabMembers_repo.save_LabMember(member.get_dto())
+        self.dal_controller.LabMembers_repo.save_LabMember(member.get_dto(self.domain))  # ===========================
         if email in self.emails_requests_to_register:
             del self.emails_requests_to_register[email]
 
@@ -88,6 +91,7 @@ class UserFacade:
     def reject_registration_request(self, email):
         if email in self.emails_requests_to_register and self.emails_requests_to_register[email] == RegistrationStatus.PENDING.value:
             self.emails_requests_to_register[email] = RegistrationStatus.REJECTED.value
+            self.dal_controller.LabMembers_repo.save_to_emails_pending(email, self.domain, RegistrationStatus.REJECTED.value)  # ===========================
         else:
             raise Exception(ExceptionsEnum.DECISION_ALREADY_MADE_FOR_THIS_REGISTRATION_REQUEST.value)
 
@@ -204,6 +208,8 @@ class UserFacade:
         elif email in self.managers:
             del self.managers[email]
 
+        self.dal_controller.LabMembers_repo.clear_member_role(email, self.domain)  # ===========================
+
     def get_user_by_id(self, userId):
         if userId in self.users:
             user = self.users[userId]
@@ -242,6 +248,7 @@ class UserFacade:
         member = self.get_member_by_email(email)
         self.alumnis[email] = member
         self.delete_member_by_email(email)
+        self.dal_controller.LabMembers_repo.save_to_LabRoles_alumnis(email, self.domain)  # ===========================
 
     def get_manager_by_email(self, email):
         return self.managers[email]
@@ -252,6 +259,7 @@ class UserFacade:
         manager = self.get_manager_by_email(email)
         self.members[email] = manager
         del self.managers[email]
+        self.dal_controller.LabMembers_repo.save_to_LabRoles_members(email, self.domain)  # ===========================
 
     def remove_alumni(self, email):
         if email not in self.alumnis:
@@ -259,6 +267,7 @@ class UserFacade:
         alumni = self.get_alumni_by_email(email)
         self.members[email] = alumni
         del self.alumnis[email]
+        self.dal_controller.LabMembers_repo.save_to_LabRoles_members(email, self.domain)  # ===========================
 
     def getUsers(self):
         return self.users
@@ -278,36 +287,43 @@ class UserFacade:
     def set_site_creator(self, creator_email, creator_fullName, creator_degree):
         member = LabMember(creator_email, creator_fullName, creator_degree)
         self.siteCreator[creator_email] = member
+        self.dal_controller.LabMembers_repo.save_to_LabRoles_siteCreator(creator_email, self.domain)  # ===========================
 
     def set_secondEmail_by_member(self, email, secondEmail):
         member = self.get_member_by_email(email)
         if member is None:
             member = self.get_alumni_by_email(email)
         member.set_secondEmail(secondEmail)
+        self.dal_controller.LabMembers_repo.save_LabMember(member.get_dto(self.domain))  # ===========================
+
 
     def set_linkedin_link_by_member(self, email, linkedin_link):
         member = self.get_member_by_email(email)
         if member is None:
             member = self.get_alumni_by_email(email)
         member.set_linkedin_link(linkedin_link)
+        self.dal_controller.LabMembers_repo.save_LabMember(member.get_dto(self.domain))  # ===========================
 
     def set_media_by_member(self, email, media):
         member = self.get_member_by_email(email)
         if member is None:
             member = self.get_alumni_by_email(email)
         member.set_media(media)
+        self.dal_controller.LabMembers_repo.save_LabMember(member.get_dto(self.domain))  # ===========================
 
     def set_fullName_by_member(self,email, fullName):
         member = self.get_member_by_email(email)
         if member is None:
             member = self.get_alumni_by_email(email)
         member.set_fullName(fullName)
+        self.dal_controller.LabMembers_repo.save_LabMember(member.get_dto(self.domain))  # ===========================
 
     def set_degree_by_member(self,email, degree):
         member = self.get_member_by_email(email)
         if member is None:
             member = self.get_alumni_by_email(email)
         member.set_degree(degree)
+        self.dal_controller.LabMembers_repo.save_LabMember(member.get_dto(self.domain))  # ===========================
 
     def error_if_degree_not_valid(self, degree):
         print(degree)
@@ -327,6 +343,7 @@ class UserFacade:
         if member is None:
             member = self.get_alumni_by_email(email)
         member.set_bio(bio)
+        self.dal_controller.LabMembers_repo.save_LabMember(member.get_dto(self.domain))  # ===========================
 
     def add_user(self):
         user_id = str(uuid.uuid4())
@@ -384,19 +401,24 @@ class UserFacade:
         site_creator_email, site_creator = next(iter(self.siteCreator.items()))
         self.alumnis[site_creator_email] = site_creator
         del self.siteCreator[site_creator_email]
+        self.dal_controller.LabMembers_repo.save_to_LabRoles_alumnis(site_creator_email, self.domain)
 
     def site_creator_to_manager(self):
         site_creator_email, site_creator = next(iter(self.siteCreator.items()))
         self.managers[site_creator_email] = site_creator
         del self.siteCreator[site_creator_email]
+        self.dal_controller.LabMembers_repo.save_to_LabRoles_managers(site_creator_email, self.domain)
 
     def site_creator_to_member(self):
         site_creator_email, site_creator = next(iter(self.siteCreator.items()))
         self.members[site_creator_email] = site_creator
         del self.siteCreator[site_creator_email]
+        self.dal_controller.LabMembers_repo.save_to_LabRoles_members(site_creator_email, self.domain)
 
     def define_member_as_site_creator(self, nominate_email):
         member = self.get_member_by_email(nominate_email)
         self.siteCreator[nominate_email] = member
+        del self.members[nominate_email]
+        self.dal_controller.LabMembers_repo.save_to_LabRoles_siteCreator(nominate_email, self.domain)
 
 

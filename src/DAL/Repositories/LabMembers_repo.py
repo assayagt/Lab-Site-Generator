@@ -90,15 +90,15 @@ class LabMembersRepository:
 
     def save_to_LabRoles_alumnis(self, email, domain):
         return self._save_role(table="LabRoles_alumnis", domain=domain, email=email)
-    
 
-    def save_to_emails_pending(self, email, domain):
+    def save_to_emails_pending(self, email, domain, status):
         query = """
-        INSERT INTO emails_pending (domain, email)
-        VALUES (?, ?)
-        ON CONFLICT(domain, email) DO NOTHING
+        INSERT INTO emails_pending (domain, email, status)
+        VALUES (?, ?, ?)
+        ON CONFLICT(domain, email)
+        DO UPDATE SET status = excluded.status
         """
-        return self.db_manager.execute_update(query, (email, domain)) > 0
+        return self.db_manager.execute_update(query, (domain, email, status.value)) > 0
         
     
     def delete_LabMember(self, email, domain):

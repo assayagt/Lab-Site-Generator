@@ -265,6 +265,7 @@ class DatabaseManager:
         CREATE TABLE IF NOT EXISTS emails_pending(
             domain TEXT,
             email TEXT,
+            status TEXT,
             FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE
         );
         '''
