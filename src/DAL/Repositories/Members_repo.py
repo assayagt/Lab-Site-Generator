@@ -35,24 +35,32 @@ class MembersRepository:
     
     def save_member(self, email):
         query = """
-        INSERT OR REPLACE INTO member_emails (email)
+        INSERT INTO member_emails (email)
         VALUES (?)
+        ON CONFLICT(email) DO NOTHING
         """
         rows_affected = self.db_manager.execute_update(query, (email,))
         return rows_affected > 0
 
     def save_domain(self, email, domain):
         query = """
-        INSERT OR REPLACE INTO member_domain(email, domain)
+        INSERT INTO member_domain (email, domain)
         VALUES (?, ?)
+        ON CONFLICT (email, domain) DO NOTHING
         """
         rows_affected = self.db_manager.execute_update(query, (email, domain))
         return rows_affected > 0
 
-    def delete_domain(self, email, domain):
+    def delete_domain_from_user(self, email, domain):
         query = "DELETE FROM member_domain WHERE email = ? AND domain = ?"
         rows_affected = self.db_manager.execute_update(query, (email, domain))
         return rows_affected > 0
+    
+    def delete_domain(self, domain):
+        query = "DELETE FROM member_domain WHERE domain = ?"
+        rows_affected = self.db_manager.execute_update(query, (domain,))
+        return rows_affected > 0
+    
 
 
     def delete_member(self, email):

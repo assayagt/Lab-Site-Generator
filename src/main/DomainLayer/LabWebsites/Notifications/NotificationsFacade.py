@@ -1,4 +1,7 @@
 from src.main.DomainLayer.LabWebsites.Notifications.EmailNotification import EmailNotification
+from src.DAL.DAL_controller import DAL_controller
+
+
 class NotificationsFacade:
     _instance = None
 
@@ -10,6 +13,7 @@ class NotificationsFacade:
     def __init__(self):
         self.websocket_handler = None
         self.notifications_center = {}  # { website_id: { user_email: [notification_list] } }
+        self.dal_controller = DAL_controller()
 
     def notify_user(self, email_notification, domain, recipientEmail):
         if domain not in self.notifications_center:
@@ -19,6 +23,7 @@ class NotificationsFacade:
             self.notifications_center[domain][recipientEmail] = []
 
         self.notifications_center[domain][recipientEmail].append(email_notification)
+        self.dal_controller.notifications_repo.save_notification(email_notification.to_dto())  # Save the notification to the database
 
         email_notification.send_email()
 
@@ -37,7 +42,7 @@ class NotificationsFacade:
         )
 
         # Create the email notification
-        email_notification = EmailNotification(recipientEmail, "New Publication Pending Approval", body, publication_id=publicationDto.get_paper_id())
+        email_notification = EmailNotification(recipientEmail, "New Publication Pending Approval", body, domain, publication_id=publicationDto.get_paper_id())
 
         self.notify_user(email_notification, domain, recipientEmail)
 
@@ -56,7 +61,7 @@ class NotificationsFacade:
         )
 
         # Create the email notification
-        email_notification = EmailNotification(recipientEmail, "New Publication Pending Final Approval", body, publication_id=publicationDto.get_paper_id())
+        email_notification = EmailNotification(recipientEmail, "New Publication Pending Final Approval", body, domain, publication_id=publicationDto.get_paper_id())
 
         self.notify_user(email_notification, domain, recipientEmail)
 
@@ -72,7 +77,7 @@ class NotificationsFacade:
         )
 
         # Create the email notification
-        email_notification = EmailNotification(recipientEmail, "New Registration Request Pending Approval", body, request_email=requestedEmail)
+        email_notification = EmailNotification(recipientEmail, "New Registration Request Pending Approval", body, domain, request_email=requestedEmail)
 
         self.notify_user(email_notification, domain, recipientEmail)
 
@@ -101,5 +106,6 @@ class NotificationsFacade:
             for n in notifications:
                 if n.id == notification_id:
                     n.mark_as_read()
+                    self.dal_controller.notifications_repo.save_notification(n.to_dict())
                     return n.request_email or n.publication_id
 

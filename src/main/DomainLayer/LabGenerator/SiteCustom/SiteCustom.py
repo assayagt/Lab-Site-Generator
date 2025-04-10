@@ -1,14 +1,15 @@
 from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
+from src.DAL.DTOs.SiteCustom_dto import siteCustom_dto
 
 class SiteCustom:
-    def __init__(self, domain, name, components, template: Template, site_creator_email, logo=None, home_picture=None):
+    def __init__(self, domain, name, components, template: Template, site_creator_email, logo=None, home_picture=None, generated=False):
         self.domain = domain
         self.name = name
         self.components = components
         self.template = template
         self.logo = logo
         self.home_picture = home_picture
-        self.generated = False
+        self.generated = generated
         self.site_creator_email = site_creator_email
 
     def change_template(self, template: Template):
@@ -47,3 +48,15 @@ class SiteCustom:
 
     def set_site_creator_email(self, site_creator_email):
         self.site_creator_email = site_creator_email
+
+    def to_dto(self):
+        return siteCustom_dto(
+            domain=self.domain,
+            name=self.name,
+            components_list=self.components,
+            template=self.template,
+            logo=self.logo,
+            home_picture=self.home_picture,
+            site_creator_email= self.site_creator_email,
+            generated=self.generated
+        )

@@ -9,7 +9,6 @@ from DTOs.Notification_dto import notification_dto
 from DTOs.SiteCustom_dto import siteCustom_dto
 from DTOs.LabMember_dto import lab_member_dto
 
-
 class TestPublicationRepository(unittest.TestCase):
     def setUp(self):
         # Use in-memory SQLite DB for test isolation
@@ -25,33 +24,51 @@ class TestPublicationRepository(unittest.TestCase):
         self.test_email = "user@example.com"
         self.test_email2 = "user2@example.com"
 
+        self.site_custom_dto = siteCustom_dto(
+            domain=self.test_domain,
+            name="some name",
+            components_str="comp1, comp2, comp3",
+            template="template1",
+            site_creator_email=self.test_email,
+            logo="some path to a logo",
+            home_picture="some path to homePic",
+            generated=False
+        )
         self.website_dto = website_dto(
-                domain=self.test_domain,
-                contact_info="Some contact info",
-                about_us="About section"
-            )
+            domain=self.test_domain,
+            contact_info="golden pages",
+            about_us="LSG LSG"
+        )
+
+        # Seed required data a user with a site custom and a deployed website
+        self.members_repo.save_member(self.test_email)
+        self.controller.siteCustom_repo.save(self.site_custom_dto, self.test_email)
+        self.websites_repo.save(self.website_dto)
+
+    def test_find_websites(self):
+        result = self.controller.website_repo.find_by_domain(self.test_domain)
+        self.assertIsNotNone(result)
+
+
+    def test_siteCustom_creation(self):
+        creatorEmail = "creator@example.com"
+        ex_domain = "example_comain.52.82"
+        self.controller.members_repo.save_member(creatorEmail)
+        _site_custom_dto = siteCustom_dto(
+            domain=ex_domain,
+            name="some name",
+            components_str="comp1, comp2, comp3",
+            template="template1",
+            site_creator_email=creatorEmail,
+            logo="some path to a logo",
+            home_picture="some path to homePic",
+            generated=False
+        )
+        self.assertTrue(self.controller.siteCustom_repo.save(_site_custom_dto, creatorEmail))
+        _site_custom_dto.components_str = "comp1, comp2"
+        self.assertTrue(self.controller.siteCustom_repo.save(_site_custom_dto))
         
 
-        # Seed required data
-        self.members_repo.save_member(self.test_email)
-        self.websites_repo.save(
-            website_dto=self.website_dto,
-            user_email=self.test_email
-        )
-
-    def test_find_websites_by_email(self):
-        second_web_dto = website_dto(
-            domain="self.test_domain",
-            contact_info="Some contact info",
-            about_us="About section"
-        )
-        self.websites_repo.save(
-            website_dto=second_web_dto,
-            user_email=self.test_email
-        )
-        result = self.controller.website_repo.find_by_email(self.test_email)
-        self.assertIsNotNone(result)
-        self.assertEqual(2, len(result))
 
     def test_insert_and_find_notification(self):
         _id = str(uuid.uuid4())
@@ -68,10 +85,10 @@ class TestPublicationRepository(unittest.TestCase):
         retrieved = self.controller.notifications_repo.find_notifications_by_domain_email(self.test_domain, self.test_email)
         self.assertIsNotNone(retrieved)
 
-    def test_insert_and_find_siteCustom(self):
+    def test_update_and_find_siteCustom(self):
         _siteCustomDTO = siteCustom_dto(
             domain=self.test_domain,
-            name="some name",
+            name="some name updated",
             components_str="comp1, comp2, comp3",
             template="template1",
             site_creator_email=self.test_email,
@@ -79,11 +96,12 @@ class TestPublicationRepository(unittest.TestCase):
             home_picture="some path to homePic",
             generated=False
         )
-        self.assertTrue(self.controller.siteCustom_repo.save(_siteCustomDTO))
+        self.assertTrue(self.controller.siteCustom_repo.save(_siteCustomDTO, self.test_email))
         retrieved = self.controller.siteCustom_repo.find_by_domain(self.test_domain)
         self.assertIsNotNone(retrieved)
-        retrieved = self.controller.siteCustom_repo.find_by_email(self.test_email)
-        self.assertIsNotNone(retrieved)
+        retrieved_lst = self.controller.siteCustom_repo.find_by_email(self.test_email)
+        self.assertIsNotNone(retrieved_lst)
+        self.assertEqual(_siteCustomDTO.name, retrieved.name)
 
     def test_insert_and_find_labMember(self):
         _labMember_dto = lab_member_dto(
@@ -111,7 +129,8 @@ class TestPublicationRepository(unittest.TestCase):
             git_link="https://github.com/example",
             video_link=None,
             presentation_link=None,
-            description="A study about testing"
+            description="A study about testing",
+            author_emails=["ani@gmail.com", "ata@jamal.com"]
         )
         success = self.pub_repo.save(pub, self.test_domain)
         self.assertTrue(success)
@@ -132,7 +151,8 @@ class TestPublicationRepository(unittest.TestCase):
             git_link="",
             video_link="",
             presentation_link="",
-            description="Initial description"
+            description="Initial description",
+            author_emails=["ani@gmail.com", "ata@jamal.com"]
         )
         self.pub_repo.save(pub, self.test_domain)
 
@@ -154,7 +174,8 @@ class TestPublicationRepository(unittest.TestCase):
             git_link="",
             video_link="",
             presentation_link="",
-            description="Test delete operation"
+            description="Test delete operation",
+            author_emails=["ani@gmail.com", "ata@jamal.com"]
         )
         self.pub_repo.save(pub, self.test_domain)
 

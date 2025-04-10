@@ -1,5 +1,6 @@
 import sys
 import os
+import json
 
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 if project_root not in sys.path:
@@ -57,40 +58,47 @@ class PublicationRepository:
     
     def save(self, publication_dto: PublicationDTO, domain: str):
         """
-        Save a publication and link it to a domain (insert or update)
-        
-        Args:
-            publication (Publication): Publication to save
-            
-        Returns:
-            bool: True if successful, False otherwise
+        Save a publication and link it to a domain using FK-safe upsert logic.
         """
         publication_query = """
-        INSERT OR REPLACE INTO publications (
+        INSERT INTO publications (
             paper_id, title, authors, publication_year, approved,
-            publication_link, video_link, git_link, presentation_link, description
+            publication_link, video_link, git_link, presentation_link, description, author_emails
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(paper_id) DO UPDATE SET
+            title = excluded.title,
+            authors = excluded.authors,
+            publication_year = excluded.publication_year,
+            approved = excluded.approved,
+            publication_link = excluded.publication_link,
+            video_link = excluded.video_link,
+            git_link = excluded.git_link,
+            presentation_link = excluded.presentation_link,
+            description = excluded.description, 
+            author_emails = excluded.author_emails
         """
         publication_parameters = (
             publication_dto.paper_id,
             publication_dto.title,
-            publication_dto.authors,
+            json.dumps(publication_dto.authors),
             publication_dto.publication_year,
             publication_dto.approved,
             publication_dto.publication_link,
             publication_dto.video_link,
             publication_dto.git_link,
             publication_dto.presentation_link,
-            publication_dto.description
+            publication_dto.description, 
+            json.dumps(publication_dto.author_emails)
         )
 
         link_query = """
-        INSERT OR IGNORE INTO domain_paperID (domain, paper_id)
+        INSERT INTO domain_paperID (domain, paper_id)
         VALUES (?, ?)
+        ON CONFLICT(domain, paper_id) DO NOTHING
         """
         link_parameters = (domain, publication_dto.paper_id)
-        # Execute both queries in a single transaction
+
         try:
             self.db_manager.execute_update(publication_query, publication_parameters)
             self.db_manager.execute_update(link_query, link_parameters)
@@ -118,12 +126,13 @@ class PublicationRepository:
         return PublicationDTO(
             paper_id=row['paper_id'],
                 title=row['title'],
-                authors=row['authors'],
+                authors=json.loads(row['authors']),
                 publication_year=row['publication_year'],
                 approved=row['approved'],
                 publication_link=row['publication_link'],
                 git_link=row['git_link'],
                 video_link=row['video_link'],
                 presentation_link=row['presentation_link'],
-                description=row['description']
+                description=row['description'],
+                author_emails=json.loads(row['author_emails'])
             )
