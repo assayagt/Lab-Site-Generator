@@ -138,7 +138,8 @@ class DatabaseManager:
             video_link TEXT,
             git_link TEXT,
             presentation_link TEXT,
-            description TEXT
+            description TEXT, 
+            author_emails TEXT
         );
         '''
         self.execute_script(publications_table)

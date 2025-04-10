@@ -1,5 +1,6 @@
 import sys
 import os
+import json
 
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 if project_root not in sys.path:
@@ -62,7 +63,7 @@ class PublicationRepository:
         publication_query = """
         INSERT INTO publications (
             paper_id, title, authors, publication_year, approved,
-            publication_link, video_link, git_link, presentation_link, description
+            publication_link, video_link, git_link, presentation_link, description, author_emails
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(paper_id) DO UPDATE SET
@@ -74,19 +75,21 @@ class PublicationRepository:
             video_link = excluded.video_link,
             git_link = excluded.git_link,
             presentation_link = excluded.presentation_link,
-            description = excluded.description
+            description = excluded.description, 
+            author_emails = excluded.author_emails
         """
         publication_parameters = (
             publication_dto.paper_id,
             publication_dto.title,
-            publication_dto.authors,
+            json.dumps(publication_dto.authors),
             publication_dto.publication_year,
             publication_dto.approved,
             publication_dto.publication_link,
             publication_dto.video_link,
             publication_dto.git_link,
             publication_dto.presentation_link,
-            publication_dto.description
+            publication_dto.description, 
+            json.dumps(publication_dto.author_emails)
         )
 
         link_query = """
@@ -104,7 +107,7 @@ class PublicationRepository:
             self.db_manager.logger.error(f"Failed to save publication: {e}")
             return False
 
-    def delete(self, paper_id):
+    def delete(self, paper_id, domain):
         """
         Delete a publication
         
@@ -114,8 +117,8 @@ class PublicationRepository:
         Returns:
             bool: True if successful, False otherwise
         """
-        query = "DELETE FROM publications WHERE paper_id = ?"
-        rows_affected = self.db_manager.execute_update(query, (paper_id,))
+        query = "DELETE FROM publications WHERE paper_id = ? AND domain = ?"
+        rows_affected = self.db_manager.execute_update(query, (paper_id, domain))
         return rows_affected > 0
     
 
@@ -123,12 +126,13 @@ class PublicationRepository:
         return PublicationDTO(
             paper_id=row['paper_id'],
                 title=row['title'],
-                authors=row['authors'],
+                authors=json.loads(row['authors']),
                 publication_year=row['publication_year'],
                 approved=row['approved'],
                 publication_link=row['publication_link'],
                 git_link=row['git_link'],
                 video_link=row['video_link'],
                 presentation_link=row['presentation_link'],
-                description=row['description']
+                description=row['description'],
+                author_emails=json.loads(row['author_emails'])
             )
