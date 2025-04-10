@@ -65,7 +65,7 @@ class PublicationRepository:
             paper_id, title, authors, publication_year, approved,
             publication_link, video_link, git_link, presentation_link, description, author_emails
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(paper_id) DO UPDATE SET
             title = excluded.title,
             authors = excluded.authors,
@@ -107,7 +107,7 @@ class PublicationRepository:
             self.db_manager.logger.error(f"Failed to save publication: {e}")
             return False
 
-    def delete(self, paper_id, domain):
+    def delete(self, paper_id):
         """
         Delete a publication
         
@@ -117,8 +117,8 @@ class PublicationRepository:
         Returns:
             bool: True if successful, False otherwise
         """
-        query = "DELETE FROM publications WHERE paper_id = ? AND domain = ?"
-        rows_affected = self.db_manager.execute_update(query, (paper_id, domain))
+        query = "DELETE FROM publications WHERE paper_id = ?"
+        rows_affected = self.db_manager.execute_update(query, (paper_id,))
         return rows_affected > 0
     
 

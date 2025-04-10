@@ -129,7 +129,8 @@ class TestPublicationRepository(unittest.TestCase):
             git_link="https://github.com/example",
             video_link=None,
             presentation_link=None,
-            description="A study about testing"
+            description="A study about testing",
+            author_emails=["ani@gmail.com", "ata@jamal.com"]
         )
         success = self.pub_repo.save(pub, self.test_domain)
         self.assertTrue(success)
@@ -150,7 +151,8 @@ class TestPublicationRepository(unittest.TestCase):
             git_link="",
             video_link="",
             presentation_link="",
-            description="Initial description"
+            description="Initial description",
+            author_emails=["ani@gmail.com", "ata@jamal.com"]
         )
         self.pub_repo.save(pub, self.test_domain)
 
@@ -172,7 +174,8 @@ class TestPublicationRepository(unittest.TestCase):
             git_link="",
             video_link="",
             presentation_link="",
-            description="Test delete operation"
+            description="Test delete operation",
+            author_emails=["ani@gmail.com", "ata@jamal.com"]
         )
         self.pub_repo.save(pub, self.test_domain)
 
