@@ -36,7 +36,8 @@ const AccountPage = () => {
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
+  const [saveButtonText, setSaveButtonText] = useState("Save Changes");
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [approvalForm, setApprovalForm] = useState({
     fullName: "",
@@ -257,6 +258,11 @@ const AccountPage = () => {
       setErrorMessage(`An error occurred: ${error.message}`);
     }
   };
+  const handleChange = (field, value) => {
+    setUserDetails((prev) => ({ ...prev, [field]: value }));
+    setHasUnsavedChanges(true);
+    setSaveButtonText("Save Changes");
+  };
 
   const handleSaveChanges = async () => {
     try {
@@ -287,6 +293,8 @@ const AccountPage = () => {
 
       if (isUpdated) {
         setPopupMessage("Changes saved successfully!");
+        setSaveButtonText("Saved");
+        setHasUnsavedChanges(false);
       } else {
         setErrorMessage("An error occurred while saving changes.");
       }
@@ -334,9 +342,7 @@ const AccountPage = () => {
                     name="input"
                     className="input"
                     value={userDetails.bio}
-                    onChange={(e) =>
-                      setUserDetails({ ...userDetails, bio: e.target.value })
-                    }
+                    onChange={(e) => handleChange("bio", e.target.value)}
                   />
                 </div>
                 <div className="coolinput">
@@ -350,10 +356,7 @@ const AccountPage = () => {
                     className="input"
                     value={userDetails.secondaryEmail}
                     onChange={(e) =>
-                      setUserDetails({
-                        ...userDetails,
-                        secondaryEmail: e.target.value,
-                      })
+                      handleChange("secondaryEmail", e.target.value)
                     }
                   />
                 </div>
@@ -367,9 +370,7 @@ const AccountPage = () => {
                     name="input"
                     className="input"
                     value={userDetails.degree}
-                    onChange={(e) =>
-                      setUserDetails({ ...userDetails, degree: e.target.value })
-                    }
+                    onChange={(e) => handleChange("degree", e.target.value)}
                   />
                 </div>
                 <div className="coolinput">
@@ -382,12 +383,7 @@ const AccountPage = () => {
                     name="input"
                     className="input"
                     value={userDetails.linkedIn}
-                    onChange={(e) =>
-                      setUserDetails({
-                        ...userDetails,
-                        linkedIn: e.target.value,
-                      })
-                    }
+                    onChange={(e) => handleChange("linkedIn", e.target.value)}
                   />
                 </div>
               </div>
@@ -398,7 +394,7 @@ const AccountPage = () => {
                 type="button"
                 onClick={handleSaveChanges}
               >
-                Save Changes
+                {saveButtonText}
               </button>
             </div>
           </form>
