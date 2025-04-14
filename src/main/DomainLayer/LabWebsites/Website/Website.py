@@ -1,7 +1,8 @@
 from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
 from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
-from src.DAL.DTOs.Website_dto import website_dto 
+from src.DAL.DTOs.Website_dto import website_dto
+import json
 
 class Website:
     def __init__(self, domain, contact_info=None, about_us=None):
@@ -191,11 +192,11 @@ class Website:
     def to_dto(self) -> website_dto:
         return website_dto(
             domain=self.domain,
-            contact_info=self.contact_info,
+            contact_info=json.dumps(self.contact_info.to_dict()) if self.contact_info else None,
             about_us=self.about_us
         )
 
-    def _load_pub_dtos(self, pub_list: list[PublicationDTO]):
+    def load_pub_dtos(self, pub_list: list[PublicationDTO]):
         for pub in pub_list:
             for author in pub.author_emails:
                 self.members_publications[author] = pub
