@@ -3,12 +3,15 @@ import "./PublicationsPage.css";
 import { getApprovedPublications } from "../../services/websiteService";
 import { useEditMode } from "../../Context/EditModeContext";
 import AddPublicationForm from "../../Components/AddPublicationForm/AddPubliactionForm";
+import SuccessPopup from "../../Components/PopUp/SuccessPopup";
+import ErrorPopup from "../../Components/PopUp/ErrorPopup";
 
 import {
   setPublicationGitLink,
   setPublicationPttxLink,
   setPublicationVideoLink,
 } from "../../services/websiteService";
+
 const PublicationPage = () => {
   const [publications, setPublications] = useState([]);
   const [yearFilter, setYearFilter] = useState("");
@@ -17,10 +20,12 @@ const PublicationPage = () => {
   const [availableAuthors, setAvailableAuthors] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-  const { editMode } = useEditMode(); // Get edit mode state
+  const { editMode } = useEditMode();
   const [showAddForm, setShowAddForm] = useState(false);
-
   const [editedLinks, setEditedLinks] = useState({});
+  const [popupMessage, setPopupMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [saveStatus, setSaveStatus] = useState({});
 
   useEffect(() => {
     const fetchPublications = async () => {
@@ -30,7 +35,6 @@ const PublicationPage = () => {
         setPublications(fetchedPublications || []);
       } catch (error) {
         console.error("Error fetching publications:", error);
-      } finally {
       }
     };
 
@@ -58,12 +62,12 @@ const PublicationPage = () => {
 
   const handleYearChange = (event) => {
     setYearFilter(event.target.value);
-    setCurrentPage(1); // Reset to first page
+    setCurrentPage(1);
   };
 
   const handleAuthorChange = (event) => {
     setAuthorFilter(event.target.value);
-    setCurrentPage(1); // Reset to first page
+    setCurrentPage(1);
   };
 
   const filteredPublications = publications
@@ -78,11 +82,11 @@ const PublicationPage = () => {
         : true;
 
       const matchesAuthor = authorFilter
-        ? Array.isArray(pub.authors) // Check if authors field is an array
+        ? Array.isArray(pub.authors)
           ? pub.authors.some((author) =>
               author.toLowerCase().includes(authorFilter.toLowerCase())
             )
-          : pub.authors.toLowerCase().includes(authorFilter.toLowerCase()) // If it's a string
+          : pub.authors.toLowerCase().includes(authorFilter.toLowerCase())
         : true;
 
       return matchesYear && matchesAuthor;
@@ -98,7 +102,7 @@ const PublicationPage = () => {
     currentPage * itemsPerPage
   );
 
-  const totalPages = Math.ceil(filteredPublications.length / itemsPerPage) + 1;
+  const totalPages = Math.ceil(filteredPublications.length / itemsPerPage);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -120,6 +124,7 @@ const PublicationPage = () => {
         [field]: value,
       },
     }));
+    setSaveStatus((prev) => ({ ...prev, [paperId]: "Save" }));
   };
 
   const handleSavePublicationLinks = async (paperId) => {
@@ -130,31 +135,46 @@ const PublicationPage = () => {
 
       if (!updatedLinks) return;
 
-      // Ensure empty values are also considered
       const gitLink = updatedLinks.git_link ?? "";
       const presentationLink = updatedLinks.presentation_link ?? "";
-      const videoLink = updatedLinks.video ?? ""; // Ensure correct field name
+      const videoLink = updatedLinks.video ?? "";
 
-      // Call API functions
+      let success = false;
       if (gitLink !== "") {
         await setPublicationGitLink(sid, domain, paperId, gitLink);
-        alert("Links updated successfully!");
-        setEditedLinks((prev) => ({ ...prev, [paperId]: {} }));
+        success = true;
       }
       if (presentationLink !== "") {
         await setPublicationPttxLink(sid, domain, paperId, presentationLink);
-        alert("Links updated successfully!");
-        setEditedLinks((prev) => ({ ...prev, [paperId]: {} }));
+        success = true;
       }
       if (videoLink !== "") {
         await setPublicationVideoLink(sid, domain, paperId, videoLink);
-        alert("Links updated successfully!");
-        setEditedLinks((prev) => ({ ...prev, [paperId]: {} }));
+        success = true;
+      }
+
+      if (success) {
+        setPopupMessage("Changes saved successfully!");
+        setSaveStatus((prev) => ({ ...prev, [paperId]: "Saved" }));
+      } else {
+        setErrorMessage("No changes were made.");
       }
     } catch (error) {
       console.error("Error updating publication links:", error);
+      setErrorMessage("An error occurred while saving.");
     }
   };
+
+  useEffect(() => {
+    if (popupMessage || errorMessage) {
+      const timer = setTimeout(() => {
+        setPopupMessage("");
+        setErrorMessage("");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [popupMessage, errorMessage]);
+
   return (
     <div className="publication-page">
       <div className="publication-header">
@@ -165,7 +185,6 @@ const PublicationPage = () => {
               <button
                 className="add-participant-btn"
                 onClick={() => setShowAddForm(true)}
-                s
               >
                 +
               </button>
@@ -316,7 +335,7 @@ const PublicationPage = () => {
                   className="save-btn"
                   onClick={() => handleSavePublicationLinks(pub.paper_id)}
                 >
-                  Save
+                  {saveStatus[pub.paper_id] || "Save"}
                 </button>
               </form>
             )}
@@ -351,9 +370,21 @@ const PublicationPage = () => {
             >
               X
             </button>
-            <AddPublicationForm onSuccess={() => setShowAddForm(false)} />{" "}
+            <AddPublicationForm onSuccess={() => setShowAddForm(false)} />
           </div>
         </div>
+      )}
+      {popupMessage && (
+        <SuccessPopup
+          message={popupMessage}
+          onClose={() => setPopupMessage("")}
+        />
+      )}
+      {errorMessage && (
+        <ErrorPopup
+          message={errorMessage}
+          onClose={() => setErrorMessage("")}
+        />
       )}
     </div>
   );
