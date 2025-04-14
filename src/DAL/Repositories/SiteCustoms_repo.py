@@ -1,4 +1,4 @@
-from DTOs.SiteCustom_dto import siteCustom_dto
+from src.DAL.DTOs.SiteCustom_dto import siteCustom_dto
 import json
 
 class SiteCustomsRepository:

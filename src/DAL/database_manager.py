@@ -220,6 +220,7 @@ class DatabaseManager:
         CREATE TABLE IF NOT EXISTS LabRoles_users(
             domain TEXT,
             email TEXT,
+            PRIMARY KEY (domain, email),
             FOREIGN KEY (domain, email) REFERENCES lab_members (domain, email) ON DELETE CASCADE
         );
         '''
@@ -229,6 +230,7 @@ class DatabaseManager:
         CREATE TABLE IF NOT EXISTS LabRoles_members(
             domain TEXT,
             email TEXT,
+            PRIMARY KEY (domain, email),
             FOREIGN KEY (domain, email) REFERENCES lab_members (domain, email) ON DELETE CASCADE
         );
         '''
@@ -238,6 +240,7 @@ class DatabaseManager:
         CREATE TABLE IF NOT EXISTS LabRoles_managers(
             domain TEXT,
             email TEXT,
+            PRIMARY KEY (domain, email),
             FOREIGN KEY (domain, email) REFERENCES lab_members (domain, email) ON DELETE CASCADE
         );
         '''
@@ -247,6 +250,7 @@ class DatabaseManager:
         CREATE TABLE IF NOT EXISTS LabRoles_siteCreator(
             domain TEXT,
             email TEXT,
+            PRIMARY KEY (domain, email),
            FOREIGN KEY (domain, email) REFERENCES lab_members (domain, email) ON DELETE CASCADE
         );
         '''
@@ -256,6 +260,7 @@ class DatabaseManager:
         CREATE TABLE IF NOT EXISTS LabRoles_alumnis(
             domain TEXT,
             email TEXT,
+            PRIMARY KEY (domain, email),
             FOREIGN KEY (domain, email) REFERENCES lab_members (domain, email) ON DELETE CASCADE
         );
         '''
