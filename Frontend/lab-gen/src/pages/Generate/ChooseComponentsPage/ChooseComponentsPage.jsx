@@ -207,12 +207,12 @@ const ChooseComponentsPage = () => {
                       Contact Us
                     </li>
                   )}
-                  {components?.includes("Participants") && (
+                  {components?.includes("Members") && (
                     <li
                       className={step === 8 ? "selected" : ""}
                       onClick={() => setStep(8)}
                     >
-                      Participants
+                      Lab Members
                     </li>
                   )}
                   <div className="generate_section_button">
@@ -297,10 +297,10 @@ const ChooseComponentsPage = () => {
                 <label>
                   <input
                     type="checkbox"
-                    checked={components?.includes("Participants")}
-                    onChange={() => handleComponentChange("Participants")}
+                    checked={components?.includes("Members")}
+                    onChange={() => handleComponentChange("Members")}
                   />
-                  Participants
+                  Lab Members
                 </label>
                 <label>
                   <input
