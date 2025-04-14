@@ -3,6 +3,7 @@ from src.test.Acceptancetests.LabGeneratorTests.ProxyToTests import ProxyToTest
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
 from src.main.DomainLayer.LabWebsites.User.Degree import Degree
+from src.DAL.database_manager import DatabaseManager
 
 class TestAddAlumniFromGenerator(unittest.TestCase):
     def setUp(self):
@@ -31,6 +32,7 @@ class TestAddAlumniFromGenerator(unittest.TestCase):
     def tearDown(self):
         # Reset the system after each test
         self.generator_system_service.reset_system()
+
 
     def test_register_new_lab_member_success(self):
         # Test successful registration of a new lab member

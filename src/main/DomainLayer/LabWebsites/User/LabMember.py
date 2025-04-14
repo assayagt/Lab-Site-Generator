@@ -1,7 +1,7 @@
 from src.main.DomainLayer.LabWebsites.User.State import State
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from enum import Enum
-from DAL.DTOs.LabMember_dto import lab_member_dto
+from src.DAL.DTOs.LabMember_dto import lab_member_dto
 class Degree(Enum):
     BACHELOR = "Bachelor's"
     MASTER = "Master's"

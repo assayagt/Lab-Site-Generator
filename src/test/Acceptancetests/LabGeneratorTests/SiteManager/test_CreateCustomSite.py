@@ -22,7 +22,7 @@ class TestCreateWebsite(unittest.TestCase):
         website_name = "My Lab Website"
         domain = "lab1.example.com"
         components = ["Homepage", "Contact Us", "Research"]
-        template = Template.BASIC
+        template = Template.template1
         response = self.generator_system_service.create_website(self.user_id, website_name, domain, components, template)
         self.assertTrue(response.is_success())
 

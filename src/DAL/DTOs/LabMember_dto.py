@@ -8,7 +8,7 @@ class lab_member_dto:
         self.linkedin_link=linkedin_link
         self.media=media
         self.full_name=full_name
-        self.degree=degree
+        self.degree=degree.value
         self.bio=bio
 
     

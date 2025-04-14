@@ -1,4 +1,4 @@
-from DTOs.Notification_dto import notification_dto
+from src.DAL.DTOs.Notification_dto import notification_dto
 
 class NotificationRepository:
     def __init__(self, db_manager):

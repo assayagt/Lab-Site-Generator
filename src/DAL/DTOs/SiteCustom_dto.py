@@ -11,7 +11,7 @@ class siteCustom_dto:
             self.components_str = json.dumps(components_list) if components_list is not None else json.dumps([])
         else:
             self.components_str = components_str
-        self.template = template
+        self.template = template.value
         self.logo = logo
         self.home_picture = home_picture
         self.site_creator_email = site_creator_email

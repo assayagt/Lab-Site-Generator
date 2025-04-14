@@ -104,3 +104,61 @@ class ProxyToTest(BridgeToTests):
         if self.real_service_adapter:
             return self.real_service_adapter.remove_alumni_from_generator(manager_userId, email_toRemoveAlumni, domain)
         return Response(None, "Not Implemented yet")
+
+    def add_alumni_from_lab_website(self, email_toSetAlumni, domain):
+        if self.real_service_adapter:
+            return self.real_service_adapter.add_alumni_from_lab_website(email_toSetAlumni, domain)
+        return Response(None, "Not Implemented yet")
+
+    def change_site_home_picture_by_manager(self, user_id, domain):
+        if self.real_service_adapter:
+            return self.real_service_adapter.change_site_home_picture_by_manager(user_id, domain)
+        return Response(None, "Not Implemented yet")
+
+    def create_new_site_manager_from_lab_website(self, nominated_manager_email, domain):
+        if self.real_service_adapter:
+            return self.real_service_adapter.create_new_site_manager_from_lab_website(nominated_manager_email, domain)
+        return Response(None, "Not Implemented yet")
+
+    def get_all_custom_websites_of_manager(self, user_id):
+        if self.real_service_adapter:
+            return self.real_service_adapter.get_all_custom_websites_of_manager(user_id)
+        return Response(None, "Not Implemented yet")
+
+    def get_custom_website(self, user_id, domain):
+        if self.real_service_adapter:
+            return self.real_service_adapter.get_custom_website(user_id, domain)
+        return Response(None, "Not Implemented yet")
+
+    def set_site_about_us_by_manager_from_generator(self, user_id, domain, about_us):
+        if self.real_service_adapter:
+            return self.real_service_adapter.set_site_about_us_by_manager_from_generator(user_id, domain, about_us)
+        return Response(None, "Not Implemented yet")
+
+    def set_site_about_us_on_creation_from_generator(self, domain, about_us):
+        if self.real_service_adapter:
+            return self.real_service_adapter.set_site_about_us_on_creation_from_generator(domain, about_us)
+        return Response(None, "Not Implemented yet")
+
+    def set_site_contact_info_by_manager_from_generator(self, user_id, domain, contact_info_dto):
+        if self.real_service_adapter:
+            return self.real_service_adapter.set_site_contact_info_by_manager_from_generator(user_id, domain,
+                                                                                             contact_info_dto)
+        return Response(None, "Not Implemented yet")
+
+    def set_site_contact_info_on_creation_from_generator(self, domain, contact_info_dto):
+        if self.real_service_adapter:
+            return self.real_service_adapter.set_site_contact_info_on_creation_from_generator(domain, contact_info_dto)
+        return Response(None, "Not Implemented yet")
+
+    def site_creator_resignation_from_generator(self, site_creator_user_id, domain, nominated_email, new_role):
+        if self.real_service_adapter:
+            return self.real_service_adapter.site_creator_resignation_from_generator(site_creator_user_id, domain,
+                                                                                     nominated_email, new_role)
+        return Response(None, "Not Implemented yet")
+
+    def site_creator_resignation_from_lab_website(self, domain, nominated_email, new_role):
+        if self.real_service_adapter:
+            return self.real_service_adapter.site_creator_resignation_from_lab_website(domain, nominated_email,
+                                                                                       new_role)
+        return Response(None, "Not Implemented yet")

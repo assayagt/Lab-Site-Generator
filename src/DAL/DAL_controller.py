@@ -1,12 +1,12 @@
 import threading
 
-from Repositories.Members_repo import MembersRepository
-from Repositories.LabMembers_repo import LabMembersRepository
-from Repositories.Notifications_repo import NotificationRepository
-from Repositories.Publications_repo import PublicationRepository
-from Repositories.SiteCustoms_repo import SiteCustomsRepository
-from Repositories.Websites_repo import WebsiteRepository
-from database_manager import DatabaseManager
+from src.DAL.Repositories.Members_repo import MembersRepository
+from src.DAL.Repositories.LabMembers_repo import LabMembersRepository
+from src.DAL.Repositories.Notifications_repo import NotificationRepository
+from src.DAL.Repositories.Publications_repo import PublicationRepository
+from src.DAL.Repositories.SiteCustoms_repo import SiteCustomsRepository
+from src.DAL.Repositories.Websites_repo import WebsiteRepository
+from src.DAL.database_manager import DatabaseManager
 
 class DAL_controller:
     _instance = None
@@ -37,5 +37,8 @@ class DAL_controller:
         """Reset the singleton instance. Safe to use in unit tests."""
         with cls._instance_lock:
             cls._instance = None
+
+    def drop_all_tables(self):
+        self._db_manager.clear_all_tables()
 
     
