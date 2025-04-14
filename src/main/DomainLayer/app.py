@@ -29,9 +29,9 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = app_secret_key
 # CORS(app)
 
-CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "http://localhost:3001"]}})  # Allow both frontends
+CORS(app, resources={r"/*": {"origins": ["http://132.72.116.69:3000"]}})
 api = Api(app)
-socketio = SocketIO(app, cors_allowed_origins=["http://localhost:3000", "http://localhost:3001"], async_mode="threading")
+socketio = SocketIO(app, cors_allowed_origins=["http://132.72.116.69:3000", "http://132.72.116.69:3001"], async_mode="threading")
 # Directories for file storage and website generation
 UPLOAD_FOLDER = './uploads'
 GENERATED_WEBSITES_FOLDER = './LabWebsitesUploads'

@@ -23,7 +23,7 @@ import {
 } from "../../../services/Generator";
 
 import axios from "axios";
-const baseApiUrl = "http://127.0.0.1:5000/api/";
+import { baseApiUrl } from "../../../services/BaseUrl"; // Ensure the path is correct relative to this file
 
 const useChooseComponents = () => {
   const navigate = useNavigate();
@@ -376,7 +376,7 @@ const useChooseComponents = () => {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/uploadFile", {
+      const response = await fetch(`${baseApiUrl}/uploadFile`, {
         method: "POST",
         body: formDataToSend,
       });

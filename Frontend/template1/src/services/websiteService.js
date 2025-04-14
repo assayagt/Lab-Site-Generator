@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useId } from "react";
 
-const baseApiUrl = "http://127.0.0.1:5000/api/";
+import { baseApiUrl } from "./BaseUrl"; // Ensure the path is correct relative to this file
 
 export const addLabMember = async (userId, email, fullName, degree, domain) => {
   let data;
