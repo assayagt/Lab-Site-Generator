@@ -51,15 +51,17 @@
   padding: 15px;
   border-radius: 10px;
   background: rgba(69, 69, 69, 0.1);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: row;
   gap: 20px;
   align-items: flex-start;
   position: relative;
-  height: 100%;
   max-width: 100%;
+  overflow: hidden;
+  height: 250px;
 }
+
 .participant:hover {
   transform: translateY(-3px); /* Moves up slightly */
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Adds a more pronounced shadow */
@@ -77,6 +79,7 @@
   color: black;
   text-decoration: none;
   font-size: 14px;
+  word-break: break-word;
 }
 
 .email-link:hover {
@@ -106,13 +109,6 @@
   flex-grow: 1;
   width: 100%;
   gap: 10px;
-}
-
-.personal_info_member {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  width: 100%;
 }
 
 /* This forces the checkboxes to always stay at the bottom */
@@ -262,4 +258,60 @@
   background-color: rgba(255, 255, 255, 0.1);
   color: black;
   border: 1px solid rgba(31, 51, 71, 0.8);
+}
+
+@media (max-width: 768px) {
+  .participants-page {
+    margin: 0 20px;
+    padding-top: 10px;
+    padding-bottom: 40px;
+  }
+
+  .modal-content {
+    width: 90vw;
+    padding: 15px;
+  }
+
+  .form-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .form-group label {
+    width: 100%;
+    text-align: left;
+  }
+
+  .modal-content-item {
+    width: 100%;
+  }
+
+  .modal-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .degree-section-items {
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%; /* Ensures the grid doesn't exceed its container */
+  }
+  .personal-bio {
+    max-height: 160px;
+    overflow-y: auto;
+    word-break: break-word;
+    padding-right: 6px; /* optional spacing */
+  }
+
+  /* Optional scrollbar styling for visibility */
+  .personal-bio::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .personal-bio::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+  }
 }

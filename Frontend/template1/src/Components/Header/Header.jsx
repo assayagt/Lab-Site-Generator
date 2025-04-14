@@ -17,11 +17,13 @@ function Header(props) {
   const [email, setEmail] = useState("");
   const [loginError, setLoginError] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    return sessionStorage.getItem("isLoggedIn") === "true" ? true : false;
+    return sessionStorage.getItem("isLoggedIn") === "true";
   });
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
   const { editMode, toggleEditMode } = useEditMode();
+
   const handleClick = (item) => {
+    setIsNavbarExpanded(false); // Close navbar on click
     if (item === "Home") {
       navigate("/");
     } else {
@@ -37,7 +39,6 @@ function Header(props) {
       setLoginError("");
       setIsLoggedIn(true);
       const notifications = await fetchUserNotifications(email);
-      console.log(notifications);
       updateNotifications(notifications);
     } else {
       setIsLoggedIn(false);
@@ -48,8 +49,8 @@ function Header(props) {
   };
 
   const handleLogout = () => {
-    let ans = logout();
-    if (ans) {
+    const success = logout();
+    if (success) {
       sessionStorage.removeItem("isLoggedIn");
       sessionStorage.removeItem("userEmail");
       setIsLoggedIn(false);
@@ -74,12 +75,8 @@ function Header(props) {
         </div>
       </div>
 
-      {/* Navbar - Expands on Hover */}
-      <div
-        className={`navbar ${isNavbarExpanded ? "expanded" : ""}`}
-        onMouseEnter={() => setIsNavbarExpanded(true)}
-        onMouseLeave={() => setIsNavbarExpanded(false)}
-      >
+      {/* Navbar (center on desktop, dropdown on mobile) */}
+      <div className={`navbar ${isNavbarExpanded ? "expanded" : ""}`}>
         {props.components
           .filter((item) => item !== "About Us")
           .map((item, index, filteredArray) => (
@@ -97,7 +94,18 @@ function Header(props) {
           ))}
       </div>
 
+      {/* Right Side Icons */}
       <div className="icon_photo">
+        {/* Hamburger Menu Button */}
+        <button
+          className="hamburger-menu"
+          onClick={() => setIsNavbarExpanded((prev) => !prev)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+
         {isLoggedIn && (
           <div className="edit-mode-container">
             <span className="edit-mode-label">Edit Mode</span>
@@ -111,6 +119,7 @@ function Header(props) {
             </label>
           </div>
         )}
+
         <div className="menu">
           {isLoggedIn && hasNewNotifications && notifications.length !== 0 && (
             <div className="notification-dot"></div>
@@ -152,24 +161,6 @@ function Header(props) {
 
       {/* Login Popup */}
       {showLogin && (
-        // <div className="login-modal">
-        //   <div className="login-content">
-        //     <div className="close-button" onClick={() => setShowLogin(false)}>
-        //       X
-        //     </div>
-        //     <h2>Login</h2>
-        //     {loginError && <div className="login-error">{loginError}</div>}
-        //     <form onSubmit={handleLogin}>
-        //       <input
-        //         type="text"
-        //         placeholder="Username"
-        //         value={email}
-        //         onChange={(e) => setEmail(e.target.value)}
-        //       />
-        //       <button type="submit">Login</button>
-        //     </form>
-        //   </div>
-        // </div>
         <div className="login-popup-overlay">
           <div className="login-popup">
             <button className="close-popup" onClick={() => setShowLogin(false)}>
@@ -177,7 +168,6 @@ function Header(props) {
             </button>
             <h2 className="login-title">Welcome Back</h2>
             <p className="login-subtitle">Enter your email to log in</p>
-
             <input
               className="login-input"
               type="email"
@@ -185,13 +175,11 @@ function Header(props) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-
             {loginError && (
               <div className="login-error">
                 This email does not exist. Request sent to manager
               </div>
             )}
-
             <button className="login-button" onClick={handleLogin}>
               Login
             </button>

@@ -133,16 +133,24 @@ const PublicationPage = () => {
       // Ensure empty values are also considered
       const gitLink = updatedLinks.git_link ?? "";
       const presentationLink = updatedLinks.presentation_link ?? "";
-      const videoLink = updatedLinks.video_link ?? ""; // Ensure correct field name
+      const videoLink = updatedLinks.video ?? ""; // Ensure correct field name
 
       // Call API functions
-      await setPublicationGitLink(sid, domain, paperId, gitLink);
-      await setPublicationPttxLink(sid, domain, paperId, presentationLink);
-      await setPublicationVideoLink(sid, domain, paperId, videoLink);
-
-      alert("Links updated successfully!");
-      setEditedLinks((prev) => ({ ...prev, [paperId]: {} }));
-      window.location.reload(); // Refresh the page after saving
+      if (gitLink !== "") {
+        await setPublicationGitLink(sid, domain, paperId, gitLink);
+        alert("Links updated successfully!");
+        setEditedLinks((prev) => ({ ...prev, [paperId]: {} }));
+      }
+      if (presentationLink !== "") {
+        await setPublicationPttxLink(sid, domain, paperId, presentationLink);
+        alert("Links updated successfully!");
+        setEditedLinks((prev) => ({ ...prev, [paperId]: {} }));
+      }
+      if (videoLink !== "") {
+        await setPublicationVideoLink(sid, domain, paperId, videoLink);
+        alert("Links updated successfully!");
+        setEditedLinks((prev) => ({ ...prev, [paperId]: {} }));
+      }
     } catch (error) {
       console.error("Error updating publication links:", error);
     }
@@ -212,7 +220,7 @@ const PublicationPage = () => {
                 {pub.video_link && (
                   <iframe
                     className="video"
-                    src={pub.video}
+                    src={pub.video_link}
                     title={pub.title}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
@@ -296,7 +304,7 @@ const PublicationPage = () => {
                     type="url"
                     className="submit-pub_pg"
                     placeholder="Enter Video link"
-                    defaultValue={pub.video || ""}
+                    defaultValue={pub.video_link || ""}
                     onChange={(e) =>
                       handleInputChange(pub.paper_id, "video", e.target.value)
                     }

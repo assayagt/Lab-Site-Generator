@@ -241,10 +241,6 @@
 }
 
 /* NAVBAR EXPANDS ON HOVER */
-.navbar.expanded {
-  width: auto;
-  min-width: 500px;
-}
 
 /* NAVBAR ITEMS */
 .navbar-item {
@@ -334,11 +330,11 @@ input:checked + .slider:before {
   z-index: 1000;
 }
 
-/* Popup box */
 .login-popup {
   background: #fff;
   padding: 30px 25px;
-  width: 320px;
+  width: 90vw; /* ✅ use viewport width for responsiveness */
+  max-width: 320px;
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   position: relative;
@@ -348,7 +344,6 @@ input:checked + .slider:before {
   font-size: 1rem;
   font-weight: 400;
 }
-
 .login-title {
   margin-bottom: 5px;
   font-size: 22px;
@@ -418,4 +413,77 @@ input:checked + .slider:before {
 
 .close-popup:hover {
   color: #ff4d4f;
+}
+
+/* Hamburger menu styling */
+.hamburger-menu {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.hamburger-menu span {
+  width: 25px;
+  height: 3px;
+  background-color: #000;
+  border-radius: 3px;
+  transition: all 0.3s;
+}
+
+/* Responsive behavior for mobile */
+@media (max-width: 768px) {
+  .hamburger-menu {
+    display: flex;
+  }
+}
+@media (max-width: 768px) {
+  .navbar {
+    display: none;
+    flex-direction: column;
+    align-items: stretch; /* full width buttons */
+    position: absolute;
+    top: 190px;
+    right: 10px;
+    width: 200px;
+    background-color: white;
+    padding: 10px 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    z-index: 100;
+    height: fit-content;
+  }
+
+  .navbar.expanded {
+    display: flex;
+    min-width: 200px;
+  }
+
+  .navbar-item {
+    padding: 10px 15px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .navbar-item-button {
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    padding: 10px;
+  }
+
+  .line-nav {
+    display: none;
+  }
+  .edit-mode-container {
+    display: none;
+  }
+}
+@media (max-width: 1024px) {
+  .edit-mode-container {
+    display: none !important;
+  }
 }

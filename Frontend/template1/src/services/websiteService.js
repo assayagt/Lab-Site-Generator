@@ -256,6 +256,7 @@ export const setPublicationVideoLink = async (
       publication_id: publicationId,
       video_link: videoLink,
     });
+    console.log(response);
     return response.data;
   } catch (error) {
     console.error("Error setting publication video link:", error);

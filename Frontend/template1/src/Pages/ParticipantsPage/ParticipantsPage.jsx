@@ -293,7 +293,7 @@ const ParticipantsPage = () => {
                     <div className="personal_photo"></div>
                     <div className="personal_info_member">
                       <div className="fullname">{member.fullName}</div>
-                      <div>{member.bio}</div>
+                      <div className="personal-bio">{member.bio}</div>
                       <a href={`mailto:${member.email}`} className="email-link">
                         {member.email}
                       </a>
@@ -313,7 +313,7 @@ const ParticipantsPage = () => {
             {alumni.map((member) => (
               <div key={member.email} className="participant">
                 <div className="personal_photo"></div>
-                <div>
+                <div className="personal-bio">
                   <strong>{member.fullName}</strong>
                   <span className="alumni-degree"> [{member.degree}]</span>
                   <p>{member.bio}</p>

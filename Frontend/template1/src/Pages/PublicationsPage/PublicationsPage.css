@@ -87,7 +87,6 @@
 .video {
   border: 1px solid #000000;
   width: 200%;
-  height: 80px;
 }
 .links {
   display: flex;
@@ -222,4 +221,68 @@
 
 .save-btn:hover {
   background-color: rgba(199, 204, 209, 0.05);
+}
+
+@media (max-width: 768px) {
+  .publication-page {
+    margin: 0 15px;
+    padding-top: 10px;
+    gap: 10px;
+  }
+
+  .publication-header {
+    gap: 5px;
+  }
+
+  .publication_title {
+    font-size: 22px;
+  }
+
+  .filters {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .publication-item-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .video {
+    width: 100%;
+    height: auto;
+  }
+
+  .input-container {
+    width: 100%;
+  }
+
+  .submit-pub_pg {
+    font-size: 14px;
+  }
+
+  .save-btn {
+    position: static;
+    margin-top: 10px;
+    width: 100%;
+  }
+
+  .pagination-buttons {
+    width: 80px;
+  }
+
+  .pub_item_title {
+    font-size: 20px;
+  }
+
+  .description {
+    font-size: 14px;
+  }
+
+  .publication-item {
+    padding: 15px;
+    gap: 20px;
+  }
 }
