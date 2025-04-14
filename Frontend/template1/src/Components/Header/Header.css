@@ -435,12 +435,12 @@ input:checked + .slider:before {
 }
 
 /* Responsive behavior for mobile */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .hamburger-menu {
     display: flex;
   }
 }
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .navbar {
     display: none;
     flex-direction: column;

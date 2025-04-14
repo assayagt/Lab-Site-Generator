@@ -46,7 +46,7 @@ const ParticipantsPage = () => {
   const fetchParticipants = async () => {
     setLoading(true);
     try {
-      const domain = formatDomain();
+      const domain = sessionStorage.getItem("domain");
 
       const [managers, members, alumniData] = await Promise.all([
         getAllLabManagers(domain),
