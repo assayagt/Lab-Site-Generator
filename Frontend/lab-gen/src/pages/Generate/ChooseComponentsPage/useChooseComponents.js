@@ -80,6 +80,10 @@ const useChooseComponents = () => {
     degree: "",
     isLabManager: false,
   });
+  const [mediaSaveStatus, setMediaSaveStatus] = useState({
+    logo: false,
+    homepagephoto: false,
+  });
 
   const [aboutUsContent, setAboutUsContent] = useState(() => {
     return sessionStorage.getItem("AboutUs") || ""; // Load from sessionStorage initially
@@ -354,6 +358,7 @@ const useChooseComponents = () => {
           [component]: file,
         },
       }));
+      setMediaSaveStatus((prev) => ({ ...prev, [component]: false }));
     }
   };
 
@@ -383,6 +388,8 @@ const useChooseComponents = () => {
       const data = await response.json();
       if (response.ok) {
         // alert(`${component} data saved successfully!`);
+        setMediaSaveStatus((prev) => ({ ...prev, [component_new]: true }));
+
         setWebsite((prev) => ({
           ...prev,
           files: formData.files,
@@ -613,6 +620,7 @@ const useChooseComponents = () => {
     handleSveTemplate,
     isTempSaved,
     setTempSaved,
+    mediaSaveStatus,
   };
 };
 
