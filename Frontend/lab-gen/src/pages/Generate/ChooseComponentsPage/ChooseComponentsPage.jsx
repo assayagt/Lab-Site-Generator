@@ -54,6 +54,7 @@ const ChooseComponentsPage = () => {
     handleSveTemplate,
     isTempSaved,
     setTempSaved,
+    mediaSaveStatus,
   } = useChooseComponents();
 
   const MediaForm = () => (
@@ -382,7 +383,7 @@ const ChooseComponentsPage = () => {
                         handleSubmit("logo");
                       }}
                     >
-                      Save
+                      {mediaSaveStatus.logo ? "Saved" : "Save"}
                     </button>
                   </div>
                   <div className="media_item">
@@ -403,7 +404,7 @@ const ChooseComponentsPage = () => {
                         handleSubmit("homepagephoto");
                       }}
                     >
-                      Save
+                      {mediaSaveStatus.homepagephoto ? "Saved" : "Save"}
                     </button>
                   </div>
                 </div>
