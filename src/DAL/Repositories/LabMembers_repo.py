@@ -1,4 +1,4 @@
-from DTOs.LabMember_dto import lab_member_dto
+from src.DAL.DTOs.LabMember_dto import lab_member_dto
 
 class LabMembersRepository:
     def __init__(self, db_manager):

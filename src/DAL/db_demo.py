@@ -1,13 +1,13 @@
 import unittest
 import uuid
 
-from database_manager import DatabaseManager
-from DAL_controller import DAL_controller
+from src.DAL.database_manager import DatabaseManager
+from src.DAL.DAL_controller import DAL_controller
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
-from DTOs.Website_dto import website_dto
-from DTOs.Notification_dto import notification_dto
-from DTOs.SiteCustom_dto import siteCustom_dto
-from DTOs.LabMember_dto import lab_member_dto
+from src.DAL.DTOs.Website_dto import website_dto
+from src.DAL.DTOs.Notification_dto import notification_dto
+from src.DAL.DTOs.SiteCustom_dto import siteCustom_dto
+from src.DAL.DTOs.LabMember_dto import lab_member_dto
 
 class TestPublicationRepository(unittest.TestCase):
     def setUp(self):
