@@ -42,6 +42,18 @@ function App() {
       console.log(domain);
       try {
         const data = await getHomepageDetails(domain);
+
+        // const data = await getHomepageDetails("www.localhost.com");
+        // if (data.response === "true") {
+        //   const mappedData = {
+        //     domain: "www.localhost.com",
+        //     websiteName: data.data.name,
+        //     components: data.data.components,
+        //     template: data.data.template,
+        //     logo: data.data.logo,
+        //     home_picture: data.data.home_picture,
+        //     about_us: data.data.about_us,
+        //   };
         if (data.response === "true") {
           const mappedData = {
             domain: data.data.domain,
@@ -91,7 +103,7 @@ function App() {
                   />
                 }
               />
-              <Route path="/Participants" element={<ParticipantsPage />} />
+              <Route path="/LabMembers" element={<ParticipantsPage />} />
               <Route
                 path="/ContactUs"
                 element={

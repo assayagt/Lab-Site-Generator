@@ -208,7 +208,7 @@ const ChooseComponentsPage = () => {
                       Contact Us
                     </li>
                   )}
-                  {components?.includes("Members") && (
+                  {components?.includes("Lab Members") && (
                     <li
                       className={step === 8 ? "selected" : ""}
                       onClick={() => setStep(8)}
@@ -298,8 +298,8 @@ const ChooseComponentsPage = () => {
                 <label>
                   <input
                     type="checkbox"
-                    checked={components?.includes("Members")}
-                    onChange={() => handleComponentChange("Members")}
+                    checked={components?.includes("Lab Members")}
+                    onChange={() => handleComponentChange("Lab Members")}
                   />
                   Lab Members
                 </label>
