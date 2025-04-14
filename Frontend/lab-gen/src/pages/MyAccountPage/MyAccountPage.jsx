@@ -87,12 +87,12 @@ const MyAccountPage = () => {
                 <div className={website.generated ? "" : "notGenerated"}>
                   {website.generated ? "Generated" : "Not Generated"}
                 </div>
-                <button
+                {/* <button
                   className="delete-button"
                   onClick={() => console.log("")}
                 >
                   🗑️
-                </button>
+                </button> */}
               </div>
             ))}
           </div>

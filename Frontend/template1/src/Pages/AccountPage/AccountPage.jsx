@@ -4,6 +4,8 @@ import accountIcon from "../../images/account_avatar.svg";
 import cameraIcon from "../../images/camera_icon.svg";
 import searchIcon from "../../images/search_icon.svg";
 import AddPublicationForm from "../../Components/AddPublicationForm/AddPubliactionForm";
+import SuccessPopup from "../../Components/PopUp/SuccessPopup";
+
 import {
   getUserDetails,
   approveRegistration,
@@ -19,6 +21,7 @@ import {
 } from "../../services/websiteService";
 import { fetchUserNotifications } from "../../services/UserService";
 import { NotificationContext } from "../../Context/NotificationContext";
+import ErrorPopup from "../../Components/PopUp/ErrorPopup";
 
 const AccountPage = () => {
   const [activeSection, setActiveSection] = useState("personal-info");
@@ -31,6 +34,8 @@ const AccountPage = () => {
     fullname: "",
   });
   const [showApprovalModal, setShowApprovalModal] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [approvalForm, setApprovalForm] = useState({
@@ -119,7 +124,7 @@ const AccountPage = () => {
   };
 
   const handleSavePhoto = () => {
-    alert("Photo saved successfully!");
+    setPopupMessage("Photo saved successfully!");
   };
 
   const handleApproveNotification = async (notif) => {
@@ -143,7 +148,7 @@ const AccountPage = () => {
       setApprovalForm({ fullName: "", degree: "" });
       setSelectedNotification(null);
     } else {
-      alert("Approval failed.");
+      setErrorMessage("An error occurred while saving changes.");
     }
   };
 
@@ -152,7 +157,12 @@ const AccountPage = () => {
       setHasNewNotifications(false); // ✅ Now inside an effect, safe to call
     }
   }, [activeSection, setHasNewNotifications]);
-
+  useEffect(() => {
+    if (popupMessage) {
+      const timer = setTimeout(() => setPopupMessage(""), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [popupMessage]);
   const handleRejectNotification = async (notifId) => {
     const payload = {
       domain: sessionStorage.getItem("domain"),
@@ -164,7 +174,7 @@ const AccountPage = () => {
     if (response) {
       markNotificationAsRead(notifId);
     } else {
-      alert("Rejection failed.");
+      setErrorMessage("An error occurred while saving changes.");
     }
   };
 
@@ -205,9 +215,7 @@ const AccountPage = () => {
         if (githubResponse === "true") {
           isUpdated = true;
         } else {
-          throw new Error(
-            `Failed to update GitHub link: ${githubResponse.statusText}`
-          );
+          isUpdated = false;
         }
       }
 
@@ -221,9 +229,7 @@ const AccountPage = () => {
         if (presentationResponse === "true") {
           isUpdated = true;
         } else {
-          throw new Error(
-            `Failed to update Presentation link: ${presentationResponse.statusText}`
-          );
+          isUpdated = false;
         }
       }
 
@@ -237,20 +243,18 @@ const AccountPage = () => {
         if (videoResponse === "true") {
           isUpdated = true;
         } else {
-          throw new Error(
-            `Failed to update Video link: ${videoResponse.statusText}`
-          );
+          isUpdated = false;
         }
       }
 
       if (isUpdated) {
-        alert("Links updated successfully!");
+        setPopupMessage("Links updated successfully!");
       } else {
-        alert("No changes were made.");
+        setErrorMessage("An error occurred while saving changes.");
       }
     } catch (error) {
       console.error("Error updating publication links:", error);
-      alert(`An error occurred: ${error.message}`);
+      setErrorMessage(`An error occurred: ${error.message}`);
     }
   };
 
@@ -282,13 +286,13 @@ const AccountPage = () => {
       }
 
       if (isUpdated) {
-        alert("Changes saved successfully!");
+        setPopupMessage("Changes saved successfully!");
       } else {
-        alert("No changes were made.");
+        setErrorMessage("An error occurred while saving changes.");
       }
     } catch (error) {
       console.error("Error saving changes:", error);
-      alert(`An error occurred: ${error.message}`);
+      setErrorMessage(`An error occurred: ${error.message}`);
     }
   };
 
@@ -568,6 +572,18 @@ const AccountPage = () => {
               </div>
             )}
           </div>
+        )}
+        {popupMessage && (
+          <SuccessPopup
+            message={popupMessage}
+            onClose={() => setPopupMessage("")}
+          />
+        )}
+        {errorMessage && (
+          <ErrorPopup
+            message={errorMessage}
+            onClose={() => setErrorMessage("")}
+          />
         )}
       </div>
     </div>
