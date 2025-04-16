@@ -843,9 +843,9 @@ class SetPublicationVideoLink(Resource):
          
             if response.is_success():
                 return jsonify({"message": response.get_message(), "response": "true"})
-            return jsonify({"message": response.get_message(), "response": "true"}), 400
+            return jsonify({"message": response.get_message(), "response": "true"})
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}"})
         
         
 
