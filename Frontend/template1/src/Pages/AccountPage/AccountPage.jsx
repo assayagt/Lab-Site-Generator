@@ -18,6 +18,9 @@ import {
   setSecondEmailByMember,
   setLinkedInLinkByMember,
   getMemberPublications,
+  finalApprovePublicationByManager,
+  initialApprovePublicationByAuthor,
+  rejectPublication,
 } from "../../services/websiteService";
 import { fetchUserNotifications } from "../../services/UserService";
 import { NotificationContext } from "../../Context/NotificationContext";
@@ -53,7 +56,6 @@ const AccountPage = () => {
     useState(false);
   const {
     notifications,
-    hasNewNotifications,
     markNotificationAsRead,
     updateNotifications,
     setHasNewNotifications,
@@ -130,7 +132,39 @@ const AccountPage = () => {
 
   const handleApproveNotification = async (notif) => {
     setSelectedNotification(notif);
-    setShowApprovalModal(true);
+
+    const sid = sessionStorage.getItem("sid");
+    const domain = sessionStorage.getItem("domain");
+
+    if (notif.subject === "New Registration Request Pending Approval") {
+      setShowApprovalModal(true); // Open modal to get name + degree
+    } else if (notif.subject === "New Publication Pending Final Approval") {
+      const response = await finalApprovePublicationByManager(
+        sid,
+        domain,
+        notif.id
+      );
+      if (response?.response === "true") {
+        markNotificationAsRead(notif.id);
+        setPopupMessage("Publication approved by manager.");
+      } else {
+        setErrorMessage("Failed to approve publication.");
+      }
+    } else if (notif.subject === "New Publication Pending Approval") {
+      const response = await initialApprovePublicationByAuthor(
+        sid,
+        domain,
+        notif.id
+      );
+      if (response?.response === "true") {
+        markNotificationAsRead(notif.id);
+        setPopupMessage("Publication approved by author.");
+      } else {
+        setErrorMessage("Failed to approve publication.");
+      }
+    } else {
+      setErrorMessage("Unknown notification type.");
+    }
   };
 
   const handleSubmitApproval = async () => {
@@ -164,21 +198,40 @@ const AccountPage = () => {
       return () => clearTimeout(timer);
     }
   }, [popupMessage]);
-  const handleRejectNotification = async (notifId) => {
-    const payload = {
-      domain: sessionStorage.getItem("domain"),
-      manager_userId: sessionStorage.getItem("sid"),
-      notification_id: notifId,
-    };
 
-    const response = await rejectRegistration(payload);
-    if (response) {
-      markNotificationAsRead(notifId);
+  const handleRejectNotification = async (notif) => {
+    const sid = sessionStorage.getItem("sid");
+    const domain = sessionStorage.getItem("domain");
+
+    if (notif.subject === "New Registration Request Pending Approval") {
+      const payload = {
+        domain: domain,
+        manager_userId: sid,
+        notification_id: notif.id,
+      };
+
+      const response = await rejectRegistration(payload);
+      if (response) {
+        markNotificationAsRead(notif.id);
+        setPopupMessage("Registration rejected.");
+      } else {
+        setErrorMessage("Failed to reject registration.");
+      }
+    } else if (
+      notif.subject === "New Publication Pending Final Approval" ||
+      notif.subject === "New Publication Pending Approval"
+    ) {
+      const response = await rejectPublication(sid, domain, notif.id);
+      if (response?.response === "true") {
+        markNotificationAsRead(notif.id);
+        setPopupMessage("Publication rejected.");
+      } else {
+        setErrorMessage("Failed to reject publication.");
+      }
     } else {
-      setErrorMessage("An error occurred while saving changes.");
+      setErrorMessage("Unknown notification type.");
     }
   };
-
   const filteredPublications = publications.filter((pub) =>
     pub.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -507,7 +560,7 @@ const AccountPage = () => {
                     <div className="notification_buttons">
                       <button
                         className="notification_button"
-                        onClick={() => handleRejectNotification(notif.id)}
+                        onClick={() => handleRejectNotification(notif)}
                       >
                         Reject
                       </button>

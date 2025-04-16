@@ -498,3 +498,64 @@ export const setSiteContactInfoByManager = async (
     return null;
   }
 };
+
+export const initialApprovePublicationByAuthor = async (
+  userId,
+  domain,
+  notificationId
+) => {
+  try {
+    const response = await axios.post(
+      `${baseApiUrl}initialApprovePublicationByAuthor`,
+      {
+        user_id: userId,
+        domain: domain,
+        notification_id: notificationId,
+      }
+    );
+    return response.data; // includes { message, response: "true" | "false" }
+  } catch (error) {
+    console.error(
+      "Error during initial publication approval by author:",
+      error
+    );
+    return null;
+  }
+};
+
+// Final approval of publication by lab manager
+export const finalApprovePublicationByManager = async (
+  userId,
+  domain,
+  notificationId
+) => {
+  try {
+    const response = await axios.post(
+      `${baseApiUrl}finalApprovePublicationByManager`,
+      {
+        user_id: userId,
+        domain: domain,
+        notification_id: notificationId,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error during final publication approval by manager:", error);
+    return null;
+  }
+};
+
+// Reject publication
+export const rejectPublication = async (userId, domain, notificationId) => {
+  try {
+    const response = await axios.post(`${baseApiUrl}RejectPublication`, {
+      user_id: userId,
+      domain: domain,
+      notification_id: notificationId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error rejecting publication:", error);
+    return null;
+  }
+};
