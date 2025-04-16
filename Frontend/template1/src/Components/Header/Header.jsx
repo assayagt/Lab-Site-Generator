@@ -20,10 +20,12 @@ function Header(props) {
     return sessionStorage.getItem("isLoggedIn") === "true";
   });
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
   const { editMode, toggleEditMode } = useEditMode();
 
   const handleClick = (item) => {
-    setIsNavbarExpanded(false); // Close navbar on click
+    setIsNavbarExpanded(false);
+    setShowAccountMenu(false);
     if (item === "Home") {
       navigate("/");
     } else {
@@ -62,7 +64,6 @@ function Header(props) {
 
   return (
     <div className="header">
-      {/* Logo & Title */}
       <div className="header_title_name">
         <img
           className="header_logo"
@@ -75,7 +76,6 @@ function Header(props) {
         </div>
       </div>
 
-      {/* Navbar (center on desktop, dropdown on mobile) */}
       <div className={`navbar ${isNavbarExpanded ? "expanded" : ""}`}>
         {props.components
           .filter((item) => item !== "About Us")
@@ -94,12 +94,13 @@ function Header(props) {
           ))}
       </div>
 
-      {/* Right Side Icons */}
       <div className="icon_photo">
-        {/* Hamburger Menu Button */}
         <button
           className="hamburger-menu"
-          onClick={() => setIsNavbarExpanded((prev) => !prev)}
+          onClick={() => {
+            setIsNavbarExpanded((prev) => !prev);
+            setShowAccountMenu(false);
+          }}
         >
           <span />
           <span />
@@ -120,46 +121,65 @@ function Header(props) {
           </div>
         )}
 
-        <div className="menu">
+        <div
+          className="menu"
+          onClick={() => {
+            setShowAccountMenu((prev) => !prev);
+            setIsNavbarExpanded(false);
+          }}
+        >
           {isLoggedIn && hasNewNotifications && notifications.length !== 0 && (
             <div className="notification-dot"></div>
           )}
 
-          <div className="hidden-box">
-            <div className="personal_menu">
-              <div className="icon_photo2">
-                <img src={accountIcon} alt="icon" />
-              </div>
-              <hr className="hr_line" />
+          {showAccountMenu && (
+            <div className="hidden-box">
+              <div className="personal_menu">
+                <div className="icon_photo2">
+                  <img src={accountIcon} alt="icon" />
+                </div>
+                <hr className="hr_line" />
 
-              {isLoggedIn ? (
-                <div className="choose_item">
-                  <button
-                    className="my_sites_button"
-                    onClick={() => navigate("Account")}
-                  >
-                    My Account
-                  </button>
-                  <button className="logout_button" onClick={handleLogout}>
-                    Logout
-                  </button>
-                </div>
-              ) : (
-                <div className="choose_item">
-                  <button
-                    className="login_button"
-                    onClick={() => setShowLogin(true)}
-                  >
-                    Login
-                  </button>
-                </div>
-              )}
+                {isLoggedIn ? (
+                  <div className="choose_item">
+                    <button
+                      className="my_sites_button"
+                      onClick={() => {
+                        navigate("Account");
+                        setShowAccountMenu(false);
+                      }}
+                    >
+                      My Account
+                    </button>
+                    <button
+                      className="logout_button"
+                      onClick={() => {
+                        handleLogout();
+                        setShowAccountMenu(false);
+                      }}
+                    >
+                      Logout
+                    </button>
+                  </div>
+                ) : (
+                  <div className="choose_item">
+                    <button
+                      className="login_button"
+                      onClick={() => {
+                        setShowLogin(true);
+                        setShowAccountMenu(false);
+                      }}
+                    >
+                      Login
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
-      {/* Login Popup */}
       {showLogin && (
         <div className="login-popup-overlay">
           <div className="login-popup">

@@ -57,55 +57,6 @@ const ChooseComponentsPage = () => {
     mediaSaveStatus,
   } = useChooseComponents();
 
-  const MediaForm = () => (
-    <div className="file-upload-item">
-      <div className="media_section">
-        <h2 className="file-upload_title">Media</h2>
-        <div className="media_item">
-          <label className="media_label">
-            Logo
-            <input
-              className="media_input"
-              type="file"
-              onChange={(e) => handleFileChange(e, "logo")}
-            />
-          </label>
-          <button
-            type="button"
-            className="media_button"
-            onClick={(e) => {
-              e.preventDefault(); // ✅ this prevents the page from reloading
-              handleSubmit("logo");
-            }}
-          >
-            Save
-          </button>
-        </div>
-        <div className="media_item">
-          <label className="media_label">
-            Home Page Photo
-            <input
-              className="media_input"
-              type="file"
-              onChange={(e) => handleFileChange(e, "homepagephoto")}
-            />
-          </label>
-
-          <button
-            className="media_button"
-            type="button"
-            onClick={(e) => {
-              e.preventDefault(); // ✅ prevent default form behavior
-              handleSubmit("homepagephoto");
-            }}
-          >
-            Save
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <div className="choose_components_main">
       {step === 1 && (
@@ -159,6 +110,7 @@ const ChooseComponentsPage = () => {
               >
                 Domain & Name
               </li>
+
               <li
                 className={step === 3 ? "selected" : ""}
                 onClick={() => setStep(3)}
@@ -192,26 +144,32 @@ const ChooseComponentsPage = () => {
 
               {showContentSidebar && (
                 <ul className="content-submenu">
+                  <li
+                    className={step === 6 ? "selected" : ""}
+                    onClick={() => setStep(6)}
+                  >
+                    Information
+                  </li>
                   {components?.includes("About Us") && (
                     <li
-                      className={step === 6 ? "selected" : ""}
-                      onClick={() => setStep(6)}
+                      className={step === 7 ? "selected" : ""}
+                      onClick={() => setStep(7)}
                     >
                       About Us
                     </li>
                   )}
                   {components?.includes("Contact Us") && (
                     <li
-                      className={step === 7 ? "selected" : ""}
-                      onClick={() => setStep(7)}
+                      className={step === 8 ? "selected" : ""}
+                      onClick={() => setStep(8)}
                     >
                       Contact Us
                     </li>
                   )}
                   {components?.includes("Lab Members") && (
                     <li
-                      className={step === 8 ? "selected" : ""}
-                      onClick={() => setStep(8)}
+                      className={step === 9 ? "selected" : ""}
+                      onClick={() => setStep(9)}
                     >
                       Lab Members
                     </li>
@@ -411,6 +369,56 @@ const ChooseComponentsPage = () => {
               </div>
             )}
             {step === 6 && (
+              <div className="creator_info_card">
+                <h2>Creator Information</h2>
+                {/* <label>Full Name</label> */}
+                <input
+                  type="text"
+                  value={participants[0]?.fullName || ""}
+                  onChange={(e) =>
+                    handleParticipantChange(0, "fullName", e.target.value)
+                  }
+                  className="input_creator_info"
+                  placeholder="Your full name"
+                />
+
+                {/* <label>Email</label> */}
+                <input
+                  type="text"
+                  value={
+                    participants[0]?.email ||
+                    sessionStorage.getItem("userEmail")
+                  }
+                  className="input_creator_info"
+                  disabled
+                />
+
+                {/* <label>Degree</label> */}
+                <select
+                  name="degree"
+                  value={participants[0]?.degree || ""}
+                  onChange={(e) =>
+                    handleParticipantChange(0, "degree", e.target.value)
+                  }
+                  className="input_creator_info"
+                >
+                  <option value="">Select Degree</option>
+                  {degreeOptions.map((degree, index) => (
+                    <option key={index} value={degree}>
+                      {degree}
+                    </option>
+                  ))}
+                </select>
+
+                <button
+                  className="about_contact_button"
+                  onClick={() => setStep(3)}
+                >
+                  Save
+                </button>
+              </div>
+            )}
+            {step === 7 && (
               <div className="file-upload-item">
                 <div className="about_contact_section">
                   <h3 className="file-upload_title">About Us</h3>
@@ -445,7 +453,7 @@ const ChooseComponentsPage = () => {
               </div>
             )}
 
-            {step === 7 && (
+            {step === 8 && (
               <div className="file-upload-item">
                 <div className="contact_us_section">
                   <h3 className="file-upload_title">Contact Us</h3>
@@ -509,7 +517,7 @@ const ChooseComponentsPage = () => {
               onClose={() => setErrorMessage("")}
             />
 
-            {step === 8 && (
+            {step === 9 && (
               <div className="file-upload-item">
                 <h3 className="file-upload_title">Lab Members</h3>
 
