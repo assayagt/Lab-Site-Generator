@@ -66,16 +66,22 @@ class LabSystemController:
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userId)
         member = userFacade.get_member_by_email(email)
+        print("1")
         if member is None:
             alumni = userFacade.get_alumni_by_email(email)
+            print("2")
             if alumni is None:
+                print("3")
                 # check if registration request already sent to managers:
                 userFacade.error_if_email_is_in_requests_and_wait_approval(email)
                 # error if registration request already sent to managers and rejected:
+                print("4")
                 userFacade.error_if_email_is_in_requests_and_rejected(email)
                 # send registration request to all LabManagers:
+                print("5")
                 self.send_registration_notification_to_all_LabManagers(domain, email) #notification here
                 # keep the email in the requests list, so next time the user will login, a registration request wont be sent again:
+                print("6")
                 userFacade.add_email_to_requests(email)
                 raise Exception(ExceptionsEnum.USER_NOT_REGISTERED.value)
             else:
@@ -88,6 +94,7 @@ class LabSystemController:
         managers = userFacade.getManagers()
         siteCreator = userFacade.getSiteCreator()
         recipients = {**managers, **siteCreator}
+        print("recipients: ", recipients)
         for managerEmail in recipients:
             self.notificationsFacade.send_registration_request_notification(requestedEmail, managerEmail, domain)
 

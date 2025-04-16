@@ -10,14 +10,11 @@ class WebsiteRepository:
         if not result:
             return None
         return self._row_to_website_dto(row=result[0])
-    
+
     def find_all(self):
         query = "SELECT * FROM websites"
-        result = self.db_manager.execute_query(query)
-        if not result: 
-            return None
         results = self.db_manager.execute_query(query)
-        return [self._row_to_website_dto(row) for row in results]
+        return [self._row_to_website_dto(row) for row in results] if results else []
         
 
     def save(self, website_dto: website_dto):

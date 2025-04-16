@@ -9,6 +9,7 @@ import subprocess
 import pandas as pd
 from flask_socketio import SocketIO, emit
 import threading
+from src.main.DomainLayer.socketio_instance import socketio
 
 def send_test_notifications():
     while True:
@@ -31,7 +32,7 @@ app.config["SECRET_KEY"] = app_secret_key
 
 CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "http://localhost:3001"]}})  # Allow both frontends
 api = Api(app)
-socketio = SocketIO(app, cors_allowed_origins=["http://localhost:3000", "http://localhost:3001"], async_mode="threading")
+socketio.init_app(app)
 # Directories for file storage and website generation
 UPLOAD_FOLDER = './uploads'
 GENERATED_WEBSITES_FOLDER = './LabWebsitesUploads'
@@ -103,7 +104,7 @@ def notify_registration(requested_email, domain):
             else:
                 print(f"⚠️ Manager {manager_email} is not connected via socket.")
     else:
-            print("no")
+            print(manager_emails_response.get_message())
 
 def notify_publication_final(message, domain):
     manager_emails_response = lab_system_service.get_all_lab_managers_details(domain)
@@ -1566,6 +1567,6 @@ api.add_resource(GetAllMembersNotifications, '/api/getAllMembersNotifications')
 if __name__ == '__main__':
     # notification_thread = threading.Thread(target=send_test_notifications, daemon=True)
     # notification_thread.start()
-    socketio.run(app, host='0.0.0.0', port=5000, debug=True)    ##app.run(debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True, use_reloader=False)    ##app.run(debug=True)
 
 
