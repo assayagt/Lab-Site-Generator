@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Header.css";
 import accountIcon from "../../images/account_avatar.svg";
@@ -32,6 +32,11 @@ function Header(props) {
       navigate(`/${item.replace(" ", "")}`);
     }
   };
+  useEffect(() => {
+    if (!isLoggedIn && location.pathname === "/Account") {
+      navigate("/");
+    }
+  }, [isLoggedIn, location.pathname]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -56,6 +61,9 @@ function Header(props) {
       sessionStorage.removeItem("isLoggedIn");
       sessionStorage.removeItem("userEmail");
       setIsLoggedIn(false);
+      if (editMode) {
+        toggleEditMode();
+      }
       location.pathname === "/Account"
         ? navigate("/")
         : window.location.reload();
