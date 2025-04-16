@@ -128,7 +128,11 @@ const ParticipantsPage = () => {
           domain
         );
         if (response?.response === "true") {
-          fetchParticipants();
+          setParticipants((prev) =>
+            prev.map((p) =>
+              p.email === member.email ? { ...p, isManager: !p.isManager } : p
+            )
+          );
         } else {
           setErrorMessage("Failed to promote to manager: " + response?.message);
         }
@@ -140,7 +144,11 @@ const ParticipantsPage = () => {
           domain
         );
         if (response?.manager_email) {
-          fetchParticipants();
+          setParticipants((prev) =>
+            prev.map((p) =>
+              p.email === member.email ? { ...p, isManager: !p.isManager } : p
+            )
+          );
         } else {
           setErrorMessage(
             "Failed to remove manager permission: " + response?.message
@@ -165,7 +173,15 @@ const ParticipantsPage = () => {
           domain
         );
         if (response?.response === "true") {
-          fetchParticipants();
+          if (!member.isAlumni) {
+            setParticipants(
+              (prev) => prev.filter((p) => p.email !== member.email) // remove from participants
+            );
+            setAlumni((prev) => [
+              ...prev,
+              { ...member, isAlumni: true, isManager: false },
+            ]);
+          }
         } else {
           setErrorMessage("Failed to promote to alumni: " + response?.message);
         }
@@ -198,7 +214,7 @@ const ParticipantsPage = () => {
     const domain = sessionStorage.getItem("domain");
 
     if (!fullName || !email || !degree) {
-      console.error("Please fill in all fields.");
+      setErrorMessage("Please fill in all fields.");
       return;
     }
 
@@ -212,7 +228,9 @@ const ParticipantsPage = () => {
       );
 
       if (addMemberResponse?.response !== "true") {
-        console.error("Failed to add lab member:", addMemberResponse?.message);
+        setErrorMessage(
+          "Failed to add lab member: " + addMemberResponse?.message
+        );
         return;
       }
 
@@ -223,7 +241,7 @@ const ParticipantsPage = () => {
           domain
         );
         if (managerResponse?.response !== "true") {
-          console.error("Failed to add manager:", managerResponse?.message);
+          setErrorMessage("Failed to add manager: " + managerResponse?.message);
           return;
         }
       }
@@ -235,7 +253,9 @@ const ParticipantsPage = () => {
           domain
         );
         if (alumniResponse?.response !== "true") {
-          console.error("Failed to mark as alumni:", alumniResponse?.message);
+          setErrorMessage(
+            "Failed to mark as alumni: " + alumniResponse?.message
+          );
           return;
         }
       }
@@ -250,7 +270,7 @@ const ParticipantsPage = () => {
       setShowAddForm(false);
       fetchParticipants(); // Refresh full list from backend
     } catch (error) {
-      console.error("Error adding participant:", error);
+      setErrorMessage("Error adding participant:" + error);
     }
   };
 
