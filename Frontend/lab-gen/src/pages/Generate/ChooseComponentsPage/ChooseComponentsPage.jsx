@@ -412,7 +412,7 @@ const ChooseComponentsPage = () => {
 
                 <button
                   className="about_contact_button"
-                  onClick={() => setStep(3)}
+                  onClick={() => setStep(7)}
                 >
                   Save
                 </button>

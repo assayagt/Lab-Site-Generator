@@ -70,7 +70,7 @@ const useChooseComponents = () => {
       isLabManager: true, // The creator is always a manager
     },
   ]);
-  const degreeOptions = ["Ph.D.", "M.Sc.", "B.Sc.", "Postdoc"];
+  const degreeOptions = ["Ph.D.", "M.Sc.", "B.Sc.", "D.Sc."];
 
   const [selectedComponent, setSelectedComponent] = useState("AboutUs"); // Default to About Us
   const [showAddForm, setShowAddForm] = useState(false);

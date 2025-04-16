@@ -33,11 +33,11 @@ const ParticipantsPage = () => {
   const degreeOrder = {
     "Ph.D.": 1,
     "M.Sc.": 2,
-    Postdoc: 3,
+    "D.Sc.": 3,
     "B.Sc.": 4,
   };
 
-  const degreeOptions = ["Ph.D.", "M.Sc.", "B.Sc.", "Postdoc"];
+  const degreeOptions = ["Ph.D.", "M.Sc.", "B.Sc.", "D.Sc."];
 
   const fetchParticipants = async () => {
     setLoading(true);
@@ -274,7 +274,9 @@ const ParticipantsPage = () => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return <div>Loading participants...</div>;
+  }
 
   return (
     <div className="participants-page">

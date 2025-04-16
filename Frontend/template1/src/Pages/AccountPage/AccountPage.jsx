@@ -357,6 +357,46 @@ const AccountPage = () => {
     }
   };
 
+  // const renderBody = (body) => {
+  //   return (
+  //     <div className="notification-body">
+  //       {body
+  //         .split("\n")
+  //         .slice(1) // skip first line
+  //         .filter((line) => line.trim() !== "")
+  //         .map((line, i) => (
+  //           <div key={i}>{line}</div>
+  //         ))}
+  //     </div>
+  //   );
+  // };
+
+  const renderNotification = (body) => {
+    const lines = body
+      .split("\n")
+      .slice(1) // Skip the first line
+      .filter((line) => line.trim() !== "");
+
+    return (
+      <div className="notification-body">
+        {lines.map((line, index) => {
+          if (line.startsWith("Link: ")) {
+            const url = line.replace("Link: ", "").trim();
+            return (
+              <div className="link_notification" key={index}>
+                <div>Link:</div>{" "}
+                <a href={url} target="_blank" rel="noopener noreferrer">
+                  {url}
+                </a>
+              </div>
+            );
+          }
+          return <div key={index}>{line}</div>;
+        })}
+      </div>
+    );
+  };
+
   return (
     <div className="account-page">
       <Sidebar
@@ -556,7 +596,9 @@ const AccountPage = () => {
               notifications?.map((notif) => (
                 <div key={notif.id} className="notifications">
                   <div className="notification_info">
-                    <div>{notif.body}</div>
+                    <div className="notification_subject">{notif.subject}</div>
+                    {/* <div className="notification-body">{notif.body}</div> */}
+                    {renderNotification(notif.body)}
                     <div className="notification_buttons">
                       <button
                         className="notification_button"

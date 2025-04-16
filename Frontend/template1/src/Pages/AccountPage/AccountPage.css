@@ -702,3 +702,27 @@ button {
     height: 16px;
   }
 }
+.notification_subject {
+  font-size: 18px;
+  font-weight: 700;
+}
+.notification-body {
+  white-space: pre-wrap;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  white-space: pre-wrap; /* Respect newlines and wrap text */
+  word-wrap: break-word; /* Break long words if needed */
+  overflow-wrap: break-word; /* More modern version */
+  overflow: hidden; /* Hide anything that overflows (optional) */
+  max-width: 100%; /* Prevent from expanding beyond its parent */
+  box-sizing: border-box; /* Include padding in width calculation */
+}
+.notification-body::first-line {
+  display: hidden;
+}
+.link_notification {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
