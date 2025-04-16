@@ -11,10 +11,9 @@
   padding-top: 100px;
   z-index: 1000;
 }
-
-.popup-box.error {
+.popup.error {
   background: #fff0f0;
-  color: #a94442;
+  color: #cf4442;
   padding: 25px;
   width: 90vw;
   max-width: 320px;
@@ -24,6 +23,9 @@
   text-align: center;
   font-family: "Segoe UI", sans-serif;
   border: 1px solid #ebccd1;
+}
+.error_msg {
+  color: #000;
 }
 
 .popup-title {

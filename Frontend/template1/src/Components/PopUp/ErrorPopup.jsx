@@ -9,7 +9,7 @@ const ErrorPopup = ({ message, onClose }) => {
           ✕
         </button>
         <h3 className="popup-title">Error</h3>
-        <p>{message}</p>
+        <p className="error_msg">{message}</p>
       </div>
     </div>
   );

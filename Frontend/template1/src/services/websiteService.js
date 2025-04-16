@@ -559,3 +559,21 @@ export const rejectPublication = async (userId, domain, notificationId) => {
     return null;
   }
 };
+
+export const removeManagerPermission = async (
+  managerUserId,
+  managerEmail,
+  domain
+) => {
+  try {
+    const response = await axios.post(`${baseApiUrl}removeManagerPermission`, {
+      manager_userId: managerUserId,
+      manager_toRemove_email: managerEmail,
+      domain,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error removing manager permission:", error);
+    return null;
+  }
+};

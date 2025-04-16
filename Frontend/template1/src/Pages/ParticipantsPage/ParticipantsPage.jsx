@@ -7,8 +7,11 @@ import {
   addLabMemberFromWebsite,
   createNewSiteManagerFromLabWebsite,
   addAlumniFromLabWebsite,
+  removeManagerPermission,
 } from "../../services/websiteService";
 import { useEditMode } from "../../Context/EditModeContext";
+import ErrorPopup from "../../Components/PopUp/ErrorPopup";
+import SuccessPopup from "../../Components/PopUp/SuccessPopup";
 
 const ParticipantsPage = () => {
   const [selectedDegree, setSelectedDegree] = useState("All");
@@ -17,6 +20,8 @@ const ParticipantsPage = () => {
   const [loading, setLoading] = useState(true);
   const { editMode } = useEditMode();
   const [showAddForm, setShowAddForm] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [newParticipant, setNewParticipant] = useState({
     fullName: "",
     email: "",
@@ -33,15 +38,6 @@ const ParticipantsPage = () => {
   };
 
   const degreeOptions = ["Ph.D.", "M.Sc.", "B.Sc.", "Postdoc"];
-
-  const formatDomain = () => {
-    let domain = window.location.hostname
-      .replace(/^https?:\/\//, "")
-      .replace(":3001", "");
-    if (!domain.startsWith("www.")) domain = `www.${domain}`;
-    if (!domain.endsWith(".com")) domain = `${domain}.com`;
-    return domain;
-  };
 
   const fetchParticipants = async () => {
     setLoading(true);
@@ -121,7 +117,7 @@ const ParticipantsPage = () => {
 
   const handleToggleManager = async (member) => {
     const userId = sessionStorage.getItem("sid");
-    const domain = formatDomain();
+    const domain = sessionStorage.getItem("domain");
 
     try {
       if (!member.isManager) {
@@ -134,19 +130,31 @@ const ParticipantsPage = () => {
         if (response?.response === "true") {
           fetchParticipants();
         } else {
-          console.error("Failed to promote to manager:", response?.message);
+          setErrorMessage("Failed to promote to manager: " + response?.message);
         }
       } else {
         // Demote from manager
+        const response = await removeManagerPermission(
+          userId,
+          member.email,
+          domain
+        );
+        if (response?.manager_email) {
+          fetchParticipants();
+        } else {
+          setErrorMessage(
+            "Failed to remove manager permission: " + response?.message
+          );
+        }
       }
     } catch (err) {
-      console.error("Error toggling manager:", err);
+      setErrorMessage("Error toggling manager: " + err);
     }
   };
 
   const handleToggleAlumni = async (member) => {
     const userId = sessionStorage.getItem("sid");
-    const domain = formatDomain();
+    const domain = sessionStorage.getItem("domain");
 
     try {
       if (!member.isAlumni) {
@@ -159,12 +167,12 @@ const ParticipantsPage = () => {
         if (response?.response === "true") {
           fetchParticipants();
         } else {
-          console.error("Failed to promote to alumni:", response?.message);
+          setErrorMessage("Failed to promote to alumni: " + response?.message);
         }
       } else {
       }
     } catch (err) {
-      console.error("Error toggling alumni:", err);
+      setErrorMessage("Error toggling alumni:", err);
     }
   };
   const sortedDegrees = Object.keys(groupedParticipants).sort(
@@ -187,7 +195,7 @@ const ParticipantsPage = () => {
   const handleAddParticipant = async () => {
     const { fullName, email, degree, isManager, isAlumni } = newParticipant;
     const userId = sessionStorage.getItem("sid");
-    const domain = formatDomain();
+    const domain = sessionStorage.getItem("domain");
 
     if (!fullName || !email || !degree) {
       console.error("Please fill in all fields.");
@@ -390,6 +398,18 @@ const ParticipantsPage = () => {
             </div>
           </div>
         </div>
+      )}
+      {popupMessage && (
+        <SuccessPopup
+          message={popupMessage}
+          onClose={() => setPopupMessage("")}
+        />
+      )}
+      {errorMessage && (
+        <ErrorPopup
+          message={errorMessage}
+          onClose={() => setErrorMessage("")}
+        />
       )}
     </div>
   );
