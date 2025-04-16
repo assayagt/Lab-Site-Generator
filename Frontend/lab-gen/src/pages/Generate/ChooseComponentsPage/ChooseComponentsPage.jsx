@@ -55,6 +55,8 @@ const ChooseComponentsPage = () => {
     isTempSaved,
     setTempSaved,
     mediaSaveStatus,
+    buttonText,
+    setButtonText,
   } = useChooseComponents();
 
   return (
@@ -412,9 +414,9 @@ const ChooseComponentsPage = () => {
 
                 <button
                   className="about_contact_button"
-                  onClick={() => setStep(7)}
+                  onClick={() => setButtonText("Saved")}
                 >
-                  Save
+                  {buttonText}
                 </button>
               </div>
             )}

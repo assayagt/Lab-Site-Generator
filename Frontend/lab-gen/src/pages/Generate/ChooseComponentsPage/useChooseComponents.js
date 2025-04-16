@@ -38,6 +38,7 @@ const useChooseComponents = () => {
   });
   const [template, setTemplate] = useState(websiteData.template || "");
   const [isChanged, setIsChanged] = useState(false);
+  const [buttonText, setButtonText] = useState("Save");
   const [domainError, setDomainError] = useState(false);
   const [step, setStep] = useState(!domain ? 1 : 3);
   const [showContentSidebar, setShowContentSidebar] = useState(false);
@@ -285,6 +286,7 @@ const useChooseComponents = () => {
 
   const handleParticipantChange = (index, field, value) => {
     setParticipants((prevParticipants) => {
+      setButtonText("Save");
       const updatedParticipants = [...prevParticipants]; // Copy array
 
       if (!updatedParticipants[index]) return prevParticipants; // Avoid errors
@@ -621,6 +623,8 @@ const useChooseComponents = () => {
     isTempSaved,
     setTempSaved,
     mediaSaveStatus,
+    buttonText,
+    setButtonText,
   };
 };
 
