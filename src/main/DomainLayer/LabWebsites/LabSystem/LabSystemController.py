@@ -66,22 +66,16 @@ class LabSystemController:
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userId)
         member = userFacade.get_member_by_email(email)
-        print("1")
         if member is None:
             alumni = userFacade.get_alumni_by_email(email)
-            print("2")
             if alumni is None:
-                print("3")
                 # check if registration request already sent to managers:
                 userFacade.error_if_email_is_in_requests_and_wait_approval(email)
                 # error if registration request already sent to managers and rejected:
-                print("4")
                 userFacade.error_if_email_is_in_requests_and_rejected(email)
                 # send registration request to all LabManagers:
-                print("5")
                 self.send_registration_notification_to_all_LabManagers(domain, email) #notification here
                 # keep the email in the requests list, so next time the user will login, a registration request wont be sent again:
-                print("6")
                 userFacade.add_email_to_requests(email)
                 raise Exception(ExceptionsEnum.USER_NOT_REGISTERED.value)
             else:
@@ -487,10 +481,22 @@ class LabSystemController:
 
     def mark_as_read(self, userId, domain, notification_id):
         """
-        Mark notification as read, and return the email\publication id of the notification.
+        Mark notification as read, and return the email\ publication id of the notification.
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
         email = userFacade.get_email_by_userId(userId)
         return self.notificationsFacade.mark_notification_as_read(domain, email, notification_id)
+
+    def connect_user_socket(self, email, domain, sid):
+        """
+        Connect a user socket to the system.
+        """
+        self.notificationsFacade.connect_user_socket(email, domain, sid)
+
+    def disconnect_user_socket(self, sid):
+        """
+        Disconnect a user socket from the system.
+        """
+        self.notificationsFacade.disconnect_user_socket(sid)

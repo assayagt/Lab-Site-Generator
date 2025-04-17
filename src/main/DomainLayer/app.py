@@ -57,8 +57,6 @@ TEMPLATE_1_PATH = os.path.join(os.getcwd(), 'Frontend', 'template1')
 # def notify_registration(email):
 #     socketio.emit('registration-notification', {'message': f'New registration request from: {email}'})
 
-connected_users = {}
-
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
@@ -66,12 +64,7 @@ def handle_connect():
 @socketio.on('disconnect')
 def handle_disconnect():
     disconnected_sid = request.sid
-    for email, sid in list(connected_users.items()):
-        if sid == disconnected_sid:
-            print(f"{email} disconnected")
-            del connected_users[email]
-            break
-    print('Client disconnected')
+    response = lab_system_service.disconnect_user_socket(disconnected_sid)
 
 
 @socketio.on('register_manager')
@@ -80,51 +73,14 @@ def handle_register_user(data):
     Expects: { "email": "user@example.com" }
     """
     email = data.get("email")
+    domain = data.get("domain")
     if email:
-        connected_users[email] = request.sid
-        print(f"Registered user {email} to SID {request.sid}")
-
-def notify_registration(requested_email, domain):
-    manager_emails_response = lab_system_service.get_all_lab_managers_details(domain)
-    print(manager_emails_response.is_success())
-
-    if manager_emails_response.is_success():
-        manager_data_list = manager_emails_response.get_data()  # List of dicts
-        print(manager_data_list)
-        for manager in manager_data_list:
-            manager_email = manager.get("email")
-            sid = connected_users.get(manager_email)
-            if sid:
-                socketio.emit('registration-notification', {
-                    'id': requested_email,
-                    'body': f'New registration request from: {requested_email}',
-                    'subject': 'Registration Request'
-                }, to=sid)
-                print(f"📣 Sent notification to {manager_email} (sid: {sid})")
-            else:
-                print(f"⚠️ Manager {manager_email} is not connected via socket.")
-    else:
-            print(manager_emails_response.get_message())
-
-def notify_publication_final(message, domain):
-    manager_emails_response = lab_system_service.get_all_lab_managers_details(domain)
-
-    if manager_emails_response.is_success():
-        manager_data_list = manager_emails_response.get_data()  # List of dicts
-        for manager in manager_data_list:
-            manager_email = manager.get("email")
-            sid = connected_users.get(manager_email)
-            if sid:
-                socketio.emit('publication-notification-final', {
-                    'id': requested_email,
-                    'body': f'{message}',
-                    'subject': 'Final Approval Request'
-                }, to=sid)
-                print(f"📣 Sent notification to {manager_email} (sid: {sid})")
-            else:
-                print(f"⚠️ Manager {manager_email} is not connected via socket.")
-    else:
-            print("no")
+        try:
+            sid = request.sid
+            response = lab_system_service.connect_user_socket(email, domain, sid)
+        except Exception as e:
+            print(f"Error: {str(e)}")
+            response = None
 
 # Service for uploading file
 
@@ -769,9 +725,9 @@ class LoginWebsite(Resource):
                 if response.get_data():
                     return jsonify({"message": response.get_message(), "response": "true"})
                 else:
-                    notify_registration(email, domain)
+                    #notify_registration(email, domain)
                     return jsonify({"message": response.get_message(), "response": "false"})
-            notify_registration(email, domain)
+            #notify_registration(email, domain)
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
