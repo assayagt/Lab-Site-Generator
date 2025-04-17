@@ -1,7 +1,8 @@
 from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
 from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
-
+from src.DAL.DTOs.Website_dto import website_dto
+import json
 
 class Website:
     def __init__(self, domain, contact_info=None, about_us=None):
@@ -16,15 +17,17 @@ class Website:
             if author_email not in self.members_publications:
                 self.members_publications[author_email] = []
             self.members_publications[author_email].append(publicationDTO)
+            
 
     def add_publication_manually(self, publication_link, publication_details, git_link, video_link, presentation_link,
-                                 authors_emails):
+                                 authors_emails) -> PublicationDTO:
         publication_dto = PublicationDTO(publication_details["title"], publication_details["authors"],
                                          publication_details["publication_year"], ApprovalStatus.FINAL_PENDING,
                                          publication_link, git_link, video_link, presentation_link,
                                          publication_details["description"])
         self.create_publication(publication_dto, authors_emails)
-        return publication_dto.get_paper_id()
+        return publication_dto
+
 
     def check_publication_exist(self, publication):
         for author_publications in self.members_publications.values():
@@ -51,7 +54,7 @@ class Website:
             for publication in self.members_publications[author_email]:
                 if publication.get_paper_id() == publication_paper_id:
                     return publication.approved == ApprovalStatus.APPROVED
-                    return publication.approved == ApprovalStatus.APPROVED
+                    
 
     def get_all_approved_publications_of_member(self, email):
         approved_publications = []
@@ -61,26 +64,26 @@ class Website:
                     approved_publications.append(publication.to_dict())
         return approved_publications
 
-    def set_publication_video_link(self, publication_paper_id, video_link):
+    def set_publication_video_link(self, publication_paper_id, video_link) -> PublicationDTO:
         for author_email in self.members_publications:
             for publication in self.members_publications[author_email]:
                 if publication.get_paper_id() == publication_paper_id:
                     publication.set_video_link(video_link)
-                    return
+                    return publication
 
-    def set_publication_git_link(self, publication_paper_id, git_link):
+    def set_publication_git_link(self, publication_paper_id, git_link) -> PublicationDTO:
         for author_email in self.members_publications:
             for publication in self.members_publications[author_email]:
                 if publication.get_paper_id() == publication_paper_id:
                     publication.set_git_link(git_link)
-                    return
+                    return publication
 
-    def set_publication_presentation_link(self, publication_paper_id,link):
+    def set_publication_presentation_link(self, publication_paper_id,link) -> PublicationDTO:
         for author_email in self.members_publications:
             for publication in self.members_publications[author_email]:
                 if publication.get_paper_id() == publication_paper_id:
                     publication.set_presentation_link(link)
-                    return
+                    return publication
 
     def check_if_member_is_publication_author(self, email, publication_paper_id):
         if email in self.members_publications:
@@ -96,10 +99,10 @@ class Website:
                     return publication
         return None
 
-    def final_approve_publication(self, paper_id):
+    def final_approve_publication(self, paper_id) -> PublicationDTO:
         publication = self.get_publication_by_paper_id(paper_id)
         publication.approved = ApprovalStatus.APPROVED
-        publication.approved = ApprovalStatus.APPROVED
+        return publication
 
     def get_domain(self):
         return self.domain
@@ -116,9 +119,10 @@ class Website:
     def set_contact_info(self, contact_info_dto):
         self.contact_info = contact_info_dto
 
-    def initial_approve_publication(self, publication_id):
+    def initial_approve_publication(self, publication_id) -> PublicationDTO:
         publication = self.get_publication_by_paper_id(publication_id)
         publication.approved = ApprovalStatus.FINAL_PENDING
+        return publication
 
     def get_all_initial_pending_publication(self):
         initial_publications = []
@@ -144,13 +148,15 @@ class Website:
 
         return final_publications
 
-    def reject_publication(self, publication_id):
+    def reject_publication(self, publication_id) -> PublicationDTO:
         publication = self.get_publication_by_paper_id(publication_id)
         publication.approved = ApprovalStatus.REJECTED
+        return publication
 
-    def initial_approve_publication(self, publication_id):
+    def initial_approve_publication(self, publication_id) -> PublicationDTO:
         publication = self.get_publication_by_paper_id(publication_id)
         publication.approved = ApprovalStatus.FINAL_PENDING
+        return publication
 
     def get_all_initial_pending_publication(self):
         initial_publications = []
@@ -182,3 +188,15 @@ class Website:
 
     def get_domain(self):
         return self.domain
+    
+    def to_dto(self) -> website_dto:
+        return website_dto(
+            domain=self.domain,
+            contact_info=json.dumps(self.contact_info.to_dict()) if self.contact_info else None,
+            about_us=self.about_us
+        )
+
+    def load_pub_dtos(self, pub_list: list[PublicationDTO]):
+        for pub in pub_list:
+            for author in pub.author_emails:
+                self.members_publications[author] = pub

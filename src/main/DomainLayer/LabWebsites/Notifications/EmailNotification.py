@@ -1,7 +1,7 @@
 import smtplib
-import uuid
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from src.DAL.DTOs.Notification_dto import notification_dto
 
 # Define the required Gmail API scope
 sender_email = "notifications.lab.website@gmail.com"
@@ -13,14 +13,15 @@ password = "ijtb kvpg efep srbu"
 
 
 class EmailNotification:
-    def __init__(self, recipient, subject, body, request_email=None, publication_id=None):
-        self.id = str(uuid.uuid4())  # Generate a unique ID for the notification
+    def __init__(self, id, recipient, subject, body, domain, request_email=None, publication_id=None):
+        self.id = id  # Generate a unique ID for the notification
         self.recipient = recipient
         self.subject = subject
         self.body = body
         self.request_email = request_email
         self.publication_id = publication_id
         self.isRead = False
+        self.domain = domain
 
     def send_email(self):
         """Authenticate and send the email."""
@@ -65,3 +66,16 @@ class EmailNotification:
 
     def get_request_email(self):
         return self.request_email
+
+    def to_dto(self):
+        """Convert the notification to a DTO for database storage."""
+        return notification_dto(
+            domain=self.domain,  # Domain is not applicable for email notifications
+            id=self.id,
+            recipient=self.recipient,
+            subject=self.subject,
+            body=self.body,
+            request_email=self.request_email,
+            publication_id=self.publication_id,
+            isRead=self.isRead
+        )

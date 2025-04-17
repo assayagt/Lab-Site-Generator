@@ -1,9 +1,10 @@
 import re
-
+import json
 from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
 from src.main.DomainLayer.LabGenerator.SiteCustom.SiteCustom import SiteCustom
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.main.DomainLayer.LabGenerator.SiteCustom.SiteCustomDTO import SiteCustomDTO
+from src.DAL.DAL_controller import DAL_controller
 
 
 class SiteCustomFacade:
@@ -13,6 +14,8 @@ class SiteCustomFacade:
         if SiteCustomFacade._singleton_instance is not None:
             raise Exception("This is a singleton class!")
         self.sites = {}
+        self.dal_controller = DAL_controller()
+        self._load_all_siteCustoms()
 
     @staticmethod
     def get_instance():
@@ -35,6 +38,7 @@ class SiteCustomFacade:
         self.error_if_domain_is_not_valid(domain)
         site = SiteCustom(domain, name, components, template, email)
         self.sites[domain] = site
+        self.dal_controller.siteCustom_repo.save(site.to_dto(), email) #===========================================
         return site
 
     def error_if_domain_already_exist(self, domain):
@@ -52,13 +56,18 @@ class SiteCustomFacade:
             raise Exception(ExceptionsEnum.INVALID_SITE_NAME.value)
         site = self.sites[domain]
         site.change_name(new_name)
+        self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto()) #===========================================
 
     def change_site_domain(self, old_domain, new_domain):
         """Changes the domain of a site."""
         if not isinstance(new_domain, str) or not new_domain:
             raise Exception(ExceptionsEnum.INVALID_DOMAIN_FORMAT.value)
         site = self.sites[old_domain]
+        self.sites.pop(old_domain, None)
         site.change_domain(new_domain)
+        self.sites[new_domain] = site
+        self.dal_controller.siteCustom_repo.delete(old_domain)
+        self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto())
 
     def change_site_template(self, old_domain, new_template):
         """Changes the template of a site."""
@@ -66,6 +75,7 @@ class SiteCustomFacade:
             raise Exception(ExceptionsEnum.INVALID_TEMPLATE.value)
         site = self.sites[old_domain]
         site.change_template(new_template)
+        self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto())
 
     def add_components_to_site(self, old_domain, components):
         """Adds components to a site."""
@@ -73,6 +83,7 @@ class SiteCustomFacade:
             raise Exception(ExceptionsEnum.INVALID_COMPONENTS_FORMAT.value)
         site = self.sites[old_domain]
         site.add_component(components)
+        self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto())
 
     def remove_component_from_site(self, old_domain, component):
         """Removes a component from a site."""
@@ -80,6 +91,7 @@ class SiteCustomFacade:
             raise Exception(ExceptionsEnum.INVALID_COMPONENT_FORMAT.value)
         site = self.sites[old_domain]
         site.remove_component(component)
+        self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto())
 
     def get_custom_websites(self, domains):
         """Get details of custom websites with the given domains. return map of domain, site name, and generated status"""
@@ -93,6 +105,7 @@ class SiteCustomFacade:
         """Sets a custom site as generated."""
         site = self.sites[domain]
         site.set_generated()
+        self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto())
 
     def reset_system(self):
         """
@@ -110,11 +123,13 @@ class SiteCustomFacade:
         """Set logo to site"""
         site = self.sites[domain]
         site.set_logo(logo)
+        self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto())
 
     def set_home_picture(self, domain, home_picture):
         """Set home picture to site"""
         site = self.sites[domain]
         site.set_home_picture(home_picture)
+        self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto())
 
     def error_if_user_is_not_site_creator(self, email, domain):
         site = self.sites[domain]
@@ -128,3 +143,24 @@ class SiteCustomFacade:
     def set_site_creator(self, domain, nominated_email):
         site = self.sites[domain]
         site.set_site_creator_email(nominated_email)
+        self.dal_controller.siteCustom_repo.delete(domain=site.domain)
+        self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto())
+
+    def _load_all_siteCustoms(self):
+        res = self.dal_controller.siteCustom_repo.find_all()
+        print(res)
+        for dto in res:
+            if dto.template is not None:
+                template = Template(dto.template)
+            else:
+                template = None
+            self.sites[dto.domain] = SiteCustom(
+                domain=dto.domain,
+                name=dto.name,
+                components=json.loads(dto.components_str),
+                template=template,
+                site_creator_email=dto.site_creator_email,
+                logo=dto.logo,
+                home_picture=dto.home_picture,
+                generated=bool(dto.generated)
+            )

@@ -1,4 +1,4 @@
-from DTOs.Notification_dto import notification_dto
+from src.DAL.DTOs.Notification_dto import notification_dto
 
 class NotificationRepository:
     def __init__(self, db_manager):
@@ -12,12 +12,26 @@ class NotificationRepository:
         results = self.db_manager.execute_query(query, (domain, email))
         return [self._row_to_notification_dto(row) for row in results]
     
+    
+    def find_notifications_by_domain(self, domain):
+        query = "SELECT * FROM  notifications WHERE domain = ?"
+        result = self.db_manager.execute_query(query, (domain,))
+        return [self._row_to_notification_dto(row) for row in result]
+    
+    
     def save_notification(self, notif_dto: notification_dto):
         query = """
-        INSERT OR REPLACE INTO notifications(
-        domain, id, recipient, subject, body, request_email, publication_id, isRead
+        INSERT INTO notifications (
+            domain, id, recipient, subject, body, request_email, publication_id, isRead
         )
-        VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(domain, id) DO UPDATE SET
+            recipient = excluded.recipient,
+            subject = excluded.subject,
+            body = excluded.body,
+            request_email = excluded.request_email,
+            publication_id = excluded.publication_id,
+            isRead = excluded.isRead
         """
         params = (
             notif_dto.domain,
@@ -31,6 +45,7 @@ class NotificationRepository:
         )
         rows_affected = self.db_manager.execute_update(query, params)
         return rows_affected > 0
+
     
 
     def delete_notification(self, domain, id):

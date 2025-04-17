@@ -357,3 +357,17 @@ class LabSystemService:
             return Response(notifications, "Retrieved all notifications successfully")
         except Exception as e:
             return Response(None, str(e))
+
+    def connect_user_socket(self, email, domain, sid):
+        try:
+            self.lab_system_controller.connect_user_socket(email, domain, sid)
+            return Response(True, "User socket connected successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def disconnect_user_socket(self, sid):
+        try:
+            self.lab_system_controller.disconnect_user_socket(sid)
+            return Response(True, "User socket disconnected successfully")
+        except Exception as e:
+            return Response(None, str(e))

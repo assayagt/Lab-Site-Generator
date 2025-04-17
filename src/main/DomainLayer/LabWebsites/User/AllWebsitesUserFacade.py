@@ -1,11 +1,14 @@
 from src.main.DomainLayer.LabWebsites.User.UserFacade import UserFacade
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
+from src.DAL.DAL_controller import DAL_controller
 
 class AllWebsitesUserFacade:
     _singleton_instance = None
 
     def __init__(self):
         self.usersFacades = {} # key: website domain, value: userFacade
+        self.dal_controller = DAL_controller()
+        self._load_all_data()
 
     @staticmethod
     def get_instance():
@@ -14,7 +17,7 @@ class AllWebsitesUserFacade:
         return AllWebsitesUserFacade._singleton_instance
 
     def add_new_webstie_userFacade(self, domain):
-        self.usersFacades[domain] = UserFacade()
+        self.usersFacades[domain] = UserFacade(domain)
 
     def getUserFacadeByDomain(self, domain):
         return self.usersFacades[domain]
@@ -222,3 +225,15 @@ class AllWebsitesUserFacade:
         userFacade.error_if_member_is_not_labMember_or_manager(nominate_email)
         userFacade.define_member_as_site_creator(nominate_email)
 
+    def _load_all_data(self):
+        """
+        Load all websites from the repository and create UserFacades for each.
+        Args:
+            website_repo (WebsiteRepository): The repository to fetch websites from.
+        """
+        websites = self.dal_controller.website_repo.find_all()
+        if websites:
+            for website in websites:
+                domain = website.domain
+                if domain not in self.usersFacades:
+                    self.usersFacades[domain] = UserFacade(domain)
