@@ -5,7 +5,7 @@ from src.DAL.Repositories.LabMembers_repo import LabMembersRepository
 from src.DAL.Repositories.Notifications_repo import NotificationRepository
 from src.DAL.Repositories.Publications_repo import PublicationRepository
 from src.DAL.Repositories.SiteCustoms_repo import SiteCustomsRepository
-from src.DAL.Repositories.websites_repo import WebsiteRepository
+from src.DAL.Repositories.Websites_repo import WebsiteRepository
 from src.DAL.database_manager import DatabaseManager
 
 class DAL_controller:

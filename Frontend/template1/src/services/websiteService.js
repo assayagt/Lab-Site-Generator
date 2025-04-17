@@ -52,6 +52,7 @@ export const approveRegistration = async ({
       requested_degree,
       notification_id,
     });
+    console.log(response.data);
     return response.data.message;
   } catch (error) {
     console.error("Error approving registration:", error);
