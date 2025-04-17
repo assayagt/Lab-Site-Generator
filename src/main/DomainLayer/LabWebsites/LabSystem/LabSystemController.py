@@ -88,6 +88,7 @@ class LabSystemController:
         managers = userFacade.getManagers()
         siteCreator = userFacade.getSiteCreator()
         recipients = {**managers, **siteCreator}
+        print("recipients: ", recipients)
         for managerEmail in recipients:
             self.notificationsFacade.send_registration_request_notification(requestedEmail, managerEmail, domain)
 
@@ -480,10 +481,22 @@ class LabSystemController:
 
     def mark_as_read(self, userId, domain, notification_id):
         """
-        Mark notification as read, and return the email\publication id of the notification.
+        Mark notification as read, and return the email\ publication id of the notification.
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
         email = userFacade.get_email_by_userId(userId)
         return self.notificationsFacade.mark_notification_as_read(domain, email, notification_id)
+
+    def connect_user_socket(self, email, domain, sid):
+        """
+        Connect a user socket to the system.
+        """
+        self.notificationsFacade.connect_user_socket(email, domain, sid)
+
+    def disconnect_user_socket(self, sid):
+        """
+        Disconnect a user socket from the system.
+        """
+        self.notificationsFacade.disconnect_user_socket(sid)

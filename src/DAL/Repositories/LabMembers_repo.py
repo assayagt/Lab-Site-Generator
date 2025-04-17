@@ -98,7 +98,7 @@ class LabMembersRepository:
         ON CONFLICT(domain, email)
         DO UPDATE SET status = excluded.status
         """
-        return self.db_manager.execute_update(query, (domain, email, status.value)) > 0
+        return self.db_manager.execute_update(query, (domain, email, status)) > 0
         
     
     def delete_LabMember(self, email, domain):

@@ -43,7 +43,7 @@ export const NotificationProvider = ({ children }) => {
   useEffect(() => {
     if (socket && user?.email) {
       console.log("Registering user to socket:", user.email);
-      socket.emit("register_manager", { email: user.email });
+      socket.emit("register_manager", { email: user.email, domain: sessionStorage.getItem("domain") });
     }
   }, [socket, user]);
 
