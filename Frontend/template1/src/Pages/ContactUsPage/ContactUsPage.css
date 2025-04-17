@@ -6,7 +6,7 @@
   align-items: center;
   gap: 20px;
   padding: 40px;
-  width: 100%;
+  /* width: 100%; */
   max-width: 800px; /* Limit width for a cleaner design */
   margin: 0 auto;
   font-family: "Oswald", sans-serif;
@@ -110,4 +110,10 @@
   height: 250px;
   border: 0;
   border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .contact_info {
+    max-width: 300px;
+  }
 }

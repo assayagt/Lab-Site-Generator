@@ -4,6 +4,8 @@ import accountIcon from "../../images/account_avatar.svg";
 import cameraIcon from "../../images/camera_icon.svg";
 import searchIcon from "../../images/search_icon.svg";
 import AddPublicationForm from "../../Components/AddPublicationForm/AddPubliactionForm";
+import SuccessPopup from "../../Components/PopUp/SuccessPopup";
+
 import {
   getUserDetails,
   approveRegistration,
@@ -16,9 +18,13 @@ import {
   setSecondEmailByMember,
   setLinkedInLinkByMember,
   getMemberPublications,
+  finalApprovePublicationByManager,
+  initialApprovePublicationByAuthor,
+  rejectPublication,
 } from "../../services/websiteService";
 import { fetchUserNotifications } from "../../services/UserService";
 import { NotificationContext } from "../../Context/NotificationContext";
+import ErrorPopup from "../../Components/PopUp/ErrorPopup";
 
 const AccountPage = () => {
   const [activeSection, setActiveSection] = useState("personal-info");
@@ -31,7 +37,10 @@ const AccountPage = () => {
     fullname: "",
   });
   const [showApprovalModal, setShowApprovalModal] = useState(false);
-
+  const [popupMessage, setPopupMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [saveButtonText, setSaveButtonText] = useState("Save Changes");
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [approvalForm, setApprovalForm] = useState({
     fullName: "",
@@ -47,7 +56,6 @@ const AccountPage = () => {
     useState(false);
   const {
     notifications,
-    hasNewNotifications,
     markNotificationAsRead,
     updateNotifications,
     setHasNewNotifications,
@@ -119,12 +127,44 @@ const AccountPage = () => {
   };
 
   const handleSavePhoto = () => {
-    alert("Photo saved successfully!");
+    setPopupMessage("Photo saved successfully!");
   };
 
   const handleApproveNotification = async (notif) => {
     setSelectedNotification(notif);
-    setShowApprovalModal(true);
+
+    const sid = sessionStorage.getItem("sid");
+    const domain = sessionStorage.getItem("domain");
+
+    if (notif.subject === "New Registration Request Pending Approval") {
+      setShowApprovalModal(true); // Open modal to get name + degree
+    } else if (notif.subject === "New Publication Pending Final Approval") {
+      const response = await finalApprovePublicationByManager(
+        sid,
+        domain,
+        notif.id
+      );
+      if (response?.response === "true") {
+        markNotificationAsRead(notif.id);
+        setPopupMessage("Publication approved by manager.");
+      } else {
+        setErrorMessage("Failed to approve publication.");
+      }
+    } else if (notif.subject === "New Publication Pending Approval") {
+      const response = await initialApprovePublicationByAuthor(
+        sid,
+        domain,
+        notif.id
+      );
+      if (response?.response === "true") {
+        markNotificationAsRead(notif.id);
+        setPopupMessage("Publication approved by author.");
+      } else {
+        setErrorMessage("Failed to approve publication.");
+      }
+    } else {
+      setErrorMessage("Unknown notification type.");
+    }
   };
 
   const handleSubmitApproval = async () => {
@@ -143,7 +183,7 @@ const AccountPage = () => {
       setApprovalForm({ fullName: "", degree: "" });
       setSelectedNotification(null);
     } else {
-      alert("Approval failed.");
+      setErrorMessage("An error occurred while saving changes.");
     }
   };
 
@@ -152,22 +192,46 @@ const AccountPage = () => {
       setHasNewNotifications(false); // ✅ Now inside an effect, safe to call
     }
   }, [activeSection, setHasNewNotifications]);
+  useEffect(() => {
+    if (popupMessage) {
+      const timer = setTimeout(() => setPopupMessage(""), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [popupMessage]);
 
-  const handleRejectNotification = async (notifId) => {
-    const payload = {
-      domain: sessionStorage.getItem("domain"),
-      manager_userId: sessionStorage.getItem("sid"),
-      notification_id: notifId,
-    };
+  const handleRejectNotification = async (notif) => {
+    const sid = sessionStorage.getItem("sid");
+    const domain = sessionStorage.getItem("domain");
 
-    const response = await rejectRegistration(payload);
-    if (response) {
-      markNotificationAsRead(notifId);
+    if (notif.subject === "New Registration Request Pending Approval") {
+      const payload = {
+        domain: domain,
+        manager_userId: sid,
+        notification_id: notif.id,
+      };
+
+      const response = await rejectRegistration(payload);
+      if (response) {
+        markNotificationAsRead(notif.id);
+        setPopupMessage("Registration rejected.");
+      } else {
+        setErrorMessage("Failed to reject registration.");
+      }
+    } else if (
+      notif.subject === "New Publication Pending Final Approval" ||
+      notif.subject === "New Publication Pending Approval"
+    ) {
+      const response = await rejectPublication(sid, domain, notif.id);
+      if (response?.response === "true") {
+        markNotificationAsRead(notif.id);
+        setPopupMessage("Publication rejected.");
+      } else {
+        setErrorMessage("Failed to reject publication.");
+      }
     } else {
-      alert("Rejection failed.");
+      setErrorMessage("Unknown notification type.");
     }
   };
-
   const filteredPublications = publications.filter((pub) =>
     pub.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -205,9 +269,7 @@ const AccountPage = () => {
         if (githubResponse === "true") {
           isUpdated = true;
         } else {
-          throw new Error(
-            `Failed to update GitHub link: ${githubResponse.statusText}`
-          );
+          isUpdated = false;
         }
       }
 
@@ -221,9 +283,7 @@ const AccountPage = () => {
         if (presentationResponse === "true") {
           isUpdated = true;
         } else {
-          throw new Error(
-            `Failed to update Presentation link: ${presentationResponse.statusText}`
-          );
+          isUpdated = false;
         }
       }
 
@@ -237,21 +297,24 @@ const AccountPage = () => {
         if (videoResponse === "true") {
           isUpdated = true;
         } else {
-          throw new Error(
-            `Failed to update Video link: ${videoResponse.statusText}`
-          );
+          isUpdated = false;
         }
       }
 
       if (isUpdated) {
-        alert("Links updated successfully!");
+        setPopupMessage("Links updated successfully!");
       } else {
-        alert("No changes were made.");
+        setErrorMessage("An error occurred while saving changes.");
       }
     } catch (error) {
       console.error("Error updating publication links:", error);
-      alert(`An error occurred: ${error.message}`);
+      setErrorMessage(`An error occurred: ${error.message}`);
     }
+  };
+  const handleChange = (field, value) => {
+    setUserDetails((prev) => ({ ...prev, [field]: value }));
+    setHasUnsavedChanges(true);
+    setSaveButtonText("Save Changes");
   };
 
   const handleSaveChanges = async () => {
@@ -282,14 +345,56 @@ const AccountPage = () => {
       }
 
       if (isUpdated) {
-        alert("Changes saved successfully!");
+        setPopupMessage("Changes saved successfully!");
+        setSaveButtonText("Saved");
+        setHasUnsavedChanges(false);
       } else {
-        alert("No changes were made.");
+        setErrorMessage("An error occurred while saving changes.");
       }
     } catch (error) {
       console.error("Error saving changes:", error);
-      alert(`An error occurred: ${error.message}`);
+      setErrorMessage(`An error occurred: ${error.message}`);
     }
+  };
+
+  // const renderBody = (body) => {
+  //   return (
+  //     <div className="notification-body">
+  //       {body
+  //         .split("\n")
+  //         .slice(1) // skip first line
+  //         .filter((line) => line.trim() !== "")
+  //         .map((line, i) => (
+  //           <div key={i}>{line}</div>
+  //         ))}
+  //     </div>
+  //   );
+  // };
+
+  const renderNotification = (body) => {
+    const lines = body
+      .split("\n")
+      .slice(1) // Skip the first line
+      .filter((line) => line.trim() !== "");
+
+    return (
+      <div className="notification-body">
+        {lines.map((line, index) => {
+          if (line.startsWith("Link: ")) {
+            const url = line.replace("Link: ", "").trim();
+            return (
+              <div className="link_notification" key={index}>
+                <div>Link:</div>{" "}
+                <a href={url} target="_blank" rel="noopener noreferrer">
+                  {url}
+                </a>
+              </div>
+            );
+          }
+          return <div key={index}>{line}</div>;
+        })}
+      </div>
+    );
   };
 
   return (
@@ -330,9 +435,7 @@ const AccountPage = () => {
                     name="input"
                     className="input"
                     value={userDetails.bio}
-                    onChange={(e) =>
-                      setUserDetails({ ...userDetails, bio: e.target.value })
-                    }
+                    onChange={(e) => handleChange("bio", e.target.value)}
                   />
                 </div>
                 <div className="coolinput">
@@ -346,10 +449,7 @@ const AccountPage = () => {
                     className="input"
                     value={userDetails.secondaryEmail}
                     onChange={(e) =>
-                      setUserDetails({
-                        ...userDetails,
-                        secondaryEmail: e.target.value,
-                      })
+                      handleChange("secondaryEmail", e.target.value)
                     }
                   />
                 </div>
@@ -363,9 +463,7 @@ const AccountPage = () => {
                     name="input"
                     className="input"
                     value={userDetails.degree}
-                    onChange={(e) =>
-                      setUserDetails({ ...userDetails, degree: e.target.value })
-                    }
+                    onChange={(e) => handleChange("degree", e.target.value)}
                   />
                 </div>
                 <div className="coolinput">
@@ -378,12 +476,7 @@ const AccountPage = () => {
                     name="input"
                     className="input"
                     value={userDetails.linkedIn}
-                    onChange={(e) =>
-                      setUserDetails({
-                        ...userDetails,
-                        linkedIn: e.target.value,
-                      })
-                    }
+                    onChange={(e) => handleChange("linkedIn", e.target.value)}
                   />
                 </div>
               </div>
@@ -394,7 +487,7 @@ const AccountPage = () => {
                 type="button"
                 onClick={handleSaveChanges}
               >
-                Save Changes
+                {saveButtonText}
               </button>
             </div>
           </form>
@@ -503,11 +596,13 @@ const AccountPage = () => {
               notifications?.map((notif) => (
                 <div key={notif.id} className="notifications">
                   <div className="notification_info">
-                    <div>{notif.body}</div>
+                    <div className="notification_subject">{notif.subject}</div>
+                    {/* <div className="notification-body">{notif.body}</div> */}
+                    {renderNotification(notif.body)}
                     <div className="notification_buttons">
                       <button
                         className="notification_button"
-                        onClick={() => handleRejectNotification(notif.id)}
+                        onClick={() => handleRejectNotification(notif)}
                       >
                         Reject
                       </button>
@@ -568,6 +663,18 @@ const AccountPage = () => {
               </div>
             )}
           </div>
+        )}
+        {popupMessage && (
+          <SuccessPopup
+            message={popupMessage}
+            onClose={() => setPopupMessage("")}
+          />
+        )}
+        {errorMessage && (
+          <ErrorPopup
+            message={errorMessage}
+            onClose={() => setErrorMessage("")}
+          />
         )}
       </div>
     </div>

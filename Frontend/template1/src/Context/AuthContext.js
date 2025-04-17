@@ -45,7 +45,12 @@ export const AuthProvider = ({ children }) => {
     }
     return data;
   };
-
+  useEffect(() => {
+    const savedEmail = sessionStorage.getItem("userEmail");
+    if (savedEmail) {
+      setUser({ email: savedEmail });
+    }
+  }, []);
   return (
     <AuthContext.Provider value={{ login, logout, fetchToken, user }}>
       {children}

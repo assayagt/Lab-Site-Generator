@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useId } from "react";
 
-const baseApiUrl = "http://127.0.0.1:5000/api/";
+import { baseApiUrl } from "./BaseUrl"; // Ensure the path is correct relative to this file
 
 export const addLabMember = async (userId, email, fullName, degree, domain) => {
   let data;
@@ -52,6 +52,7 @@ export const approveRegistration = async ({
       requested_degree,
       notification_id,
     });
+    console.log(response.data);
     return response.data.message;
   } catch (error) {
     console.error("Error approving registration:", error);
@@ -256,6 +257,7 @@ export const setPublicationVideoLink = async (
       publication_id: publicationId,
       video_link: videoLink,
     });
+    console.log(response);
     return response.data;
   } catch (error) {
     console.error("Error setting publication video link:", error);
@@ -494,6 +496,85 @@ export const setSiteContactInfoByManager = async (
     return response.data;
   } catch (error) {
     console.error("Error setting site contact info:", error);
+    return null;
+  }
+};
+
+export const initialApprovePublicationByAuthor = async (
+  userId,
+  domain,
+  notificationId
+) => {
+  try {
+    const response = await axios.post(
+      `${baseApiUrl}initialApprovePublicationByAuthor`,
+      {
+        user_id: userId,
+        domain: domain,
+        notification_id: notificationId,
+      }
+    );
+    return response.data; // includes { message, response: "true" | "false" }
+  } catch (error) {
+    console.error(
+      "Error during initial publication approval by author:",
+      error
+    );
+    return null;
+  }
+};
+
+// Final approval of publication by lab manager
+export const finalApprovePublicationByManager = async (
+  userId,
+  domain,
+  notificationId
+) => {
+  try {
+    const response = await axios.post(
+      `${baseApiUrl}finalApprovePublicationByManager`,
+      {
+        user_id: userId,
+        domain: domain,
+        notification_id: notificationId,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error during final publication approval by manager:", error);
+    return null;
+  }
+};
+
+// Reject publication
+export const rejectPublication = async (userId, domain, notificationId) => {
+  try {
+    const response = await axios.post(`${baseApiUrl}RejectPublication`, {
+      user_id: userId,
+      domain: domain,
+      notification_id: notificationId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error rejecting publication:", error);
+    return null;
+  }
+};
+
+export const removeManagerPermission = async (
+  managerUserId,
+  managerEmail,
+  domain
+) => {
+  try {
+    const response = await axios.post(`${baseApiUrl}removeManagerPermission`, {
+      manager_userId: managerUserId,
+      manager_toRemove_email: managerEmail,
+      domain,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error removing manager permission:", error);
     return null;
   }
 };

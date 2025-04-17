@@ -1,4 +1,5 @@
 from datetime import datetime
+import re
 from src.main.DomainLayer.LabWebsites.WebCrawler.WebCrawlerFacade import WebCrawlerFacade
 from src.main.DomainLayer.LabWebsites.Website.WebsiteFacade import WebsiteFacade
 from src.main.DomainLayer.LabWebsites.Notifications.NotificationsFacade import NotificationsFacade
@@ -236,8 +237,10 @@ class LabSystemController:
         # Replace author names with emails
         if 'authors' in publication_details:
             authors_emails = [
+            email for email in (
                 userFacade.getMemberEmailByName(author) for author in publication_details['authors']
-            ]
+            ) if email is not None
+        ]
 
         # Create the new publication
         publication_id = self.websiteFacade.create_new_publication(
@@ -331,6 +334,23 @@ class LabSystemController:
     def set_bio_by_member(self, userid, bio, domain):
         self.allWebsitesUserFacade.set_bio_by_member(userid, bio, domain)
 
+
+
+    def get_preview_url(self, original_url):
+        # Handle YouTube links
+        youtube_match = re.search(r"(?:youtube\.com/watch\?v=|youtu\.be/)([\w\-]+)", original_url)
+        if youtube_match:
+            video_id = youtube_match.group(1)
+            return f"https://www.youtube.com/embed/{video_id}"
+
+        # Handle Google Drive links
+        drive_match = re.search(r"drive\.google\.com/file/d/([\w-]+)", original_url)
+        if drive_match:
+            file_id = drive_match.group(1)
+            return f"https://drive.google.com/file/d/{file_id}/preview"
+
+        return original_url  # If the URL is neither YouTube nor Google Drive
+    
     def set_publication_video_link(self, userId, domain, publication_id, video_link):
         """
         Set video link for a publication.
@@ -342,10 +362,10 @@ class LabSystemController:
         userFacade.error_if_user_not_logged_in(userId)
         email = userFacade.get_email_by_userId(userId)
         if userFacade.verify_if_member_is_manager(email):
-            self.websiteFacade.set_publication_video_link(domain, publication_id, video_link)
+            self.websiteFacade.set_publication_video_link(domain, publication_id, self.get_preview_url(video_link))
         else:
             self.websiteFacade.error_if_member_is_not_publication_author(domain, publication_id, email)
-            self.websiteFacade.set_publication_video_link(domain, publication_id, video_link)
+            self.websiteFacade.set_publication_video_link(domain, publication_id, self.get_preview_url(video_link))
 
     def set_publication_git_link_by_author(self, userId, domain, publication_id, git_link):
         """

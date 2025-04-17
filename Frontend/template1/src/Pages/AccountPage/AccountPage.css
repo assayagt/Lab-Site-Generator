@@ -41,12 +41,12 @@
 
 .personal-info .button-wrapper {
   position: absolute; /* Absolute positioning for precise placement */
-  bottom: 30px; /* Distance from the bottom edge */
+  bottom: 20px; /* Distance from the bottom edge */
   right: 30px; /* Distance from the right edge */
 }
 
 .save-changes {
-  padding: 8px 16px; /* Adjust size */
+  padding: 8px 10px; /* Adjust size */
   border-radius: 20px;
   background-color: transparent;
   color: #272727;
@@ -229,7 +229,7 @@ button {
   padding: 5px 10px;
   width: 100%;
   max-width: 400px;
-  margin-bottom: 20px;
+
   background: rgba(255, 255, 255, 0.2);
 }
 
@@ -364,7 +364,6 @@ button {
   border-radius: 25px;
   background: transparent;
   border: 1px solid #000000;
-  right: 20px;
   position: relative;
   cursor: pointer;
 }
@@ -436,8 +435,6 @@ button {
   width: 80px;
   padding: 8px;
   border-radius: 20px;
-  border: 1px solid #ccc;
-  color: #ccc;
   height: min-content;
 }
 
@@ -567,4 +564,165 @@ button {
 
 .save-publications:hover {
   background-color: rgba(255, 255, 255, 0.3);
+}
+@media (max-width: 1024px) {
+  .account-page {
+    flex-direction: column;
+    padding: 0;
+  }
+
+  .sidebar {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    background: rgba(31, 33, 66, 0.08);
+    padding: 10px;
+    box-shadow: none;
+  }
+
+  .sidebar ul {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .sidebar li {
+    margin-bottom: 0;
+  }
+
+  .sidebar button {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  .main-content {
+    padding: 10px;
+    margin-top: 10px;
+  }
+
+  .personal-info .info {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .details {
+    width: 100%;
+    align-items: center;
+  }
+  .save-changes {
+    margin-top: 10px;
+  }
+
+  .user-photo-div {
+    align-self: center;
+  }
+
+  .button-wrapper {
+    position: static;
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .publication-item {
+    margin-left: 0;
+  }
+
+  .publication-form {
+    padding-bottom: 20px;
+  }
+
+  .save-publications {
+    position: static;
+    align-self: flex-end;
+  }
+
+  .search-add {
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .search-bar {
+    width: 80%;
+  }
+
+  .pagination {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .approval-modal {
+    width: 90vw;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar button {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+
+  .coolinput input[type="text"].input {
+    font-size: 0.7rem;
+  }
+
+  .search-bar .search-input {
+    font-size: 14px;
+  }
+
+  .publication-item {
+    padding: 15px;
+  }
+
+  .save-publications {
+    width: 100%;
+    text-align: center;
+  }
+
+  .sidebar {
+    flex-wrap: wrap;
+  }
+
+  .user-photo-div {
+    width: 80px;
+    height: 80px;
+  }
+
+  .user-photo {
+    width: 80px;
+    height: 80px;
+  }
+
+  .camera-icon img {
+    width: 16px;
+    height: 16px;
+  }
+}
+.notification_subject {
+  font-size: 18px;
+  font-weight: 700;
+}
+.notification-body {
+  white-space: pre-wrap;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  white-space: pre-wrap; /* Respect newlines and wrap text */
+  word-wrap: break-word; /* Break long words if needed */
+  overflow-wrap: break-word; /* More modern version */
+  overflow: hidden; /* Hide anything that overflows (optional) */
+  max-width: 100%; /* Prevent from expanding beyond its parent */
+  box-sizing: border-box; /* Include padding in width calculation */
+}
+.notification-body::first-line {
+  display: hidden;
+}
+.link_notification {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
 }
