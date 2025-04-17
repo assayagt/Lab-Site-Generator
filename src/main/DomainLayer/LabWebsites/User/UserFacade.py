@@ -114,9 +114,6 @@ class UserFacade:
             if site_creator.fullName and site_creator.fullName.lower() == author_lower:
                 return email
 
-        # If no match is found, return None
-        return None
-
     def get_lab_members_names(self):
         lab_member_names = []
         for email, member in self.members.items():

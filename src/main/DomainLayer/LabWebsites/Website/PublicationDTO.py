@@ -9,7 +9,7 @@ class PublicationDTO:
         self.title = title
         self.authors = authors
         self.publication_year = publication_year
-        self.approved = approved
+        self.approved = approved.value if approved else None
         self.publication_link = publication_link
         self.video_link = video_link
         self.git_link = git_link

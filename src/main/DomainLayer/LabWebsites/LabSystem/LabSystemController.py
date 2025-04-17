@@ -237,8 +237,10 @@ class LabSystemController:
         # Replace author names with emails
         if 'authors' in publication_details:
             authors_emails = [
+            email for email in (
                 userFacade.getMemberEmailByName(author) for author in publication_details['authors']
-            ]
+            ) if email is not None
+        ]
 
         # Create the new publication
         publication_id = self.websiteFacade.create_new_publication(

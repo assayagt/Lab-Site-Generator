@@ -43,7 +43,7 @@ class Website:
 
         for publications in self.members_publications.values():  # Iterate over all author-publication lists
             for publication in publications:  # Iterate over publications for each author
-                if publication.approved == ApprovalStatus.APPROVED and publication.get_paper_id() not in seen_paper_ids:
+                if publication.approved == ApprovalStatus.APPROVED.value and publication.get_paper_id() not in seen_paper_ids:
                     approved_publications.append(publication.to_dict())
                     seen_paper_ids.add(publication.get_paper_id())  # Mark the paper ID as seen
 
@@ -53,14 +53,14 @@ class Website:
         for author_email in self.members_publications:
             for publication in self.members_publications[author_email]:
                 if publication.get_paper_id() == publication_paper_id:
-                    return publication.approved == ApprovalStatus.APPROVED
+                    return publication.approved == ApprovalStatus.APPROVED.value
                     
 
     def get_all_approved_publications_of_member(self, email):
         approved_publications = []
         if email in self.members_publications:  # Check if the email exists in the dictionary
             for publication in self.members_publications[email]:  # Iterate through the member's publications
-                if publication.approved == ApprovalStatus.APPROVED:  # Check if the publication is approved
+                if publication.approved == ApprovalStatus.APPROVED.value:  # Check if the publication is approved
                     approved_publications.append(publication.to_dict())
         return approved_publications
 
@@ -101,7 +101,7 @@ class Website:
 
     def final_approve_publication(self, paper_id) -> PublicationDTO:
         publication = self.get_publication_by_paper_id(paper_id)
-        publication.approved = ApprovalStatus.APPROVED
+        publication.approved = ApprovalStatus.APPROVED.value
         return publication
 
     def get_domain(self):
@@ -121,7 +121,7 @@ class Website:
 
     def initial_approve_publication(self, publication_id) -> PublicationDTO:
         publication = self.get_publication_by_paper_id(publication_id)
-        publication.approved = ApprovalStatus.FINAL_PENDING
+        publication.approved = ApprovalStatus.FINAL_PENDING.value
         return publication
 
     def get_all_initial_pending_publication(self):
@@ -130,7 +130,7 @@ class Website:
 
         for publications in self.members_publications.values():  # Iterate over all author-publication lists
             for publication in publications:  # Iterate over publications for each author
-                if publication.approved == ApprovalStatus.INITIAL_PENDING and publication.get_paper_id() not in seen_paper_ids:
+                if publication.approved == ApprovalStatus.INITIAL_PENDING.value and publication.get_paper_id() not in seen_paper_ids:
                     initial_publications.append(publication)
                     seen_paper_ids.add(publication.get_paper_id())  # Mark the paper ID as seen
 
@@ -142,7 +142,7 @@ class Website:
 
         for publications in self.members_publications.values():  # Iterate over all author-publication lists
             for publication in publications:  # Iterate over publications for each author
-                if publication.approved == ApprovalStatus.INITIAL_PENDING and publication.get_paper_id() not in seen_paper_ids:
+                if publication.approved == ApprovalStatus.INITIAL_PENDING.value and publication.get_paper_id() not in seen_paper_ids:
                     final_publications.append(publication)
                     seen_paper_ids.add(publication.get_paper_id())  # Mark the paper ID as seen
 
@@ -150,12 +150,12 @@ class Website:
 
     def reject_publication(self, publication_id) -> PublicationDTO:
         publication = self.get_publication_by_paper_id(publication_id)
-        publication.approved = ApprovalStatus.REJECTED
+        publication.approved = ApprovalStatus.REJECTED.value
         return publication
 
     def initial_approve_publication(self, publication_id) -> PublicationDTO:
         publication = self.get_publication_by_paper_id(publication_id)
-        publication.approved = ApprovalStatus.FINAL_PENDING
+        publication.approved = ApprovalStatus.FINAL_PENDING.value
         return publication
 
     def get_all_initial_pending_publication(self):
@@ -164,7 +164,7 @@ class Website:
 
         for publications in self.members_publications.values():  # Iterate over all author-publication lists
             for publication in publications:  # Iterate over publications for each author
-                if publication.approved == ApprovalStatus.INITIAL_PENDING and publication.get_paper_id() not in seen_paper_ids:
+                if publication.approved == ApprovalStatus.INITIAL_PENDING.value and publication.get_paper_id() not in seen_paper_ids:
                     initial_publications.append(publication)
                     seen_paper_ids.add(publication.get_paper_id())  # Mark the paper ID as seen
 
@@ -176,7 +176,7 @@ class Website:
 
         for publications in self.members_publications.values():  # Iterate over all author-publication lists
             for publication in publications:  # Iterate over publications for each author
-                if publication.approved == ApprovalStatus.INITIAL_PENDING and publication.get_paper_id() not in seen_paper_ids:
+                if publication.approved == ApprovalStatus.INITIAL_PENDING.value and publication.get_paper_id() not in seen_paper_ids:
                     final_publications.append(publication)
                     seen_paper_ids.add(publication.get_paper_id())  # Mark the paper ID as seen
 
@@ -184,7 +184,8 @@ class Website:
 
     def reject_publication(self, publication_id):
         publication = self.get_publication_by_paper_id(publication_id)
-        publication.approved = ApprovalStatus.REJECTED
+        publication.approved = ApprovalStatus.REJECTED.value
+        return publication
 
     def get_domain(self):
         return self.domain
