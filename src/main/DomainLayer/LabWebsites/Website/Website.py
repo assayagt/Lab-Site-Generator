@@ -200,4 +200,6 @@ class Website:
     def load_pub_dtos(self, pub_list: list[PublicationDTO]):
         for pub in pub_list:
             for author in pub.author_emails:
-                self.members_publications[author] = pub
+                if author not in self.members_publications:
+                    self.members_publications[author] = []
+                self.members_publications[author].append(pub)
