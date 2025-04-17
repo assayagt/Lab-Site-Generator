@@ -144,7 +144,7 @@ class NotificationsFacade:
             for n in notifications:
                 if n.id == notification_id:
                     n.mark_as_read()
-                    self.dal_controller.notifications_repo.save_notification(n.to_dict())
+                    self.dal_controller.notifications_repo.save_notification(n.to_dto())
                     return n.request_email or n.publication_id
 
     def connect_user_socket(self, email, domain, sid):
