@@ -48,6 +48,11 @@ const useChooseComponents = () => {
   const [isComponentsSaved, setIsComponentsSaved] = useState(false);
   const [errorMessage, setErrorMessage] = useState(""); // Store error messages
   const [isTempSaved, setTempSaved] = useState(false);
+  const [showTransferPopup, setShowTransferPopup] = useState(false);
+  const [newCreatorEmail, setNewCreatorEmail] = useState("");
+  const [newRoleAfterResignation, setNewRoleAfterResignation] =
+    useState("manager");
+
   const showError = (message) => {
     setErrorMessage(message);
   };
@@ -153,7 +158,23 @@ const useChooseComponents = () => {
     const email = participant.email;
     const isLabManager = participant.isLabManager;
 
+    const selfEmail = sessionStorage.getItem("userEmail");
+
     try {
+      if (email === selfEmail && isLabManager) {
+        const otherParticipants = participants.filter(
+          (p) => p.email !== selfEmail
+        );
+
+        if (otherParticipants.length === 0) {
+          showError(
+            "You must add another participant before quitting as creator."
+          );
+          return;
+        }
+        setShowTransferPopup(true);
+        return;
+      }
       if (!isLabManager) {
         let data = await createNewSiteManager(
           sessionStorage.getItem("sid"),
@@ -486,7 +507,7 @@ const useChooseComponents = () => {
         created: true,
       });
       setIsChanged(false);
-      setStep(2);
+      setStep(3);
     } else {
       setErrorMessage("Could not save. Domain name is invalid.");
     }
@@ -553,14 +574,41 @@ const useChooseComponents = () => {
 
       return;
     }
-    const response1 = await changeDomain(websiteData.domain, domain);
-    if (response1.response === "false") {
-      setErrorMessage("Could not save. Domain name is invalid.");
-      return;
-    }
+    // const response1 = await changeDomain(websiteData.domain, domain);
+    // if (response1.response === "false") {
+    //   setErrorMessage("Could not save. Domain name is invalid.");
+    //   return;
+    // }
     await changeName(domain, websiteName);
     setWebsite({ ...websiteData, domain, websiteName });
     setIsChanged(false);
+  };
+  const confirmQuitAsCreator = async () => {
+    if (!newCreatorEmail) {
+      showError("Please select a new creator.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${baseApiUrl}siteCreatorResignationFromGenerator`,
+        {
+          user_id: sessionStorage.getItem("sid"),
+          domain: domain,
+          email: newCreatorEmail,
+          new_role: newRoleAfterResignation,
+        }
+      );
+
+      if (response.data.response === "true") {
+        setShowTransferPopup(false);
+        navigate("/my-account");
+      } else {
+        showError(response.data.message || "Failed to transfer ownership.");
+      }
+    } catch (error) {
+      showError("An error occurred: " + error.message);
+    }
   };
 
   return {
@@ -625,6 +673,13 @@ const useChooseComponents = () => {
     mediaSaveStatus,
     buttonText,
     setButtonText,
+    showTransferPopup,
+    setShowTransferPopup,
+    setNewCreatorEmail,
+    newCreatorEmail,
+    confirmQuitAsCreator,
+    newRoleAfterResignation,
+    setNewRoleAfterResignation,
   };
 };
 
