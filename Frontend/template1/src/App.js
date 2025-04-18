@@ -54,6 +54,7 @@ function App() {
         //     home_picture: data.data.home_picture,
         //     about_us: data.data.about_us,
         //   };
+        console.log(data);
         if (data.response === "true") {
           const mappedData = {
             domain: data.data.domain,

@@ -231,7 +231,9 @@ class AllWebsitesUserFacade:
         Args:
             website_repo (WebsiteRepository): The repository to fetch websites from.
         """
+    
         websites = self.dal_controller.website_repo.find_all()
+ 
         if websites:
             for website in websites:
                 domain = website.domain

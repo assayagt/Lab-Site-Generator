@@ -57,6 +57,13 @@ const ChooseComponentsPage = () => {
     mediaSaveStatus,
     buttonText,
     setButtonText,
+    showTransferPopup,
+    setShowTransferPopup,
+    setNewCreatorEmail,
+    newCreatorEmail,
+    confirmQuitAsCreator,
+    newRoleAfterResignation,
+    setNewRoleAfterResignation,
   } = useChooseComponents();
 
   return (
@@ -204,6 +211,7 @@ const ChooseComponentsPage = () => {
                       domainError ? "error_domain" : "edit"
                     }`}
                     id="domainInput"
+                    disabled
                     placeholder="www.example.com" // Necessary for floating label effect
                     onBlur={() => {
                       if (!isValidDomain(domain)) {
@@ -705,6 +713,10 @@ const ChooseComponentsPage = () => {
                               <input
                                 type="checkbox"
                                 checked={participant.isLabManager}
+                                disabled={
+                                  participant.email ===
+                                  sessionStorage.getItem("userEmail")
+                                }
                                 onChange={() => toggleLabManager(index)}
                               />
                             </td>
@@ -713,6 +725,10 @@ const ChooseComponentsPage = () => {
                                 type="checkbox"
                                 checked={participant.alumni}
                                 onChange={() => toggleAlumni(index)}
+                                disabled={
+                                  participant.email ===
+                                  sessionStorage.getItem("userEmail")
+                                }
                               />
                             </td>
                           </tr>
@@ -802,6 +818,51 @@ const ChooseComponentsPage = () => {
                 )}
               </div>
             )}
+          </div>
+        </div>
+      )}
+      {showTransferPopup && (
+        <div
+          className="modal-overlay"
+          onClick={() => setShowTransferPopup(false)}
+        >
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>Transfer Ownership</h3>
+            <select
+              onChange={(e) => setNewCreatorEmail(e.target.value)}
+              value={newCreatorEmail}
+              className="modal-content-item"
+            >
+              <option value="">Select a participant</option>
+              {participants
+                .filter((p) => p.email !== sessionStorage.getItem("userEmail"))
+                .map((p, index) => (
+                  <option key={index} value={p.email}>
+                    {p.fullName} ({p.email})
+                  </option>
+                ))}
+            </select>
+            <label>
+              Select your new role:
+              <select
+                value={newRoleAfterResignation}
+                onChange={(e) => setNewRoleAfterResignation(e.target.value)}
+                className="modal-content-item"
+              >
+                <option value="manager">Manager</option>
+                <option value="member">Member</option>
+                <option value="alumni">Alumni</option>
+              </select>
+            </label>
+            <div className="modal-buttons">
+              <button
+                className="cancel-button"
+                onClick={() => setShowTransferPopup(false)}
+              >
+                Cancel
+              </button>
+              <button onClick={confirmQuitAsCreator}>Confirm</button>
+            </div>
           </div>
         </div>
       )}
