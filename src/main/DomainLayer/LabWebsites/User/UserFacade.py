@@ -80,6 +80,7 @@ class UserFacade:
         member = LabMember(email, fullName, degree)
         self.members[email] = member
         self.dal_controller.LabMembers_repo.save_LabMember(member.get_dto(self.domain))  # ===========================
+        self.dal_controller.LabMembers_repo.save_to_LabRoles_members(member.email, self.domain) # ===========================
         if email in self.emails_requests_to_register:
             del self.emails_requests_to_register[email]
 
@@ -207,6 +208,7 @@ class UserFacade:
             del self.managers[email]
 
         self.dal_controller.LabMembers_repo.clear_member_role(email, self.domain)  # ===========================
+        self.dal_controller.LabMembers_repo.delete_LabMember(email=email, domain=self.domain)
 
     def get_user_by_id(self, userId):
         if userId in self.users:
@@ -457,3 +459,10 @@ class UserFacade:
         pending_emails = self.dal_controller.LabMembers_repo.find_all_pending_emails_by_domain(self.domain)
         for email in pending_emails:
             self.emails_requests_to_register[email] = RegistrationStatus.PENDING.value
+        # ===================== DEBUG PRINT ===========================
+        print(f"domain: {self.domain}")
+        print(f"members:\n{self.members}")
+        print(f"site creators:\n{self.siteCreator}")
+        print(f"managers:\n{self.managers}")
+        print(f"alumnis:\n{self.alumnis}")
+        
