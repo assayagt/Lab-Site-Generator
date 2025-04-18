@@ -1,12 +1,13 @@
-import sys
-import os
-import json
+# import sys
+# import os
 
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-if project_root not in sys.path:
-    sys.path.append(project_root)
-    
+
+# project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+# if project_root not in sys.path:
+#     sys.path.append(project_root)
+import json
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
+from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
 
 class PublicationRepository:
     """Handles databse operations for publications"""
@@ -78,12 +79,14 @@ class PublicationRepository:
             description = excluded.description, 
             author_emails = excluded.author_emails
         """
+        approved = publication_dto.approved.value if approved else None
+
         publication_parameters = (
             publication_dto.paper_id,
             publication_dto.title,
             json.dumps(publication_dto.authors),
             publication_dto.publication_year,
-            publication_dto.approved,
+            approved,
             publication_dto.publication_link,
             publication_dto.video_link,
             publication_dto.git_link,
@@ -123,12 +126,13 @@ class PublicationRepository:
     
 
     def _row_to_publication_dto(self, row):
+        
         return PublicationDTO(
             paper_id=row['paper_id'],
                 title=row['title'],
                 authors=json.loads(row['authors']),
                 publication_year=row['publication_year'],
-                approved=row['approved'],
+                approved=ApprovalStatus(row['approved']) if row['approved'] else None,
                 publication_link=row['publication_link'],
                 git_link=row['git_link'],
                 video_link=row['video_link'],

@@ -1,5 +1,4 @@
 from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
-from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
 from src.DAL.DTOs.Website_dto import website_dto
 import json
