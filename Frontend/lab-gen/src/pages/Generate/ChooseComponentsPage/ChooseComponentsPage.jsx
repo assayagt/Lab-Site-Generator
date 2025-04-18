@@ -855,13 +855,13 @@ const ChooseComponentsPage = () => {
               </select>
             </label>
             <div className="modal-buttons">
-              <button onClick={confirmQuitAsCreator}>Confirm</button>
               <button
                 className="cancel-button"
                 onClick={() => setShowTransferPopup(false)}
               >
                 Cancel
               </button>
+              <button onClick={confirmQuitAsCreator}>Confirm</button>
             </div>
           </div>
         </div>
