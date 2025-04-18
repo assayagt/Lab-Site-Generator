@@ -110,24 +110,25 @@ const AccountPage = () => {
   }, [activeSection]);
 
   const handleUploadPhoto = () => {
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "image/*";
-    fileInput.onchange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          setUploadedPhoto(reader.result);
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-    fileInput.click();
+    // const fileInput = document.createElement("input");
+    // fileInput.type = "file";
+    // fileInput.accept = "image/*";
+    // fileInput.onchange = (e) => {
+    //   const file = e.target.files[0];
+    //   if (file) {
+    //     const reader = new FileReader();
+    //     reader.onload = () => {
+    //       setUploadedPhoto(reader.result);
+    //     };
+    //     reader.readAsDataURL(file);
+    //   }
+    // };
+    // fileInput.click();
+    setErrorMessage("Feature not supported");
   };
 
   const handleSavePhoto = () => {
-    setPopupMessage("Photo saved successfully!");
+    setErrorMessage("Feature not supported");
   };
 
   const handleApproveNotification = async (notif) => {

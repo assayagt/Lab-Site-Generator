@@ -186,6 +186,7 @@ const ParticipantsPage = () => {
           setErrorMessage("Failed to promote to alumni: " + response?.message);
         }
       } else {
+        setErrorMessage("Feature not supported");
       }
     } catch (err) {
       setErrorMessage("Error toggling alumni:", err);

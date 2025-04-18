@@ -12,7 +12,7 @@
   z-index: 1000;
 }
 .popup.error {
-  background: #fff0f0;
+  background: #ffffff;
   color: #cf4442;
   padding: 25px;
   width: 90vw;
@@ -22,7 +22,7 @@
   position: relative;
   text-align: center;
   font-family: "Segoe UI", sans-serif;
-  border: 1px solid #ebccd1;
+  border: 1px solid #ffffff;
 }
 .error_msg {
   color: #000;
