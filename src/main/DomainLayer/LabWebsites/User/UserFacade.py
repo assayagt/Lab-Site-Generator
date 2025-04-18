@@ -443,6 +443,7 @@ class UserFacade:
             full_name = creator.full_name
             degree = creator.degree
             self.siteCreator[email] = LabMember(email, full_name, degree)
+            self.managers[email] = LabMember(email, full_name, degree)
 
         # Load alumnis
         alumnis = self.dal_controller.LabMembers_repo.find_all_alumnis_by_domain(self.domain)
