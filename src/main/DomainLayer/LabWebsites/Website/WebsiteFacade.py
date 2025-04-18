@@ -166,4 +166,5 @@ class WebsiteFacade:
             website = Website(domain=dto.domain, contact_info=contact_info, about_us=dto.about_us)
             pubs = self.dal_controller.publications_repo.find_by_domain(domain=dto.domain)
             website.load_pub_dtos(pub_list=pubs)
+            self.websites.append(website) 
 
