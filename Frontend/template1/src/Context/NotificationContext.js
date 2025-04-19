@@ -6,9 +6,20 @@ export const NotificationContext = createContext();
 
 export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
-  const [hasNewNotifications, setHasNewNotifications] = useState(false);
+  const [hasNewNotifications, setHasNewNotifications] = useState(() => {
+    const saved = localStorage.getItem("hasNewNotifications");
+    return saved ? JSON.parse(saved) : false;
+  });
+
   const { user } = useAuth(); // get user email
   const [socket, setSocket] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "hasNewNotifications",
+      JSON.stringify(hasNewNotifications)
+    );
+  }, [hasNewNotifications]);
 
   useEffect(() => {
     const newSocket = io("http://localhost:5000", {
@@ -21,11 +32,20 @@ export const NotificationProvider = ({ children }) => {
 
     newSocket.on("registration-notification", (data) => {
       console.log("Received notification:", data);
-
       setNotifications((prev) => [...prev, data]);
-      if (notifications.length !== 0) {
-        setHasNewNotifications(true);
-      }
+      setHasNewNotifications(true);
+    });
+
+    newSocket.on("final-publication-notification", (data) => {
+      console.log("Received notification:", data);
+      setNotifications((prev) => [...prev, data]);
+      setHasNewNotifications(true);
+    });
+
+    newSocket.on("initial-publication-notification", (data) => {
+      console.log("Received notification:", data);
+      setNotifications((prev) => [...prev, data]);
+      setHasNewNotifications(true);
     });
 
     newSocket.on("disconnect", () => {
@@ -41,9 +61,14 @@ export const NotificationProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    console.log("socket?", socket);
+    console.log("user?", user);
     if (socket && user?.email) {
       console.log("Registering user to socket:", user.email);
-      socket.emit("register_manager", { email: user.email });
+      socket.emit("register_manager", {
+        email: user.email,
+        domain: sessionStorage.getItem("domain"),
+      });
     }
   }, [socket, user]);
 

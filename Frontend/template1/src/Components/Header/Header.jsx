@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Header.css";
 import accountIcon from "../../images/account_avatar.svg";
@@ -17,17 +17,26 @@ function Header(props) {
   const [email, setEmail] = useState("");
   const [loginError, setLoginError] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    return sessionStorage.getItem("isLoggedIn") === "true" ? true : false;
+    return sessionStorage.getItem("isLoggedIn") === "true";
   });
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
   const { editMode, toggleEditMode } = useEditMode();
+
   const handleClick = (item) => {
+    setIsNavbarExpanded(false);
+    setShowAccountMenu(false);
     if (item === "Home") {
       navigate("/");
     } else {
       navigate(`/${item.replace(" ", "")}`);
     }
   };
+  useEffect(() => {
+    if (!isLoggedIn && location.pathname === "/Account") {
+      navigate("/");
+    }
+  }, [isLoggedIn, location.pathname]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -37,7 +46,6 @@ function Header(props) {
       setLoginError("");
       setIsLoggedIn(true);
       const notifications = await fetchUserNotifications(email);
-      console.log(notifications);
       updateNotifications(notifications);
     } else {
       setIsLoggedIn(false);
@@ -48,11 +56,14 @@ function Header(props) {
   };
 
   const handleLogout = () => {
-    let ans = logout();
-    if (ans) {
+    const success = logout();
+    if (success) {
       sessionStorage.removeItem("isLoggedIn");
       sessionStorage.removeItem("userEmail");
       setIsLoggedIn(false);
+      if (editMode) {
+        toggleEditMode();
+      }
       location.pathname === "/Account"
         ? navigate("/")
         : window.location.reload();
@@ -61,7 +72,6 @@ function Header(props) {
 
   return (
     <div className="header">
-      {/* Logo & Title */}
       <div className="header_title_name">
         <img
           className="header_logo"
@@ -74,12 +84,7 @@ function Header(props) {
         </div>
       </div>
 
-      {/* Navbar - Expands on Hover */}
-      <div
-        className={`navbar ${isNavbarExpanded ? "expanded" : ""}`}
-        onMouseEnter={() => setIsNavbarExpanded(true)}
-        onMouseLeave={() => setIsNavbarExpanded(false)}
-      >
+      <div className={`navbar ${isNavbarExpanded ? "expanded" : ""}`}>
         {props.components
           .filter((item) => item !== "About Us")
           .map((item, index, filteredArray) => (
@@ -98,6 +103,18 @@ function Header(props) {
       </div>
 
       <div className="icon_photo">
+        <button
+          className="hamburger-menu"
+          onClick={() => {
+            setIsNavbarExpanded((prev) => !prev);
+            setShowAccountMenu(false);
+          }}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+
         {isLoggedIn && (
           <div className="edit-mode-container">
             <span className="edit-mode-label">Edit Mode</span>
@@ -111,65 +128,67 @@ function Header(props) {
             </label>
           </div>
         )}
-        <div className="menu">
+
+        <div
+          className="menu"
+          onClick={() => {
+            setShowAccountMenu((prev) => !prev);
+            setIsNavbarExpanded(false);
+          }}
+        >
           {isLoggedIn && hasNewNotifications && notifications.length !== 0 && (
             <div className="notification-dot"></div>
           )}
 
-          <div className="hidden-box">
-            <div className="personal_menu">
-              <div className="icon_photo2">
-                <img src={accountIcon} alt="icon" />
-              </div>
-              <hr className="hr_line" />
+          {showAccountMenu && (
+            <div className="hidden-box">
+              <div className="personal_menu">
+                <div className="icon_photo2">
+                  <img src={accountIcon} alt="icon" />
+                </div>
+                <hr className="hr_line" />
 
-              {isLoggedIn ? (
-                <div className="choose_item">
-                  <button
-                    className="my_sites_button"
-                    onClick={() => navigate("Account")}
-                  >
-                    My Account
-                  </button>
-                  <button className="logout_button" onClick={handleLogout}>
-                    Logout
-                  </button>
-                </div>
-              ) : (
-                <div className="choose_item">
-                  <button
-                    className="login_button"
-                    onClick={() => setShowLogin(true)}
-                  >
-                    Login
-                  </button>
-                </div>
-              )}
+                {isLoggedIn ? (
+                  <div className="choose_item">
+                    <button
+                      className="my_sites_button"
+                      onClick={() => {
+                        navigate("Account");
+                        setShowAccountMenu(false);
+                      }}
+                    >
+                      My Account
+                    </button>
+                    <button
+                      className="logout_button"
+                      onClick={() => {
+                        handleLogout();
+                        setShowAccountMenu(false);
+                      }}
+                    >
+                      Logout
+                    </button>
+                  </div>
+                ) : (
+                  <div className="choose_item">
+                    <button
+                      className="login_button"
+                      onClick={() => {
+                        setShowLogin(true);
+                        setShowAccountMenu(false);
+                      }}
+                    >
+                      Login
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
-      {/* Login Popup */}
       {showLogin && (
-        // <div className="login-modal">
-        //   <div className="login-content">
-        //     <div className="close-button" onClick={() => setShowLogin(false)}>
-        //       X
-        //     </div>
-        //     <h2>Login</h2>
-        //     {loginError && <div className="login-error">{loginError}</div>}
-        //     <form onSubmit={handleLogin}>
-        //       <input
-        //         type="text"
-        //         placeholder="Username"
-        //         value={email}
-        //         onChange={(e) => setEmail(e.target.value)}
-        //       />
-        //       <button type="submit">Login</button>
-        //     </form>
-        //   </div>
-        // </div>
         <div className="login-popup-overlay">
           <div className="login-popup">
             <button className="close-popup" onClick={() => setShowLogin(false)}>
@@ -177,7 +196,6 @@ function Header(props) {
             </button>
             <h2 className="login-title">Welcome Back</h2>
             <p className="login-subtitle">Enter your email to log in</p>
-
             <input
               className="login-input"
               type="email"
@@ -185,13 +203,11 @@ function Header(props) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-
             {loginError && (
               <div className="login-error">
                 This email does not exist. Request sent to manager
               </div>
             )}
-
             <button className="login-button" onClick={handleLogin}>
               Login
             </button>

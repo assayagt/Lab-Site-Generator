@@ -13,6 +13,7 @@ class UserFacade:
         self.users = {}
         self.members_customSites = {} # sites that was created by the user <email, <Member, [domains]>> (both generated and not generated)
         self.dal_controller = DAL_controller()
+        self._load_all_members()
 
     @staticmethod
     def get_instance():

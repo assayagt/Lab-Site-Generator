@@ -23,7 +23,7 @@ import {
 } from "../../../services/Generator";
 
 import axios from "axios";
-const baseApiUrl = "http://127.0.0.1:5000/api/";
+import { baseApiUrl } from "../../../services/BaseUrl"; // Ensure the path is correct relative to this file
 
 const useChooseComponents = () => {
   const navigate = useNavigate();
@@ -38,6 +38,7 @@ const useChooseComponents = () => {
   });
   const [template, setTemplate] = useState(websiteData.template || "");
   const [isChanged, setIsChanged] = useState(false);
+  const [buttonText, setButtonText] = useState("Save");
   const [domainError, setDomainError] = useState(false);
   const [step, setStep] = useState(!domain ? 1 : 3);
   const [showContentSidebar, setShowContentSidebar] = useState(false);
@@ -47,6 +48,11 @@ const useChooseComponents = () => {
   const [isComponentsSaved, setIsComponentsSaved] = useState(false);
   const [errorMessage, setErrorMessage] = useState(""); // Store error messages
   const [isTempSaved, setTempSaved] = useState(false);
+  const [showTransferPopup, setShowTransferPopup] = useState(false);
+  const [newCreatorEmail, setNewCreatorEmail] = useState("");
+  const [newRoleAfterResignation, setNewRoleAfterResignation] =
+    useState("manager");
+
   const showError = (message) => {
     setErrorMessage(message);
   };
@@ -70,7 +76,7 @@ const useChooseComponents = () => {
       isLabManager: true, // The creator is always a manager
     },
   ]);
-  const degreeOptions = ["Ph.D.", "M.Sc.", "B.Sc.", "Postdoc"];
+  const degreeOptions = ["Ph.D.", "M.Sc.", "B.Sc.", "D.Sc."];
 
   const [selectedComponent, setSelectedComponent] = useState("AboutUs"); // Default to About Us
   const [showAddForm, setShowAddForm] = useState(false);
@@ -79,6 +85,10 @@ const useChooseComponents = () => {
     email: "",
     degree: "",
     isLabManager: false,
+  });
+  const [mediaSaveStatus, setMediaSaveStatus] = useState({
+    logo: false,
+    homepagephoto: false,
   });
 
   const [aboutUsContent, setAboutUsContent] = useState(() => {
@@ -148,7 +158,23 @@ const useChooseComponents = () => {
     const email = participant.email;
     const isLabManager = participant.isLabManager;
 
+    const selfEmail = sessionStorage.getItem("userEmail");
+
     try {
+      if (email === selfEmail && isLabManager) {
+        const otherParticipants = participants.filter(
+          (p) => p.email !== selfEmail
+        );
+
+        if (otherParticipants.length === 0) {
+          showError(
+            "You must add another participant before quitting as creator."
+          );
+          return;
+        }
+        setShowTransferPopup(true);
+        return;
+      }
       if (!isLabManager) {
         let data = await createNewSiteManager(
           sessionStorage.getItem("sid"),
@@ -281,6 +307,7 @@ const useChooseComponents = () => {
 
   const handleParticipantChange = (index, field, value) => {
     setParticipants((prevParticipants) => {
+      setButtonText("Save");
       const updatedParticipants = [...prevParticipants]; // Copy array
 
       if (!updatedParticipants[index]) return prevParticipants; // Avoid errors
@@ -354,6 +381,7 @@ const useChooseComponents = () => {
           [component]: file,
         },
       }));
+      setMediaSaveStatus((prev) => ({ ...prev, [component]: false }));
     }
   };
 
@@ -376,13 +404,15 @@ const useChooseComponents = () => {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/uploadFile", {
+      const response = await fetch(`${baseApiUrl}/uploadFile`, {
         method: "POST",
         body: formDataToSend,
       });
       const data = await response.json();
       if (response.ok) {
         // alert(`${component} data saved successfully!`);
+        setMediaSaveStatus((prev) => ({ ...prev, [component_new]: true }));
+
         setWebsite((prev) => ({
           ...prev,
           files: formData.files,
@@ -477,7 +507,9 @@ const useChooseComponents = () => {
         created: true,
       });
       setIsChanged(false);
-      setStep(2);
+      setStep(3);
+    } else {
+      setErrorMessage("Could not save. Domain name is invalid.");
     }
   };
 
@@ -539,12 +571,44 @@ const useChooseComponents = () => {
   const handleSaveNameAndDomain = async () => {
     if (!isValidDomain(domain)) {
       setDomainError(true);
+
       return;
     }
-    await changeDomain(websiteData.domain, domain);
+    // const response1 = await changeDomain(websiteData.domain, domain);
+    // if (response1.response === "false") {
+    //   setErrorMessage("Could not save. Domain name is invalid.");
+    //   return;
+    // }
     await changeName(domain, websiteName);
     setWebsite({ ...websiteData, domain, websiteName });
     setIsChanged(false);
+  };
+  const confirmQuitAsCreator = async () => {
+    if (!newCreatorEmail) {
+      showError("Please select a new creator.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${baseApiUrl}siteCreatorResignationFromGenerator`,
+        {
+          user_id: sessionStorage.getItem("sid"),
+          domain: domain,
+          email: newCreatorEmail,
+          new_role: newRoleAfterResignation,
+        }
+      );
+
+      if (response.data.response === "true") {
+        setShowTransferPopup(false);
+        navigate("/my-account");
+      } else {
+        showError(response.data.message || "Failed to transfer ownership.");
+      }
+    } catch (error) {
+      showError("An error occurred: " + error.message);
+    }
   };
 
   return {
@@ -606,6 +670,16 @@ const useChooseComponents = () => {
     handleSveTemplate,
     isTempSaved,
     setTempSaved,
+    mediaSaveStatus,
+    buttonText,
+    setButtonText,
+    showTransferPopup,
+    setShowTransferPopup,
+    setNewCreatorEmail,
+    newCreatorEmail,
+    confirmQuitAsCreator,
+    newRoleAfterResignation,
+    setNewRoleAfterResignation,
   };
 };
 

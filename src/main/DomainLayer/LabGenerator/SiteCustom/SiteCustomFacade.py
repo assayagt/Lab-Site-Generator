@@ -149,12 +149,17 @@ class SiteCustomFacade:
 
     def _load_all_siteCustoms(self):
         res = self.dal_controller.siteCustom_repo.find_all()
+        print(res)
         for dto in res:
+            if dto.template is not None:
+                template = Template(dto.template)
+            else:
+                template = None
             self.sites[dto.domain] = SiteCustom(
                 domain=dto.domain,
                 name=dto.name,
                 components=json.loads(dto.components_str),
-                template=dto.template,
+                template=template,
                 site_creator_email=dto.site_creator_email,
                 logo=dto.logo,
                 home_picture=dto.home_picture,

@@ -22,6 +22,7 @@ class UserFacade:
         self.alumnis = {}
         self.emails_requests_to_register = {}  #holds all the emails that an email with registration request was already sent to managers
         self.dal_controller = DAL_controller()
+        self._load_data()
 
     @staticmethod
     def get_instance():
@@ -79,6 +80,7 @@ class UserFacade:
         member = LabMember(email, fullName, degree)
         self.members[email] = member
         self.dal_controller.LabMembers_repo.save_LabMember(member.get_dto(self.domain))  # ===========================
+        self.dal_controller.LabMembers_repo.save_to_LabRoles_members(member.email, self.domain) # ===========================
         if email in self.emails_requests_to_register:
             del self.emails_requests_to_register[email]
 
@@ -112,9 +114,6 @@ class UserFacade:
         for email, site_creator in self.siteCreator.items():
             if site_creator.fullName and site_creator.fullName.lower() == author_lower:
                 return email
-
-        # If no match is found, return None
-        return None
 
     def get_lab_members_names(self):
         lab_member_names = []
@@ -209,6 +208,7 @@ class UserFacade:
             del self.managers[email]
 
         self.dal_controller.LabMembers_repo.clear_member_role(email, self.domain)  # ===========================
+        self.dal_controller.LabMembers_repo.delete_LabMember(email=email, domain=self.domain)
 
     def get_user_by_id(self, userId):
         if userId in self.users:
@@ -421,4 +421,48 @@ class UserFacade:
         del self.members[nominate_email]
         self.dal_controller.LabMembers_repo.save_to_LabRoles_siteCreator(nominate_email, self.domain)
 
+    def _load_data(self):
+        # Load members
+        members = self.dal_controller.LabMembers_repo.find_all_members_by_domain(self.domain)
+        for member in members:
+            email = member.email
+            full_name = member.full_name
+            degree = member.degree
+            self.members[email] = LabMember(email, full_name, degree)
 
+        # Load managers
+        managers = self.dal_controller.LabMembers_repo.find_all_managers_by_domain(self.domain)
+        for manager in managers:
+            email = manager.email
+            full_name = manager.full_name
+            degree = manager.degree
+            self.managers[email] = LabMember(email, full_name, degree)
+
+        # Load site creators
+        creators = self.dal_controller.LabMembers_repo.find_all_siteCreators_by_domain(self.domain)
+        for creator in creators:
+            email = creator.email
+            full_name = creator.full_name
+            degree = creator.degree
+            self.siteCreator[email] = LabMember(email, full_name, degree)
+            self.managers[email] = LabMember(email, full_name, degree)
+
+        # Load alumnis
+        alumnis = self.dal_controller.LabMembers_repo.find_all_alumnis_by_domain(self.domain)
+        for alumni in alumnis:
+            email = alumni.email
+            full_name = alumni.full_name
+            degree = alumni.degree
+            self.alumnis[email] = LabMember(email, full_name, degree)
+
+        # Load pending registration emails
+        pending_emails = self.dal_controller.LabMembers_repo.find_all_pending_emails_by_domain(self.domain)
+        for email in pending_emails:
+            self.emails_requests_to_register[email] = RegistrationStatus.PENDING.value
+        # ===================== DEBUG PRINT ===========================
+        print(f"domain: {self.domain}")
+        print(f"members:\n{self.members}")
+        print(f"site creators:\n{self.siteCreator}")
+        print(f"managers:\n{self.managers}")
+        print(f"alumnis:\n{self.alumnis}")
+        

@@ -7,8 +7,9 @@ class PublicationDTO:
                  publication_link, git_link=None, video_link=None, presentation_link=None, description=None, paper_id=None, author_emails :list[str]=None):
         self.paper_id = str(uuid.uuid4()) if paper_id is None else paper_id
         self.title = title
-        self.authors = authors
+        self.authors = authors 
         self.publication_year = publication_year
+        # self.approved = approved.value if approved else None
         self.approved = approved
         self.publication_link = publication_link
         self.video_link = video_link

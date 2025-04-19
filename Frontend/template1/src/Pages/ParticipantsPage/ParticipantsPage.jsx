@@ -7,8 +7,11 @@ import {
   addLabMemberFromWebsite,
   createNewSiteManagerFromLabWebsite,
   addAlumniFromLabWebsite,
+  removeManagerPermission,
 } from "../../services/websiteService";
 import { useEditMode } from "../../Context/EditModeContext";
+import ErrorPopup from "../../Components/PopUp/ErrorPopup";
+import SuccessPopup from "../../Components/PopUp/SuccessPopup";
 
 const ParticipantsPage = () => {
   const [selectedDegree, setSelectedDegree] = useState("All");
@@ -17,6 +20,8 @@ const ParticipantsPage = () => {
   const [loading, setLoading] = useState(true);
   const { editMode } = useEditMode();
   const [showAddForm, setShowAddForm] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [newParticipant, setNewParticipant] = useState({
     fullName: "",
     email: "",
@@ -28,25 +33,16 @@ const ParticipantsPage = () => {
   const degreeOrder = {
     "Ph.D.": 1,
     "M.Sc.": 2,
-    Postdoc: 3,
+    "D.Sc.": 3,
     "B.Sc.": 4,
   };
 
-  const degreeOptions = ["Ph.D.", "M.Sc.", "B.Sc.", "Postdoc"];
-
-  const formatDomain = () => {
-    let domain = window.location.hostname
-      .replace(/^https?:\/\//, "")
-      .replace(":3001", "");
-    if (!domain.startsWith("www.")) domain = `www.${domain}`;
-    if (!domain.endsWith(".com")) domain = `${domain}.com`;
-    return domain;
-  };
+  const degreeOptions = ["Ph.D.", "M.Sc.", "B.Sc.", "D.Sc."];
 
   const fetchParticipants = async () => {
     setLoading(true);
     try {
-      const domain = formatDomain();
+      const domain = sessionStorage.getItem("domain");
 
       const [managers, members, alumniData] = await Promise.all([
         getAllLabManagers(domain),
@@ -121,7 +117,7 @@ const ParticipantsPage = () => {
 
   const handleToggleManager = async (member) => {
     const userId = sessionStorage.getItem("sid");
-    const domain = formatDomain();
+    const domain = sessionStorage.getItem("domain");
 
     try {
       if (!member.isManager) {
@@ -132,21 +128,41 @@ const ParticipantsPage = () => {
           domain
         );
         if (response?.response === "true") {
-          fetchParticipants();
+          setParticipants((prev) =>
+            prev.map((p) =>
+              p.email === member.email ? { ...p, isManager: !p.isManager } : p
+            )
+          );
         } else {
-          console.error("Failed to promote to manager:", response?.message);
+          setErrorMessage("Failed to promote to manager: " + response?.message);
         }
       } else {
         // Demote from manager
+        const response = await removeManagerPermission(
+          userId,
+          member.email,
+          domain
+        );
+        if (response?.manager_email) {
+          setParticipants((prev) =>
+            prev.map((p) =>
+              p.email === member.email ? { ...p, isManager: !p.isManager } : p
+            )
+          );
+        } else {
+          setErrorMessage(
+            "Failed to remove manager permission: " + response?.message
+          );
+        }
       }
     } catch (err) {
-      console.error("Error toggling manager:", err);
+      setErrorMessage("Error toggling manager: " + err);
     }
   };
 
   const handleToggleAlumni = async (member) => {
     const userId = sessionStorage.getItem("sid");
-    const domain = formatDomain();
+    const domain = sessionStorage.getItem("domain");
 
     try {
       if (!member.isAlumni) {
@@ -157,14 +173,22 @@ const ParticipantsPage = () => {
           domain
         );
         if (response?.response === "true") {
-          fetchParticipants();
+          if (!member.isAlumni) {
+            setParticipants(
+              (prev) => prev.filter((p) => p.email !== member.email) // remove from participants
+            );
+            setAlumni((prev) => [
+              ...prev,
+              { ...member, isAlumni: true, isManager: false },
+            ]);
+          }
         } else {
-          console.error("Failed to promote to alumni:", response?.message);
+          setErrorMessage("Failed to promote to alumni: " + response?.message);
         }
       } else {
       }
     } catch (err) {
-      console.error("Error toggling alumni:", err);
+      setErrorMessage("Error toggling alumni:", err);
     }
   };
   const sortedDegrees = Object.keys(groupedParticipants).sort(
@@ -187,10 +211,10 @@ const ParticipantsPage = () => {
   const handleAddParticipant = async () => {
     const { fullName, email, degree, isManager, isAlumni } = newParticipant;
     const userId = sessionStorage.getItem("sid");
-    const domain = formatDomain();
+    const domain = sessionStorage.getItem("domain");
 
     if (!fullName || !email || !degree) {
-      console.error("Please fill in all fields.");
+      setErrorMessage("Please fill in all fields.");
       return;
     }
 
@@ -204,7 +228,9 @@ const ParticipantsPage = () => {
       );
 
       if (addMemberResponse?.response !== "true") {
-        console.error("Failed to add lab member:", addMemberResponse?.message);
+        setErrorMessage(
+          "Failed to add lab member: " + addMemberResponse?.message
+        );
         return;
       }
 
@@ -215,7 +241,7 @@ const ParticipantsPage = () => {
           domain
         );
         if (managerResponse?.response !== "true") {
-          console.error("Failed to add manager:", managerResponse?.message);
+          setErrorMessage("Failed to add manager: " + managerResponse?.message);
           return;
         }
       }
@@ -227,7 +253,9 @@ const ParticipantsPage = () => {
           domain
         );
         if (alumniResponse?.response !== "true") {
-          console.error("Failed to mark as alumni:", alumniResponse?.message);
+          setErrorMessage(
+            "Failed to mark as alumni: " + alumniResponse?.message
+          );
           return;
         }
       }
@@ -242,11 +270,13 @@ const ParticipantsPage = () => {
       setShowAddForm(false);
       fetchParticipants(); // Refresh full list from backend
     } catch (error) {
-      console.error("Error adding participant:", error);
+      setErrorMessage("Error adding participant:" + error);
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return <div>Loading participants...</div>;
+  }
 
   return (
     <div className="participants-page">
@@ -293,7 +323,7 @@ const ParticipantsPage = () => {
                     <div className="personal_photo"></div>
                     <div className="personal_info_member">
                       <div className="fullname">{member.fullName}</div>
-                      <div>{member.bio}</div>
+                      <div className="personal-bio">{member.bio}</div>
                       <a href={`mailto:${member.email}`} className="email-link">
                         {member.email}
                       </a>
@@ -313,7 +343,7 @@ const ParticipantsPage = () => {
             {alumni.map((member) => (
               <div key={member.email} className="participant">
                 <div className="personal_photo"></div>
-                <div>
+                <div className="personal-bio">
                   <strong>{member.fullName}</strong>
                   <span className="alumni-degree"> [{member.degree}]</span>
                   <p>{member.bio}</p>
@@ -390,6 +420,18 @@ const ParticipantsPage = () => {
             </div>
           </div>
         </div>
+      )}
+      {popupMessage && (
+        <SuccessPopup
+          message={popupMessage}
+          onClose={() => setPopupMessage("")}
+        />
+      )}
+      {errorMessage && (
+        <ErrorPopup
+          message={errorMessage}
+          onClose={() => setErrorMessage("")}
+        />
       )}
     </div>
   );

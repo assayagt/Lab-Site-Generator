@@ -1,5 +1,4 @@
 import smtplib
-import uuid
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from src.DAL.DTOs.Notification_dto import notification_dto
@@ -14,15 +13,15 @@ password = "ijtb kvpg efep srbu"
 
 
 class EmailNotification:
-    def __init__(self, recipient, subject, body, domain, request_email=None, publication_id=None):
-        self.id = str(uuid.uuid4())  # Generate a unique ID for the notification
+    def __init__(self, id, recipient, subject, body, domain, request_email=None, publication_id=None):
+        self.id = id  # Generate a unique ID for the notification
         self.recipient = recipient
         self.subject = subject
         self.body = body
         self.request_email = request_email
         self.publication_id = publication_id
         self.isRead = False
-        self.doamin = domain
+        self.domain = domain
 
     def send_email(self):
         """Authenticate and send the email."""
@@ -71,7 +70,7 @@ class EmailNotification:
     def to_dto(self):
         """Convert the notification to a DTO for database storage."""
         return notification_dto(
-            domain=self.doamin,  # Domain is not applicable for email notifications
+            domain=self.domain,  # Domain is not applicable for email notifications
             id=self.id,
             recipient=self.recipient,
             subject=self.subject,

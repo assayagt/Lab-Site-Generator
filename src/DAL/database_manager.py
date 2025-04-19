@@ -271,6 +271,7 @@ class DatabaseManager:
             domain TEXT,
             email TEXT,
             status TEXT,
+            PRIMARY KEY (domain, email),
             FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE
         );
         '''

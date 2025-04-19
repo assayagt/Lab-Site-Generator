@@ -17,7 +17,7 @@ class SiteCustom:
 
     def add_component(self, components: list):
         if isinstance(components, list):
-            self.components.extend(components)  # Adds multiple components at once
+            self.components = components  # Adds multiple components at once
         else:
             raise TypeError("The input should be a list of components")
 
@@ -54,7 +54,7 @@ class SiteCustom:
             domain=self.domain,
             name=self.name,
             components_list=self.components,
-            template=self.template,
+            template=self.template.value if self.template else None,
             logo=self.logo,
             home_picture=self.home_picture,
             site_creator_email= self.site_creator_email,

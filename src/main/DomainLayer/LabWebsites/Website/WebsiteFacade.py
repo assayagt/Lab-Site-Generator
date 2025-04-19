@@ -1,12 +1,15 @@
+from src.main.DomainLayer.LabWebsites.Website.ContactInfo import ContactInfo
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.main.DomainLayer.LabWebsites.Website.Website import Website
 from src.DAL.DTOs.Website_dto import website_dto
 from src.DAL.DAL_controller import DAL_controller
+import json
 
 class WebsiteFacade:
     def __init__(self):
         self.websites = []
         self.dal_controller = DAL_controller()
+        self._load_all_data()
 
     def add_website(self, website):
         self.websites.append(website)
@@ -154,7 +157,14 @@ class WebsiteFacade:
     def _load_all_data(self):
         website_dtos = self.dal_controller.website_repo.find_all()
         for dto in website_dtos:
-            website = Website(domain=dto.domain, contact_info=dto.contact_info, about_us=dto.about_us)
+            contact_info_dict = json.loads(dto.contact_info)
+            contact_info = ContactInfo(
+                lab_mail=contact_info_dict.get("email"),
+                lab_phone_num=contact_info_dict.get("phone_num"),
+                lab_address=contact_info_dict.get("address")
+            )
+            website = Website(domain=dto.domain, contact_info=contact_info, about_us=dto.about_us)
             pubs = self.dal_controller.publications_repo.find_by_domain(domain=dto.domain)
-            website._load_pub_dtos(pub_list=pubs)
+            website.load_pub_dtos(pub_list=pubs)
+            self.websites.append(website)
 

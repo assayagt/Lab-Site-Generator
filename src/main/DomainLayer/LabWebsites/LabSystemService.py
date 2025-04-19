@@ -266,6 +266,7 @@ class LabSystemService:
 
     def get_about_us(self, domain):
         try:
+
             about_us = self.lab_system_controller.get_about_us(domain)
             return Response(about_us, "Retrieved about us successfully")
         except Exception as e:
@@ -355,5 +356,19 @@ class LabSystemService:
         try:
             notifications = self.lab_system_controller.get_all_member_notifications(user_id, domain)
             return Response(notifications, "Retrieved all notifications successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def connect_user_socket(self, email, domain, sid):
+        try:
+            self.lab_system_controller.connect_user_socket(email, domain, sid)
+            return Response(True, "User socket connected successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def disconnect_user_socket(self, sid):
+        try:
+            self.lab_system_controller.disconnect_user_socket(sid)
+            return Response(True, "User socket disconnected successfully")
         except Exception as e:
             return Response(None, str(e))
