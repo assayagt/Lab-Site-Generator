@@ -112,6 +112,7 @@ class SiteCustomFacade:
         Resets the entire system by clearing all stored sites.
         """
         self.sites.clear()
+        self.dal_controller.drop_all_tables()
        
     def get_site_by_domain(self, domain):
         """Get site by domain, return siteCustomDTO object"""

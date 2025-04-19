@@ -21,26 +21,26 @@ class TestChangeWebsiteTemplate(unittest.TestCase):
 
     def test_successful_template_change(self):
         # Test changing the template successfully
-        response = self.generator_system_service.change_website_template(self.user_id1, self.domain, Template.ADVANCED)
+        response = self.generator_system_service.change_website_template(self.user_id1, self.domain, Template.template2)
         self.assertTrue(response.is_success())
 
     def test_user_does_not_exist(self):
         # Test error when user does not exist
         invalid_user_id = "invalid_user"
-        response = self.generator_system_service.change_website_template(invalid_user_id, self.domain, Template.ADVANCED)
+        response = self.generator_system_service.change_website_template(invalid_user_id, self.domain, Template.template2)
         self.assertFalse(response.is_success())
         self.assertEqual(response.get_message(), ExceptionsEnum.USER_NOT_EXIST.value)
 
     def test_user_not_logged_in(self):
         # Test error when user is not logged in
         self.generator_system_service.logout(self.user_id1)
-        response = self.generator_system_service.change_website_template(self.user_id1, self.domain, Template.ADVANCED)
+        response = self.generator_system_service.change_website_template(self.user_id1, self.domain, Template.template2)
         self.assertFalse(response.is_success())
         self.assertEqual(response.get_message(), ExceptionsEnum.USER_IS_NOT_MEMBER.value)
 
     def test_domain_does_not_exist(self):
         # Test error when the domain does not exist
         invalid_domain = "nonexistent.com"
-        response = self.generator_system_service.change_website_template(self.user_id1, invalid_domain, Template.ADVANCED)
+        response = self.generator_system_service.change_website_template(self.user_id1, invalid_domain, Template.template2)
         self.assertFalse(response.is_success())
         self.assertEqual(response.get_message(), ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST.value)

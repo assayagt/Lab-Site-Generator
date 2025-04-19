@@ -42,7 +42,7 @@ class UserFacade:
             if old_domain in data["domains"]:
                 data["domains"][data["domains"].index(old_domain)] = new_domain
                 self.dal_controller.members_repo.save_domain(email=email, domain=new_domain) #=================
-                self.dal_controller.members_repo.delete_domain(email=email, domain=old_domain) #=================
+                self.dal_controller.members_repo.delete_domain(domain=old_domain) #=================
 
     def error_if_user_is_not_site_manager(self, userId, domain):
         email = self.get_email_by_userId(userId)
