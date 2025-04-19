@@ -22,7 +22,7 @@ class TestCreateWebsite(unittest.TestCase):
         website_name = "My Lab Website"
         domain = "lab1.example.com"
         components = ["Homepage", "Contact Us", "Research"]
-        template = Template.BASIC
+        template = Template.template1
         response = self.generator_system_service.create_website(self.user_id, website_name, domain, components, template)
         self.assertTrue(response.is_success())
 
@@ -31,7 +31,7 @@ class TestCreateWebsite(unittest.TestCase):
         website_name = "My Lab Website2"
         domain = "lab2.example.com"
         components = ["Homepage", "Contact Us", "Research"]
-        template = Template.BASIC
+        template = Template.template1
         self.generator_system_service.logout(self.user_id)
         response = self.generator_system_service.create_website(self.user_id, website_name, domain, components, template)
         self.assertFalse(response.is_success())
@@ -43,7 +43,7 @@ class TestCreateWebsite(unittest.TestCase):
         domain = "lab3.example.com"
         invalid_user_id = "non_existent_user"
         components = ["Homepage", "Contact Us", "Research"]
-        template = Template.BASIC
+        template = Template.template1
         response = self.generator_system_service.create_website(invalid_user_id, website_name, domain, components, template)
         self.assertFalse(response.is_success())
         self.assertEqual(response.get_message(), ExceptionsEnum.USER_NOT_EXIST.value)
@@ -53,7 +53,7 @@ class TestCreateWebsite(unittest.TestCase):
         website_name = "My Lab Website4"
         domain = "lab4.example.com"
         components = ["Homepage", "Contact Us", "Research"]
-        template = Template.BASIC
+        template = Template.template1
         self.generator_system_service.create_website(self.user_id, website_name, domain, components, template)
         response = self.generator_system_service.create_website(self.user_id, "Another Lab Website", domain, components, template)
         self.assertFalse(response.is_success())
@@ -74,7 +74,7 @@ class TestCreateWebsite(unittest.TestCase):
         website_name = ""
         domain = "lab6.example.com6"
         components = ["Homepage", "Contact Us", "Research"]
-        template = Template.BASIC
+        template = Template.template1
         response = self.generator_system_service.create_website(self.user_id, website_name, domain, components, template)
         self.assertFalse(response.is_success())
         self.assertEqual(response.get_message(), ExceptionsEnum.INVALID_SITE_NAME.value)
@@ -84,7 +84,7 @@ class TestCreateWebsite(unittest.TestCase):
         website_name = "My Lab Website7"
         domain = ""
         components = ["Homepage", "Contact Us", "Research"]
-        template = Template.BASIC
+        template = Template.template1
         response = self.generator_system_service.create_website(self.user_id, website_name, domain, components, template)
         self.assertFalse(response.is_success())
         self.assertEqual(response.get_message(), ExceptionsEnum.INVALID_DOMAIN_FORMAT.value)
