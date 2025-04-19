@@ -305,3 +305,38 @@ class DatabaseManager:
     def __del__(self):
         """Ensure connection is closed when the object is deleted"""
         self.close()
+
+    def clear_all_tables(self):
+        """
+        Delete all data from all tables in the database.
+        This preserves the schema but removes all rows.
+        """
+        tables = [
+            "notifications",
+            "emails_pending",
+            "LabRoles_alumnis",
+            "LabRoles_siteCreator",
+            "LabRoles_managers",
+            "LabRoles_members",
+            "LabRoles_users",
+            "lab_members",
+            "member_domain",
+            "member_emails",
+            "domain_paperID",
+            "websites",
+            "site_customs",
+            "publications"
+        ]
+
+        conn = self.connect()
+        with self.lock:
+            cursor = self.get_cursor()
+            try:
+                for table in tables:
+                    cursor.execute(f"DELETE FROM {table};")
+                conn.commit()
+                self.logger.info("All tables cleared successfully.")
+            except sqlite3.Error as e:
+                conn.rollback()
+                self.logger.error(f"Error while clearing tables: {e}")
+                raise

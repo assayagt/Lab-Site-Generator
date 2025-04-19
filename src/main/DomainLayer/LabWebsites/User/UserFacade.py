@@ -39,6 +39,7 @@ class UserFacade:
         self.managers[nominated_manager_email] = member
         if nominated_manager_email in self.emails_requests_to_register:
             del self.emails_requests_to_register[nominated_manager_email]
+        self.dal_controller.LabMembers_repo.save_LabMember(member.get_dto(self.domain))  # ===========================
         self.dal_controller.LabMembers_repo.save_to_LabRoles_managers(nominated_manager_email, self.domain)  # ===========================
 
     def add_email_to_requests(self, email):
@@ -208,7 +209,6 @@ class UserFacade:
             del self.managers[email]
 
         self.dal_controller.LabMembers_repo.clear_member_role(email, self.domain)  # ===========================
-        self.dal_controller.LabMembers_repo.delete_LabMember(email=email, domain=self.domain)
 
     def get_user_by_id(self, userId):
         if userId in self.users:
@@ -287,6 +287,7 @@ class UserFacade:
     def set_site_creator(self, creator_email, creator_fullName, creator_degree):
         member = LabMember(creator_email, creator_fullName, creator_degree)
         self.siteCreator[creator_email] = member
+        self.dal_controller.LabMembers_repo.save_LabMember(member.get_dto(self.domain))  # ===========================
         self.dal_controller.LabMembers_repo.save_to_LabRoles_siteCreator(creator_email, self.domain)  # ===========================
 
     def set_secondEmail_by_member(self, email, secondEmail):

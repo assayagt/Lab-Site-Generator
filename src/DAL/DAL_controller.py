@@ -38,4 +38,7 @@ class DAL_controller:
         with cls._instance_lock:
             cls._instance = None
 
+    def drop_all_tables(self):
+        self._db_manager.clear_all_tables()
+
     
