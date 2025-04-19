@@ -49,7 +49,7 @@ class TestChangeSiteLogoByManager(unittest.TestCase):
         self.generator_system_service.login(user_id=other_user_id, email="user_2@example.com")
         response = self.generator_system_service.change_site_logo_by_manager(other_user_id, self.domain)
         self.assertFalse(response.is_success())
-        self.assertEqual(response.get_message(), ExceptionsEnum.USER_NOT_SITE_MANAGER.value)
+        self.assertEqual(response.get_message(), ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER.value)
 
     def test_user_not_exist(self):
         # Test changing the logo with a non-existent user
