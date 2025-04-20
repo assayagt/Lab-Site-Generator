@@ -62,7 +62,7 @@ class LabMembersRepository:
             labMemberDTO.linkedin_link,
             labMemberDTO.media,
             labMemberDTO.full_name,
-            labMemberDTO.degree.value,
+            labMemberDTO.degree,
             labMemberDTO.bio
         )
         return self.db_manager.execute_update(query, params) > 0
