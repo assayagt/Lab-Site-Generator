@@ -16,13 +16,13 @@ class WebCrawlerFacade:
             self._initialized = True
 
 
-    def fetch_publications(self, authors, year):
+    def fetch_publications(self, authors, domain):
         """
         Calls fetch_crawler_publications on each WebCrawler.
         """
         all_results = []
         for crawler in self.web_crawlers:
-            results = crawler.fetch_crawler_publications(authors, year)
+            results = crawler.fetch_crawler_publications(authors, domain)
             all_results.extend(results)
         return all_results
 
@@ -36,3 +36,10 @@ class WebCrawlerFacade:
                 return authors
         return None
 
+
+    def fetch_publications_new_member(self, authors, domain):
+        """
+        Calls fetch_publications_new_member on each WebCrawler.
+        """
+        for crawler in self.web_crawlers:
+            crawler.fetch_publications_new_member(authors, domain)

@@ -424,6 +424,15 @@ class UserFacade:
         del self.members[nominate_email]
         self.dal_controller.LabMembers_repo.save_to_LabRoles_siteCreator(nominate_email, self.domain)
 
+    def get_fullName_by_email(self):
+        """
+        Get the full name of a member by their email.
+        """
+        for email, member in self.members.items():
+            if member.email == email:
+                return member.fullName
+        return None
+
     def _load_data(self):
         # Load members
         members = self.dal_controller.LabMembers_repo.find_all_members_by_domain(self.domain)

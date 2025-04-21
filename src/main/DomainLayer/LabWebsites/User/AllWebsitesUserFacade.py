@@ -246,3 +246,7 @@ class AllWebsitesUserFacade:
         """
         self.usersFacades.clear()
         self.dal_controller.drop_all_tables()
+
+    def get_fullName_by_email(self, nominated_manager_email, domain):
+        userFacade = self.getUserFacadeByDomain(domain)
+        return userFacade.get_fullName_by_email(nominated_manager_email)

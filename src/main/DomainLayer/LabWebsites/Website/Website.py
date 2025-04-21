@@ -151,43 +151,6 @@ class Website:
         publication = self.get_publication_by_paper_id(publication_id)
         publication.approved = ApprovalStatus.REJECTED.value
         return publication
-
-    def initial_approve_publication(self, publication_id) -> PublicationDTO:
-        publication = self.get_publication_by_paper_id(publication_id)
-        publication.approved = ApprovalStatus.FINAL_PENDING.value
-        return publication
-
-    def get_all_initial_pending_publication(self):
-        initial_publications = []
-        seen_paper_ids = set()  # To track unique paper IDs
-
-        for publications in self.members_publications.values():  # Iterate over all author-publication lists
-            for publication in publications:  # Iterate over publications for each author
-                if publication.approved == ApprovalStatus.INITIAL_PENDING.value and publication.get_paper_id() not in seen_paper_ids:
-                    initial_publications.append(publication)
-                    seen_paper_ids.add(publication.get_paper_id())  # Mark the paper ID as seen
-
-        return initial_publications
-
-    def get_all_final_pending_publication(self):
-        final_publications = []
-        seen_paper_ids = set()  # To track unique paper IDs
-
-        for publications in self.members_publications.values():  # Iterate over all author-publication lists
-            for publication in publications:  # Iterate over publications for each author
-                if publication.approved == ApprovalStatus.INITIAL_PENDING.value and publication.get_paper_id() not in seen_paper_ids:
-                    final_publications.append(publication)
-                    seen_paper_ids.add(publication.get_paper_id())  # Mark the paper ID as seen
-
-        return final_publications
-
-    def reject_publication(self, publication_id):
-        publication = self.get_publication_by_paper_id(publication_id)
-        publication.approved = ApprovalStatus.REJECTED.value
-        return publication
-
-    def get_domain(self):
-        return self.domain
     
     def to_dto(self) -> website_dto:
         return website_dto(

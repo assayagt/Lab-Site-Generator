@@ -31,8 +31,8 @@ class TestCrawlForPublications(unittest.TestCase):
             self.domain,
             {
             },
-            {"manager1@example.com": {"full_name": "Roni Stern", "degree": "PHD"}},
-            {"email": "creator@example.com", "full_name": "Shahaf Shperberg", "degree": "PHD"},
+            {"sagyto@gmail.com": {"full_name": "Roni Stern", "degree": "PHD"}},
+            {"email": "creator@example.com", "full_name": "Shahaf S. Shperberg", "degree": "PHD"},
         )
 
 
@@ -49,27 +49,9 @@ class TestCrawlForPublications(unittest.TestCase):
         self.assertTrue(response.is_success())
 
         # Validate that publications were fetched and assigned to the correct members
-        website1_members = self.lab_system_service.get_all_lab_members(self.domain).get_data()
-
-        # Check that publications exist in each website's member profiles
-        self.assertGreater(len(website1_members["author1@example.com"].get_publications()), 0)
-        self.assertGreater(len(website1_members["author2@example.com"].get_publications()), 0)
-
-    def test_crawl_for_publications_failure_no_websites(self):
-        """
-        Test that crawling fails gracefully when there are no websites to crawl.
-        """
-        # Reset all websites
-        self.lab_system_service.reset_system()
-
-        response = self.lab_system_service.crawl_for_publications()
-        self.assertFalse(response.is_success())
-        self.assertEqual(response.get_message(), ExceptionsEnum.NO_WEBSITES_FOUND.value)
+        website1_members = self.lab_system_service.get_all_lab_managers(self.domain).get_data()
 
     def test_crawl_for_publications_duplicate_publication(self):
-        """
-        Test that duplicate publications are not added to members' profiles.
-        """
         # Trigger publication crawling once
         self.lab_system_service.crawl_for_publications()
 

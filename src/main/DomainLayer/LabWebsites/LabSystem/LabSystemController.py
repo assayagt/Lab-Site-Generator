@@ -57,6 +57,10 @@ class LabSystemController:
         site_creator_degree = site_creator.get("degree")
         userFacade.set_site_creator(site_creator_email, site_creator_full_name, site_creator_degree) #SAME AS ABOVE
 
+        #fetch publications initially
+        members_names = self.allWebsitesUserFacade.get_active_members_names(domain)
+        self.webCrawlerFacade.fetch_publications_new_member(members_names, domain)
+
     def login(self, domain, userId, email):
         """
         Login user into a specific website by email (should be via google in the future)
@@ -122,6 +126,8 @@ class LabSystemController:
         """
         self.allWebsitesUserFacade.create_new_site_manager_from_labWebsite(nominator_manager_userId,
                                                                            nominated_manager_email, domain)
+        name = self.allWebsitesUserFacade.get_fullName_by_email(nominated_manager_email, domain)
+        self.webCrawlerFacade.fetch_publications_new_member([name], domain)
 
     def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName,
                                                lab_member_degree, domain):
@@ -134,6 +140,7 @@ class LabSystemController:
         self.allWebsitesUserFacade.register_new_LabMember_from_labWebsite(manager_userId, email_to_register,
                                                                           lab_member_fullName, lab_member_degree,
                                                                           domain)
+        self.webCrawlerFacade.fetch_publications_new_member([lab_member_fullName], domain)
 
     def create_new_site_manager_from_generator(self, domain, nominated_manager_email):
         """
@@ -141,6 +148,8 @@ class LabSystemController:
         The given nominated_manager_email must be associated with a Lab Member of the given website.
         """
         self.allWebsitesUserFacade.create_new_site_manager_from_generator(nominated_manager_email, domain)
+        name = self.allWebsitesUserFacade.get_fullName_by_email(nominated_manager_email, domain)
+        self.webCrawlerFacade.fetch_publications_new_member([name], domain)
 
     def register_new_LabMember_from_generator(self, email_to_register, lab_member_fullName, lab_member_degree, domain):
         """
@@ -149,6 +158,7 @@ class LabSystemController:
         """
         self.allWebsitesUserFacade.register_new_LabMember_from_generator(email_to_register, lab_member_fullName,
                                                                          lab_member_degree, domain)
+        self.webCrawlerFacade.fetch_publications_new_member([lab_member_fullName], domain)
 
     def crawl_for_publications(self):
         """
@@ -161,14 +171,16 @@ class LabSystemController:
         # for each website, send to the webCrawler facade the members and current year to fetch publications
         for website in websites:
             members_names = self.allWebsitesUserFacade.get_active_members_names(website.get_domain())
-            websitePublications = self.webCrawlerFacade.fetch_publications(members_names, datetime.now().year)
+            websitePublications = self.webCrawlerFacade.fetch_publications(members_names, website.get_domain())
 
             # check for each publication that is not already in website members publications
             for publication in websitePublications:
                 if not website.check_publication_exist(publication):
                     authorsEmails = []
                     for author in publication.authors:
-                        authorsEmails.append(self.allWebsitesUserFacade.getMemberEmailByName(author, website.domain))
+                        email = self.allWebsitesUserFacade.getMemberEmailByName(author, website.domain)
+                        if email is not None:
+                            authorsEmails.append(email)
                     website.create_publication(publication, authorsEmails)
 
                     # send notifications to the website authors about the new publications, for initial approve
