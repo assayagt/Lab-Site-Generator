@@ -93,6 +93,7 @@ class GoogleScholarWebCrawler:
                     )
 
                     self.crawled[domain].append(scanned_publication)  # Add to crawled publications
+                    # TODO: update database
                     results.append(publication_dto)
 
         #add 30 seconds delay
