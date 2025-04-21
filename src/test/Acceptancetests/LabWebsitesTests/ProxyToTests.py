@@ -154,3 +154,8 @@ class ProxyToTests(BridgeToTests):
         if self.real_service_adapter:
             return self.real_service_adapter.get_all_lab_members_details(domain)
         return Response(None, "Not Implemented yet")
+
+    def reset_system(self):
+        if self.real_service_adapter:
+            return self.real_service_adapter.reset_system()
+        return Response(None, "Not Implemented yet")

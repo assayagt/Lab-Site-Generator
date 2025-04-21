@@ -39,7 +39,7 @@ class GoogleScholarWebCrawler:
                             title=new_publication_title,
                             authors=publication_authors,
                             publication_year=pub_year,
-                            approved=ApprovalStatus.INITIAL_PENDING,  # Default value
+                            approved=ApprovalStatus.INITIAL_PENDING.value,  # Default value
                             publication_link=url,
                             description=publication_description
                         )

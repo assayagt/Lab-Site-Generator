@@ -20,15 +20,15 @@ class TestCrawlForPublications(unittest.TestCase):
         self.website_name = "Lab Website"
         self.domain = "lab1.example.com"
         self.components = ["Homepage", "Contact Us", "Research"]
-        self.template = Template.BASIC
+        self.template = Template.template1
         self.generator_system_service.create_website(self.user_id, self.website_name, self.domain, self.components, self.template)
 
         # Create mock data for websites, members, and publications
         self.website_domain_1 = "website1.com"
 
         # Setup websites and their members
-        self.lab_system_service.create_new_lab_website(
-            self.website_domain_1,
+        self.generator_system_service.create_new_lab_website(
+            self.domain,
             {
             },
             {"manager1@example.com": {"full_name": "Roni Stern", "degree": "PHD"}},
@@ -49,7 +49,7 @@ class TestCrawlForPublications(unittest.TestCase):
         self.assertTrue(response.is_success())
 
         # Validate that publications were fetched and assigned to the correct members
-        website1_members = self.lab_system_service.get_all_lab_members(self.website_domain_1).get_data()
+        website1_members = self.lab_system_service.get_all_lab_members(self.domain).get_data()
 
         # Check that publications exist in each website's member profiles
         self.assertGreater(len(website1_members["author1@example.com"].get_publications()), 0)
@@ -78,7 +78,7 @@ class TestCrawlForPublications(unittest.TestCase):
         self.assertTrue(response.is_success())
 
         # Validate that duplicate publications were not added
-        website1_members = self.lab_system_service.get_all_lab_members(self.website_domain_1).get_data()
+        website1_members = self.lab_system_service.get_all_lab_members(self.domain).get_data()
         initial_publications_count = len(website1_members["author1@example.com"].get_publications())
 
         self.assertEqual(len(website1_members["author1@example.com"].get_publications()), initial_publications_count)
@@ -97,7 +97,7 @@ class TestCrawlForPublications(unittest.TestCase):
         self.assertTrue(response.is_success())
 
         # Validate that invalid authors were skipped
-        website1_members = self.lab_system_service.get_all_lab_members(self.website_domain_1).get_data()
+        website1_members = self.lab_system_service.get_all_lab_members(self.domain).get_data()
         self.assertEqual(len(website1_members["invalid_author@example.com"].get_publications()), 0)
 
     def test_crawl_for_publications_send_notifications(self):

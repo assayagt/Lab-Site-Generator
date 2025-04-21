@@ -158,3 +158,9 @@ class NotificationsFacade:
         Disconnects a user from the WebSocket server.
         """
         self.web_socket_handler.unregister_user_by_sid(sid)
+
+    def reset_system(self):
+        """
+        Resets the entire system by clearing all stored notifications.
+        """
+        self.email_notifications_center.clear()

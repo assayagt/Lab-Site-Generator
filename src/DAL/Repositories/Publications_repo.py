@@ -79,14 +79,13 @@ class PublicationRepository:
             description = excluded.description, 
             author_emails = excluded.author_emails
         """
-        approved = publication_dto.approved.value if approved else None
 
         publication_parameters = (
             publication_dto.paper_id,
             publication_dto.title,
             json.dumps(publication_dto.authors),
             publication_dto.publication_year,
-            approved,
+            publication_dto.approved,
             publication_dto.publication_link,
             publication_dto.video_link,
             publication_dto.git_link,

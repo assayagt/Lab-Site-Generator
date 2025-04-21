@@ -26,12 +26,12 @@ class TestCreateNewSiteManagerFromLabWebsite(unittest.TestCase):
         self.labMember1_name = "Member One"
         self.labMember2_email = "member2@example.com"
         self.lab_members = {
-            self.labMember1_email: {"full_name":self.labMember1_name, "degree": Degree.BSC},
-            self.labMember2_email: {"full_name": "Member Two", "degree": Degree.MSC}
+            self.labMember1_email: {"full_name":self.labMember1_name, "degree": "B.Sc."},
+            self.labMember2_email: {"full_name": "Member Two", "degree": "M.Sc."}
         }
         self.nominator_manager_email ="manager1@example.com"
         self.lab_managers = {
-            self.nominator_manager_email: {"full_name":"Manager One", "degree": Degree.PHD},
+            self.nominator_manager_email: {"full_name":"Manager One", "degree": "Ph.D."},
         }
 
         self.website_name = "Lab Website"
@@ -41,7 +41,7 @@ class TestCreateNewSiteManagerFromLabWebsite(unittest.TestCase):
                                                      self.template)
 
         self.generator_system_service.create_new_lab_website(
-            self.domain, self.lab_members, self.lab_managers, {"email": self.site_creator_email, "full_name": "Site Creator", "degree": Degree.PHD}
+            self.domain, self.lab_members, self.lab_managers, {"email": self.site_creator_email, "full_name": "Site Creator", "degree": "Ph.D."}
         )
 
         # Simulate a lab manager login

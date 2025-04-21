@@ -239,3 +239,10 @@ class AllWebsitesUserFacade:
                 domain = website.domain
                 if domain not in self.usersFacades:
                     self.usersFacades[domain] = UserFacade(domain)
+
+    def reset_system(self):
+        """
+        Resets the entire system by clearing all stored websites.
+        """
+        self.usersFacades.clear()
+        self.dal_controller.drop_all_tables()

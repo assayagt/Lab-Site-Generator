@@ -24,9 +24,9 @@ class TestCreateNewSiteManager(unittest.TestCase):
         self.template = Template.template1
         self.lab_member1_email = "member1@example.com"
         self.lab_member2_email = "member2@example.com"
-        self.lab_members = {self.lab_member1_email: {"full_name": "Member One", "degree": Degree.PHD}, self.lab_member2_email: {"full_name": "Member Two", "degree": Degree.MSC}}
-        self.lab_managers = {"manager1@example.com": {"full_name": "Manager One", "degree": Degree.PHD}}
-        self.site_creator = {"email": "creator@example.com", "full_name": "Site Creator", "degree": Degree.PHD}
+        self.lab_members = {self.lab_member1_email: {"full_name": "Member One", "degree": "Ph.D."}, self.lab_member2_email: {"full_name": "Member Two", "degree": "M.Sc."}}
+        self.lab_managers = {"manager1@example.com": {"full_name": "Manager One", "degree": "Ph.D."}}
+        self.site_creator = {"email": "creator@example.com", "full_name": "Site Creator", "degree": "Ph.D."}
 
         self.generator_system_service.create_website(self.user_id, "Lab Website", self.domain, self.components, self.template)
 

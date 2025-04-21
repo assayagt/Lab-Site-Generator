@@ -24,7 +24,7 @@ class TestAddPublicationManually(unittest.TestCase):
         self.labMember1_email = "member1@example.com"
         self.labMember1_name = "Guni Sharon"
         self.lab_managers = {
-            "manager1@example.com": {"full_name": "Roni Stern", "degree": Degree.PHD},
+            "manager1@example.com": {"full_name": "Roni Stern", "degree": "Ph.D."},
         }
         self.website_name = "Lab Website"
         self.components = ["Homepage", "Contact Us", "Research"]
@@ -32,9 +32,9 @@ class TestAddPublicationManually(unittest.TestCase):
         self.generator_system_service.create_website(self.user_id, self.website_name, self.domain, self.components,
                                                      self.template)
         self.generator_system_service.create_new_lab_website(
-            self.domain, {self.labMember1_email: {"full_name": self.labMember1_name, "degree": Degree.PHD}},
+            self.domain, {self.labMember1_email: {"full_name": self.labMember1_name, "degree": "Ph.D."}},
             self.lab_managers,
-            {"email": self.site_creator_email, "full_name": "Site Creator", "degree": Degree.PHD}
+            {"email": self.site_creator_email, "full_name": "Site Creator", "degree": "Ph.D."}
         )
 
         # Simulate a lab member login
@@ -47,6 +47,7 @@ class TestAddPublicationManually(unittest.TestCase):
     def tearDown(self):
         # Reset the system after each test
         self.generator_system_service.reset_system()
+        self.lab_system_service.reset_system()
 
     def test_add_publication_manually_success(self):
         """
@@ -75,7 +76,7 @@ class TestAddPublicationManually(unittest.TestCase):
             self.domain, self.member_userId
         ).get_data()
         #check if the titles of the publications are the same
-        self.assertIn(publication.title, [pub.title for pub in publications_member1])
+        self.assertIn(publication.title, [pub["title"] for pub in publications_member1])
 
     def test_add_publication_manually_with_links_success(self):
         """
@@ -104,10 +105,10 @@ class TestAddPublicationManually(unittest.TestCase):
             self.domain, self.member_userId
         ).get_data()
         # check if the titles of the publications are the same
-        self.assertIn(publication.title, [pub.title for pub in publications_member1])
-        self.assertIn("gitlink", [pub.git_link for pub in publications_member1])
-        self.assertIn("videolink", [pub.video_link for pub in publications_member1])
-        self.assertIn("presentationlink", [pub.presentation_link for pub in publications_member1])
+        self.assertIn(publication.title, [pub["title"] for pub in publications_member1])
+        self.assertIn("gitlink", [pub["git_link"] for pub in publications_member1])
+        self.assertIn("videolink", [pub["video_link"] for pub in publications_member1])
+        self.assertIn("presentationlink", [pub["presentation_link"] for pub in publications_member1])
 
     def test_add_publication_manually_failure_user_not_logged_in(self):
         """

@@ -372,3 +372,10 @@ class LabSystemService:
             return Response(True, "User socket disconnected successfully")
         except Exception as e:
             return Response(None, str(e))
+
+    def reset_system(self):
+        try:
+            self.lab_system_controller.reset_system()
+            return Response(True, "System reset successfully")
+        except Exception as e:
+            return Response(None, str(e))

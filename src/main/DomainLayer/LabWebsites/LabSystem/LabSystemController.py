@@ -520,3 +520,11 @@ class LabSystemController:
         Disconnect a user socket from the system.
         """
         self.notificationsFacade.disconnect_user_socket(sid)
+
+    def reset_system(self):
+        """
+        Reset the system.
+        """
+        self.allWebsitesUserFacade.reset_system()
+        self.websiteFacade.reset_system()
+        self.notificationsFacade.reset_system()

@@ -129,8 +129,10 @@ class UserFacade:
         return manager_names
 
     def get_site_creator_name(self):
+        creator_names = []
         for email, site_creator in self.siteCreator.items():
-            return site_creator.get_fullName()
+            creator_names.append(site_creator.get_fullName())
+        return creator_names
 
     def get_alumnis_names(self):
         alumni_names = []

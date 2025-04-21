@@ -27,7 +27,7 @@ class TestSetLinkedinLinkByMember(unittest.TestCase):
         self.labManager1_email = "manager1@example.com"
         self.labManager1_name = "Manager One"
         self.lab_managers = {
-            self.labManager1_email: {"full_name": self.labManager1_name, "degree":Degree.PHD},
+            self.labManager1_email: {"full_name": self.labManager1_name, "degree":"Ph.D."},
         }
         self.website_name = "Lab Website"
         self.components = ["Homepage", "Contact Us", "Research"]
@@ -35,9 +35,9 @@ class TestSetLinkedinLinkByMember(unittest.TestCase):
         self.generator_system_service.create_website(self.user_id, self.website_name, self.domain, self.components,
                                                      self.template)
         self.generator_system_service.create_new_lab_website(
-            self.domain, {self.labMember1_email: {"full_name":self.labMember1_name, "degree": Degree.BSC}, self.labMember2_email: {"full_name":self.labMember2_name, "degree": Degree.MSC}},
+            self.domain, {self.labMember1_email: {"full_name":self.labMember1_name, "degree": "B.Sc."}, self.labMember2_email: {"full_name":self.labMember2_name, "degree": "M.Sc."}},
             self.lab_managers,
-            {"email": self.site_creator_email, "full_name": "Site Creator", "degree": Degree.PHD}
+            {"email": self.site_creator_email, "full_name": "Site Creator", "degree": "Ph.D."}
         )
 
         # Simulate a lab member login

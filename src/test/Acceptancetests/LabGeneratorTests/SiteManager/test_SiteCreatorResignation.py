@@ -19,10 +19,10 @@ class TestRegisterNewLabMember(unittest.TestCase):
         self.domain = "lab1.example.com"
         self.lab_member_email = "new_member@example.com"
         self.lab_member_full_name = "New Lab Member"
-        self.lab_member_degree = Degree.PHD
-        self.lab_members = {"member1@example.com": {"full_name": "Member One", "degree": Degree.MSC}, "member2@example.com": {"full_name": "Member Two", "degree": Degree.BSC}}
-        self.lab_managers = {"manager1@example.com": {"full_name": "Manager One", "degree": Degree.PHD}}
-        self.site_creator = {"email": "creator@example.com", "full_name": "Site Creator", "degree": Degree.PHD}
+        self.lab_member_degree = "Ph.D."
+        self.lab_members = {"member1@example.com": {"full_name": "Member One", "degree": "M.Sc."}, "member2@example.com": {"full_name": "Member Two", "degree": "B.Sc."}}
+        self.lab_managers = {"manager1@example.com": {"full_name": "Manager One", "degree": "Ph.D."}}
+        self.site_creator = {"email": "creator@example.com", "full_name": "Site Creator", "degree": "Ph.D."}
 
         # Create a new lab website
         self.generator_system_service.create_website(self.manager_user_id, "Lab Website", self.domain, ["Homepage", "Contact Us", "Publications"], Template.template1)

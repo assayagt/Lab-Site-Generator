@@ -133,3 +133,7 @@ class BridgeToTests(ABC):
     def get_all_lab_members_details(self, domain):
         """Get all lab members details."""
         pass
+
+    def reset_system(self):
+        """Reset the system."""
+        pass
