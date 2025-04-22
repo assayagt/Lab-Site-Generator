@@ -1,13 +1,7 @@
-# import sys
-# import os
-
-
-# project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-# if project_root not in sys.path:
-#     sys.path.append(project_root)
 import json
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
 from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
+from src.main.DomainLayer.LabWebsites.WebCrawler.ScannedPublication import ScannedPublication
 
 class PublicationRepository:
     """Handles databse operations for publications"""
@@ -21,6 +15,22 @@ class PublicationRepository:
         if not result:
             return None
         return self._row_to_publication_dto(result[0])
+    
+    def find_scanned_pubs_by_domain(self, domain):
+        query = """
+        SELECT sp.*
+        FROM domain_scannedPub AS dsp
+        INNER JOIN scanned_pubs AS sp
+        ON dsp.title = sp.title AND dsp.publication_year = sp.publication_year
+        WHERE dsp.domain = ?
+        """
+        results =  self.db_manager.execute_query(query, (domain,))
+        return [self._row_to_scanned_pub(row) for row in results]
+    
+    def find_all_domains_with_scannedPubs(self):
+        query = "SELECT DISTINCT domain FROM domain_scannedPub"
+        results = self.db_manager.execute_query(query)
+        return [row['domain'] for row in results]
     
     
     def find_all(self):
@@ -54,7 +64,6 @@ class PublicationRepository:
         """
         results = self.db_manager.execute_query(query, (domain,))
         return [self._row_to_publication_dto(row) for row in results]
-
     
     
     def save(self, publication_dto: PublicationDTO, domain: str):
@@ -108,6 +117,39 @@ class PublicationRepository:
         except Exception as e:
             self.db_manager.logger.error(f"Failed to save publication: {e}")
             return False
+        
+
+    def save_scanned_pub(self, scannedPub: scanned_pub_dto, domain: str):
+        query = """
+        INSERT INTO scanned_pubs (title, publication_year, scholar_id, author_pub_id)
+        VALUES (?, ?, ?, ?)
+        ON CONFLICT(paper_id) DO UPDATE SET
+            title = excluded.title,
+            publication_year = excluded.publication_year,
+            scholar_id = excluded.scholar_id,
+            author_pub_id = excluded.author_pub_id    
+        """
+        params = (
+            scannedPub.title,
+            scannedPub.publication_year,
+            scannedPub.scholar_id,
+            scannedPub.author_pub_id
+        )
+        link_query = """
+        INSERT INTO domain_scannedPub(domain, title, publication_year)
+        VALUES (?, ?, ?)
+        ON CONFLICT(domain, title, publication_year) DO NOTHING
+        """
+        link_params = (domain, scannedPub.title, scannedPub.publication_year)
+
+        try:
+            self.db_manager.execute_update(query, params)
+            self.db_manager.execute_update(link_query, link_params)
+            return True
+        except Exception as e:
+            self.db_manager.logger.error(f"failed to save scanned publication: {e}")
+            return False
+        
 
     def delete(self, paper_id):
         """
@@ -139,3 +181,14 @@ class PublicationRepository:
                 description=row['description'],
                 author_emails=json.loads(row['author_emails'])
             )
+    
+    
+    def _row_to_scanned_pub(self, row):
+        return ScannedPublication(
+            title=row['title'],
+            publication_year=row['publication_year'],
+            scholar_id=row['scholar_id'],
+            author_pub_id=row['author_pub_id']
+        )
+    
+    

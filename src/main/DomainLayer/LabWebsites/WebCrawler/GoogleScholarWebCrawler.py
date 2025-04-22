@@ -5,11 +5,14 @@ from scholarly import scholarly
 from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
 from src.main.DomainLayer.LabWebsites.WebCrawler.ScannedPublication import ScannedPublication
+from src.DAL.DAL_controller import DAL_controller
 import requests
 
 class GoogleScholarWebCrawler:
     def __init__(self):
         self.crawled = {} #{domain, [scanned_pubs]}
+        self.dal_controller = DAL_controller()
+        self._load_scanned_pubs()
 
     def fetch_publications_new_member(self, authors, domain):
         """
@@ -49,7 +52,10 @@ class GoogleScholarWebCrawler:
             self.crawled[domain].extend(scanned_pubs)
         else:
             self.crawled[domain] = scanned_pubs
-        # TODO: add to database
+        # ========================================= SAVE TO DATA =========================================
+        for scanned_pub in self.crawled[domain]:
+            self.dal_controller.publications_repo.save_scanned_pub(scannedPub=scanned_pub.to_dto(), domain=domain)
+
 
     def fetch_crawler_publications(self, authors, domain):
         results = []
@@ -93,7 +99,8 @@ class GoogleScholarWebCrawler:
                     )
 
                     self.crawled[domain].append(scanned_publication)  # Add to crawled publications
-                    # TODO: update database
+                    # ========================================= SAVE TO DATA =========================================
+                    self.dal_controller.publications_repo.save_scanned_pub(scannedPub=scanned_publication.to_dto(), domain=domain) 
                     results.append(publication_dto)
 
         #add 30 seconds delay
@@ -182,4 +189,15 @@ class GoogleScholarWebCrawler:
         except Exception as e:
             print(f"Error occurred: {e}")
             return "Error fetching description"
+        
+
+    def _load_scanned_pubs(self):
+        domainList = self.dal_controller.publications_repo.find_all_domains_with_scannedPubs()
+        for domain in domainList:
+            pubList = self.dal_controller.publications_repo.find_scanned_pubs_by_domain(domain)
+            if domain in self.crawled:
+                self.crawled[domain].extend(pubList)
+            else:
+                self.crawled[domain] = [pubList]
+            
 
