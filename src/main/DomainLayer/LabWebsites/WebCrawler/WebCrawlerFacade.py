@@ -1,19 +1,35 @@
+import threading
+
 from src.main.DomainLayer.LabWebsites.WebCrawler.GoogleScholarWebCrawler import GoogleScholarWebCrawler
 
 
 class WebCrawlerFacade:
     _instance = None
+    _instance_lock = threading.Lock()
 
     def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(WebCrawlerFacade, cls).__new__(cls)
-            cls._instance._initialized = False
+        with cls._instance_lock:
+            if cls._instance is None:
+                cls._instance = super(WebCrawlerFacade, cls).__new__(cls)
+                cls._instance._initialized = False
         return cls._instance
 
     def __init__(self):
-        if not self._initialized:
-            self.web_crawlers = [GoogleScholarWebCrawler()]  # Holds all WebCrawler instances
-            self._initialized = True
+        if self._initialized:
+            return
+
+        self.web_crawlers = [GoogleScholarWebCrawler()]  # Holds all WebCrawler instances
+        self._initialized = True
+
+    @classmethod
+    def get_instance(cls):
+        return cls()
+
+    @classmethod
+    def reset_instance(cls):
+        """Reset the singleton instance (useful for unit tests)."""
+        with cls._instance_lock:
+            cls._instance = None
 
 
     def fetch_publications(self, authors, domain):

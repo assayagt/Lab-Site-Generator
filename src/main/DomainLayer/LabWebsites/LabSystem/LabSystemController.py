@@ -9,19 +9,36 @@ from src.main.Util.ExceptionsEnum import ExceptionsEnum
 
 
 class LabSystemController:
-    _singleton_instance = None
+    _instance = None
+    _instance_lock = threading.Lock()
+
+    def __new__(cls):
+        with cls._instance_lock:
+            if cls._instance is None:
+                cls._instance = super(LabSystemController, cls).__new__(cls)
+                cls._instance._initialized = False
+        return cls._instance
 
     def __init__(self):
+        if self._initialized:
+            return
+
         self.webCrawlerFacade = WebCrawlerFacade()
         self.websiteFacade = WebsiteFacade()
         self.notificationsFacade = NotificationsFacade()
         self.allWebsitesUserFacade = AllWebsitesUserFacade()
 
-    @staticmethod
-    def get_instance():
-        if LabSystemController._singleton_instance is None:
-            LabSystemController._singleton_instance = LabSystemController()
-        return LabSystemController._singleton_instance
+        self._initialized = True
+
+    @classmethod
+    def get_instance(cls):
+        return cls()
+
+    @classmethod
+    def reset_instance(cls):
+        """Reset the singleton instance. Useful for unit tests."""
+        with cls._instance_lock:
+            cls._instance = None
 
     def enter_lab_website(self, domain):
         """

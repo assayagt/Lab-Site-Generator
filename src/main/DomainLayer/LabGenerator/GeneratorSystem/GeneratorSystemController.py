@@ -1,24 +1,42 @@
 import os
+import threading
 
 from src.main.DomainLayer.LabGenerator.SiteCustom.SiteCustomFacade import SiteCustomFacade, Template
 from src.main.DomainLayer.LabGenerator.User.UserFacade import UserFacade
 from src.main.DomainLayer.LabWebsites.LabSystem.LabSystemController import LabSystemController
 
+
 class GeneratorSystemController:
-    _singleton_instance = None
+    _instance = None
+    _instance_lock = threading.Lock()
+
+    def __new__(cls):
+        with cls._instance_lock:
+            if cls._instance is None:
+                cls._instance = super(GeneratorSystemController, cls).__new__(cls)
+                cls._instance._initialized = False
+        return cls._instance
 
     def __init__(self):
-        if GeneratorSystemController._singleton_instance is not None:
-            raise Exception("This is a singleton class!")
+        if self._initialized:
+            return
+
+        # Initialize only once
         self.user_facade = UserFacade()
         self.site_custom_facade = SiteCustomFacade()
         self.labSystem = LabSystemController()
 
-    @staticmethod
-    def get_instance():
-        if GeneratorSystemController._singleton_instance is None:
-            GeneratorSystemController._singleton_instance = GeneratorSystemController()
-        return GeneratorSystemController._singleton_instance
+        self._initialized = True
+
+    @classmethod
+    def get_instance(cls):
+        return cls()
+
+    @classmethod
+    def reset_instance(cls):
+        """Reset the singleton instance. Safe to use in unit tests."""
+        with cls._instance_lock:
+            cls._instance = None
 
     def get_lab_system_controller(self):
         """Get the lab system controller."""
@@ -317,3 +335,4 @@ class GeneratorSystemController:
         self.site_custom_facade.set_site_creator(domain, nominated_email)
         if new_role != "manager":
             self.user_facade.remove_site_manager(nominated_email, domain)
+

@@ -1,3 +1,4 @@
+import threading
 import uuid
 import re
 
@@ -11,24 +12,50 @@ from src.DAL.DAL_controller import DAL_controller
 
 
 class UserFacade:
-    _singleton_instance = None
+    _instances = {}  # map: domain -> instance
+    _instance_lock = threading.Lock()
+
+    def __new__(cls, domain):
+        with cls._instance_lock:
+            if domain not in cls._instances:
+                instance = super(UserFacade, cls).__new__(cls)
+                instance._initialized = False
+                cls._instances[domain] = instance
+        return cls._instances[domain]
 
     def __init__(self, domain):
+        if self._initialized:
+            return
+
+
         self.domain = domain
         self.users = {}
         self.members = {}
         self.managers = {}
         self.siteCreator = {}
         self.alumnis = {}
-        self.emails_requests_to_register = {}  #holds all the emails that an email with registration request was already sent to managers
+        self.emails_requests_to_register = {}
         self.dal_controller = DAL_controller()
         self._load_data()
 
-    @staticmethod
-    def get_instance():
-        if UserFacade._singleton_instance is None:
-            UserFacade._singleton_instance = UserFacade()
-        return UserFacade._singleton_instance
+        self._initialized = True
+
+    @classmethod
+    def get_instance(cls, domain):
+        return cls(domain)
+
+    @classmethod
+    def reset_instance(cls, domain):
+        """Reset the singleton instance for a specific domain."""
+        with cls._instance_lock:
+            if domain in cls._instances:
+                del cls._instances[domain]
+
+    @classmethod
+    def reset_all_instances(cls):
+        """Reset all UserFacade instances."""
+        with cls._instance_lock:
+            cls._instances.clear()
 
     def create_new_site_manager(self, nominated_manager_email, nominated_manager_fullName, nominated_manager_degree):
         if nominated_manager_email in self.members:

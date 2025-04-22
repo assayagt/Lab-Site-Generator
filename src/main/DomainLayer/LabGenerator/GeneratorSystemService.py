@@ -1,24 +1,40 @@
 import base64
 import os
-from src.main.DomainLayer.LabGenerator.GeneratorSystem import GeneratorSystemController
+import threading
+
+from src.main.DomainLayer.LabGenerator.GeneratorSystem.GeneratorSystemController import GeneratorSystemController
 from src.main.Util.Response import Response
 import src.main.DomainLayer.LabGenerator.SiteCustom.Template as Template
 
 
 class GeneratorSystemService:
-    _singleton_instance = None
+    _instance = None
+    _instance_lock = threading.Lock()
+
+    def __new__(cls):
+        with cls._instance_lock:
+            if cls._instance is None:
+                cls._instance = super(GeneratorSystemService, cls).__new__(cls)
+                cls._instance._initialized = False
+        return cls._instance
 
     def __init__(self):
-        if GeneratorSystemService._singleton_instance is not None:
-            raise Exception("This is a singleton class!")
-        # Get the instance of GeneratorSystemController
-        self.generator_system_controller = GeneratorSystemController.GeneratorSystemController.get_instance()
+        if self._initialized:
+            return
 
-    @staticmethod
-    def get_instance():
-        if GeneratorSystemService._singleton_instance is None:
-            GeneratorSystemService._singleton_instance = GeneratorSystemService()
-        return GeneratorSystemService._singleton_instance
+        # Initialize only once
+        self.generator_system_controller = GeneratorSystemController()
+        self._initialized = True
+
+    @classmethod
+    def get_instance(cls):
+        return cls()
+
+    @classmethod
+    def reset_instance(cls):
+        """Reset the singleton instance. Safe to use in unit tests."""
+        with cls._instance_lock:
+            cls._instance = None
 
     def get_lab_system_controller(self):
         """Get the lab system controller through GeneratorSystemController."""
