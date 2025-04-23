@@ -25,6 +25,17 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const domain = sessionStorage.getItem("domain");
+
+    if (!domain && !sessionStorage.getItem("alreadyRefreshed")) {
+      console.warn("🔁 domain is missing, refreshing page once...");
+
+      // prevent infinite reload loop
+      sessionStorage.setItem("alreadyRefreshed", "true");
+      window.location.reload();
+    }
+  }, []);
+  useEffect(() => {
     const fetchHomepageDetails = async () => {
       let domain = window.location.hostname;
       domain = domain.replace(/^https?:\/\//, "");
