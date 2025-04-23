@@ -52,6 +52,7 @@ const useChooseComponents = () => {
   const [newCreatorEmail, setNewCreatorEmail] = useState("");
   const [newRoleAfterResignation, setNewRoleAfterResignation] =
     useState("manager");
+  const [isLoading, setIsLoading] = useState(false);
 
   const showError = (message) => {
     setErrorMessage(message);
@@ -438,6 +439,7 @@ const useChooseComponents = () => {
   };
 
   const handleGenerate = async () => {
+    setIsLoading(true); // Show loading popup
     try {
       console.log(websiteData.domain);
       console.log(domain);
@@ -476,6 +478,8 @@ const useChooseComponents = () => {
     } catch (error) {
       showError(error);
       alert("Error: " + (error.response?.data?.message || error.message));
+    } finally {
+      setIsLoading(false); // Hide popup once done
     }
   };
 
@@ -680,6 +684,7 @@ const useChooseComponents = () => {
     confirmQuitAsCreator,
     newRoleAfterResignation,
     setNewRoleAfterResignation,
+    isLoading,
   };
 };
 

@@ -3,6 +3,7 @@ import useChooseComponents from "./useChooseComponents";
 import Tamplate from "../../../images/tamplate.svg";
 import "./ChooseComponentsPage.css";
 import ErrorPopup from "../../../components/Popups/ErrorPopup";
+import LoadingPopup from "../../../components/Popups/LoadingPopup";
 const ChooseComponentsPage = () => {
   const {
     domain,
@@ -64,6 +65,7 @@ const ChooseComponentsPage = () => {
     confirmQuitAsCreator,
     newRoleAfterResignation,
     setNewRoleAfterResignation,
+    isLoading,
   } = useChooseComponents();
 
   return (
@@ -867,6 +869,9 @@ const ChooseComponentsPage = () => {
         </div>
       )}
       <ErrorPopup message={errorMessage} onClose={() => setErrorMessage("")} />
+      {isLoading && (
+        <LoadingPopup message="Generating your website, please wait..." />
+      )}
     </div>
   );
 };
