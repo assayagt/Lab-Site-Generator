@@ -43,7 +43,7 @@ class GoogleScholarWebCrawler:
 
                     scanned_pubs.append(scanned_publication)
             # Add a delay to avoid overwhelming the server
-            time.sleep(30)
+            time.sleep(5)
 
 
         #if domain exists in self.crawled, append the new publications
@@ -54,7 +54,7 @@ class GoogleScholarWebCrawler:
             self.crawled[domain] = scanned_pubs
         # ========================================= SAVE TO DATA =========================================
         for scanned_pub in self.crawled[domain]:
-            self.dal_controller.publications_repo.save_scanned_pub(scannedPub=scanned_pub.to_dto(), domain=domain)
+            self.dal_controller.publications_repo.save_scanned_pub(scannedPub=scanned_pub, domain=domain)
 
 
     def fetch_crawler_publications(self, authors, domain):
@@ -100,11 +100,11 @@ class GoogleScholarWebCrawler:
 
                     self.crawled[domain].append(scanned_publication)  # Add to crawled publications
                     # ========================================= SAVE TO DATA =========================================
-                    self.dal_controller.publications_repo.save_scanned_pub(scannedPub=scanned_publication.to_dto(), domain=domain) 
+                    self.dal_controller.publications_repo.save_scanned_pub(scannedPub=scanned_publication, domain=domain) 
                     results.append(publication_dto)
 
         #add 30 seconds delay
-        time.sleep(30)
+        time.sleep(5)
 
         return results
 

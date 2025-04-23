@@ -119,11 +119,11 @@ class PublicationRepository:
             return False
         
 
-    def save_scanned_pub(self, scannedPub: scanned_pub_dto, domain: str):
+    def save_scanned_pub(self, scannedPub: ScannedPublication, domain: str):
         query = """
         INSERT INTO scanned_pubs (title, publication_year, scholar_id, author_pub_id)
         VALUES (?, ?, ?, ?)
-        ON CONFLICT(paper_id) DO UPDATE SET
+        ON CONFLICT(title, publication_year) DO UPDATE SET
             title = excluded.title,
             publication_year = excluded.publication_year,
             scholar_id = excluded.scholar_id,
