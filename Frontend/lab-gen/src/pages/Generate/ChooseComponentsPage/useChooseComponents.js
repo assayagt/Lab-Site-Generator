@@ -443,7 +443,7 @@ const useChooseComponents = () => {
     try {
       console.log(websiteData.domain);
       console.log(domain);
-
+      console.log(participants);
       const response = await axios.post(
         `${baseApiUrl}generateWebsite`,
         {

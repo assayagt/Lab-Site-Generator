@@ -296,7 +296,7 @@ class GenerateWebsiteResource(Resource):
             lab_members = {}
             lab_managers = {}
             site_creator = None
-
+            print(participants)
 
             for participant in participants:
                 email = participant.get("email", "").strip()

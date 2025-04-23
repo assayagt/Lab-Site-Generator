@@ -6,12 +6,12 @@ import { useEditMode } from "../../Context/EditModeContext";
 
 function HomePage(props) {
   const { fetchToken } = useAuth();
-  // function fetchData() {
-  //   const storedSid = sessionStorage.getItem("sid");
-  //   if (!storedSid) {
-  //     fetchToken();
-  //   }
-  // }
+  function fetchData() {
+    const storedSid = sessionStorage.getItem("sid");
+    if (!storedSid) {
+      fetchToken();
+    }
+  }
   // useEffect(() => {
   //   const storedSid = sessionStorage.getItem("sid");
   //   if (!storedSid) {
@@ -22,7 +22,7 @@ function HomePage(props) {
 
   return (
     <div className="HomePage">
-      {/* {fetchData()} */}
+      {fetchData()}
 
       {/* Keep the welcome message always at the top */}
       <div className="subTitle">Welcome to our lab website.</div>

@@ -22,7 +22,6 @@ import { EditModeProvider } from "./Context/EditModeContext";
 import { useAuth } from "./Context/AuthContext";
 function App() {
   const { websiteData, setWebsite } = useWebsite();
-  const { fetchToken } = useAuth();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -41,6 +40,7 @@ function App() {
         domain = `${domain}.com`;
       }
       console.log(domain);
+      sessionStorage.setItem("domain", domain);
       try {
         const data = await getHomepageDetails(domain);
 
@@ -66,10 +66,12 @@ function App() {
             home_picture: data.data.home_picture,
             about_us: data.data.about_us,
           };
+          console.log("here");
           setWebsite(mappedData);
-          sessionStorage.setItem("domain", mappedData.domain);
+          console.log(sessionStorage.getItem("domain"));
+          // sessionStorage.setItem("domain", mappedData.domain);
         }
-        await fetchToken();
+        // await fetchToken();
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -87,41 +89,43 @@ function App() {
   const components = [...new Set(websiteData.components)];
 
   return (
-    <NotificationProvider>
-      <EditModeProvider>
-        <Router>
-          <Header
-            components={components}
-            title={websiteData.websiteName}
-            logo={websiteData.logo}
-          ></Header>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <HomePage
-                  about_us={websiteData.about_us}
-                  photo={websiteData.home_picture}
-                />
-              }
-            />
-            <Route path="/LabMembers" element={<ParticipantsPage />} />
-            <Route
-              path="/ContactUs"
-              element={
-                <ContactUsPage
-                  address="Ben Gurion University of the Negev"
-                  email="roni@bgu.ac.il"
-                  phone="+972 523456789"
-                />
-              }
-            />
-            <Route path="/Account" element={<AccountPage />} />
-            <Route path="/Publications" element={<PublicationsPage />} />
-          </Routes>
-        </Router>
-      </EditModeProvider>
-    </NotificationProvider>
+    <AuthProvider>
+      <NotificationProvider>
+        <EditModeProvider>
+          <Router>
+            <Header
+              components={components}
+              title={websiteData.websiteName}
+              logo={websiteData.logo}
+            ></Header>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <HomePage
+                    about_us={websiteData.about_us}
+                    photo={websiteData.home_picture}
+                  />
+                }
+              />
+              <Route path="/LabMembers" element={<ParticipantsPage />} />
+              <Route
+                path="/ContactUs"
+                element={
+                  <ContactUsPage
+                    address="Ben Gurion University of the Negev"
+                    email="roni@bgu.ac.il"
+                    phone="+972 523456789"
+                  />
+                }
+              />
+              <Route path="/Account" element={<AccountPage />} />
+              <Route path="/Publications" element={<PublicationsPage />} />
+            </Routes>
+          </Router>
+        </EditModeProvider>
+      </NotificationProvider>
+    </AuthProvider>
   );
 }
 
