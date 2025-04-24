@@ -1,12 +1,14 @@
-// components/Popups/LoadingPopup.jsx
 import React from "react";
-import "./LoginPopup.css"; // Style this as needed
+import "./LoadingPopup.css";
 
 const LoadingPopup = ({ message }) => {
+  if (!message) return null; // Don't show if not loading
+
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <h3>{message}</h3>
+    <div className="popup-overlay">
+      <div className="loading-popup-content">
+        <div className="spinner"></div>
+        <p>{message}</p>
       </div>
     </div>
   );

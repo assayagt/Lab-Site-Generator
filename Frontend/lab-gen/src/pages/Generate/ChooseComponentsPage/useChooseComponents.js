@@ -47,6 +47,7 @@ const useChooseComponents = () => {
   );
   const [isComponentsSaved, setIsComponentsSaved] = useState(false);
   const [errorMessage, setErrorMessage] = useState(""); // Store error messages
+  const [succsessMessage, setSuccsessMessage] = useState(""); // Store error messages
   const [isTempSaved, setTempSaved] = useState(false);
   const [showTransferPopup, setShowTransferPopup] = useState(false);
   const [newCreatorEmail, setNewCreatorEmail] = useState("");
@@ -272,6 +273,9 @@ const useChooseComponents = () => {
           ]);
           setNewParticipant({ fullName: "", degree: "", email: "" });
           setShowAddForm(false);
+          setSuccsessMessage(
+            "Participant added successfully! It might take a while until you will see changes it website"
+          );
         } else {
           showError(`Error: ${response.message}`);
         }
@@ -685,6 +689,8 @@ const useChooseComponents = () => {
     newRoleAfterResignation,
     setNewRoleAfterResignation,
     isLoading,
+    succsessMessage,
+    setSuccsessMessage,
   };
 };
 

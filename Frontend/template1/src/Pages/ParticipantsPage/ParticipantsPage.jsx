@@ -232,6 +232,10 @@ const ParticipantsPage = () => {
           "Failed to add lab member: " + addMemberResponse?.message
         );
         return;
+      } else {
+        setPopupMessage(
+          "Participant added successfully! It might take a while until you will see changes it website"
+        );
       }
 
       if (isManager) {

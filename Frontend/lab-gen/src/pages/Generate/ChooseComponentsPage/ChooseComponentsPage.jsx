@@ -4,6 +4,8 @@ import Tamplate from "../../../images/tamplate.svg";
 import "./ChooseComponentsPage.css";
 import ErrorPopup from "../../../components/Popups/ErrorPopup";
 import LoadingPopup from "../../../components/Popups/LoadingPopup";
+import SuccessPopup from "../../../components/Popups/SuccessPopup";
+
 const ChooseComponentsPage = () => {
   const {
     domain,
@@ -66,6 +68,8 @@ const ChooseComponentsPage = () => {
     newRoleAfterResignation,
     setNewRoleAfterResignation,
     isLoading,
+    succsessMessage,
+    setSuccsessMessage,
   } = useChooseComponents();
 
   return (
@@ -814,6 +818,10 @@ const ChooseComponentsPage = () => {
                             </button>
                           </div>
                         </div>
+                        <SuccessPopup
+                          message={succsessMessage}
+                          onClose={() => setSuccsessMessage("")}
+                        />
                       </div>
                     )}
                   </div>
