@@ -4,15 +4,62 @@ from scholarly import scholarly
 
 from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
+from src.main.DomainLayer.LabWebsites.WebCrawler.ScannedPublication import ScannedPublication
+from src.DAL.DAL_controller import DAL_controller
 import requests
 
 class GoogleScholarWebCrawler:
     def __init__(self):
-        self.visited_papers = set()
+        self.crawled = {} #{domain, [scanned_pubs]}
+        self.dal_controller = DAL_controller()
+        self._load_scanned_pubs()
 
-    def fetch_crawler_publications(self, authors, year):
+    def fetch_publications_new_member(self, authors, domain):
+        """
+        Fetches publications from Google Scholar for the given authors.
+
+        Args:
+            authors (list): List of author names to search for.
+        """
+        scanned_pubs = []
+        for author_name in authors:
+            search_query = scholarly.search_author(author_name)
+            author = next(search_query, None)
+
+            if author:
+                author = scholarly.fill(author)
+                for publication in author.get("publications", []):
+                    # Create a ScannedPublication object
+                    publication_title = publication.get("bib", {}).get("title")
+                    publication_year = publication.get("bib", {}).get("pub_year")
+                    scholar_id = author.get("scholar_id")
+                    author_pub_id = publication['author_pub_id']
+                    scanned_publication = ScannedPublication(
+                        title=publication_title,
+                        publication_year=publication_year,
+                        scholar_id=scholar_id,
+                        author_pub_id=author_pub_id
+                    )
+
+                    scanned_pubs.append(scanned_publication)
+            # Add a delay to avoid overwhelming the server
+            time.sleep(5)
+
+
+        #if domain exists in self.crawled, append the new publications
+        #if domain does not exist in self.crawled, create a new entry
+        if domain in self.crawled:
+            self.crawled[domain].extend(scanned_pubs)
+        else:
+            self.crawled[domain] = scanned_pubs
+        # ========================================= SAVE TO DATA =========================================
+        for scanned_pub in self.crawled[domain]:
+            self.dal_controller.publications_repo.save_scanned_pub(scannedPub=scanned_pub, domain=domain)
+
+
+    def fetch_crawler_publications(self, authors, domain):
         results = []
-
+        scanned_pubs = self.crawled.get(domain, [])
         for author_name in authors:
             search_query = scholarly.search_author(author_name)
             author = next(search_query, None)
@@ -20,36 +67,44 @@ class GoogleScholarWebCrawler:
             author = scholarly.fill(author)
 
             for publication in author.get("publications", []):
-                pub_year = publication.get("bib", {}).get("pub_year")
+                new_publication_title = publication.get("bib", {}).get("title")
 
-                if pub_year and int(pub_year) == year:
-                    new_publication_title = publication.get("bib", {}).get("title")
+                if new_publication_title and not any(pub.title == new_publication_title for pub in scanned_pubs):
+                    # Create a ScannedPublication object
+                    publication_title = publication.get("bib", {}).get("title")
+                    publication_year = publication.get("bib", {}).get("pub_year")
+                    scholar_id = author.get("scholar_id")
+                    author_pub_id = publication['author_pub_id']
+                    scanned_publication = ScannedPublication(
+                        title=publication_title,
+                        publication_year=publication_year,
+                        scholar_id=scholar_id,
+                        author_pub_id=author_pub_id
+                    )
+                    url = scanned_publication.build_publication_url()
 
-                    if new_publication_title and not any(pub.title == new_publication_title for pub in self.visited_papers):
+                    publication_authors = self.get_authors_from_citation(url)
 
-                        scholar_id = author.get("scholar_id")
+                    publication_description = self.get_description_from_citation(url)
 
-                        url = f"https://scholar.google.com/citations?view_op=view_citation&hl=en&user={scholar_id}&citation_for_view={publication['author_pub_id']}"
+                    pub_year = publication.get("bib", {}).get("pub_year")
 
-                        publication_authors = self.get_authors_from_citation(url)
+                    publication_dto = PublicationDTO(
+                        title=new_publication_title,
+                        authors=publication_authors,
+                        publication_year=pub_year,
+                        approved=ApprovalStatus.INITIAL_PENDING.value,  # Default value
+                        publication_link=url,
+                        description=publication_description
+                    )
 
-                        publication_description = self.get_description_from_citation(url)
+                    self.crawled[domain].append(scanned_publication)  # Add to crawled publications
+                    # ========================================= SAVE TO DATA =========================================
+                    self.dal_controller.publications_repo.save_scanned_pub(scannedPub=scanned_publication, domain=domain) 
+                    results.append(publication_dto)
 
-                        publication_dto = PublicationDTO(
-                            title=new_publication_title,
-                            authors=publication_authors,
-                            publication_year=pub_year,
-                            approved=ApprovalStatus.INITIAL_PENDING,  # Default value
-                            publication_link=url,
-                            description=publication_description
-                        )
-
-
-                        self.visited_papers.add(publication_dto)
-                        results.append(publication_dto)
-
-            #add 60 seconds delay
-            time.sleep(60)
+        #add 30 seconds delay
+        time.sleep(5)
 
         return results
 
@@ -134,4 +189,15 @@ class GoogleScholarWebCrawler:
         except Exception as e:
             print(f"Error occurred: {e}")
             return "Error fetching description"
+        
+
+    def _load_scanned_pubs(self):
+        domainList = self.dal_controller.publications_repo.find_all_domains_with_scannedPubs()
+        for domain in domainList:
+            pubList = self.dal_controller.publications_repo.find_scanned_pubs_by_domain(domain)
+            if domain in self.crawled:
+                self.crawled[domain].extend(pubList)
+            else:
+                self.crawled[domain] = [pubList]
+            
 

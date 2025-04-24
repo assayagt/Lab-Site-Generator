@@ -26,9 +26,9 @@ class TestLogoutFunction(unittest.TestCase):
 
         # Add lab members and managers
         self.site_creator_email = "someMail@gmail.com"
-        self.lab_members = {"member1@example.com": {"full_name": "Member One","degree": Degree.BSC}, "member2@example.com": {"full_name": "Member Two", "degree": Degree.MSC}}
+        self.lab_members = {"member1@example.com": {"full_name": "Member One","degree": "B.Sc."}, "member2@example.com": {"full_name": "Member Two", "degree": "M.Sc."}}
         self.lab_managers = {}
-        self.site_creator = {"email": self.site_creator_email, "full_name": "Site Creator", "degree": Degree.PHD}
+        self.site_creator = {"email": self.site_creator_email, "full_name": "Site Creator", "degree": "Ph.D."}
         self.generator_system_service.create_new_lab_website(self.domain, self.lab_members, self.lab_managers, self.site_creator)
 
         # Simulate entering the lab website

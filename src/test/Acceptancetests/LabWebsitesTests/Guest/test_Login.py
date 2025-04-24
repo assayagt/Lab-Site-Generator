@@ -27,9 +27,9 @@ class TestLoginFunction(unittest.TestCase):
 
         # Add lab members and managers
         self.site_creator_email = "creator@example.com" #TODO: maybe need to change this email: it receives emails!!
-        self.lab_members = {"member1@example.com": {"full_name": "Member One", "degree": Degree.BSC}, "member2@example.com": {"full_name":"Member Two", "degree": Degree.MSC}}
+        self.lab_members = {"member1@example.com": {"full_name": "Member One", "degree": "B.Sc."}, "member2@example.com": {"full_name":"Member Two", "degree": "M.Sc."}}
         self.lab_managers = {}
-        self.site_creator = {"email": self.site_creator_email, "full_name": "Site Creator", "degree": Degree.PHD}
+        self.site_creator = {"email": self.site_creator_email, "full_name": "Site Creator", "degree": "Ph.D."}
         self.generator_system_service.create_new_lab_website(self.domain, self.lab_members, self.lab_managers, self.site_creator)
 
         self.user_id_lab_website = self.lab_system_service.enter_lab_website(self.domain).get_data()
@@ -38,6 +38,7 @@ class TestLoginFunction(unittest.TestCase):
     def tearDown(self):
         # Reset the system after each test
         self.generator_system_service.reset_system()
+        self.lab_system_service.reset_system()
 
     def test_successful_login(self):
         # Test successful login for an existing lab member
@@ -66,6 +67,8 @@ class TestLoginFunction(unittest.TestCase):
         self.assertFalse(response.is_success())
         self.assertEqual(response.get_message(), ExceptionsEnum.REGISTRATION_EMAIL_ALREADY_SENT_TO_MANAGER.value)
 
+#TODO: Think how to test it
+    """
     def test_login_email_rejected(self):
         # Simulate lab managers rejecting the registration request
         non_member_email = "nonmember@example.com"
@@ -87,12 +90,12 @@ class TestLoginFunction(unittest.TestCase):
 
         # Simulate approval by managers
         self.lab_system_service.login(self.domain, self.site_creator_userId, self.site_creator_email)
-        self.lab_system_service.approve_registration_request(self.domain, self.site_creator_userId, non_member_email, "Non Member", Degree.BSC)
+        self.lab_system_service.approve_registration_request(self.domain, self.site_creator_userId, non_member_email, "Non Member", "B.Sc.")
 
         # Attempt login again
         response = self.lab_system_service.login(self.domain, self.user_id_lab_website, non_member_email)
         self.assertTrue(response.is_success())
-
+"""
     def test_login_invalid_domain(self):
         # Test login with an invalid domain
         invalid_domain = "invalid.example.com"

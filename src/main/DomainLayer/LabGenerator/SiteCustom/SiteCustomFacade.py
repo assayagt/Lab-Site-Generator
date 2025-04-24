@@ -1,5 +1,7 @@
 import re
 import json
+import threading
+
 from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
 from src.main.DomainLayer.LabGenerator.SiteCustom.SiteCustom import SiteCustom
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
@@ -8,20 +10,35 @@ from src.DAL.DAL_controller import DAL_controller
 
 
 class SiteCustomFacade:
-    _singleton_instance = None
+    _instance = None
+    _instance_lock = threading.Lock()
+
+    def __new__(cls):
+        with cls._instance_lock:
+            if cls._instance is None:
+                cls._instance = super(SiteCustomFacade, cls).__new__(cls)
+                cls._instance._initialized = False
+        return cls._instance
 
     def __init__(self):
-        if SiteCustomFacade._singleton_instance is not None:
-            raise Exception("This is a singleton class!")
+        if self._initialized:
+            return
+
         self.sites = {}
         self.dal_controller = DAL_controller()
         self._load_all_siteCustoms()
 
-    @staticmethod
-    def get_instance():
-        if SiteCustomFacade._singleton_instance is None:
-            SiteCustomFacade._singleton_instance = SiteCustomFacade()
-        return SiteCustomFacade._singleton_instance
+        self._initialized = True
+
+    @classmethod
+    def get_instance(cls):
+        return cls()
+
+    @classmethod
+    def reset_instance(cls):
+        """Reset the singleton instance. Useful for unit tests."""
+        with cls._instance_lock:
+            cls._instance = None
 
     def error_if_domain_is_not_valid(self, domain):
         # Regular expression for basic domain validation

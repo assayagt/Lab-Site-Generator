@@ -1,22 +1,37 @@
+import threading
+
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.main.DomainLayer.LabWebsites.LabSystem.LabSystemController import LabSystemController
 from src.main.Util.Response import Response
 
 
 class LabSystemService:
-    _singleton_instance = None
+    _instance = None
+    _instance_lock = threading.Lock()
+
+    def __new__(cls, lab_system_controller):
+        with cls._instance_lock:
+            if cls._instance is None:
+                cls._instance = super(LabSystemService, cls).__new__(cls)
+                cls._instance._initialized = False
+        return cls._instance
 
     def __init__(self, lab_system_controller):
-        if LabSystemService._singleton_instance is not None:
-            raise Exception("This is a singleton class!")
-        # Get the instance of LabSystem
-        self.lab_system_controller = lab_system_controller
+        if self._initialized:
+            return
 
-    @staticmethod
-    def get_instance(lab_system_controller):
-        if LabSystemService._singleton_instance is None:
-            LabSystemService._singleton_instance = LabSystemService(lab_system_controller)
-        return LabSystemService._singleton_instance
+        self.lab_system_controller = lab_system_controller
+        self._initialized = True
+
+    @classmethod
+    def get_instance(cls, lab_system_controller):
+        return cls(lab_system_controller)
+
+    @classmethod
+    def reset_instance(cls):
+        """Reset the singleton instance. Useful for unit tests."""
+        with cls._instance_lock:
+            cls._instance = None
 
     def enter_lab_website(self, domain):
         """Enter the lab system."""
@@ -370,5 +385,12 @@ class LabSystemService:
         try:
             self.lab_system_controller.disconnect_user_socket(sid)
             return Response(True, "User socket disconnected successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def reset_system(self):
+        try:
+            self.lab_system_controller.reset_system()
+            return Response(True, "System reset successfully")
         except Exception as e:
             return Response(None, str(e))

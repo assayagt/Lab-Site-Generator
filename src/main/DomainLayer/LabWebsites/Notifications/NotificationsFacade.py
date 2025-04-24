@@ -1,3 +1,4 @@
+import threading
 import uuid
 
 from src.main.DomainLayer.LabWebsites.Notifications.WebSocketHandler import WebSocketHandler
@@ -7,17 +8,35 @@ from src.DAL.DAL_controller import DAL_controller
 
 class NotificationsFacade:
     _instance = None
+    _instance_lock = threading.Lock()
 
     def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(NotificationsFacade, cls).__new__(cls)
+        with cls._instance_lock:
+            if cls._instance is None:
+                cls._instance = super(NotificationsFacade, cls).__new__(cls)
+                cls._instance._initialized = False
         return cls._instance
 
     def __init__(self):
+        if self._initialized:
+            return
+
         self.websocket_handler = None
         self.email_notifications_center = {}  # { website_id: { user_email: [notification_list] } }
         self.dal_controller = DAL_controller()
         self.web_socket_handler = WebSocketHandler()
+
+        self._initialized = True
+
+    @classmethod
+    def get_instance(cls):
+        return cls()
+
+    @classmethod
+    def reset_instance(cls):
+        """Reset the singleton instance. Useful for unit tests."""
+        with cls._instance_lock:
+            cls._instance = None
 
     def notify_user(self, email_notification, domain, recipientEmail):
         if domain not in self.email_notifications_center:
@@ -158,3 +177,9 @@ class NotificationsFacade:
         Disconnects a user from the WebSocket server.
         """
         self.web_socket_handler.unregister_user_by_sid(sid)
+
+    def reset_system(self):
+        """
+        Resets the entire system by clearing all stored notifications.
+        """
+        self.email_notifications_center.clear()

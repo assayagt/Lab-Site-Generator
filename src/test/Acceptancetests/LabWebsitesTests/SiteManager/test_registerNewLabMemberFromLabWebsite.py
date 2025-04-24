@@ -25,12 +25,12 @@ class TestRegisterNewLabMemberFromLabWebsite(unittest.TestCase):
         self.labMember1_name = "Member One"
         self.labMember2_email = "member2@example.com"
         self.lab_members = {
-            self.labMember1_email: {"full_name":self.labMember1_name, "degree": Degree.PHD},
-            self.labMember2_email: {"full_name":"Member Two", "degree": Degree.MSC}
+            self.labMember1_email: {"full_name":self.labMember1_name, "degree": "Ph.D."},
+            self.labMember2_email: {"full_name":"Member Two", "degree": "M.Sc."}
         }
         self.nominator_manager_email = "manager1@example.com"
         self.lab_managers = {
-            self.nominator_manager_email: {"full_name":"Manager One", "degree": Degree.PHD},
+            self.nominator_manager_email: {"full_name":"Manager One", "degree": "Ph.D."},
         }
 
         self.website_name = "Lab Website"
@@ -40,7 +40,7 @@ class TestRegisterNewLabMemberFromLabWebsite(unittest.TestCase):
                                                      self.template)
 
         self.generator_system_service.create_new_lab_website(
-            self.domain, self.lab_members, self.lab_managers, {"email": self.site_creator_email, "full_name": "Site Creator", "degree": Degree.PHD}
+            self.domain, self.lab_members, self.lab_managers, {"email": self.site_creator_email, "full_name": "Site Creator", "degree": "Ph.D."}
         )
 
         # Simulate a lab manager login
@@ -58,7 +58,7 @@ class TestRegisterNewLabMemberFromLabWebsite(unittest.TestCase):
         """
         email_to_register = "new_member@example.com"
         full_name = "New Member"
-        degree = Degree.BSC
+        degree = "B.Sc."
         # Perform the operation
         response = self.lab_system_service.register_new_LabMember_from_labWebsite(
             self.manager_userId, email_to_register, full_name, degree, self.domain
@@ -78,7 +78,7 @@ class TestRegisterNewLabMemberFromLabWebsite(unittest.TestCase):
 
         email_to_register = "new_member@example.com"
         full_name = "New Member"
-        degree = Degree.BSC
+        degree = "B.Sc."
 
         # Attempt to perform the operation
         response = self.lab_system_service.register_new_LabMember_from_labWebsite(
@@ -95,7 +95,7 @@ class TestRegisterNewLabMemberFromLabWebsite(unittest.TestCase):
         """
         email_to_register = self.labMember1_email
         full_name = "Duplicated Member"
-        degree = Degree.BSC
+        degree = "B.Sc."
 
         # Attempt to perform the operation
         response = self.lab_system_service.register_new_LabMember_from_labWebsite(
@@ -115,7 +115,7 @@ class TestRegisterNewLabMemberFromLabWebsite(unittest.TestCase):
 
         email_to_register = "new_member@example.com"
         full_name = "New Member"
-        degree = Degree.BSC
+        degree = "B.Sc."
 
         # Attempt to perform the operation
         response = self.lab_system_service.register_new_LabMember_from_labWebsite(
@@ -132,7 +132,7 @@ class TestRegisterNewLabMemberFromLabWebsite(unittest.TestCase):
         """
         email_to_register = "invalid_email"
         full_name = "Invalid Email Member"
-        degree = Degree.BSC
+        degree = "B.Sc."
 
         # Attempt to perform the operation
         response = self.lab_system_service.register_new_LabMember_from_labWebsite(

@@ -40,7 +40,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(GENERATED_WEBSITES_FOLDER, exist_ok=True)
 
 
-generator_system = GeneratorSystemService.get_instance()
+generator_system = GeneratorSystemService()
 lab_system_service = LabSystemService.get_instance(generator_system.get_lab_system_controller())
 
 

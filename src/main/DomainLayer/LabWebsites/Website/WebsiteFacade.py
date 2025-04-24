@@ -1,3 +1,5 @@
+import threading
+
 from src.main.DomainLayer.LabWebsites.Website.ContactInfo import ContactInfo
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.main.DomainLayer.LabWebsites.Website.Website import Website
@@ -6,10 +8,35 @@ from src.DAL.DAL_controller import DAL_controller
 import json
 
 class WebsiteFacade:
+    _instance = None
+    _instance_lock = threading.Lock()
+
+    def __new__(cls):
+        with cls._instance_lock:
+            if cls._instance is None:
+                cls._instance = super(WebsiteFacade, cls).__new__(cls)
+                cls._instance._initialized = False
+        return cls._instance
+
     def __init__(self):
+        if self._initialized:
+            return
+
         self.websites = []
         self.dal_controller = DAL_controller()
         self._load_all_data()
+
+        self._initialized = True
+
+    @classmethod
+    def get_instance(cls):
+        return cls()
+
+    @classmethod
+    def reset_instance(cls):
+        """Reset the singleton instance. Useful for unit tests."""
+        with cls._instance_lock:
+            cls._instance = None
 
     def add_website(self, website):
         self.websites.append(website)
@@ -166,5 +193,10 @@ class WebsiteFacade:
             website = Website(domain=dto.domain, contact_info=contact_info, about_us=dto.about_us)
             pubs = self.dal_controller.publications_repo.find_by_domain(domain=dto.domain)
             website.load_pub_dtos(pub_list=pubs)
-            self.websites.append(website) 
+            self.websites.append(website)
 
+    def reset_system(self):
+        """
+        Resets the entire system by clearing all stored websites.
+        """
+        self.websites.clear()

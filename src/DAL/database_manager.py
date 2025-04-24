@@ -293,6 +293,29 @@ class DatabaseManager:
         '''
         self.execute_script(notifications_table)
 
+        scanned_pub_table = """
+        CREATE TABLE IF NOT EXISTS scanned_pubs(
+            title TEXT,
+            publication_year TEXT,
+            scholar_id TEXT,
+            author_pub_id TEXT,
+            PRIMARY KEY(title, publication_year)
+        );
+        """
+        self.execute_script(scanned_pub_table)
+
+        domain_scannedPub_table = """
+        CREATE TABLE IF NOT EXISTS domain_scannedPub(
+        domain TEXT,
+        title TEXT,
+        publication_year TEXT,
+        FOREIGN KEY (domain) REFERENCES site_customs ON DELETE CASCADE,
+        FOREIGN KEY (title, publication_year) REFERENCES scanned_pubs (title, publication_year) ON DELETE CASCADE,
+        PRIMARY KEY (domain, title, publication_year)
+        );
+        """
+        self.execute_script(domain_scannedPub_table)
+
         self.logger.info("Database tables created successfully")
 
     def close(self):

@@ -92,3 +92,6 @@ class RealToTests(BridgeToTests):
 
     def get_all_lab_members_details(self, domain):
         return self.lab_system_service.get_all_lab_members_details(domain)
+
+    def reset_system(self):
+        return self.lab_system_service.reset_system()

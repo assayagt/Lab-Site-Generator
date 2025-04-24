@@ -27,10 +27,10 @@ class TestRemoveSiteManagerFromGenerator(unittest.TestCase):
         self.manager_toRemove_userId = self.generator_system_service.enter_generator_system().get_data()
         self.generator_system_service.login(user_id=self.manager_toRemove_userId, email=self.manager_toRemove_email)
 
-        self.lab_members = {"member1@example.com": {"full_name": "Member One", "degree": Degree.BSC},
-                            "member2@example.com": {"full_name": "Member Two", "degree": Degree.MSC}}
-        self.lab_managers = {self.manager_toRemove_email: {"full_name": "Manager One", "degree": Degree.PHD}}
-        self.site_creator = {"email": "creator@example.com", "full_name": "Site Creator", "degree": Degree.PHD}
+        self.lab_members = {"member1@example.com": {"full_name": "Member One", "degree": "B.Sc."},
+                            "member2@example.com": {"full_name": "Member Two", "degree": "M.Sc."}}
+        self.lab_managers = {self.manager_toRemove_email: {"full_name": "Manager One", "degree": "Ph.D."}}
+        self.site_creator = {"email": "creator@example.com", "full_name": "Site Creator", "degree": "Ph.D."}
 
         self.generator_system_service.create_new_lab_website(self.domain, self.lab_members, self.lab_managers, self.site_creator)
 

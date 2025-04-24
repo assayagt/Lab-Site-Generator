@@ -1,3 +1,4 @@
+import threading
 from datetime import datetime
 import re
 from src.main.DomainLayer.LabWebsites.WebCrawler.WebCrawlerFacade import WebCrawlerFacade
@@ -8,19 +9,36 @@ from src.main.Util.ExceptionsEnum import ExceptionsEnum
 
 
 class LabSystemController:
-    _singleton_instance = None
+    _instance = None
+    _instance_lock = threading.Lock()
+
+    def __new__(cls):
+        with cls._instance_lock:
+            if cls._instance is None:
+                cls._instance = super(LabSystemController, cls).__new__(cls)
+                cls._instance._initialized = False
+        return cls._instance
 
     def __init__(self):
+        if self._initialized:
+            return
+
         self.webCrawlerFacade = WebCrawlerFacade()
         self.websiteFacade = WebsiteFacade()
         self.notificationsFacade = NotificationsFacade()
         self.allWebsitesUserFacade = AllWebsitesUserFacade()
 
-    @staticmethod
-    def get_instance():
-        if LabSystemController._singleton_instance is None:
-            LabSystemController._singleton_instance = LabSystemController()
-        return LabSystemController._singleton_instance
+        self._initialized = True
+
+    @classmethod
+    def get_instance(cls):
+        return cls()
+
+    @classmethod
+    def reset_instance(cls):
+        """Reset the singleton instance. Useful for unit tests."""
+        with cls._instance_lock:
+            cls._instance = None
 
     def enter_lab_website(self, domain):
         """
@@ -56,6 +74,10 @@ class LabSystemController:
         site_creator_full_name = site_creator.get("full_name")
         site_creator_degree = site_creator.get("degree")
         userFacade.set_site_creator(site_creator_email, site_creator_full_name, site_creator_degree) #SAME AS ABOVE
+
+        #fetch publications initially
+        members_names = self.allWebsitesUserFacade.get_active_members_names(domain)
+        self.webCrawlerFacade.fetch_publications_new_member(members_names, domain)
 
     def login(self, domain, userId, email):
         """
@@ -114,41 +136,72 @@ class LabSystemController:
         requested_email = self.mark_as_read(manager_userId, domain, notification_id)
         self.allWebsitesUserFacade.reject_registration_request(domain, manager_userId, requested_email)
 
+
+
     def create_new_site_manager_from_labWebsite(self, nominator_manager_userId, domain, nominated_manager_email):
         """
         Define and add new manager to a specific website, directly from the lab website.
-        The given nominated_manager_email must be associated with a Lab Member of the given website.
-        This operation can be done only by lab manager
         """
-        self.allWebsitesUserFacade.create_new_site_manager_from_labWebsite(nominator_manager_userId,
-                                                                           nominated_manager_email, domain)
+        self.allWebsitesUserFacade.create_new_site_manager_from_labWebsite(
+            nominator_manager_userId,
+            nominated_manager_email,
+            domain
+        )
+        name = self.allWebsitesUserFacade.get_fullName_by_email(nominated_manager_email, domain)
+
+        threading.Thread(
+            target=self.webCrawlerFacade.fetch_publications_new_member,
+            args=([name], domain),
+            daemon=True
+        ).start()
 
     def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName,
                                                lab_member_degree, domain):
-
         """
         Define a new lab member in a specific website, directly from the lab website.
-        The given email_to_register must not be associated with a member(manager/lab member/creator..) of the given website.
-        This operation can be done only by lab manager
         """
-        self.allWebsitesUserFacade.register_new_LabMember_from_labWebsite(manager_userId, email_to_register,
-                                                                          lab_member_fullName, lab_member_degree,
-                                                                          domain)
+        self.allWebsitesUserFacade.register_new_LabMember_from_labWebsite(
+            manager_userId,
+            email_to_register,
+            lab_member_fullName,
+            lab_member_degree,
+            domain
+        )
+
+        threading.Thread(
+            target=self.webCrawlerFacade.fetch_publications_new_member,
+            args=([lab_member_fullName], domain),
+            daemon=True
+        ).start()
 
     def create_new_site_manager_from_generator(self, domain, nominated_manager_email):
         """
         Define and add new manager to a specific website, from generator site.
-        The given nominated_manager_email must be associated with a Lab Member of the given website.
         """
-        self.allWebsitesUserFacade.create_new_site_manager_from_generator(nominated_manager_email, domain)
+        self.allWebsitesUserFacade.create_new_site_manager_from_generator(
+            nominated_manager_email, domain
+        )
+        name = self.allWebsitesUserFacade.get_fullName_by_email(nominated_manager_email, domain)
+
+        threading.Thread(
+            target=self.webCrawlerFacade.fetch_publications_new_member,
+            args=([name], domain),
+            daemon=True
+        ).start()
 
     def register_new_LabMember_from_generator(self, email_to_register, lab_member_fullName, lab_member_degree, domain):
         """
         Define a new lab member in a specific website, from generator site.
-        The given email_to_register must not be associated with a member(manager/lab member/creator..) of the given website.
         """
-        self.allWebsitesUserFacade.register_new_LabMember_from_generator(email_to_register, lab_member_fullName,
-                                                                         lab_member_degree, domain)
+        self.allWebsitesUserFacade.register_new_LabMember_from_generator(
+            email_to_register, lab_member_fullName, lab_member_degree, domain
+        )
+
+        threading.Thread(
+            target=self.webCrawlerFacade.fetch_publications_new_member,
+            args=([lab_member_fullName], domain),
+            daemon=True
+        ).start()
 
     def crawl_for_publications(self):
         """
@@ -161,14 +214,16 @@ class LabSystemController:
         # for each website, send to the webCrawler facade the members and current year to fetch publications
         for website in websites:
             members_names = self.allWebsitesUserFacade.get_active_members_names(website.get_domain())
-            websitePublications = self.webCrawlerFacade.fetch_publications(members_names, datetime.now().year)
+            websitePublications = self.webCrawlerFacade.fetch_publications(members_names, website.get_domain())
 
             # check for each publication that is not already in website members publications
             for publication in websitePublications:
                 if not website.check_publication_exist(publication):
                     authorsEmails = []
                     for author in publication.authors:
-                        authorsEmails.append(self.allWebsitesUserFacade.getMemberEmailByName(author, website.domain))
+                        email = self.allWebsitesUserFacade.getMemberEmailByName(author, website.domain)
+                        if email is not None:
+                            authorsEmails.append(email)
                     website.create_publication(publication, authorsEmails)
 
                     # send notifications to the website authors about the new publications, for initial approve
@@ -520,3 +575,11 @@ class LabSystemController:
         Disconnect a user socket from the system.
         """
         self.notificationsFacade.disconnect_user_socket(sid)
+
+    def reset_system(self):
+        """
+        Reset the system.
+        """
+        self.allWebsitesUserFacade.reset_system()
+        self.websiteFacade.reset_system()
+        self.notificationsFacade.reset_system()

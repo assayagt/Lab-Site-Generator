@@ -26,7 +26,7 @@ class TestSetDegreeByMember(unittest.TestCase):
         self.labManager1_email = "manager1@example.com"
         self.labManager1_name = "Manager One"
         self.lab_managers = {
-            self.labManager1_email: {"full_name":self.labManager1_name, "degree": Degree.PHD},
+            self.labManager1_email: {"full_name":self.labManager1_name, "degree": "Ph.D."},
         }
         self.website_name = "Lab Website"
         self.components = ["Homepage", "Contact Us", "Research"]
@@ -34,9 +34,9 @@ class TestSetDegreeByMember(unittest.TestCase):
         self.generator_system_service.create_website(self.user_id, self.website_name, self.domain, self.components,
                                                      self.template)
         self.generator_system_service.create_new_lab_website(
-            self.domain, {self.labMember1_email: {"full_name":self.labMember1_name, "degree": Degree.BSC}, self.labMember2_email: {"full_name":self.labMember2_name, "degree": Degree.MSC}},
+            self.domain, {self.labMember1_email: {"full_name":self.labMember1_name, "degree": "B.Sc."}, self.labMember2_email: {"full_name":self.labMember2_name, "degree": "M.Sc."}},
             self.lab_managers,
-            {"email": self.site_creator_email, "full_name": "Site Creator", "degree": Degree.PHD}
+            {"email": self.site_creator_email, "full_name": "Site Creator", "degree": "Ph.D."}
         )
 
         # Simulate a lab member login
@@ -53,7 +53,7 @@ class TestSetDegreeByMember(unittest.TestCase):
         """
         Test that a lab member can successfully set their degree.
         """
-        new_degree = Degree.PHD
+        new_degree = "Ph.D."
 
         # Set the degree
         response = self.lab_system_service.set_degree_by_member(
@@ -72,7 +72,7 @@ class TestSetDegreeByMember(unittest.TestCase):
         # Simulate logout for the member
         self.lab_system_service.logout(self.domain, self.labMember1_userId)
 
-        new_degree = Degree.BSC
+        new_degree = "B.Sc."
 
         response = self.lab_system_service.set_degree_by_member(
             self.labMember1_userId, new_degree, self.domain
@@ -87,7 +87,7 @@ class TestSetDegreeByMember(unittest.TestCase):
         non_member_user_id = self.lab_system_service.enter_lab_website(self.domain).get_data()
         self.generator_system_service.login(non_member_user_id, "nonmember@example.com")
 
-        new_degree = Degree.MSC
+        new_degree = "M.Sc."
 
         response = self.lab_system_service.set_degree_by_member(
             non_member_user_id, new_degree, self.domain
@@ -99,7 +99,7 @@ class TestSetDegreeByMember(unittest.TestCase):
         """
         Test that trying to set a degree for a non-existent member raises an error.
         """
-        new_degree = Degree.BSC
+        new_degree = "B.Sc."
 
         response = self.lab_system_service.set_degree_by_member(
             "nonexistent_user_id", new_degree, self.domain
@@ -120,7 +120,7 @@ class TestSetDegreeByMember(unittest.TestCase):
         self.assertEqual(response.get_message(), ExceptionsEnum.INVALID_DEGREE.value)
 
     def test_set_degree_by_alumni_success(self):
-        new_degree = Degree.PHD
+        new_degree = "Ph.D."
 
         self.lab_system_service.define_member_as_alumni(self.labManager1_userId, self.labMember1_email, self.domain)
         # Set the bio
