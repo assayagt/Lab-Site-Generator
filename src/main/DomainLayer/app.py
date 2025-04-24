@@ -296,7 +296,7 @@ class GenerateWebsiteResource(Resource):
             lab_members = {}
             lab_managers = {}
             site_creator = None
-
+            print(participants)
 
             for participant in participants:
                 email = participant.get("email", "").strip()
@@ -1523,6 +1523,6 @@ api.add_resource(GetAllMembersNotifications, '/api/getAllMembersNotifications')
 if __name__ == '__main__':
     # notification_thread = threading.Thread(target=send_test_notifications, daemon=True)
     # notification_thread.start()
-    socketio.run(app, host='0.0.0.0', port=5000, debug=True, use_reloader=False)    ##app.run(debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True, use_reloader=True)    ##app.run(debug=True)
 
 

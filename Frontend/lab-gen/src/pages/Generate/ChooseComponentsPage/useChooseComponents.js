@@ -47,11 +47,13 @@ const useChooseComponents = () => {
   );
   const [isComponentsSaved, setIsComponentsSaved] = useState(false);
   const [errorMessage, setErrorMessage] = useState(""); // Store error messages
+  const [succsessMessage, setSuccsessMessage] = useState(""); // Store error messages
   const [isTempSaved, setTempSaved] = useState(false);
   const [showTransferPopup, setShowTransferPopup] = useState(false);
   const [newCreatorEmail, setNewCreatorEmail] = useState("");
   const [newRoleAfterResignation, setNewRoleAfterResignation] =
     useState("manager");
+  const [isLoading, setIsLoading] = useState(false);
 
   const showError = (message) => {
     setErrorMessage(message);
@@ -271,6 +273,9 @@ const useChooseComponents = () => {
           ]);
           setNewParticipant({ fullName: "", degree: "", email: "" });
           setShowAddForm(false);
+          setSuccsessMessage(
+            "Participant added successfully! It might take a while until you will see changes it website"
+          );
         } else {
           showError(`Error: ${response.message}`);
         }
@@ -438,10 +443,11 @@ const useChooseComponents = () => {
   };
 
   const handleGenerate = async () => {
+    setIsLoading(true); // Show loading popup
     try {
       console.log(websiteData.domain);
       console.log(domain);
-
+      console.log(participants);
       const response = await axios.post(
         `${baseApiUrl}generateWebsite`,
         {
@@ -476,6 +482,8 @@ const useChooseComponents = () => {
     } catch (error) {
       showError(error);
       alert("Error: " + (error.response?.data?.message || error.message));
+    } finally {
+      setIsLoading(false); // Hide popup once done
     }
   };
 
@@ -680,6 +688,9 @@ const useChooseComponents = () => {
     confirmQuitAsCreator,
     newRoleAfterResignation,
     setNewRoleAfterResignation,
+    isLoading,
+    succsessMessage,
+    setSuccsessMessage,
   };
 };
 
