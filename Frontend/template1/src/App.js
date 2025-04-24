@@ -19,11 +19,22 @@ import { useWebsite } from "./Context/WebsiteContext";
 import { getHomepageDetails } from "./services/websiteService";
 import { NotificationProvider } from "./Context/NotificationContext";
 import { EditModeProvider } from "./Context/EditModeContext";
+import { useAuth } from "./Context/AuthContext";
 function App() {
   const { websiteData, setWebsite } = useWebsite();
-
   const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const domain = sessionStorage.getItem("domain");
+
+    if (!domain && !sessionStorage.getItem("alreadyRefreshed")) {
+      console.warn("🔁 domain is missing, refreshing page once...");
+
+      // prevent infinite reload loop
+      sessionStorage.setItem("alreadyRefreshed", "true");
+      window.location.reload();
+    }
+  }, []);
   useEffect(() => {
     const fetchHomepageDetails = async () => {
       let domain = window.location.hostname;
@@ -40,6 +51,7 @@ function App() {
         domain = `${domain}.com`;
       }
       console.log(domain);
+      sessionStorage.setItem("domain", domain);
       try {
         const data = await getHomepageDetails(domain);
 
@@ -65,9 +77,12 @@ function App() {
             home_picture: data.data.home_picture,
             about_us: data.data.about_us,
           };
+          console.log("here");
           setWebsite(mappedData);
-          sessionStorage.setItem("domain", mappedData.domain);
+          console.log(sessionStorage.getItem("domain"));
+          // sessionStorage.setItem("domain", mappedData.domain);
         }
+        // await fetchToken();
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./HomePage.css";
 import AboutUs from "../../Components/AboutUs/AboutUs";
 import { useAuth } from "../../Context/AuthContext";
@@ -12,6 +12,12 @@ function HomePage(props) {
       fetchToken();
     }
   }
+  // useEffect(() => {
+  //   const storedSid = sessionStorage.getItem("sid");
+  //   if (!storedSid) {
+  //     fetchToken(); // ✅ Run fetchToken once on mount if sid is missing
+  //   }
+  // }, []); // Empty array = run only once
   const { editMode } = useEditMode(); // Get edit mode state
 
   return (

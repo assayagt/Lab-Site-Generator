@@ -64,9 +64,7 @@ function Header(props) {
       if (editMode) {
         toggleEditMode();
       }
-      location.pathname === "/Account"
-        ? navigate("/")
-        : window.location.reload();
+      location.pathname === "/Account" ? navigate("/") : navigate("/");
     }
   };
 
