@@ -77,7 +77,7 @@ class LabSystemController:
 
         #fetch publications initially
         members_names = self.allWebsitesUserFacade.get_active_members_names(domain)
-        self.webCrawlerFacade.fetch_publications_new_member(members_names, domain)
+        #self.webCrawlerFacade.fetch_publications_new_member(members_names, domain)
 
     def login(self, domain, userId, email):
         """
