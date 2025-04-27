@@ -52,7 +52,7 @@ class SiteCustomFacade:
         #     raise Exception(ExceptionsEnum.INVALID_TEMPLATE.value)
         if not isinstance(name, str) or not name:
             raise Exception(ExceptionsEnum.INVALID_SITE_NAME.value)
-        self.error_if_domain_is_not_valid(domain)
+        #self.error_if_domain_is_not_valid(domain)
         site = SiteCustom(domain, name, components, template, email)
         self.sites[domain] = site
         self.dal_controller.siteCustom_repo.save(site.to_dto(), email) #===========================================
