@@ -2,7 +2,7 @@
   "name": "template1",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:5000/",
+  "homepage": ".",
   "dependencies": {
     "@craco/craco": "^7.1.0",
     "axios": "^1.7.9",
