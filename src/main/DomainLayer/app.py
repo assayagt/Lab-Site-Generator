@@ -9,7 +9,7 @@ import subprocess
 import pandas as pd
 from flask_socketio import SocketIO, emit
 import threading
-from src.main.DomainLayer.socketio_instance import socketio
+from src.main.DomainLayer.socketio_instance import init_socketio, socketio
 import shutil
 
 def send_test_notifications():
@@ -33,7 +33,7 @@ app.config["SECRET_KEY"] = app_secret_key
 
 CORS(app, resources={r"/*": {"origins": ["http://lsg.cs.bgu.ac.il"]}})
 api = Api(app)
-socketio.init_app(app)
+init_socketio(app)
 # Directories for file storage and website generation
 UPLOAD_FOLDER = './uploads'
 GENERATED_WEBSITES_FOLDER = './LabWebsitesUploads'
