@@ -11,6 +11,7 @@ from flask_socketio import SocketIO, emit
 import threading
 from src.main.DomainLayer.socketio_instance import init_socketio
 import shutil
+import logging
 
 def send_test_notifications():
     while True:
@@ -273,17 +274,31 @@ class UploadFilesAndData(Resource):
             return jsonify({"error": f"An error occurred: {str(e)}"})
     
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('website_generation.log'),
+        logging.StreamHandler()
+    ]
+)
+
 class GenerateWebsiteResource(Resource):
     def post(self):
         try:
+            logging.info("Starting website generation process")
             data = request.get_json()
 
             required_fields = ['domain', 'about_us', 'lab_address', 'lab_mail', 'lab_phone_num', 'participants']
             for field in required_fields:
                 if field not in data:
+                    logging.error(f"Missing required field: {field}")
                     return jsonify({"error": f"Missing required field: {field}", "response": "false"})
 
             domain = data['domain']
+            logging.info(f"Processing website generation for domain: {domain}")
+            
             about_us = data['about_us']
             lab_address = data['lab_address']
             lab_mail = data['lab_mail']
@@ -291,6 +306,7 @@ class GenerateWebsiteResource(Resource):
             participants = data['participants']
             contact_info = ContactInfo(lab_address, lab_mail, lab_phone_num)
 
+            logging.info("Processing participant information")
             lab_members = {}
             lab_managers = {}
 
@@ -301,6 +317,7 @@ class GenerateWebsiteResource(Resource):
                 is_lab_manager = participant.get("isLabManager", False)
 
                 if not email or not full_name or not degree:
+                    logging.error("Invalid participant data - missing required fields")
                     return jsonify({"error": "All participants must have an email, full name, and degree.", "response": "false"})
 
                 lab_members[email] = {"full_name": full_name, "degree": degree}
@@ -313,16 +330,24 @@ class GenerateWebsiteResource(Resource):
                 "degree": participants[0]["degree"]
             }
 
+            logging.info("Creating new lab website")
             response = generator_system.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
-
             if response.is_success():
+                logging.info("Lab website created successfully")
+                logging.info("Setting about us content")
                 response2 = generator_system.set_site_about_us_on_creation_from_generator(domain, about_us)
                 if response2.is_success():
+                    logging.info("About us content set successfully")
+                    logging.info("Setting contact information")
                     response3 = generator_system.set_site_contact_info_on_creation_from_generator(domain, contact_info)
                     if response3.is_success():
+                        logging.info("Contact information set successfully")
+                        logging.info("Starting template build process")
 
                         TEMPLATE_1_PATH = "/home/admin/project/Lab-Site-Generator/Frontend/template1"
                         package_json_path = os.path.join(TEMPLATE_1_PATH, 'package.json')
+                        
+                        logging.info("Updating package.json with domain")
                         with open(package_json_path, 'r+') as f:
                             pkg = json.load(f)
                             pkg['homepage'] = f"/labs/{domain}"
@@ -330,20 +355,39 @@ class GenerateWebsiteResource(Resource):
                             json.dump(pkg, f, indent=2)
                             f.truncate()
 
-                        subprocess.run(['npm', 'run', 'build'], cwd=TEMPLATE_1_PATH, check=True)
+                        logging.info("Running npm build")
+                        try:
+                            build_process = subprocess.run(
+                                ['npm', 'run', 'build'], 
+                                cwd=TEMPLATE_1_PATH, 
+                                check=True,
+                                capture_output=True,
+                                text=True
+                            )
+                            logging.info("NPM build completed successfully")
+                            logging.debug(f"Build output: {build_process.stdout}")
+                        except subprocess.CalledProcessError as e:
+                            logging.error(f"NPM build failed: {e.stderr}")
+                            raise e
 
                         target_path = f"/var/www/labs/{domain}"
+                        logging.info(f"Copying build files to {target_path}")
                         if os.path.exists(target_path):
                             shutil.rmtree(target_path)
                         shutil.copytree(os.path.join(TEMPLATE_1_PATH, 'build'), target_path)
+                        logging.info("Website generation completed successfully")
 
                         return jsonify({"message": "Website generated successfully!", "response": "true"})
 
+                    logging.error(f"Failed to set contact info: {response3.get_message()}")
                     return jsonify({"error": f"An error occurred: {response3.get_message()}", "response": "false"})
+                logging.error(f"Failed to set about us: {response2.get_message()}")
                 return jsonify({"error": f"An error occurred: {response2.get_message()}", "response": "false"})
+            logging.error(f"Failed to create lab website: {response.get_message()}")
             return jsonify({"error": f"An error occurred: {response.get_message()}", "response": "false"})
 
         except Exception as e:
+            logging.error(f"Unexpected error during website generation: {str(e)}", exc_info=True)
             return jsonify({"error": f"An error occurred: {str(e)}", "response": "false"})
 
 class ChooseDomain(Resource):
@@ -530,7 +574,7 @@ class Login(Resource):
             
             if response.is_success():
                 return jsonify({"message": "User logged in successfully","response" : "true" })
-            return jsonify({"message": response.get_message(),"response" : "false" })
+            return jsonify({"message": response.get_message(),"response" : "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}","response" : "false"})
 
@@ -547,7 +591,7 @@ class Logout(Resource):
             response = generator_system.logout(user_id)
             if response.is_success():
                 return jsonify({"message": "User logged out successfully","response" : "true"})
-            return jsonify({"message": response.get_message(),"response" : "false" })
+            return jsonify({"message": response.get_message(),"response" : "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}","response" : "false"})
 
