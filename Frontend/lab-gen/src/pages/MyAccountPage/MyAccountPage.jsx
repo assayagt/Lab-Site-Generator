@@ -85,13 +85,13 @@ const MyAccountPage = () => {
                 <div>{website.site_name}</div>
                 <div>
                   <a 
-                    href={`https://lsg.cs.bgu.ac.il/labs/${website.domain}/`}
+                    href={`http://lsg.cs.bgu.ac.il/labs/${website.domain}/`}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
                     className="website-link"
                   >
-                    lsg.cs.bgu.ac.il/labs/{website.domain}
+                    lsg.cs.bgu.ac.il/labs/{website.domain}/
                   </a>
                 </div>
                 <div className={website.generated ? "" : "notGenerated"}>
