@@ -76,7 +76,7 @@ class LabSystemController:
         userFacade.set_site_creator(site_creator_email, site_creator_full_name, site_creator_degree) #SAME AS ABOVE
 
         #fetch publications initially
-        members_names = self.allWebsitesUserFacade.get_active_members_names(domain)
+        #members_names = self.allWebsitesUserFacade.get_active_members_names(domain)
         #self.webCrawlerFacade.fetch_publications_new_member(members_names, domain)
 
     def login(self, domain, userId, email):
