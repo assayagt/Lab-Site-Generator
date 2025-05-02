@@ -43,7 +43,7 @@ class GoogleScholarWebCrawler:
 
                     scanned_pubs.append(scanned_publication)
             # Add a delay to avoid overwhelming the server
-            time.sleep(5)
+            time.sleep(15)
 
 
         #if domain exists in self.crawled, append the new publications
