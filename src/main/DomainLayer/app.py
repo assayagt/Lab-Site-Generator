@@ -330,61 +330,73 @@ class GenerateWebsiteResource(Resource):
                 "degree": participants[0]["degree"]
             }
 
-            logging.info("Creating new lab website")
-            response = generator_system.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
-            if response.is_success():
-                logging.info("Lab website created successfully")
-                logging.info("Setting about us content")
-                response2 = generator_system.set_site_about_us_on_creation_from_generator(domain, about_us)
-                if response2.is_success():
-                    logging.info("About us content set successfully")
-                    logging.info("Setting contact information")
-                    response3 = generator_system.set_site_contact_info_on_creation_from_generator(domain, contact_info)
-                    if response3.is_success():
-                        logging.info("Contact information set successfully")
-                        logging.info("Starting template build process")
+            logging.info("About to call create_new_lab_website")
+            logging.info(f"Parameters: domain={domain}, members={len(lab_members)}, managers={len(lab_managers)}")
+            start_time = time.time()
+            
+            try:
+                response = generator_system.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
+                end_time = time.time()
+                logging.info(f"create_new_lab_website completed in {end_time - start_time:.2f} seconds")
+                
+                if response.is_success():
+                    logging.info("Lab website created successfully")
+                    logging.info("Setting about us content")
+                    response2 = generator_system.set_site_about_us_on_creation_from_generator(domain, about_us)
+                    if response2.is_success():
+                        logging.info("About us content set successfully")
+                        logging.info("Setting contact information")
+                        response3 = generator_system.set_site_contact_info_on_creation_from_generator(domain, contact_info)
+                        if response3.is_success():
+                            logging.info("Contact information set successfully")
+                            logging.info("Starting template build process")
 
-                        TEMPLATE_1_PATH = "/home/admin/project/Lab-Site-Generator/Frontend/template1"
-                        package_json_path = os.path.join(TEMPLATE_1_PATH, 'package.json')
-                        
-                        logging.info("Updating package.json with domain")
-                        with open(package_json_path, 'r+') as f:
-                            pkg = json.load(f)
-                            pkg['homepage'] = f"/labs/{domain}"
-                            f.seek(0)
-                            json.dump(pkg, f, indent=2)
-                            f.truncate()
+                            TEMPLATE_1_PATH = "/home/admin/project/Lab-Site-Generator/Frontend/template1"
+                            package_json_path = os.path.join(TEMPLATE_1_PATH, 'package.json')
+                            
+                            logging.info("Updating package.json with domain")
+                            with open(package_json_path, 'r+') as f:
+                                pkg = json.load(f)
+                                pkg['homepage'] = f"/labs/{domain}"
+                                f.seek(0)
+                                json.dump(pkg, f, indent=2)
+                                f.truncate()
 
-                        logging.info("Running npm build")
-                        try:
-                            build_process = subprocess.run(
-                                ['npm', 'run', 'build'], 
-                                cwd=TEMPLATE_1_PATH, 
-                                check=True,
-                                capture_output=True,
-                                text=True
-                            )
-                            logging.info("NPM build completed successfully")
-                            logging.debug(f"Build output: {build_process.stdout}")
-                        except subprocess.CalledProcessError as e:
-                            logging.error(f"NPM build failed: {e.stderr}")
-                            raise e
+                            logging.info("Running npm build")
+                            try:
+                                build_process = subprocess.run(
+                                    ['npm', 'run', 'build'], 
+                                    cwd=TEMPLATE_1_PATH, 
+                                    check=True,
+                                    capture_output=True,
+                                    text=True
+                                )
+                                logging.info("NPM build completed successfully")
+                                logging.debug(f"Build output: {build_process.stdout}")
+                            except subprocess.CalledProcessError as e:
+                                logging.error(f"NPM build failed: {e.stderr}")
+                                raise e
 
-                        target_path = f"/var/www/labs/{domain}"
-                        logging.info(f"Copying build files to {target_path}")
-                        if os.path.exists(target_path):
-                            shutil.rmtree(target_path)
-                        shutil.copytree(os.path.join(TEMPLATE_1_PATH, 'build'), target_path)
-                        logging.info("Website generation completed successfully")
+                            target_path = f"/var/www/labs/{domain}"
+                            logging.info(f"Copying build files to {target_path}")
+                            if os.path.exists(target_path):
+                                shutil.rmtree(target_path)
+                            shutil.copytree(os.path.join(TEMPLATE_1_PATH, 'build'), target_path)
+                            logging.info("Website generation completed successfully")
 
-                        return jsonify({"message": "Website generated successfully!", "response": "true"})
+                            return jsonify({"message": "Website generated successfully!", "response": "true"})
 
-                    logging.error(f"Failed to set contact info: {response3.get_message()}")
-                    return jsonify({"error": f"An error occurred: {response3.get_message()}", "response": "false"})
-                logging.error(f"Failed to set about us: {response2.get_message()}")
-                return jsonify({"error": f"An error occurred: {response2.get_message()}", "response": "false"})
-            logging.error(f"Failed to create lab website: {response.get_message()}")
-            return jsonify({"error": f"An error occurred: {response.get_message()}", "response": "false"})
+                        logging.error(f"Failed to set contact info: {response3.get_message()}")
+                        return jsonify({"error": f"An error occurred: {response3.get_message()}", "response": "false"})
+                    logging.error(f"Failed to set about us: {response2.get_message()}")
+                    return jsonify({"error": f"An error occurred: {response2.get_message()}", "response": "false"})
+                logging.error(f"Failed to create lab website: {response.get_message()}")
+                return jsonify({"error": f"An error occurred: {response.get_message()}", "response": "false"})
+            except Exception as e:
+                end_time = time.time()
+                logging.error(f"create_new_lab_website failed after {end_time - start_time:.2f} seconds")
+                logging.error(f"Error details: {str(e)}", exc_info=True)
+                raise e
 
         except Exception as e:
             logging.error(f"Unexpected error during website generation: {str(e)}", exc_info=True)

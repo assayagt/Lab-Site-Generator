@@ -6,6 +6,7 @@ from src.main.DomainLayer.LabWebsites.Website.WebsiteFacade import WebsiteFacade
 from src.main.DomainLayer.LabWebsites.Notifications.NotificationsFacade import NotificationsFacade
 from src.main.DomainLayer.LabWebsites.User.AllWebsitesUserFacade import AllWebsitesUserFacade
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
+import logging
 
 
 class LabSystemController:
@@ -53,31 +54,44 @@ class LabSystemController:
         Create a new lab website with the given domain, lab members, lab managers, and site creator.
         Each lab member, lab manager, and site creator now includes a degree field.
         """
-        self.websiteFacade.create_new_website(domain)
-        self.allWebsitesUserFacade.add_new_webstie_userFacade(domain)
-        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        try:
+            logging.info(f"[LabSystemController] Starting lab website creation for domain: {domain}")
+            
+            logging.info("[LabSystemController] Creating new website")
+            self.websiteFacade.create_new_website(domain)
+            
+            logging.info("[LabSystemController] Adding new website user facade")
+            self.allWebsitesUserFacade.add_new_webstie_userFacade(domain)
+            userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
 
-        # Add lab members
-        for lab_member_email, lab_member_details in lab_members.items():
-            full_name = lab_member_details["full_name"]
-            degree = lab_member_details["degree"]
-            userFacade.register_new_LabMember(lab_member_email, full_name, degree) #FOR DATA WE NEED: either return the member to save it here with domain or pass the domain to function
+            # Add lab members
+            logging.info(f"[LabSystemController] Adding {len(lab_members)} lab members")
+            for lab_member_email, lab_member_details in lab_members.items():
+                full_name = lab_member_details["full_name"]
+                degree = lab_member_details["degree"]
+                logging.info(f"[LabSystemController] Registering lab member: {lab_member_email}")
+                userFacade.register_new_LabMember(lab_member_email, full_name, degree)
 
-        # Add lab managers
-        for lab_manager_email, lab_manager_details in lab_managers.items():
-            full_name = lab_manager_details["full_name"]
-            degree = lab_manager_details["degree"]
-            userFacade.create_new_site_manager(lab_manager_email, full_name, degree) #SAME AS ABOVE
+            # Add lab managers
+            logging.info(f"[LabSystemController] Adding {len(lab_managers)} lab managers")
+            for lab_manager_email, lab_manager_details in lab_managers.items():
+                full_name = lab_manager_details["full_name"]
+                degree = lab_manager_details["degree"]
+                logging.info(f"[LabSystemController] Creating lab manager: {lab_manager_email}")
+                userFacade.create_new_site_manager(lab_manager_email, full_name, degree)
 
-        # Set site creator
-        site_creator_email = site_creator.get("email")
-        site_creator_full_name = site_creator.get("full_name")
-        site_creator_degree = site_creator.get("degree")
-        userFacade.set_site_creator(site_creator_email, site_creator_full_name, site_creator_degree) #SAME AS ABOVE
-
-        #fetch publications initially
-        #members_names = self.allWebsitesUserFacade.get_active_members_names(domain)
-        #self.webCrawlerFacade.fetch_publications_new_member(members_names, domain)
+            # Set site creator
+            site_creator_email = site_creator.get("email")
+            site_creator_full_name = site_creator.get("full_name")
+            site_creator_degree = site_creator.get("degree")
+            logging.info(f"[LabSystemController] Setting site creator: {site_creator_email}")
+            userFacade.set_site_creator(site_creator_email, site_creator_full_name, site_creator_degree)
+            
+            logging.info("[LabSystemController] Lab website creation completed successfully")
+            
+        except Exception as e:
+            logging.error(f"[LabSystemController] Error during lab website creation: {str(e)}", exc_info=True)
+            raise e
 
     def login(self, domain, userId, email):
         """

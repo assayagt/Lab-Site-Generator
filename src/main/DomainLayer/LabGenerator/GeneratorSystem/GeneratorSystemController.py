@@ -1,5 +1,6 @@
 import os
 import threading
+import logging
 
 from src.main.DomainLayer.LabGenerator.SiteCustom.SiteCustomFacade import SiteCustomFacade, Template
 from src.main.DomainLayer.LabGenerator.User.UserFacade import UserFacade
@@ -62,13 +63,34 @@ class GeneratorSystemController:
                              and the value is another dictionary containing "full_name" and "degree".
         site_creator (dict): A dictionary containing "email", "full_name", and "degree" of the site creator.
         """
-        self.site_custom_facade.error_if_domain_not_exist(domain)
-        self.site_custom_facade.set_custom_site_as_generated(domain)
-        lab_managers_emails = list(lab_managers.keys())
-        self.user_facade.create_new_site_managers(lab_managers_emails, domain)
-        self.labSystem.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
-        self.set_site_logo_on_site_creation(domain)
-        self.set_site_home_picture_on_site_creation(domain)
+        try:
+            logging.info(f"[GeneratorSystemController] Starting website creation for domain: {domain}")
+            
+            logging.info("[GeneratorSystemController] Checking if domain exists")
+            self.site_custom_facade.error_if_domain_not_exist(domain)
+            
+            logging.info("[GeneratorSystemController] Setting site as generated")
+            self.site_custom_facade.set_custom_site_as_generated(domain)
+            
+            logging.info("[GeneratorSystemController] Processing lab managers")
+            lab_managers_emails = list(lab_managers.keys())
+            self.user_facade.create_new_site_managers(lab_managers_emails, domain)
+            
+            logging.info("[GeneratorSystemController] Creating lab website")
+            self.labSystem.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
+            
+            logging.info("[GeneratorSystemController] Setting site logo")
+            self.set_site_logo_on_site_creation(domain)
+            
+            logging.info("[GeneratorSystemController] Setting site home picture")
+            self.set_site_home_picture_on_site_creation(domain)
+            
+            logging.info("[GeneratorSystemController] Website creation completed successfully")
+            return True
+            
+        except Exception as e:
+            logging.error(f"[GeneratorSystemController] Error during website creation: {str(e)}", exc_info=True)
+            raise e
 
     def set_site_about_us_on_creation_from_generator(self, domain, about_us):
         """
