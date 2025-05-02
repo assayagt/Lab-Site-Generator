@@ -728,25 +728,25 @@
   display: flex;
   align-items: center;
   width: 60%;
-  background: rgba(255, 255, 255, 0.45);
-  border-radius: 4px;
-  overflow: hidden;
+  margin: 10px 0;
 }
 
 .domain-prefix {
-  padding: 8px 12px;
-  background: rgba(0, 0, 0, 0.1);
-  color: #666;
-  font-size: 14px;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  color: #1c2c3d;
+  margin-right: 8px;
   white-space: nowrap;
 }
 
 .domain-input-container .input_name_domain {
   flex: 1;
+  height: 30px;
+  font-size: 16px;
+  padding: 5px;
+  border-radius: 5px;
   border: none;
-  background: transparent;
-  padding: 8px 12px;
-  width: auto;
+  background: rgba(255, 255, 255, 0.45);
 }
 
 .domain-input-container .input_name_domain:focus {
