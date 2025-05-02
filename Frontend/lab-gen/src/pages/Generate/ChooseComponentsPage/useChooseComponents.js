@@ -559,8 +559,10 @@ const useChooseComponents = () => {
     }
   };
 
-  const isValidDomain = (domain) =>
-    /^(?!:\/\/)([A-Za-z0-9-]+\.)+[A-Za-z]{2,6}$/.test(domain);
+  const isValidDomain = (domain) => {
+    // Allow only alphanumeric characters, hyphens, and underscores
+    return /^[a-zA-Z0-9-_]+$/.test(domain);
+  };
 
   const handleSaveComponents = async () => {
     if (components.length <= 1) {

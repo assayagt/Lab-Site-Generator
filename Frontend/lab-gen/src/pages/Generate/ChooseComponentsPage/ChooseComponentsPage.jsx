@@ -78,27 +78,30 @@ const ChooseComponentsPage = () => {
         <div className="intro_card">
           <h2>Get Started</h2>
           <label>Enter your website domain:</label>
-          <input
-            placeholder="www.example.com"
-            type="text"
-            value={domain}
-            onChange={handleDomainChange}
-            className={
-              domainError
-                ? "input_name_domain error_domain"
-                : "input_name_domain"
-            }
-            onBlur={() => {
-              if (!isValidDomain(domain)) {
-                setDomainError(true);
-              } else {
-                setDomainError(false);
+          <div className="domain-input-container">
+            <span className="domain-prefix">lsg.cs.bgu.ac.il/labs/</span>
+            <input
+              placeholder="your-domain"
+              type="text"
+              value={domain}
+              onChange={handleDomainChange}
+              className={
+                domainError
+                  ? "input_name_domain error_domain"
+                  : "input_name_domain"
               }
-            }}
-          />
+              onBlur={() => {
+                if (!isValidDomain(domain)) {
+                  setDomainError(true);
+                } else {
+                  setDomainError(false);
+                }
+              }}
+            />
+          </div>
           {domainError && (
             <p className="error_message">
-              Please enter a valid domain name (e.g., example.com)
+              Please enter a valid domain name (only letters, numbers, hyphens, and underscores allowed)
             </p>
           )}
           <label>Enter your website name:</label>

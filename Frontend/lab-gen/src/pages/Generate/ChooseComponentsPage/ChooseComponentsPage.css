@@ -723,3 +723,32 @@
   border: none;
   background: rgba(255, 255, 255, 0.45);
 }
+
+.domain-input-container {
+  display: flex;
+  align-items: center;
+  width: 60%;
+  background: rgba(255, 255, 255, 0.45);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.domain-prefix {
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.1);
+  color: #666;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.domain-input-container .input_name_domain {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 8px 12px;
+  width: auto;
+}
+
+.domain-input-container .input_name_domain:focus {
+  outline: none;
+}
