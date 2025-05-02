@@ -137,3 +137,15 @@
 
     transform: translateY(-2px);
   }
+
+.website-link {
+    color: #1c2c3d;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+.website-link:hover {
+    color: #ffc147;
+    text-decoration: underline;
+}

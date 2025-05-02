@@ -729,6 +729,9 @@
   align-items: center;
   width: 60%;
   margin: 10px 0;
+  background: rgba(255, 255, 255, 0.45);
+  border-radius: 5px;
+  padding: 0 5px;
 }
 
 .domain-prefix {
@@ -746,7 +749,7 @@
   padding: 5px;
   border-radius: 5px;
   border: none;
-  background: rgba(255, 255, 255, 0.45);
+  background: transparent;
 }
 
 .domain-input-container .input_name_domain:focus {
