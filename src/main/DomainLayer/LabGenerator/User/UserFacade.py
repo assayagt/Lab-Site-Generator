@@ -1,5 +1,6 @@
 import re
 import threading
+import logging
 
 from src.main.DomainLayer.LabGenerator.User.Member import Member
 from src.main.DomainLayer.LabGenerator.User.User import User
@@ -41,21 +42,18 @@ class UserFacade:
             cls._instance = None
 
     def create_new_site_manager(self, email, domain):
-        #check if key in self.members_customSites
         with self._lock:
             if email not in self.members_customSites:
                 member = Member(email=email)
                 self.members_customSites[email] = {"member": member, "domains": []}
-                self.dal_controller.members_repo.save_member(email) #=================
+                self.dal_controller.members_repo.save_member(email)
             if domain not in self.members_customSites[email]["domains"]:
                 self.members_customSites[email]["domains"].append(domain)
-                self.dal_controller.members_repo.save_domain(email=email, domain=domain) #=================
-
+                self.dal_controller.members_repo.save_domain(email=email, domain=domain)
 
     def create_new_site_managers(self, lab_managers_emails, domain):
-        with self._lock:
-            for email in lab_managers_emails:
-                self.create_new_site_manager(email, domain)
+        for email in lab_managers_emails:
+            self.create_new_site_manager(email, domain)
 
     def change_site_domain(self, old_domain, new_domain):
         # Update domains in self.members_customSites
