@@ -1,11 +1,14 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import useChooseComponents from "./useChooseComponents";
 import Tamplate from "../../../images/tamplate.svg";
 import "./ChooseComponentsPage.css";
 import ErrorPopup from "../../../components/Popups/ErrorPopup";
 import LoadingPopup from "../../../components/Popups/LoadingPopup";
 import SuccessPopup from "../../../components/Popups/SuccessPopup";
-
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 const ChooseComponentsPage = () => {
   const {
     domain,
@@ -71,6 +74,61 @@ const ChooseComponentsPage = () => {
     succsessMessage,
     setSuccsessMessage,
   } = useChooseComponents();
+
+  // Fix leaflet icon issues (put this near the top of the component file)
+  L.Marker.prototype.options.icon = L.icon({
+    iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  });
+
+  // Inside the ChooseComponentsPage component definition (add after useChooseComponents hook)
+  const [mapCoordinates, setMapCoordinates] = useState(null);
+
+  useEffect(() => {
+    const fetchCoordinates = async () => {
+      if (!contactUsData.address) return;
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+            contactUsData.address
+          )}&format=json`
+        );
+        const data = await response.json();
+        if (data.length > 0) {
+          setMapCoordinates({
+            lat: parseFloat(data[0].lat),
+            lng: parseFloat(data[0].lon),
+          });
+        }
+      } catch (err) {
+        console.error("Geocoding error:", err);
+      }
+    };
+    fetchCoordinates();
+  }, [contactUsData.address]);
+
+  const LocationSelector = () => {
+    useMapEvents({
+      click: async (e) => {
+        const { lat, lng } = e.latlng;
+        setMapCoordinates({ lat, lng });
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=en`
+          );
+          const data = await response.json();
+          if (data && data.display_name) {
+            handleContactUsChange({
+              target: { name: "address", value: data.display_name },
+            });
+          }
+        } catch (err) {
+          console.error("Reverse geocoding error:", err);
+        }
+      },
+    });
+    return null;
+  };
 
   return (
     <div className="choose_components_main">
@@ -509,7 +567,28 @@ const ChooseComponentsPage = () => {
                       Enter your address
                     </label>
                   </div>
-
+                  {mapCoordinates && (
+                    <div className="map_container">
+                      <MapContainer
+                        center={[mapCoordinates.lat, mapCoordinates.lng]}
+                        zoom={15}
+                        style={{
+                          height: "300px",
+                          width: "100%",
+                          marginTop: "20px",
+                        }}
+                      >
+                        <TileLayer
+                          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                          attribution="&copy; OpenStreetMap contributors"
+                        />
+                        <Marker
+                          position={[mapCoordinates.lat, mapCoordinates.lng]}
+                        />
+                        <LocationSelector />
+                      </MapContainer>
+                    </div>
+                  )}
                   {contactUs_usSave != "" ? (
                     <button
                       className="about_contact_button"

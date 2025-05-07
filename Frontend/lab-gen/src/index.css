@@ -1,19 +1,18 @@
 body {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 body {
-  background-image: url('./images/backg1.jpg');
+  background-image: url("./images/backg1.jpg");
   background-size: cover; /* Covers the entire viewport */
   background-position: center; /* Centers the image */
-  background-repeat: no-repeat; /* Prevents repeating */
+  background-repeat: repeat; /* Prevents repeating */
   height: 100vh;
-
 }
