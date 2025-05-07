@@ -4,15 +4,16 @@ import { useEditMode } from "../../Context/EditModeContext";
 import { setSiteAboutUsByManager } from "../../services/websiteService";
 import SuccessPopup from "../PopUp/SuccessPopup";
 import ErrorPopup from "../PopUp/ErrorPopup";
+import { useWebsite } from "../../Context/WebsiteContext";
 
 function AboutUs(props) {
   const { editMode } = useEditMode();
-  const [aboutUsText, setAboutUsText] = useState(props.info || "");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [saveButtonText, setSaveButtonText] = useState("Save");
   const [popupMessage, setPopupMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
+  const { websiteData, setWebsite } = useWebsite();
+  const [aboutUsText, setAboutUsText] = useState(websiteData.about_us || "");
   useEffect(() => {
     if (popupMessage || errorMessage) {
       const timer = setTimeout(() => {
@@ -28,11 +29,10 @@ function AboutUs(props) {
     const domain = sessionStorage.getItem("domain");
     const response = await setSiteAboutUsByManager(userId, domain, aboutUsText);
     if (response?.response === "true") {
-      setPopupMessage(
-        "Changes saved successfully!, Please refresh page to see them"
-      );
+      setPopupMessage("Changes saved successfully!");
       setSaveButtonText("Saved");
       setHasUnsavedChanges(false);
+      setWebsite({ about_us: aboutUsText });
       // window.location.reload();
     } else {
       setErrorMessage("An error occurred while saving.");

@@ -218,6 +218,7 @@ import {
 import { useEditMode } from "../../Context/EditModeContext";
 import SuccessPopup from "../../Components/PopUp/SuccessPopup";
 import ErrorPopup from "../../Components/PopUp/ErrorPopup";
+import { useWebsite } from "../../Context/WebsiteContext";
 
 // Fix marker icon issue
 L.Marker.prototype.options.icon = L.icon({
@@ -226,9 +227,11 @@ L.Marker.prototype.options.icon = L.icon({
 });
 
 function ContactUsPage() {
-  const [address, setAddress] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNum, setPhoneNum] = useState("");
+  const { websiteData, setWebsite } = useWebsite();
+  const [address, setAddress] = useState(websiteData.contact_us.address);
+
+  const [email, setEmail] = useState(websiteData.contact_us.email);
+  const [phoneNum, setPhoneNum] = useState(websiteData.contact_us.phone);
   const [coordinates, setCoordinates] = useState(null);
   const [loading, setLoading] = useState(true);
   const [popupMessage, setPopupMessage] = useState("");
@@ -247,6 +250,13 @@ function ContactUsPage() {
           setAddress(data.data.address || "");
           setEmail(data.data.email || "");
           setPhoneNum(data.data.phone_num || "");
+          setWebsite({
+            contact_us: {
+              email: data.data.email,
+              phone: data.data.phone_num,
+              address: data.data.address,
+            },
+          });
         }
       } catch (err) {
         setErrorMessage("Failed to load contact details.");
@@ -333,6 +343,15 @@ function ContactUsPage() {
     setHasUnsavedChanges(true);
     setSaveButtonText("Save");
   };
+  useEffect(() => {
+    if (popupMessage || errorMessage) {
+      const timer = setTimeout(() => {
+        setPopupMessage("");
+        setErrorMessage("");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [popupMessage, errorMessage]);
 
   if (loading) return <div>Loading contact details...</div>;
 
