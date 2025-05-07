@@ -778,24 +778,32 @@
   outline: none;
   box-shadow: none;
 }
+.error_wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 2px solid #b50c0c;
+  border-radius: 5px;
+}
+.error-message {
+  position: absolute;
+  top: -17px; /* slightly above the input */
+
+  color: #b50c0c;
+  font-size: 12px;
+  padding: 0 2px;
+  border-radius: 10px;
+  line-height: 16px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
 /* .domain-input-group {
   display: flex;
   align-items: center;
   margin-bottom: 8px;
 } */
-
-.domain-prefix {
-  /* width: 90%; */
-
-  /* background: rgba(255, 255, 255, 0.1); */
-  /* background: rgba(255, 255, 255, 0.45);
-  height: 30px;
-  font-size: 16px;
-  padding: 5px;
-  margin: 10px 0;
-  border-radius: 5px 0 0 5px;
-  border: none; */
-}
 
 /* .input_suffix {
   flex: 1;
