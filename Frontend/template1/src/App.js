@@ -1,6 +1,7 @@
 import "./App.css";
 import HomePage from "./Pages/HomePage/HomePage";
 import React, { useEffect, useState } from "react";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import {
   BrowserRouter as Router,
@@ -100,43 +101,45 @@ function App() {
   const components = [...new Set(websiteData.components)];
 
   return (
-    <AuthProvider>
-      <NotificationProvider>
-        <EditModeProvider>
-          <Router>
-            <Header
-              components={components}
-              title={websiteData.websiteName}
-              logo={websiteData.logo}
-            ></Header>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <HomePage
-                    about_us={websiteData.about_us}
-                    photo={websiteData.home_picture}
-                  />
-                }
-              />
-              <Route path="/LabMembers" element={<ParticipantsPage />} />
-              <Route
-                path="/ContactUs"
-                element={
-                  <ContactUsPage
-                    address="Ben Gurion University of the Negev"
-                    email="roni@bgu.ac.il"
-                    phone="+972 523456789"
-                  />
-                }
-              />
-              <Route path="/Account" element={<AccountPage />} />
-              <Route path="/Publications" element={<PublicationsPage />} />
-            </Routes>
-          </Router>
-        </EditModeProvider>
-      </NotificationProvider>
-    </AuthProvider>
+    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+      <AuthProvider>
+        <NotificationProvider>
+          <EditModeProvider>
+            <Router>
+              <Header
+                components={components}
+                title={websiteData.websiteName}
+                logo={websiteData.logo}
+              ></Header>
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <HomePage
+                      about_us={websiteData.about_us}
+                      photo={websiteData.home_picture}
+                    />
+                  }
+                />
+                <Route path="/LabMembers" element={<ParticipantsPage />} />
+                <Route
+                  path="/ContactUs"
+                  element={
+                    <ContactUsPage
+                      address="Ben Gurion University of the Negev"
+                      email="roni@bgu.ac.il"
+                      phone="+972 523456789"
+                    />
+                  }
+                />
+                <Route path="/Account" element={<AccountPage />} />
+                <Route path="/Publications" element={<PublicationsPage />} />
+              </Routes>
+            </Router>
+          </EditModeProvider>
+        </NotificationProvider>
+      </AuthProvider>
+    </GoogleOAuthProvider>
   );
 }
 

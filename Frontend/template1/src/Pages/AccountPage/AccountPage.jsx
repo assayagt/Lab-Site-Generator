@@ -75,7 +75,7 @@ const AccountPage = () => {
           email: data.user.email || "",
           secondaryEmail: data.user.secondEmail || "",
           degree: data.user.degree || "",
-          linkedIn: data.user.linkedIn || "",
+          linkedIn: data.user.linkedin_link || "",
           fullname: data.user.fullName,
         });
       }

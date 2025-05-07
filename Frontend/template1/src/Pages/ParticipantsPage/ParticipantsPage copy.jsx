@@ -371,7 +371,7 @@ const ParticipantsPage = () => {
           )}
         </div>
       ))}
-
+      {/* 
       {alumni.length > 0 && (
         <div className="degree-section">
           <div className="degree">Alumni</div>
@@ -386,13 +386,12 @@ const ParticipantsPage = () => {
                   <a href={`mailto:${member.email}`} className="email-link">
                     {member.email}
                   </a>
-                  {editModeOption(member)}
                 </div>
               </div>
             ))}
           </div>
         </div>
-      )}
+      )} */}
 
       {showAddForm && (
         <div className="modal-overlay" onClick={() => setShowAddForm(false)}>

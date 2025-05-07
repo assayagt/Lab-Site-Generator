@@ -2,15 +2,16 @@ import axios from "axios";
 
 import { baseApiUrl } from "./BaseUrl"; // Ensure the path is correct relative to this file
 
-export const SendLogin = async (email, sid) => {
+export const SendLogin = async (token, sid) => {
   let data;
   return axios
     .post(`${baseApiUrl}Login`, {
-      email: email,
+      google_token: token,
       user_id: sid,
     })
     .then((response) => {
       data = response.data;
+      console.log(data);
       return data;
     })
     .catch((err) => {

@@ -141,6 +141,7 @@ export const setLinkedInLinkByMember = async (userId, linkedInLink, domain) => {
       linkedin_link: linkedInLink,
       domain,
     });
+    console.log(response);
     return response.data.message;
   } catch (error) {
     console.error("Error setting LinkedIn link:", error);
