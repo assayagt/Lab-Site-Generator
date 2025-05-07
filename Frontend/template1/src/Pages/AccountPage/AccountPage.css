@@ -257,7 +257,7 @@ button {
   flex-direction: column;
   width: fit-content;
   position: static;
-  min-width: 240px;
+  min-width: 350px;
   position: relative;
 }
 
@@ -725,4 +725,18 @@ button {
   display: flex;
   flex-direction: row;
   gap: 8px;
+}
+.input_bio {
+  background-color: transparent;
+  padding: 11px 10px;
+  font-size: 0.75rem;
+  border: 2px #3f464b solid;
+  border-radius: 5px;
+  background: transparent;
+  height: max-content;
+  resize: vertical;
+  box-sizing: border-box;
+  min-width: 350px;
+  max-height: 100px;
+  min-height: 40px;
 }

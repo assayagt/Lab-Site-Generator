@@ -429,11 +429,11 @@ const AccountPage = () => {
                   <label htmlFor="input" className="text">
                     Bio:
                   </label>
-                  <input
+                  <textarea
                     type="text"
                     placeholder="Bio"
                     name="input"
-                    className="input"
+                    className="input input_bio"
                     value={userDetails.bio}
                     onChange={(e) => handleChange("bio", e.target.value)}
                   />
