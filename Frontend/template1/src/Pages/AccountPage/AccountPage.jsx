@@ -323,25 +323,45 @@ const AccountPage = () => {
       const domain = sessionStorage.getItem("domain");
       // Track if any update was successful
       let isUpdated = false;
-
+      let res = null;
       if (userDetails.bio) {
-        await setBioByMember(sid, userDetails.bio, domain);
-        isUpdated = true;
+        res = await setBioByMember(sid, userDetails.bio, domain);
+        if (res?.response === "true") {
+          isUpdated = true;
+        } else {
+          isUpdated = false;
+        }
       }
 
       if (userDetails.secondaryEmail) {
-        await setSecondEmailByMember(sid, userDetails.secondaryEmail, domain);
-        isUpdated = true;
+        res = await setSecondEmailByMember(
+          sid,
+          userDetails.secondaryEmail,
+          domain
+        );
+        if (res?.response === "true") {
+          isUpdated = true;
+        } else {
+          isUpdated = false;
+        }
       }
 
       if (userDetails.degree) {
-        await setDegreeByMember(sid, userDetails.degree, domain);
-        isUpdated = true;
+        res = await setDegreeByMember(sid, userDetails.degree, domain);
+        if (res?.response === "true") {
+          isUpdated = true;
+        } else {
+          isUpdated = false;
+        }
       }
 
       if (userDetails.linkedIn) {
-        await setLinkedInLinkByMember(sid, userDetails.linkedIn, domain);
-        isUpdated = true;
+        res = await setLinkedInLinkByMember(sid, userDetails.linkedIn, domain);
+        if (res?.response === "true") {
+          isUpdated = true;
+        } else {
+          isUpdated = false;
+        }
       }
 
       if (isUpdated) {
@@ -349,7 +369,7 @@ const AccountPage = () => {
         setSaveButtonText("Saved");
         setHasUnsavedChanges(false);
       } else {
-        setErrorMessage("An error occurred while saving changes.");
+        setErrorMessage("Error: " + res?.message);
       }
     } catch (error) {
       console.error("Error saving changes:", error);
