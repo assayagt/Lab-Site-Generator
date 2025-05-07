@@ -330,11 +330,24 @@ function ContactUsPage() {
         setPopupMessage("Changes saved successfully!");
         setSaveButtonText("Saved");
         setHasUnsavedChanges(false);
+        setWebsite({
+          contact_us: {
+            email: email,
+            phone: phoneNum,
+            address: address,
+          },
+        });
       } else {
         setErrorMessage("An error occurred while saving.");
+        setAddress(websiteData.contact_us.address || "");
+        setEmail(websiteData.contact_us.email || "");
+        setPhoneNum(websiteData.contact_us.phone || "");
       }
     } catch (error) {
       setErrorMessage("An error occurred while saving.");
+      setAddress(websiteData.contact_us.address || "");
+      setEmail(websiteData.contact_us.email || "");
+      setPhoneNum(websiteData.contact_us.phone || "");
     }
   };
 

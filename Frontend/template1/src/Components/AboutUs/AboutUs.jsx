@@ -36,6 +36,7 @@ function AboutUs(props) {
       // window.location.reload();
     } else {
       setErrorMessage("An error occurred while saving.");
+      setAboutUsText(websiteData.about_us);
     }
   };
 
