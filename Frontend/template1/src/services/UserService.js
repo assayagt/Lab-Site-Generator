@@ -7,7 +7,7 @@ export const SendLogin = async (email, sid, domain) => {
   return axios
     .post(`${baseApiUrl}loginWebsite`, {
       domain: domain,
-      email: email,
+      google_token: email,
       user_id: sid,
     })
     .then((response) => {

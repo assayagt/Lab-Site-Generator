@@ -6,9 +6,9 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); // ✅ NEW: hold user info (email)
 
-  const login = async (email) => {
+  const login = async (token) => {
     let data = await SendLogin(
-      email,
+      token,
       sessionStorage.getItem("sid"),
       sessionStorage.getItem("domain")
     );
@@ -16,7 +16,8 @@ export const AuthProvider = ({ children }) => {
     if (data) {
       if (data.response === "true") {
         sessionStorage.setItem("isLoggedIn", true);
-        sessionStorage.setItem("userEmail", email);
+        sessionStorage.setItem("userEmail", data.email);
+        const email = data.email;
         setUser({ email });
         //sessionStorage.setItem('sid',"id"); still doesn't exist
         return true;

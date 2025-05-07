@@ -6,6 +6,7 @@ import { useAuth } from "../../Context/AuthContext";
 import { NotificationContext } from "../../Context/NotificationContext";
 import { useEditMode } from "../../Context/EditModeContext";
 import { fetchUserNotifications } from "../../services/UserService";
+import { GoogleLogin } from "@react-oauth/google";
 
 function Header(props) {
   const navigate = useNavigate();
@@ -55,6 +56,27 @@ function Header(props) {
     setEmail("");
   };
 
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const token = credentialResponse.credential; // ✅ SEND THE RAW TOKEN
+
+      // const email = decoded.email;
+
+      const success = await login(token); // This still hits your backend
+      if (success) {
+        setShowLogin(false);
+        setLoginError("");
+        setIsLoggedIn(true);
+        const notifications = await fetchUserNotifications(email);
+        updateNotifications(notifications);
+      } else {
+        setLoginError(true);
+      }
+    } catch (err) {
+      console.error("Google login error:", err);
+      setLoginError(true);
+    }
+  };
   const handleLogout = () => {
     const success = logout();
     if (success) {
@@ -206,9 +228,16 @@ function Header(props) {
                 This email does not exist. Request sent to manager
               </div>
             )}
-            <button className="login-button" onClick={handleLogin}>
+            {/* <button className="login-button" onClick={handleLogin}>
               Login
-            </button>
+            </button> */}
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => {
+                setLoginError(true);
+                console.log("Login Failed");
+              }}
+            />
           </div>
         </div>
       )}
