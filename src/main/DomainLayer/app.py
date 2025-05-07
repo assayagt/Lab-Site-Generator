@@ -536,7 +536,7 @@ class Login(Resource):
             response = generator_system.login(user_id, email)
             
             if response.is_success():
-                return jsonify({"message": "User logged in successfully","response" : "true" })
+                return jsonify({"message": "User logged in successfully","response" : "true", "email": email })
             return jsonify({"message": response.get_message(),"response" : "false" })
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}","response" : "false"})
@@ -743,7 +743,7 @@ class LoginWebsite(Resource):
             response = lab_system_service.login(domain, args['user_id'], email)
             if response.is_success():
                 if response.get_data():
-                    return jsonify({"message": response.get_message(), "response": "true"})
+                    return jsonify({"message": response.get_message(), "response": "true", "email": email})
                 else:
                     #notify_registration(email, domain)
                     return jsonify({"message": response.get_message(), "response": "false"})
