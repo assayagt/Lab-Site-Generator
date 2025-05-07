@@ -10,6 +10,8 @@ import pandas as pd
 from flask_socketio import SocketIO, emit
 import threading
 from src.main.DomainLayer.socketio_instance import socketio
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 def send_test_notifications():
     while True:
@@ -28,6 +30,7 @@ from src.main.DomainLayer.LabWebsites.Website.ContactInfo import ContactInfo
 app_secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app = Flask(__name__)
 app.config["SECRET_KEY"] = app_secret_key
+GOOGLE_CLIENT_ID = "894370088866-4jkvg622sluvf0k7cfv737tnjlgg00nt.apps.googleusercontent.com"
 # CORS(app)
 
 CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "http://localhost:3001"]}})  # Allow both frontends
@@ -511,16 +514,25 @@ class RemoveSiteManagerFromGenerator(Resource):
 class Login(Resource):
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('email', type=str, required=True, help="email is required")
         parser.add_argument('user_id', type=str, required=True, help="User id is required")
+        parser.add_argument('google_token', type=str, required=False, help="Google token for authentication")
 
         args = parser.parse_args()
 
-        email = args['email']
+        
         user_id = args['user_id']
     
 
         try:
+            if args.get('google_token'):
+                try:
+                    # Verify the token
+                    idinfo = id_token.verify_oauth2_token(args['google_token'], requests.Request(), GOOGLE_CLIENT_ID)
+                    email = idinfo['email']
+                    
+                except ValueError as e:
+                    return jsonify({"error": "Invalid Google token", "response": "false"}), 401
+
             response = generator_system.login(user_id, email)
             
             if response.is_success():
@@ -714,12 +726,20 @@ class LoginWebsite(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
         parser.add_argument('user_id', type=str, required=True, help="User ID is required")
-        parser.add_argument('email', type=str, required=True, help="Email is required")
+        parser.add_argument('google_token', type=str, required=False, help="Google token for authentication")
         args = parser.parse_args()
-        email = args['email']
         domain = args['domain']
         
         try:
+            if args.get('google_token'):
+                try:
+                    # Verify the token
+                    idinfo = id_token.verify_oauth2_token(args['google_token'], requests.Request(), GOOGLE_CLIENT_ID)
+                    
+                    # Check if the email from token matches the provided email
+                    email = idinfo['email']
+                except ValueError as e:
+                    return jsonify({"error": "Invalid Google token", "response": "false"}), 401
             response = lab_system_service.login(domain, args['user_id'], email)
             if response.is_success():
                 if response.get_data():
