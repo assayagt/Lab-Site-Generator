@@ -351,9 +351,9 @@ const ParticipantsPage = () => {
                         <FaEnvelope /> {member.email}
                       </a>
 
-                      {member.linkedin && (
+                      {member.linkedin_link && (
                         <a
-                          href={member.linkedin}
+                          href={member.linkedin_link}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="linkedin-link"
@@ -371,7 +371,7 @@ const ParticipantsPage = () => {
           )}
         </div>
       ))}
-
+      {/* 
       {alumni.length > 0 && (
         <div className="degree-section">
           <div className="degree">Alumni</div>
@@ -391,7 +391,7 @@ const ParticipantsPage = () => {
             ))}
           </div>
         </div>
-      )}
+      )} */}
 
       {showAddForm && (
         <div className="modal-overlay" onClick={() => setShowAddForm(false)}>

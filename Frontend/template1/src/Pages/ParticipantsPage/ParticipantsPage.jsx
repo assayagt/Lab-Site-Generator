@@ -36,9 +36,18 @@ const ParticipantsPage = () => {
     "M.Sc.": 2,
     "D.Sc.": 3,
     "B.Sc.": 4,
+    "Faculty Member": 5,
   };
+  const staticDegreeOptions = [
+    "Ph.D.",
+    "M.Sc.",
+    "B.Sc.",
+    "D.Sc.",
+    "Faculty Member",
+    "Alumni",
+  ];
 
-  const degreeOptions = ["Ph.D.", "M.Sc.", "B.Sc.", "D.Sc."];
+  const degreeOptions = staticDegreeOptions;
 
   const fetchParticipants = async () => {
     setLoading(true);
@@ -199,7 +208,9 @@ const ParticipantsPage = () => {
   const filteredParticipants =
     selectedDegree === "All"
       ? groupedParticipants
-      : { [selectedDegree]: groupedParticipants[selectedDegree] };
+      : selectedDegree === "Alumni"
+      ? { Alumni: alumni }
+      : { [selectedDegree]: groupedParticipants[selectedDegree] || [] };
 
   const handleInputChangeParticipant = (e) => {
     const { name, value, type, checked } = e.target;
@@ -308,57 +319,59 @@ const ParticipantsPage = () => {
           onChange={(e) => setSelectedDegree(e.target.value)}
         >
           <option value="All">All Degrees</option>
-          {sortedDegrees.map((degree) => (
+          {degreeOptions.map((degree) => (
             <option key={degree} value={degree}>
               {degree}
             </option>
           ))}
-          <option value="Alumni">Alumni</option>
         </select>
       </div>
 
-      {sortedDegrees.map(
-        (degree) =>
-          filteredParticipants[degree] && (
-            <div key={degree} className="degree-section">
-              <div className="degree">{degree}</div>
-              <div className="degree-section-items">
-                {filteredParticipants[degree].map((member) => (
-                  <div key={member.email} className="participant">
-                    <div className="personal_photo"></div>
-                    <div className="personal_info_member">
-                      <div className="fullname">{member.fullName}</div>
-                      <div className="personal-bio">{member.bio}</div>
-                      <div className="contact-links">
-                        <a
-                          href={`mailto:${member.email}`}
-                          className="email-link"
-                          title="Email"
-                        >
-                          <FaEnvelope /> {member.email}
-                        </a>
-
-                        {member.linkedin_link && (
-                          <a
-                            href={member.linkedin_link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="linkedin-link"
-                            title="LinkedIn"
-                          >
-                            <FaLinkedin /> LinkedIn
-                          </a>
-                        )}
-                      </div>
-                      {editModeOption(member)}
-                    </div>
-                  </div>
-                ))}
-              </div>
+      {Object.entries(filteredParticipants).map(([degree, members]) => (
+        <div key={degree} className="degree-section">
+          <div className="degree">{degree}</div>
+          {members.length === 0 ? (
+            <div className="no-participants-msg">
+              No participants found for this category.
             </div>
-          )
-      )}
+          ) : (
+            <div className="degree-section-items">
+              {members.map((member) => (
+                <div key={member.email} className="participant">
+                  <div className="personal_photo"></div>
+                  <div className="personal_info_member">
+                    <div className="fullname">{member.fullName}</div>
+                    <div className="personal-bio">{member.bio}</div>
+                    <div className="contact-links">
+                      <a
+                        href={`mailto:${member.email}`}
+                        className="email-link"
+                        title="Email"
+                      >
+                        <FaEnvelope /> {member.email}
+                      </a>
 
+                      {member.linkedin_link && (
+                        <a
+                          href={member.linkedin_link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="linkedin-link"
+                          title="LinkedIn"
+                        >
+                          <FaLinkedin /> LinkedIn
+                        </a>
+                      )}
+                    </div>
+                    {editModeOption(member)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+      {/* 
       {alumni.length > 0 && (
         <div className="degree-section">
           <div className="degree">Alumni</div>
@@ -378,7 +391,7 @@ const ParticipantsPage = () => {
             ))}
           </div>
         </div>
-      )}
+      )} */}
 
       {showAddForm && (
         <div className="modal-overlay" onClick={() => setShowAddForm(false)}>
