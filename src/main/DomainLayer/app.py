@@ -30,7 +30,7 @@ from src.main.DomainLayer.LabWebsites.Website.ContactInfo import ContactInfo
 app_secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app = Flask(__name__)
 app.config["SECRET_KEY"] = app_secret_key
-GOOGLE_CLIENT_ID = "894370088866-4jkvg622sluvf0k7cfv737tnjlgg00nt.apps.googleusercontent.com"
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 # CORS(app)
 
 CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "http://localhost:3001"]}})  # Allow both frontends
