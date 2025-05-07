@@ -6,11 +6,12 @@ export const SendLogin = async (token, sid) => {
   let data;
   return axios
     .post(`${baseApiUrl}Login`, {
-      token: token,
+      google_token: token,
       user_id: sid,
     })
     .then((response) => {
       data = response.data;
+      console.log(data);
       return data;
     })
     .catch((err) => {

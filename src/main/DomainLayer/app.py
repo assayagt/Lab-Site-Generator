@@ -531,7 +531,7 @@ class Login(Resource):
                     email = idinfo['email']
                     
                 except ValueError as e:
-                    return jsonify({"error": "Invalid Google token", "response": "false"}), 401
+                    return jsonify({"error": "Invalid Google token", "response": "false"})
 
             response = generator_system.login(user_id, email)
             

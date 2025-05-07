@@ -31,7 +31,8 @@ const LoginPopup = ({ onClose }) => {
   };
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      const token = jwtDecode(credentialResponse.credential);
+      const token = credentialResponse.credential; // ✅ SEND THE RAW TOKEN
+
       // const email = decoded.email;
 
       const success = await login(token); // This still hits your backend
