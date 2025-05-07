@@ -28,9 +28,12 @@ function AboutUs(props) {
     const domain = sessionStorage.getItem("domain");
     const response = await setSiteAboutUsByManager(userId, domain, aboutUsText);
     if (response?.response === "true") {
-      setPopupMessage("Changes saved successfully!");
+      setPopupMessage(
+        "Changes saved successfully!, Please refresh page to see them"
+      );
       setSaveButtonText("Saved");
       setHasUnsavedChanges(false);
+      // window.location.reload();
     } else {
       setErrorMessage("An error occurred while saving.");
     }
