@@ -206,6 +206,7 @@ class DatabaseManager:
             email TEXT,
             second_email TEXT,
             linkedin_link TEXT,
+            scholar_link TEXT,
             media TEXT,
             full_name TEXT,
             degree TEXT,

@@ -377,6 +377,9 @@ class LabSystemController:
     def set_linkedin_link_by_member(self, userid, linkedin_link, domain):
         self.allWebsitesUserFacade.set_linkedin_link_by_member(userid, linkedin_link, domain)
 
+    def set_scholar_link_by_member(self, userid, schoalr_link, domain):
+        self.allWebsitesUserFacade.set_scholar_link_by_member(userid, schoalr_link, domain)
+
     def set_media_by_member(self, userid, media, domain):
         self.allWebsitesUserFacade.set_media_by_member(userid, media, domain)
 

@@ -9,10 +9,11 @@ class Degree(Enum):
     POSTDOC = "Postdoctoral"
 
 class LabMember(State):
-    def __init__(self, email, fullName, degree, secondEmail=None, linkedin_link=None, media=None, user_id=None, bio=None):
+    def __init__(self, email, fullName, degree, secondEmail=None, linkedin_link=None, media=None, user_id=None, bio=None, scholar_link=None):
         self.email = email
         self.secondEmail = secondEmail
         self.linkedin_link = linkedin_link
+        self.scholar_link = scholar_link
         self.media = media
         self.fullName = fullName
         self.user_id = user_id
@@ -44,6 +45,9 @@ class LabMember(State):
     def set_linkedin_link(self, linkedin_link):
         self.linkedin_link = linkedin_link
 
+    def set_scholar_Link(self, scholarLink):
+        self.scholar_link = scholarLink
+
     def set_media(self, media):
         self.media = media
 
@@ -61,6 +65,9 @@ class LabMember(State):
 
     def get_linkedin_link(self):
         return self.linkedin_link
+    
+    def get_scholarLink(self):
+        return self.scholar_link
 
     def get_media(self):
         return self.media
@@ -74,8 +81,15 @@ class LabMember(State):
     def get_bio(self):
         return self.bio
 
+    #TODO: fix this method so support scholar link as well.
     def get_details(self):
-        return {"email": self.email, "secondEmail": self.secondEmail, "linkedin_link": self.linkedin_link, "media": self.media, "fullName": self.fullName, "degree": self.degree, "bio": self.bio}
+        return {"email": self.email,
+                "secondEmail": self.secondEmail,
+                "linkedin_link": self.linkedin_link,
+                "media": self.media,
+                "fullName": self.fullName,
+                "degree": self.degree,
+                "bio": self.bio}
 
     def get_dto(self, domain) -> lab_member_dto:
         return lab_member_dto(
@@ -83,6 +97,7 @@ class LabMember(State):
             email=self.email,
             second_email=self.secondEmail,
             linkedin_link=self.linkedin_link,
+            scholar_link=  self.scholar_link,
             media=self.media,
             full_name=self.fullName,
             degree=self.degree,

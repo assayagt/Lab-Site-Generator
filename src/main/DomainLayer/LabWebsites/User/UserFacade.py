@@ -211,7 +211,7 @@ class UserFacade:
         if email not in self.managers and email not in self.siteCreator:
             raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER_OR_CREATOR.value)
 
-    def get_member_by_email(self, email):
+    def get_member_by_email(self, email) -> LabMember:
         """Retrieve an active Member object by email."""
         if email in self.members:
             return self.members[email]
@@ -333,6 +333,13 @@ class UserFacade:
             member = self.get_alumni_by_email(email)
         member.set_linkedin_link(linkedin_link)
         self.dal_controller.LabMembers_repo.save_LabMember(member.get_dto(self.domain))  # ===========================
+    
+    def set_scholar_link_by_member(self, email, scholar_link):
+        member = self.get_member_by_email(email)
+        if member is None:
+            member = self.get_alumni_by_email(email)
+        member.set_scholar_Link(scholar_link)
+        self.dal_controller.LabMembers_repo.save_LabMember(member.get_dto(self.domain))  # ===========================
 
     def set_media_by_member(self, email, media):
         member = self.get_member_by_email(email)
@@ -391,7 +398,17 @@ class UserFacade:
         )
         if not linkedin_pattern.match(linkedin_link):
             raise ValueError(ExceptionsEnum.INVALID_LINKEDIN_LINK.value)
-
+        
+    def error_if_scholar_link_not_valid(self, scholar_link):
+        """
+        Validates if the given Google Scholar link is strictly a profile link.
+        """
+        # Strict regex for valid Google Scholar profile URLs only
+        scholar_pattern = re.compile(
+            r"^https://(www\.)?scholar\.google\.com/citations\?user=[a-zA-Z0-9_-]{5,}&?$"
+        )
+        if not scholar_pattern.match(scholar_link):
+            raise ValueError(ExceptionsEnum.INVALID_SCHOLAR_LINK.value)
 
     def get_pending_registration_emails(self):
         # Get all the emails that are in the registration requests list and that their value is RegistrationStatus.PENDING.value
