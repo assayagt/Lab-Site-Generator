@@ -11,6 +11,16 @@
   margin: 0 auto;
   font-family: "Oswald", sans-serif;
 }
+.map_container {
+  width: 100%;
+  height: auto;
+  margin-top: 20px;
+}
+.contact_info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 
 /* Page Title */
 .page_title {

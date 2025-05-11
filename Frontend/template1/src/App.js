@@ -1,6 +1,8 @@
 import "./App.css";
 import HomePage from "./Pages/HomePage/HomePage";
 import HomePage2 from "./Pages/HomePage/HomePage2";
+import MediaPage from "./Pages/MediaPage/MediaPage";
+
 import React, { useEffect, useState } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
@@ -184,6 +186,7 @@ function App() {
                   }
                 />
                 <Route path="/Publications" element={<PublicationsPage />} />
+                <Route path="/Media" element={<MediaPage />} />
               </Routes>
             </Router>
           </EditModeProvider>
