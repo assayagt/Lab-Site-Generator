@@ -124,7 +124,7 @@ function Header(props) {
 
       <div className="icon_photo">
         <button
-          className="hamburger-menu"
+          className="hamburger-menu-1"
           onClick={() => {
             setIsNavbarExpanded((prev) => !prev);
             setShowAccountMenu(false);

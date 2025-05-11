@@ -416,7 +416,7 @@ input:checked + .slider:before {
 }
 
 /* Hamburger menu styling */
-.hamburger-menu {
+.hamburger-menu-1 {
   display: none;
   flex-direction: column;
   gap: 5px;
@@ -426,7 +426,7 @@ input:checked + .slider:before {
   padding: 10px;
 }
 
-.hamburger-menu span {
+.hamburger-menu-1 span {
   width: 25px;
   height: 3px;
   background-color: #000;
@@ -436,7 +436,7 @@ input:checked + .slider:before {
 
 /* Responsive behavior for mobile */
 @media (max-width: 1024px) {
-  .hamburger-menu {
+  .hamburger-menu-1 {
     display: flex;
   }
 }

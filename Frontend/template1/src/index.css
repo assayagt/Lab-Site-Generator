@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;600&display=swap");
 
 body {
-  background-image: url('./images/backg.jpg');
+  /* background-image: url('./images/backg.jpg'); */
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-size: cover; /* Ensures the whole image fits inside */
@@ -12,9 +12,9 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-html{
+html {
   background-color: #efefef;
 }

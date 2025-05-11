@@ -1,0 +1,498 @@
+/* ParticipantsPage.css */
+.members-page {
+  color: #333;
+  min-height: calc(100vh - 80px);
+  background-color: rgba(255, 255, 255, 0.85);
+}
+
+.members-page__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+/* Header and Controls */
+.members-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.members-page__title {
+  font-size: 2.25rem;
+  font-weight: 600;
+  color: #222;
+  margin: 0;
+}
+
+.members-page__controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.members-page__select {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background-color: white;
+  font-size: 0.95rem;
+  color: #333;
+  min-width: 160px;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+}
+
+.members-page__select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.members-page__add-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.members-page__add-button:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Degree Sections */
+.degree-section {
+  margin-bottom: 48px;
+}
+
+.degree-section__title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 24px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.degree-section__empty {
+  padding: 24px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
+
+/* Member Grid and Cards */
+.member-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+  gap: 24px;
+}
+
+.member-card {
+  display: flex;
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 200px;
+  position: relative;
+}
+
+.member-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.member-card--alumni {
+  background-color: #f9f9f9;
+}
+
+.member-card__photo {
+  width: 140px;
+  height: 100%;
+  background-color: #eee;
+  flex-shrink: 0;
+}
+
+.member-card__content {
+  flex: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.member-card__name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #222;
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.member-card__degree {
+  font-size: 0.875rem;
+  font-weight: normal;
+  color: #666;
+  margin-left: auto;
+}
+
+.member-card__bio {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.5;
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-bottom: 12px;
+  padding-right: 4px;
+  max-height: 80px;
+}
+
+/* Custom scrollbar */
+.member-card__bio::-webkit-scrollbar {
+  width: 4px;
+}
+
+.member-card__bio::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.member-card__bio::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 10px;
+}
+
+.member-card__bio::-webkit-scrollbar-thumb:hover {
+  background: #ccc;
+}
+
+.member-card__contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.member-card__email,
+.member-card__linkedin {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: #3498db;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.member-card__email:hover,
+.member-card__linkedin:hover {
+  color: #2980b9;
+  text-decoration: underline;
+}
+
+/* Edit Mode Options */
+.member-card__edit-options {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  gap: 12px;
+  padding: 8px 16px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-top-left-radius: 8px;
+  z-index: 1;
+}
+
+.edit-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: #555;
+  cursor: pointer;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal__content {
+  width: 100%;
+  max-width: 500px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  padding: 24px;
+  position: relative;
+}
+
+.modal__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #999;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.modal__close:hover {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.modal__title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #222;
+  margin: 0 0 24px 0;
+}
+
+.modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-field__label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-field__input,
+.form-field__select {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-field__input:focus,
+.form-field__select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.form-field--checkbox {
+  flex-direction: row;
+  align-items: center;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox input {
+  width: 16px;
+  height: 16px;
+}
+
+.modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.button--primary {
+  background-color: #3498db;
+  color: white;
+}
+
+.button--primary:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.button--secondary {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.button--secondary:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.button--outline {
+  background-color: transparent;
+  color: #3498db;
+  border: 1px solid #3498db;
+}
+
+.button--outline:hover {
+  background-color: rgba(52, 152, 219, 0.1);
+  transform: translateY(-2px);
+}
+
+.button--outline-danger {
+  background-color: transparent;
+  color: #e74c3c;
+  border: 1px solid #e74c3c;
+}
+
+.button--outline-danger:hover {
+  background-color: rgba(231, 76, 60, 0.1);
+  transform: translateY(-2px);
+}
+
+.button--disabled {
+  background-color: #f0f0f0;
+  color: #999;
+  cursor: not-allowed;
+}
+
+/* Loading State */
+.members-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  gap: 16px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(52, 152, 219, 0.3);
+  border-radius: 50%;
+  border-top-color: #3498db;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+  .member-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .members-page__container {
+    padding: 24px 16px;
+  }
+
+  .members-page__title {
+    font-size: 1.75rem;
+  }
+
+  .members-page__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .members-page__controls {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .member-card {
+    height: auto;
+    flex-direction: column;
+  }
+
+  .member-card__photo {
+    width: 100%;
+    height: 120px;
+  }
+
+  .modal__content {
+    padding: 20px 16px;
+  }
+
+  .form-field__input,
+  .form-field__select {
+    padding: 10px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .members-page__title {
+    font-size: 1.5rem;
+  }
+
+  .modal__actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .button {
+    width: 100%;
+    text-align: center;
+  }
+}

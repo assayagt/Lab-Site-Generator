@@ -1,5 +1,6 @@
 import "./App.css";
 import HomePage from "./Pages/HomePage/HomePage";
+import HomePage2 from "./Pages/HomePage/HomePage2";
 import React, { useEffect, useState } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
@@ -9,10 +10,17 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom"; // Import Routes, Navigate
+import ParticipantsPage2 from "./Pages/ParticipantsPage/ParticipantsPage2";
+
 import ParticipantsPage from "./Pages/ParticipantsPage/ParticipantsPage";
 import ContactUsPage from "./Pages/ContactUsPage/ContactUsPage";
+import ContactUsPage2 from "./Pages/ContactUsPage/ContactUsPage2";
 import Header from "./Components/Header/Header";
+import Header2 from "./Components/Header2/Header2";
 import AccountPage from "./Pages/AccountPage/AccountPage";
+
+import AccountPage2 from "./Pages/AccountPage/AccountPage2";
+
 import PublicationsPage from "./Pages/PublicationsPage/PublicationsPage";
 //import publications from "./publications.json"
 import { AuthProvider } from "./Context/AuthContext";
@@ -106,33 +114,75 @@ function App() {
         <NotificationProvider>
           <EditModeProvider>
             <Router>
-              <Header
-                components={components}
-                title={websiteData.websiteName}
-                logo={websiteData.logo}
-              ></Header>
+              {websiteData.template === "template1" ? (
+                <Header
+                  components={components}
+                  title={websiteData.websiteName}
+                  logo={websiteData.logo}
+                ></Header>
+              ) : (
+                <Header2
+                  components={components}
+                  title={websiteData.websiteName}
+                  logo={websiteData.logo}
+                ></Header2>
+              )}
+
               <Routes>
                 <Route
                   path="/"
                   element={
-                    <HomePage
-                      about_us={websiteData.about_us}
-                      photo={websiteData.home_picture}
-                    />
+                    websiteData.template === "template1" ? (
+                      <HomePage
+                        about_us={websiteData.about_us}
+                        photo={websiteData.home_picture}
+                      />
+                    ) : (
+                      <HomePage2
+                        about_us={websiteData.about_us}
+                        photo={websiteData.home_picture}
+                      />
+                    )
                   }
                 />
-                <Route path="/LabMembers" element={<ParticipantsPage />} />
+                <Route
+                  path="/LabMembers"
+                  element={
+                    websiteData.template === "template1" ? (
+                      <ParticipantsPage />
+                    ) : (
+                      <ParticipantsPage2 />
+                    )
+                  }
+                />
                 <Route
                   path="/ContactUs"
                   element={
-                    <ContactUsPage
-                      address="Ben Gurion University of the Negev"
-                      email="roni@bgu.ac.il"
-                      phone="+972 523456789"
-                    />
+                    websiteData.template === "template1" ? (
+                      <ContactUsPage
+                        address="Ben Gurion University of the Negev"
+                        email="roni@bgu.ac.il"
+                        phone="+972 523456789"
+                      />
+                    ) : (
+                      <ContactUsPage2
+                        address="Ben Gurion University of the Negev"
+                        email="roni@bgu.ac.il"
+                        phone="+972 523456789"
+                      />
+                    )
                   }
                 />
-                <Route path="/Account" element={<AccountPage />} />
+                <Route
+                  path="/Account"
+                  element={
+                    websiteData.template === "template1" ? (
+                      <AccountPage />
+                    ) : (
+                      <AccountPage2 />
+                    )
+                  }
+                />
                 <Route path="/Publications" element={<PublicationsPage />} />
               </Routes>
             </Router>
