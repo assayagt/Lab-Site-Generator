@@ -490,7 +490,7 @@ button {
 
 .approval-modal select {
   cursor: pointer;
-  width: 107%;
+  width: 100%;
 }
 
 .approval-modal button.approve-button {

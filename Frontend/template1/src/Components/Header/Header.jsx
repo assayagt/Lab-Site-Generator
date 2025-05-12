@@ -89,7 +89,10 @@ function Header(props) {
       location.pathname === "/Account" ? navigate("/") : navigate("/");
     }
   };
-
+  const handleNavigation = () => {
+    navigate("/Account?section=notifications");
+    setShowAccountMenu(false);
+  };
   return (
     <div className="header">
       <div className="header_title_name">
@@ -187,6 +190,15 @@ function Header(props) {
                       }}
                     >
                       Logout
+                    </button>
+                    <button
+                      className="notifications_button"
+                      onClick={() => {
+                        handleNavigation();
+                        setShowAccountMenu(false);
+                      }}
+                    >
+                      Notifications
                     </button>
                   </div>
                 ) : (

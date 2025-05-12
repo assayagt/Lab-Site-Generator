@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import "./AccountPage.css";
+import { useNavigate, useLocation } from "react-router-dom";
+
 import accountIcon from "../../images/account_avatar.svg";
 import cameraIcon from "../../images/camera_icon.svg";
 import searchIcon from "../../images/search_icon.svg";
@@ -27,7 +29,13 @@ import { NotificationContext } from "../../Context/NotificationContext";
 import ErrorPopup from "../../Components/PopUp/ErrorPopup";
 
 const AccountPage = () => {
-  const [activeSection, setActiveSection] = useState("personal-info");
+  const location = useLocation();
+
+  const [activeSection, setActiveSection] = useState(() => {
+    const params = new URLSearchParams(location.search);
+    const section = params.get("section");
+    return section || "personal-info";
+  });
   const [userDetails, setUserDetails] = useState({
     bio: "",
     email: "",

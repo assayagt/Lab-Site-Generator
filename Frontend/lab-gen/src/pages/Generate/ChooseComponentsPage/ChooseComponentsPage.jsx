@@ -574,28 +574,34 @@ const ChooseComponentsPage = () => {
                       Enter your address
                     </label>
                   </div>
-                  {mapCoordinates && (
-                    <div className="map_container">
-                      <MapContainer
-                        center={[mapCoordinates.lat, mapCoordinates.lng]}
-                        zoom={15}
-                        style={{
-                          height: "300px",
-                          width: "100%",
-                          marginTop: "20px",
-                        }}
-                      >
-                        <TileLayer
-                          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                          attribution="&copy; OpenStreetMap contributors"
-                        />
+                  <div className="map_container">
+                    <MapContainer
+                      center={
+                        mapCoordinates
+                          ? [mapCoordinates.lat, mapCoordinates.lng]
+                          : [31.2615, 34.7978] // BGU as default
+                      }
+                      zoom={15}
+                      style={{
+                        height: "300px",
+                        width: "95%",
+                        marginTop: "20px",
+                        borderRadius: "10px",
+                      }}
+                    >
+                      <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution="&copy; OpenStreetMap contributors"
+                      />
+                      {mapCoordinates && (
                         <Marker
                           position={[mapCoordinates.lat, mapCoordinates.lng]}
                         />
-                        <LocationSelector />
-                      </MapContainer>
-                    </div>
-                  )}
+                      )}
+                      <LocationSelector />
+                    </MapContainer>
+                  </div>
+
                   {contactUs_usSave != "" ? (
                     <button
                       className="about_contact_button"
