@@ -50,8 +50,8 @@
   right: 0;
   top: 50px;
   background-color: white;
-  padding: 20px;
-  width: 200px;
+  padding: 25px;
+  width: 230px;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   z-index: 100;
@@ -449,4 +449,33 @@ input:checked + .slider:before {
   .edit-mode-container {
     display: none !important;
   }
+}
+/* Add these CSS rules to your existing Header.css */
+
+.logout_button svg,
+.notifications_button svg,
+.my_sites_button svg,
+.login_button svg {
+  flex-shrink: 0;
+  color: #666;
+  transition: color 0.2s ease;
+}
+
+.logout_button:hover svg,
+.notifications_button:hover svg,
+.my_sites_button:hover svg,
+.login_button:hover svg {
+  color: #3498db;
+}
+
+/* Ensures proper alignment of the notification badge */
+.notifications_button {
+  position: relative;
+}
+
+/* Better spacing for buttons with icons */
+.choose_item button {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Space between icon and text */
 }
