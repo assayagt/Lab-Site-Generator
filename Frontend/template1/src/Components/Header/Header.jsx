@@ -153,7 +153,7 @@ function Header(props) {
         )}
 
         <div
-          className="menu"
+          className={`menu ${showAccountMenu ? "active" : ""}`}
           onClick={() => {
             setShowAccountMenu((prev) => !prev);
             setIsNavbarExpanded(false);
