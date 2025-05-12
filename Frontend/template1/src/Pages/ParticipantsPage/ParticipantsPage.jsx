@@ -34,15 +34,15 @@ const ParticipantsPage = () => {
   const degreeOrder = {
     "Ph.D.": 1,
     "M.Sc.": 2,
-    "D.Sc.": 3,
-    "B.Sc.": 4,
+    "B.Sc.": 3,
+    "Research Assistant": 4,
     "Faculty Member": 5,
   };
   const staticDegreeOptions = [
     "Ph.D.",
     "M.Sc.",
     "B.Sc.",
-    "D.Sc.",
+    "Research Assistant",
     "Faculty Member",
     "Alumni",
   ];

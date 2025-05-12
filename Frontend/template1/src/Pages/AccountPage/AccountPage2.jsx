@@ -968,8 +968,8 @@ const AccountPage = () => {
                 <option value="B.Sc.">B.Sc.</option>
                 <option value="M.Sc.">M.Sc.</option>
                 <option value="Ph.D.">Ph.D.</option>
-                <option value="Postdoc">Postdoc</option>
                 <option value="Faculty Member">Faculty Member</option>
+                <option value="Research Assistant">Research Assistant</option>
               </select>
             </div>
 
