@@ -408,3 +408,18 @@ input:checked + .slider:before {
     display: none;
   }
 }
+.account-dropdown button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.notification-indicator {
+  width: 8px;
+  height: 8px;
+  background-color: #e74c3c;
+  border-radius: 50%;
+  margin-left: 8px;
+  display: inline-block;
+}

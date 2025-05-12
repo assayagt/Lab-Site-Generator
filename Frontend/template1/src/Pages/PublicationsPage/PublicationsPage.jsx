@@ -363,13 +363,14 @@ const PublicationPage = () => {
       </div>
       {showAddForm && (
         <div className="custom-modal-overlay">
-          <div className="custom-modal">
+          <div className="modal__content">
             <button
               className="close-button"
               onClick={() => setShowAddForm(false)}
             >
               X
             </button>
+            <h2 className="modal__title">Add New Publication</h2>
             <AddPublicationForm onSuccess={() => setShowAddForm(false)} />
           </div>
         </div>

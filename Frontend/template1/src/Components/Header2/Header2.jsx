@@ -35,6 +35,12 @@ function Header(props) {
     }
   };
 
+  // Add the notifications navigation function
+  const handleNotificationsClick = () => {
+    navigate("/Account?section=notifications");
+    setShowAccountMenu(false);
+  };
+
   useEffect(() => {
     if (!isLoggedIn && location.pathname === "/Account") {
       navigate("/");
@@ -172,6 +178,12 @@ function Header(props) {
                       }}
                     >
                       My Account
+                    </button>
+                    <button onClick={handleNotificationsClick}>
+                      Notifications
+                      {hasNewNotifications && notifications.length !== 0 && (
+                        <span className="notification-indicator" />
+                      )}
                     </button>
                     <button
                       onClick={() => {

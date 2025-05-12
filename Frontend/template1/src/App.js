@@ -117,11 +117,11 @@ function App() {
           <EditModeProvider>
             <Router>
               {websiteData.template === "template1" ? (
-                <Header
+                <Header2
                   components={components}
                   title={websiteData.websiteName}
                   logo={websiteData.logo}
-                ></Header>
+                ></Header2>
               ) : (
                 <Header2
                   components={components}
@@ -179,7 +179,7 @@ function App() {
                   path="/Account"
                   element={
                     websiteData.template === "template1" ? (
-                      <AccountPage />
+                      <AccountPage2 />
                     ) : (
                       <AccountPage2 />
                     )

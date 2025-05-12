@@ -737,3 +737,115 @@
     text-align: center;
   }
 }
+
+/* Add these CSS rules to your AccountPage2.css file */
+
+/* Fix for the camera upload button positioning */
+.profile-photo__container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 16px;
+}
+
+.profile-photo__image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-photo__upload {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 36px;
+  height: 36px;
+  background-color: #3498db;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  z-index: 2; /* Ensure the button appears on top */
+}
+
+.profile-photo__upload:hover {
+  background-color: #2980b9;
+}
+
+.profile-photo__upload svg {
+  width: 20px;
+  height: 20px;
+  color: #fff;
+}
+/* Replace the camera button CSS at the bottom of your AccountPage2.css file with this */
+
+/* Fix for the camera upload button positioning */
+.profile-photo {
+  flex-shrink: 0;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  padding: 10px; /* Add padding to prevent clipping */
+  overflow: visible !important; /* Force visible overflow */
+}
+
+.profile-photo__container {
+  position: relative;
+  width: 150px; /* Keep consistent with your original size */
+  height: 150px;
+  margin: 0 auto 16px;
+  overflow: visible !important; /* Change from hidden to visible */
+}
+
+.profile-photo__image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-photo__upload {
+  position: absolute;
+  bottom: -5px; /* Move slightly outside the container */
+  right: -5px; /* Move slightly outside the container */
+  width: 40px; /* Match your original button size */
+  height: 40px;
+  background-color: #3498db;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 100; /* Very high z-index to ensure visibility */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+}
+
+.profile-photo__upload:hover {
+  background-color: #2980b9;
+  transform: scale(1.1);
+}
+
+.profile-photo__upload svg {
+  width: 20px;
+  height: 20px;
+  stroke: #fff;
+  fill: none;
+}
+
+/* Ensure parent containers don't clip the button */
+.profile-section__content {
+  overflow: visible !important;
+}
+
+.profile-section {
+  overflow: visible !important;
+}

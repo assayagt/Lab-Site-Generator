@@ -1,11 +1,128 @@
-.submit-pub {
-  max-width: max-content;
-  padding: 10px;
-  border-radius: 50px;
-  border: 1px solid #ccc;
-  color: #ccc;
+/* AddPublicationForm.css - Matches AccountPage design */
+
+.publication-form-container {
+  width: 100%;
 }
-.submit-pub:hover {
-  border: 1px solid #7b7b7b;
-  color: #7b7b7b;
+
+/* Error Alert - Matches notification style */
+.error-alert {
+  background-color: #fee;
+  color: #e74c3c;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #fdd;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+
+/* Form Styles */
+.publication-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Form Field Styles - Exactly matching AccountPage */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-field__label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-field__label .required {
+  color: #e74c3c;
+}
+
+.form-field__input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+.form-field__input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  background-color: white;
+}
+
+.form-field__input::placeholder {
+  color: #9ca3af;
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+/* Button Styles - Exactly matching AccountPage */
+.button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.button--primary {
+  background-color: #3498db;
+  color: white;
+}
+
+.button--primary:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.button--primary:active {
+  transform: translateY(0);
+}
+
+.button--primary:disabled {
+  background-color: #f0f0f0;
+  color: #999;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.button--primary:disabled:hover {
+  background-color: #f0f0f0;
+  box-shadow: none;
+}
+
+/* Responsive Design - Matching AccountPage breakpoints */
+@media (max-width: 768px) {
+  .form-field__input {
+    padding: 10px;
+    font-size: 0.95rem;
+  }
+
+  .button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .publication-form {
+    gap: 16px;
+  }
+
+  .form-field__label {
+    font-size: 0.9rem;
+  }
 }

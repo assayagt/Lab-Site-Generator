@@ -4,6 +4,8 @@ import accountIcon from "../../images/account_avatar.svg";
 import AddPublicationForm from "../../Components/AddPublicationForm/AddPubliactionForm";
 import SuccessPopup from "../../Components/PopUp/SuccessPopup";
 import ErrorPopup from "../../Components/PopUp/ErrorPopup";
+import { useNavigate, useLocation } from "react-router-dom";
+
 import {
   getUserDetails,
   approveRegistration,
@@ -24,7 +26,27 @@ import { fetchUserNotifications } from "../../services/UserService";
 import { NotificationContext } from "../../Context/NotificationContext";
 
 const AccountPage = () => {
-  const [activeSection, setActiveSection] = useState("personal-info");
+  const location = useLocation(); // Add this
+
+  const [activeSection, setActiveSection] = useState(() => {
+    const params = new URLSearchParams(location.search);
+    const section = params.get("section");
+    return section || "personal-info";
+  });
+
+  // ... rest of your existing state definitions
+
+  // Optional: Update active section when URL changes
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const section = params.get("section");
+    if (
+      section &&
+      ["personal-info", "my-publications", "notifications"].includes(section)
+    ) {
+      setActiveSection(section);
+    }
+  }, [location.search]);
   const [userDetails, setUserDetails] = useState({
     bio: "",
     email: "",
@@ -98,20 +120,30 @@ const AccountPage = () => {
   };
 
   // Fetch and update notifications when viewing notifications section
+  const [isLoadingNotifications, setIsLoadingNotifications] = useState(false);
+
+  // Replace the existing notification fetching effect with this:
   useEffect(() => {
     const fetchAndUpdateNotifications = async () => {
-      if (activeSection === "notifications") {
+      if (activeSection === "notifications" && !isLoadingNotifications) {
         const email = sessionStorage.getItem("userEmail");
         if (email) {
-          const updatedNotifications = await fetchUserNotifications(email);
-          updateNotifications(updatedNotifications);
-          setHasNewNotifications(false);
+          setIsLoadingNotifications(true);
+          try {
+            const updatedNotifications = await fetchUserNotifications(email);
+            updateNotifications(updatedNotifications);
+            setHasNewNotifications(false);
+          } catch (error) {
+            console.error("Error fetching notifications:", error);
+          } finally {
+            setIsLoadingNotifications(false);
+          }
         }
       }
     };
 
     fetchAndUpdateNotifications();
-  }, [activeSection, updateNotifications, setHasNewNotifications]);
+  }, [activeSection]); // Only depend on activeSection
 
   // Clear popup messages after delay
   useEffect(() => {
