@@ -366,8 +366,14 @@ const ChooseComponentsPage = () => {
                   <input type="checkbox" disabled />
                   Media
                 </label>
-                <label className="disabled">
-                  <input type="checkbox" disabled />
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={components?.includes("Page for Participant")}
+                    onChange={() =>
+                      handleComponentChange("Page for Participant")
+                    }
+                  />
                   Page for each participant
                 </label>
 

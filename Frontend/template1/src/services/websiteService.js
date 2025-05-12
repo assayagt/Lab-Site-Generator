@@ -156,7 +156,7 @@ export const setFullNameByMember = async (userId, fullName, domain) => {
       fullName,
       domain,
     });
-    return response.data.message;
+    return response.data;
   } catch (error) {
     console.error("Error setting full name:", error);
     return null;
@@ -170,7 +170,7 @@ export const setDegreeByMember = async (userId, degree, domain) => {
       degree,
       domain,
     });
-    return response.data.message;
+    return response.data;
   } catch (error) {
     console.error("Error setting degree:", error);
     return null;
@@ -184,7 +184,7 @@ export const setBioByMember = async (userId, bio, domain) => {
       bio,
       domain,
     });
-    return response.data.message;
+    return response.data;
   } catch (error) {
     console.error("Error setting bio:", error);
     return null;

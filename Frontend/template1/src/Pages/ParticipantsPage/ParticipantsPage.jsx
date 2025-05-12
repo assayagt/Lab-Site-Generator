@@ -13,8 +13,10 @@ import { useEditMode } from "../../Context/EditModeContext";
 import ErrorPopup from "../../Components/PopUp/ErrorPopup";
 import SuccessPopup from "../../Components/PopUp/SuccessPopup";
 import { FaLinkedin, FaEnvelope } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const ParticipantsPage = () => {
+  const navigate = useNavigate();
   const [selectedDegree, setSelectedDegree] = useState("All");
   const [participants, setParticipants] = useState([]);
   const [alumni, setAlumni] = useState([]);
@@ -220,6 +222,9 @@ const ParticipantsPage = () => {
     }));
   };
 
+  const NavigateProfile = (email) => {
+    navigate(`/participant/${encodeURIComponent(email)}`);
+  };
   const handleAddParticipant = async () => {
     const { fullName, email, degree, isManager, isAlumni } = newParticipant;
     const userId = sessionStorage.getItem("sid");
@@ -337,7 +342,11 @@ const ParticipantsPage = () => {
           ) : (
             <div className="degree-section-items">
               {members.map((member) => (
-                <div key={member.email} className="participant">
+                <div
+                  key={member.email}
+                  className="participant"
+                  onClick={() => NavigateProfile(member.email)}
+                >
                   <div className="personal_photo"></div>
                   <div className="personal_info_member">
                     <div className="fullname">{member.fullName}</div>

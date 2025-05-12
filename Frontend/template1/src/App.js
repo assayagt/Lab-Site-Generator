@@ -5,7 +5,7 @@ import MediaPage from "./Pages/MediaPage/MediaPage";
 
 import React, { useEffect, useState } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-
+import ParticipantProfile from "./Pages/ParticipantProfile/ParticipantProfile";
 import {
   BrowserRouter as Router,
   Route,
@@ -147,6 +147,11 @@ function App() {
                     )
                   }
                 />
+                <Route
+                  path="/participant/:email"
+                  element={<ParticipantProfile />}
+                />
+
                 <Route
                   path="/LabMembers"
                   element={

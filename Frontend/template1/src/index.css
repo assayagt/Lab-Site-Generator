@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;600&display=swap");
 
 body {
-  /* background-image: url('./images/backg.jpg'); */
+  background-image: url("./images/backg.jpg");
   margin: 0;
   font-family: "Inter", sans-serif;
   -webkit-font-smoothing: antialiased;

@@ -377,6 +377,7 @@ const AccountPage = () => {
         setSaveButtonText("Saved");
         setHasUnsavedChanges(false);
       } else {
+        console.log(res);
         setErrorMessage("Error: " + res?.message);
       }
     } catch (error) {
