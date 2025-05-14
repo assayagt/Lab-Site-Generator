@@ -218,7 +218,7 @@ button {
 .my-publications {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
   margin-left: 20px;
 }
 
@@ -373,6 +373,8 @@ button {
 
 /* Modal Box */
 .custom-modal {
+  width: 100%;
+  max-width: 500px;
   background: #efefef;
   border-radius: 10px;
   padding: 20px;

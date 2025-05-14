@@ -449,6 +449,10 @@ const useChooseComponents = () => {
   };
 
   const handleGenerate = async () => {
+    if (websiteData.generated) {
+      setSuccsessMessage("Saved, Please reload your website");
+      return;
+    }
     setIsLoading(true); // Show loading popup
     try {
       console.log(websiteData.domain);

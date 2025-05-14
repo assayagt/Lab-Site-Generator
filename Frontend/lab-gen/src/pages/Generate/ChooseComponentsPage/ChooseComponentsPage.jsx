@@ -259,7 +259,7 @@ const ChooseComponentsPage = () => {
                       className="generate_button"
                       onClick={handleGenerate}
                     >
-                      Generate Website
+                      {websiteData.generated ? "Save" : "Generate Website"}
                     </button>
                   </div>
                 </ul>

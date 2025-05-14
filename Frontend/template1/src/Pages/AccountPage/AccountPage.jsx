@@ -601,6 +601,7 @@ const AccountPage = () => {
             {isAddPublicationModalOpen && (
               <div className="custom-modal-overlay">
                 <div className="custom-modal">
+                  <h2>Add New Publication</h2>
                   <button
                     className="close-button"
                     onClick={() => setIsAddPublicationModalOpen(false)}
