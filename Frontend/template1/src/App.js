@@ -108,7 +108,9 @@ function App() {
     return <div>Loading...</div>; // Show loading indicator
   }
 
-  const components = [...new Set(websiteData.components)];
+  const components = [...new Set(websiteData.components)].filter(
+    (component) => component !== "Page for Participant"
+  );
 
   return (
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>

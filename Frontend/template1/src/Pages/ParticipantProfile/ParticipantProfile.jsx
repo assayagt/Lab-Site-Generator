@@ -8,7 +8,6 @@ import {
   getAllAlumni,
   getApprovedPublications,
 } from "../../services/websiteService";
-
 const ParticipantProfile = () => {
   const { email } = useParams(); // Get participant email from URL
   const navigate = useNavigate();
@@ -86,9 +85,9 @@ const ParticipantProfile = () => {
             const participantPublications = allPublications.filter((pub) => {
               // Multiple ways to match the participant in authors
               if (participantData && pub.authors) {
-                const authorsLower = pub.authors.toLowerCase();
-                const fullNameLower = participantData.fullName?.toLowerCase();
-                const emailLower = participantData.email?.toLowerCase();
+                const authorsLower = pub.authors;
+                const fullNameLower = participantData.fullName;
+                const emailLower = participantData.email;
 
                 // Check if full name appears in authors
                 if (fullNameLower && authorsLower.includes(fullNameLower)) {
@@ -339,7 +338,7 @@ const ParticipantProfile = () => {
           ) : (
             <div className="publications-list">
               {filteredPublications.map((pub, index) => (
-                <div key={pub.id || index} className="publication-card">
+                <div key={pub.id || index} className="publication-card_user">
                   <div className="publication-header">
                     <h3 className="publication-title">{pub.title}</h3>
                     <span className="publication-year">
@@ -351,6 +350,9 @@ const ParticipantProfile = () => {
 
                   {pub.journal_name && (
                     <p className="publication-journal">{pub.journal_name}</p>
+                  )}
+                  {pub.description && (
+                    <p className="publication-journal">{pub.description}</p>
                   )}
 
                   <div className="publication-links">
