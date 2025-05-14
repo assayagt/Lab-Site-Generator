@@ -569,8 +569,7 @@ const useChooseComponents = () => {
     }
   };
 
-  const isValidDomain = (domain) =>
-    /^(?!:\/\/)([A-Za-z0-9-]+\.)+[A-Za-z]{2,6}$/.test(domain);
+  const isValidDomain = (domain) => domain?.trim() !== "";
 
   const handleSaveComponents = async () => {
     if (components.length <= 1) {
