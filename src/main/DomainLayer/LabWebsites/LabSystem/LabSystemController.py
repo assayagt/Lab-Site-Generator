@@ -296,7 +296,8 @@ class LabSystemController:
                 userFacade.getMemberEmailByName(author) for author in publication_details['authors']
             ) if email is not None
         ]
-
+        if len(authors_emails)==0:
+            raise Exception(ExceptionsEnum.AUTHOR_NOT_A_USER.value)
         # Create the new publication
         publication_id = self.websiteFacade.create_new_publication(
             domain, publication_link, publication_details, git_link, video_link, presentation_link, authors_emails

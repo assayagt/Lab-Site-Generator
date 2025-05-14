@@ -236,6 +236,7 @@ export const addPublication = async (
       presentation_link: presentation_link || "",
     });
     if (response) {
+      console.log(response.data);
       return response.data;
     }
   } catch (error) {

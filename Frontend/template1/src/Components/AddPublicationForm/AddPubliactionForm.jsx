@@ -42,9 +42,7 @@ const AddPublicationForm = ({ onSuccess }) => {
           onSuccess();
         }
       } else {
-        setError(
-          response.data || "Failed to add publication. Please try again."
-        );
+        setError("Failed to add publication. " + response.message);
       }
     } catch (error) {
       setError("An error occurred while adding the publication.");
