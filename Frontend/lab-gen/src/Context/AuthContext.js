@@ -11,11 +11,11 @@ export const AuthProvider = ({ children }) => {
         sessionStorage.setItem("isLoggedIn", true);
         sessionStorage.setItem("userEmail", data.email);
         //sessionStorage.setItem('sid',"id"); still doesn't exist
-        return true;
+        return data;
       }
-      return false;
+      return data;
     }
-    return false;
+    return data;
   };
 
   const logout = async () => {

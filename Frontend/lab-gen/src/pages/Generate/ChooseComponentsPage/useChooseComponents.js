@@ -527,7 +527,7 @@ const useChooseComponents = () => {
       setIsChanged(false);
       setStep(3);
     } else {
-      setErrorMessage("Could not save. Domain name is invalid.");
+      setErrorMessage("Error:" + data.message);
     }
   };
 

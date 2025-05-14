@@ -8,16 +8,18 @@ import { jwtDecode } from "jwt-decode";
 const LoginPopup = ({ onClose }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(false);
   const { login } = useAuth(); // Access the login function from context
   const navigate = useNavigate();
   const handleLogin = async () => {
     if (email) {
       try {
         let data = await login(email); // Await the login function to get the result
-        if (data === false) {
+        if (data.response === "false") {
           setError(true);
         } else {
           setError(false);
+          setErrorMsg(data);
           onClose();
           navigate("/choose-components");
         }
@@ -36,14 +38,16 @@ const LoginPopup = ({ onClose }) => {
       // const email = decoded.email;
 
       const success = await login(token); // This still hits your backend
-      if (success) {
+      if (success.response === "true") {
         onClose();
         navigate("/choose-components");
       } else {
         setError(true);
+        setErrorMsg(success.message);
       }
     } catch (err) {
       console.error("Google login error:", err);
+      setErrorMsg(err);
       setError(true);
     }
   };
