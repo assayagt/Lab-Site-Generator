@@ -239,41 +239,45 @@ class UploadFilesAndData(Resource):
                 extension = os.path.splitext(file.filename)[1].lower()
                 file_path = None
 
-                # Handle logo
                 if component == 'logo':
-                    if extension in ['.svg', '.png', '.jpg', '.jpeg']:
+                    if extension in ['svg', '.png', '.jpg', '.jpeg']:
                         file_path = os.path.join(website_folder, f"logo{extension}")
                     else:
-                        return jsonify({"error": "Invalid file type for logo. Allowed: SVG, PNG, JPG, JPEG"})
+                        return {
+                            "error": "Invalid file type for logo. Allowed: PNG, JPG, JPEG"
+                        }, 400
 
-                # Handle homepage photo
                 elif component == 'homepagephoto':
                     if extension in ['.jpg', '.jpeg', '.png']:
                         file_path = os.path.join(website_folder, f"homepagephoto{extension}")
                     else:
-                        return jsonify({"error": "Invalid file type for homepage photo. Allowed: JPG, JPEG, PNG"})
+                        return {
+                            "error": "Invalid file type for homepage photo. Allowed: JPG, JPEG, PNG"
+                        }, 400
 
                 else:
-                    return jsonify({"error": f"Invalid file type for component: {component} ({extension})"})
+                    return {
+                        "error": f"Unsupported component: {component}"
+                    }, 400
 
                 if file_path is None:
-                    return jsonify({"error": f"Failed to resolve file path for: {component}"})
+                    return {
+                        "error": f"Failed to resolve file path for: {component}"
+                    }, 500
 
-                print(f"Saving (or replacing): {file_path}")
                 file.save(file_path)
                 uploaded_files.append(os.path.basename(file_path))
 
-            # Optional: save metadata (like website name)
-            
-
-            return jsonify({
+            return {
                 "message": "Files and data uploaded successfully!",
                 "uploaded": uploaded_files
-            })
+            }, 200
 
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"})
-    
+            return {
+                "error": f"An error occurred: {str(e)}"
+            }, 500
+
 
 class GenerateWebsiteResource(Resource):
     def post(self):

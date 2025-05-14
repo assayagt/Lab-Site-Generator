@@ -419,32 +419,46 @@ const useChooseComponents = () => {
         method: "POST",
         body: formDataToSend,
       });
-      const data = await response.json();
-      if (response.ok) {
-        // alert(`${component} data saved successfully!`);
-        setMediaSaveStatus((prev) => ({ ...prev, [component_new]: true }));
 
-        setWebsite((prev) => ({
-          ...prev,
-          files: formData.files,
-        }));
-        if (websiteData.generated) {
-          const saveLogoResponse = await saveLogo(
-            sessionStorage.getItem("sid"),
-            websiteData.domain
-          );
-          console.log(saveLogoResponse);
-          const savePhotoResponse = await saveHomePicture(
-            sessionStorage.getItem("sid"),
-            websiteData.domain
-          );
-          console.log(savePhotoResponse);
+      const contentType = response.headers.get("content-type") || "";
+
+      if (contentType.includes("application/json")) {
+        const data = await response.json();
+
+        if (response.ok) {
+          // ✅ Success
+          setMediaSaveStatus((prev) => ({ ...prev, [component_new]: true }));
+
+          setWebsite((prev) => ({
+            ...prev,
+            files: formData.files,
+          }));
+
+          if (websiteData.generated) {
+            const saveLogoResponse = await saveLogo(
+              sessionStorage.getItem("sid"),
+              websiteData.domain
+            );
+            console.log(saveLogoResponse);
+
+            const savePhotoResponse = await saveHomePicture(
+              sessionStorage.getItem("sid"),
+              websiteData.domain
+            );
+            console.log(savePhotoResponse);
+          }
+        } else {
+          // ❌ Error response with JSON body
+          showError("Error: " + (data.error || "Unknown server error"));
         }
       } else {
-        showError("Error: " + data.error);
+        // ❌ Server didn't send JSON, probably HTML error page
+        const rawText = await response.text();
+        showError("Server error (non-JSON): " + rawText.slice(0, 100));
       }
     } catch (error) {
-      showError("Error: " + error.message);
+      // ❌ Network or parsing error
+      showError("Unexpected Error: " + error.message);
     }
   };
 
