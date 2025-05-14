@@ -281,12 +281,12 @@ function Header(props) {
             </button>
             <h2>Welcome Back</h2>
             <p>Enter your email to log in</p>
-            <input
+            {/* <input
               type="email"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-            />
+            /> */}
             {loginError && (
               <div className="login-error">
                 This email does not exist. Request sent to manager

@@ -63,13 +63,13 @@ const LoginPopup = ({ onClose }) => {
           Login with your University Google account
         </p>
 
-        <input
+        {/* <input
           className="login-input"
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-        />
+        /> */}
 
         {error && (
           <div className="login-error">Invalid email. Please try again.</div>
