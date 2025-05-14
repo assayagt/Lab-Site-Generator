@@ -20,10 +20,18 @@ class Website:
 
     def add_publication_manually(self, publication_link, publication_details, git_link, video_link, presentation_link,
                                  authors_emails) -> PublicationDTO:
-        publication_dto = PublicationDTO(publication_details["title"], publication_details["authors"],
-                                         publication_details["publication_year"], ApprovalStatus.FINAL_PENDING.value,
-                                         publication_link, git_link, video_link, presentation_link,
-                                         publication_details["description"])
+        publication_dto = PublicationDTO(
+    publication_details["title"],
+    publication_details["authors"],
+    publication_details["publication_year"],
+    ApprovalStatus.FINAL_PENDING.value,
+    publication_link,
+    git_link=git_link,
+    video_link=video_link,
+    presentation_link=presentation_link,
+    description=publication_details["description"],
+    author_emails=authors_emails      # ← lands in the right slot
+)
         self.create_publication(publication_dto, authors_emails)
         return publication_dto
 
