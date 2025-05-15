@@ -354,3 +354,20 @@ class GeneratorSystemService:
         except Exception as e:
             return Response(None, str(e))
 
+    def delete_website(self, user_id, domain):
+        """
+        Delete a website if the user has permission.
+        
+        Args:
+            user_id (str): The ID of the user requesting the deletion
+            domain (str): The domain of the website to delete
+            
+        Returns:
+            Response: A response object indicating success or failure
+        """
+        try:
+            # Delete the website
+            self.generator_system_controller.delete_website(user_id, domain)
+            return Response(True, "Website deleted successfully")
+        except Exception as e:
+            return Response(None, str(e))

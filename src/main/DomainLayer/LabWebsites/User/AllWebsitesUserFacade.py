@@ -269,3 +269,20 @@ class AllWebsitesUserFacade:
     def get_fullName_by_email(self, nominated_manager_email, domain):
         userFacade = self.getUserFacadeByDomain(domain)
         return userFacade.get_fullName_by_email(nominated_manager_email)
+
+    def remove_alumni_from_labWebsite(self, manager_userId, alumni_email, domain):
+        userFacade = self.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(manager_userId)
+        userFacade.error_if_user_not_logged_in(manager_userId)
+        userFacade.error_if_user_is_not_manager_or_site_creator(manager_userId)
+        userFacade.remove_alumni(alumni_email)
+
+    def remove_website_data(self, domain):
+        """
+        Remove all data associated with a website from memory.
+        
+        Args:
+            domain (str): The domain of the website to remove
+        """
+        if domain in self.usersFacades:
+            del self.usersFacades[domain]
