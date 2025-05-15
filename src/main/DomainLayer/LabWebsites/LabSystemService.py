@@ -394,3 +394,11 @@ class LabSystemService:
             return Response(True, "System reset successfully")
         except Exception as e:
             return Response(None, str(e))
+
+    def remove_alumni_from_labWebsite(self, manager_user_id, alumni_email, domain):
+        """Remove an alumni and revert them to a lab member (from the lab website, by a manager)."""
+        try:
+            self.lab_system_controller.remove_alumni_from_labWebsite(manager_user_id, alumni_email, domain)
+            return Response(True, "Alumni removed successfully and reverted to lab member")
+        except Exception as e:
+            return Response(None, str(e))

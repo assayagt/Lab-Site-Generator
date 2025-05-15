@@ -1455,6 +1455,22 @@ class GetAllMembersNotifications(Resource):
         except Exception as e:
             return jsonify({"error": str(e)})
 
+class RemoveAlumniFromLabWebsite(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('manager_user_id', type=str, required=True, help="Manager User ID is required")
+        parser.add_argument('alumni_email', type=str, required=True, help="Alumni email is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.remove_alumni_from_labWebsite(args['manager_user_id'], args['alumni_email'], args['domain'])
+            if response.is_success():
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
 # Add resources to the API of lab
 api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')#
 api.add_resource(LoginWebsite, '/api/loginWebsite')#
@@ -1467,6 +1483,7 @@ api.add_resource(SetPublicationPttxLink, '/api/setPublicationPttxLink')
 api.add_resource(InitialApprovePublicationByAuthor, '/api/initialApprovePublicationByAuthor')
 api.add_resource(FinalApprovePublicationByManager, '/api/finalApprovePublicationByManager')
 api.add_resource(AddAlumniFromLabWebsite, '/api/addAlumniFromLabWebsite')
+api.add_resource(RemoveAlumniFromLabWebsite, '/api/removeAlumniFromLabWebsite')
 api.add_resource(RemoveManagerPermission, '/api/removeManagerPermission')
 api.add_resource(GetAllMembersNames, '/api/getAllMembersNames')
 api.add_resource(GetPendingRegistrationEmails, '/api/getPendingRegistrationEmails')

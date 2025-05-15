@@ -583,3 +583,11 @@ class LabSystemController:
         self.allWebsitesUserFacade.reset_system()
         self.websiteFacade.reset_system()
         self.notificationsFacade.reset_system()
+
+    def remove_alumni_from_labWebsite(self, manager_user_id, alumni_email, domain):
+        """
+        Remove an alumni and revert them to a lab member (from the lab website, by a manager).
+        Only managers can perform this operation.
+        Site creator cannot be removed as alumni.
+        """
+        return self.allWebsitesUserFacade.remove_alumni_from_labWebsite(manager_user_id, alumni_email, domain)
