@@ -636,7 +636,12 @@ const AccountPage = () => {
                     X
                   </button>
                   <AddPublicationForm
-                    onSuccess={() => setIsAddPublicationModalOpen(false)}
+                    onSuccess={() => {
+                      setIsAddPublicationModalOpen(false);
+                      // Refresh the page and navigate to my-publications
+                      window.location.href =
+                        window.location.pathname + "?section=my-publications";
+                    }}
                   />{" "}
                 </div>
               </div>
