@@ -173,7 +173,7 @@ class PublicationRepository:
                 title=row['title'],
                 authors=json.loads(row['authors']),
                 publication_year=row['publication_year'],
-                approved = (row['approved']) if row['approved'] else None,
+                approved=ApprovalStatus(row['approved']) if row['approved'] else None,
                 publication_link=row['publication_link'],
                 git_link=row['git_link'],
                 video_link=row['video_link'],
