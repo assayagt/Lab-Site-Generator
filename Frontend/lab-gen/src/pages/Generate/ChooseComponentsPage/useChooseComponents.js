@@ -477,7 +477,7 @@ const useChooseComponents = () => {
           about_us: aboutUsContent,
           lab_address: contactUsData.address,
           lab_mail: contactUsData.email,
-          lab_phone_num: contactUsData.phoneNumber,
+          lab_phone_num: contactUsData.phone_num,
           participants: participants.map((p) => ({
             fullName: p.fullName,
             email: p.email,
