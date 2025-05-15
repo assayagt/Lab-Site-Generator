@@ -285,13 +285,6 @@ class AllWebsitesUserFacade:
             domain (str): The domain of the website to remove
         """
         if domain in self.usersFacades:
-            # Get all members before removing the facade
-            user_facade = self.usersFacades[domain]
-            creator = user_facade.get_site_creator_details()
-
-            # Delete member data from database
-            self.dal_controller.siteCustom_repo.delete_website_from_member(domain, creator.email)
-
             # Remove from memory
             del self.usersFacades[domain]
 
