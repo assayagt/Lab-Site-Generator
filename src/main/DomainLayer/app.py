@@ -1531,6 +1531,7 @@ api.add_resource(RemoveSiteManagerFromGenerator, '/api/removeSiteManager')
 api.add_resource(GetUserDetails, '/api/getUserDetails')
 api.add_resource(GetContactUs, '/api/getContactUs')
 api.add_resource(GetAllMembersNotifications, '/api/getAllMembersNotifications')
+api.add_resource(GetAllPublications, '/api/getAllPublications')
 ##
 
 if __name__ == '__main__':
