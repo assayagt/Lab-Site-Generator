@@ -200,6 +200,27 @@ const ParticipantProfile = () => {
     );
   }
 
+  const formatAuthors = (authors) => {
+    if (!authors) return "";
+
+    // If authors is already an array, join with commas
+    if (Array.isArray(authors)) {
+      return authors.filter((author) => author).join(", ");
+    }
+
+    // Convert to string if it's not already
+    const authorsString = String(authors);
+
+    // Split authors by common delimiters (semicolon, "and", newline, etc.)
+    const authorList = authorsString
+      .split(/;|\sand\s|\n/)
+      .map((author) => author.trim())
+      .filter((author) => author.length > 0);
+
+    // Join with commas and proper spacing
+    return authorList.join(", ");
+  };
+
   return (
     <div className="participant-profile">
       {/* <div className="profile-header">
@@ -346,7 +367,9 @@ const ParticipantProfile = () => {
                     </span>
                   </div>
 
-                  <p className="publication-authors">{pub.authors}</p>
+                  <p className="publication-authors">
+                    {formatAuthors(pub.authors)}
+                  </p>
 
                   {pub.journal_name && (
                     <p className="publication-journal">{pub.journal_name}</p>

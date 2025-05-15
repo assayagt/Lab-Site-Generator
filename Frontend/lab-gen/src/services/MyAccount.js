@@ -7,6 +7,7 @@ export const getCustomWebsites = async (userId) => {
     const response = await axios.get(
       `${baseApiUrl}getCustomWebsites?user_id=${userId}`
     );
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching custom websites:", error);

@@ -84,6 +84,7 @@ const LoginPopup = ({ onClose }) => {
             setError(true);
             console.log("Login Failed");
           }}
+          ux_mode="popup" // ensures a new token is fetched every time
         />
       </div>
     </div>

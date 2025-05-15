@@ -517,24 +517,20 @@ class RemoveSiteManagerFromGenerator(Resource):
 # Handles user login with email and password
 class Login(Resource):
     def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('user_id', type=str, required=True, help="User id is required")
-        parser.add_argument('google_token', type=str, required=False, help="Google token for authentication")
-
-        args = parser.parse_args()
-
-        
-        user_id = args['user_id']
+        data = request.get_json()
+        user_id = data.get('user_id')
+        google_token = data.get('google_token')
     
 
         try:
-            if args.get('google_token'):
+            if google_token:
                 try:
                     # Verify the token
-                    idinfo = id_token.verify_oauth2_token(args['google_token'], requests.Request(), GOOGLE_CLIENT_ID)
+                    idinfo = id_token.verify_oauth2_token(google_token, requests.Request(), GOOGLE_CLIENT_ID)
                     email = idinfo['email']
                     
                 except ValueError as e:
+                    print("Token verification failed:", str(e))
                     return jsonify({"error": "Invalid Google token", "response": "false"})
 
             response = generator_system.login(user_id, email)
@@ -727,24 +723,22 @@ class EnterLabWebsite(Resource):
 
 class LoginWebsite(Resource):
     def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('domain', type=str, required=True, help="Domain is required")
-        parser.add_argument('user_id', type=str, required=True, help="User ID is required")
-        parser.add_argument('google_token', type=str, required=False, help="Google token for authentication")
-        args = parser.parse_args()
-        domain = args['domain']
-        
+        data = request.get_json()
+        domain = data.get('domain')
+        user_id = data.get('user_id')
+        google_token = data.get('google_token')
+                
         try:
-            if args.get('google_token'):
+            if google_token:
                 try:
                     # Verify the token
-                    idinfo = id_token.verify_oauth2_token(args['google_token'], requests.Request(), GOOGLE_CLIENT_ID)
+                    idinfo = id_token.verify_oauth2_token(google_token, requests.Request(), GOOGLE_CLIENT_ID)
                     
                     # Check if the email from token matches the provided email
                     email = idinfo['email']
                 except ValueError as e:
                     return jsonify({"error": "Invalid Google token", "response": "false"})
-            response = lab_system_service.login(domain, args['user_id'], email)
+            response = lab_system_service.login(domain, user_id, email)
             if response.is_success():
                 if response.get_data():
                     return jsonify({"message": response.get_message(), "response": "true", "email": email})
