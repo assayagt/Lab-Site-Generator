@@ -6,6 +6,7 @@ import {
   createCustomSite,
   changeComponents,
   changeDomain,
+  removeAlumni,
   changeName,
   getAllAlumni,
   getAllLabManagers,
@@ -228,12 +229,16 @@ const useChooseComponents = () => {
           setParticipants(updatedParticipants);
         }
       } else {
-        // let data =await removeSiteManager(sessionStorage.getItem("sid"), email, websiteData.domain);
-        // console.log(email);
-        // if(data.response==="true"){
-        //   participant.isLabManager = !isLabManager;
-        //   setParticipants(updatedParticipants);
-        // }
+        let data = await removeAlumni(
+          sessionStorage.getItem("sid"),
+          email,
+          websiteData.domain
+        );
+        console.log(email);
+        if (data.response === "true") {
+          participant.alumni = !islumi;
+          setParticipants(updatedParticipants);
+        }
       }
     } catch (error) {
       console.error("Error toggling lab manager:", error);

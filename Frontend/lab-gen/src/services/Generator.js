@@ -345,3 +345,22 @@ export const generate = async (
     //alert("Error: " + (error.response?.data?.message || error.message));
   }
 };
+
+export const removeAlumni = async (managerUserId, alumniEmail, domain) => {
+  try {
+    const response = await axios.post(
+      `${baseApiUrl}RemoveAlumniFromGenerator`,
+      {
+        manager_userId: managerUserId,
+        email_toRemoveAlumni: alumniEmail,
+        domain: domain,
+      }
+    );
+
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error removing alumni:", error);
+    return null;
+  }
+};
