@@ -94,7 +94,7 @@ class PublicationRepository:
             publication_dto.title,
             json.dumps(publication_dto.authors),
             publication_dto.publication_year,
-            publication_dto.approved,
+            publication_dto.approved.value if publication_dto.approved else None,
             publication_dto.publication_link,
             publication_dto.video_link,
             publication_dto.git_link,
