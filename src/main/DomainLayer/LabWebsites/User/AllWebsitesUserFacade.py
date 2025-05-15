@@ -269,3 +269,13 @@ class AllWebsitesUserFacade:
     def get_fullName_by_email(self, nominated_manager_email, domain):
         userFacade = self.getUserFacadeByDomain(domain)
         return userFacade.get_fullName_by_email(nominated_manager_email)
+
+    def remove_website_data(self, domain):
+        """
+        Remove all data associated with a website from memory.
+        
+        Args:
+            domain (str): The domain of the website to remove
+        """
+        if domain in self.usersFacades:
+            del self.usersFacades[domain]

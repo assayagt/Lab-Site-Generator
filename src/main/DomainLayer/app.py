@@ -1455,6 +1455,18 @@ class GetAllMembersNotifications(Resource):
         except Exception as e:
             return jsonify({"error": str(e)})
 
+class DeleteWebsite(Resource):
+    def delete(self):
+        try:
+            user_id = request.args.get('user_id')
+            domain = request.args.get('domain')
+            response = generator_system.delete_website(user_id, domain)
+            if response.is_success():
+                return jsonify({"message": "Website deleted successfully", "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
 # Add resources to the API of lab
 api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')#
 api.add_resource(LoginWebsite, '/api/loginWebsite')#
@@ -1518,6 +1530,7 @@ api.add_resource(RemoveSiteManagerFromGenerator, '/api/removeSiteManager')
 api.add_resource(GetUserDetails, '/api/getUserDetails')
 api.add_resource(GetContactUs, '/api/getContactUs')
 api.add_resource(GetAllMembersNotifications, '/api/getAllMembersNotifications')
+api.add_resource(DeleteWebsite, '/api/deleteWebsite')
 ##
 
 if __name__ == '__main__':

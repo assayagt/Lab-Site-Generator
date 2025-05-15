@@ -575,6 +575,15 @@ class LabSystemController:
         Disconnect a user socket from the system.
         """
         self.notificationsFacade.disconnect_user_socket(sid)
+    
+    def delete_website(self, domain):
+        """
+        Delete a website.
+        """
+        self.webCrawlerFacade.remove_website_data(domain)
+        self.websiteFacade.remove_website_data(domain)
+        self.notificationsFacade.remove_website_data(domain)
+        self.allWebsitesUserFacade.remove_website_data(domain)
 
     def reset_system(self):
         """
