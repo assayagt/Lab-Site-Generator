@@ -104,3 +104,9 @@ class ProxyToTest(BridgeToTests):
         if self.real_service_adapter:
             return self.real_service_adapter.remove_alumni_from_generator(manager_userId, email_toRemoveAlumni, domain)
         return Response(None, "Not Implemented yet")
+    
+    def delete_website(self, user_id, domain):
+        if self.real_service_adapter:
+            return self.real_service_adapter.delete_website(user_id, domain)
+        return Response(None, "Not Implemented yet")
+
