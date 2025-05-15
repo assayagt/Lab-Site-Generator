@@ -581,3 +581,25 @@ export const removeManagerPermission = async (
     return null;
   }
 };
+
+export const removeAlumniFromLabWebsite = async (
+  managerUserId,
+  alumniEmail,
+  domain
+) => {
+  try {
+    const response = await axios.post(
+      `${baseApiUrl}removeAlumniFromLabWebsite`,
+      {
+        manager_user_id: managerUserId,
+        alumni_email: alumniEmail,
+        domain: domain,
+      }
+    );
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error removing alumni from lab website:", error);
+    return null;
+  }
+};

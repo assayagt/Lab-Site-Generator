@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./MyAccountPage.css";
-import { getCustomWebsites, getCustomSite } from "../../services/MyAccount";
+import {
+  getCustomWebsites,
+  getCustomSite,
+  deleteWebsite,
+} from "../../services/MyAccount";
 import { useWebsite } from "../../Context/WebsiteContext";
 
 const MyAccountPage = () => {
@@ -72,6 +76,31 @@ const MyAccountPage = () => {
     navigate("/choose-components");
   };
 
+  const handleDeleteWebsite = async (domainToDelete) => {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete the website "${domainToDelete}"? This cannot be undone.`
+    );
+    if (!confirmed) return;
+
+    try {
+      const response = await deleteWebsite(
+        sessionStorage.getItem("sid"),
+        domainToDelete
+      );
+      if (response?.response === "true") {
+        // Filter out the deleted website from the list
+        setWebsites((prevWebsites) =>
+          prevWebsites.filter((site) => site.domain !== domainToDelete)
+        );
+      } else {
+        setError("Failed to delete website: " + response?.message);
+      }
+    } catch (err) {
+      setError("An error occurred while deleting the website.");
+      console.error(err);
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
@@ -93,12 +122,15 @@ const MyAccountPage = () => {
                 <div className={website.generated ? "" : "notGenerated"}>
                   {website.generated ? "Generated" : "Not Generated"}
                 </div>
-                {/* <button
+                <button
                   className="delete-button"
-                  onClick={() => console.log("")}
+                  onClick={(e) => {
+                    e.stopPropagation(); // prevent triggering website load
+                    handleDeleteWebsite(website.domain);
+                  }}
                 >
                   🗑️
-                </button> */}
+                </button>
               </div>
             ))}
           </div>

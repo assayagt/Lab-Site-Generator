@@ -26,3 +26,19 @@ export const getCustomSite = async (userId, domain) => {
     return null;
   }
 };
+
+export const deleteWebsite = async (userId, domain) => {
+  try {
+    const response = await axios.delete(`${baseApiUrl}deleteWebsite`, {
+      params: {
+        user_id: userId,
+        domain: domain,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting website:", error);
+    return null;
+  }
+};

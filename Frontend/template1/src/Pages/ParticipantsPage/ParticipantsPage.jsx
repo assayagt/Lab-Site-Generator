@@ -8,6 +8,7 @@ import {
   createNewSiteManagerFromLabWebsite,
   addAlumniFromLabWebsite,
   removeManagerPermission,
+  removeAlumniFromLabWebsite,
 } from "../../services/websiteService";
 import { useEditMode } from "../../Context/EditModeContext";
 import ErrorPopup from "../../Components/PopUp/ErrorPopup";
@@ -201,6 +202,20 @@ const ParticipantsPage = () => {
           setErrorMessage("Failed to promote to alumni: " + response?.message);
         }
       } else {
+        const response = await removeAlumniFromLabWebsite(
+          sessionStorage.getItem("sid"),
+          member.email,
+          sessionStorage.getItem("domain")
+        );
+
+        if (response?.response === "true") {
+          setAlumni((prev) => prev.filter((p) => p.email !== member.email)); // Remove from alumni
+
+          setParticipants((prev) => [
+            ...prev,
+            { ...member, isAlumni: false }, // Add back to participants
+          ]);
+        }
       }
     } catch (err) {
       setErrorMessage("Error toggling alumni:", err);
