@@ -342,7 +342,7 @@ const PublicationPage = () => {
           </div>
         ))}
       </div>
-      <div className="pagination">
+      <div className="pagination_t1">
         <button
           className="pagination-buttons"
           onClick={handlePrevPage}

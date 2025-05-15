@@ -91,6 +91,32 @@ button {
   gap: 20px;
 }
 
+.account-page {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+}
+
+.pagination_t1 {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+/* Ensure main content has enough space */
+.main-content {
+  flex: 1;
+  padding: 20px;
+  padding-bottom: 100px; /* Extra padding to prevent overlap */
+  min-height: calc(100vh - 100px); /* Ensure minimum height */
+}
 .notification_buttons {
   display: flex;
   flex-direction: row-reverse;
@@ -411,22 +437,6 @@ button {
   flex-direction: column;
   gap: 20px;
   align-items: center;
-}
-.pagination {
-  position: absolute;
-  bottom: 0;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  margin: 10px;
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 30px; /* or wherever you want it vertically */
 }
 
 .pagination-container {

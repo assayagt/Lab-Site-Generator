@@ -595,7 +595,7 @@ const AccountPage = () => {
               </div>
             ))}
 
-            <div className="pagination">
+            <div className="pagination_t1">
               <div className="pagination-container">
                 <button
                   onClick={handlePrevPage}
