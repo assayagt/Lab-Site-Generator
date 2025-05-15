@@ -575,6 +575,15 @@ class LabSystemController:
         Disconnect a user socket from the system.
         """
         self.notificationsFacade.disconnect_user_socket(sid)
+    
+    def delete_website(self, domain):
+        """
+        Delete a website.
+        """
+        self.webCrawlerFacade.remove_website_data(domain)
+        self.websiteFacade.remove_website_data(domain)
+        self.notificationsFacade.remove_website_data(domain)
+        self.allWebsitesUserFacade.remove_website_data(domain)
 
     def reset_system(self):
         """
@@ -583,3 +592,11 @@ class LabSystemController:
         self.allWebsitesUserFacade.reset_system()
         self.websiteFacade.reset_system()
         self.notificationsFacade.reset_system()
+
+    def remove_alumni_from_labWebsite(self, manager_user_id, alumni_email, domain):
+        """
+        Remove an alumni and revert them to a lab member (from the lab website, by a manager).
+        Only managers can perform this operation.
+        Site creator cannot be removed as alumni.
+        """
+        return self.allWebsitesUserFacade.remove_alumni_from_labWebsite(manager_user_id, alumni_email, domain)

@@ -201,3 +201,8 @@ class GoogleScholarWebCrawler:
                 self.crawled[domain] = [pubList]
             
 
+    def remove_website_data(self, domain):
+        """Remove all crawler data associated with a website"""
+        if domain in self.crawled:
+            del self.crawled[domain]
+
