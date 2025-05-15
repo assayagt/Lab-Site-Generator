@@ -336,3 +336,12 @@ class GeneratorSystemController:
         if new_role != "manager":
             self.user_facade.remove_site_manager(nominated_email, domain)
 
+    def delete_website(self, user_id, domain):
+        """
+        Delete a website if the user has permission.
+        """
+        self.user_facade.error_if_user_notExist(user_id)
+        self.user_facade.error_if_user_not_logged_in(user_id)
+        if self.site_custom_facade.get_if_site_is_generated(domain):
+            self.labSystem.delete_website(domain)
+        self.site_custom_facade.delete_website(domain)

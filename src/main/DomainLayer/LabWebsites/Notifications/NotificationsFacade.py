@@ -183,3 +183,8 @@ class NotificationsFacade:
         Resets the entire system by clearing all stored notifications.
         """
         self.email_notifications_center.clear()
+
+    def remove_website_data(self, domain):
+        """Remove all notifications associated with a website"""
+        if domain in self.email_notifications_center:
+            del self.email_notifications_center[domain]
