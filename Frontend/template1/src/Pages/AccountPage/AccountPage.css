@@ -82,6 +82,16 @@ button {
   flex-direction: column;
   gap: 10px;
 }
+select.input {
+  appearance: none; /* removes native styling for consistency */
+  background-color: transparent;
+  padding: 10px;
+  border: 2px solid #333;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
 .notifications_section,
 .notifications {
   padding: 20px;

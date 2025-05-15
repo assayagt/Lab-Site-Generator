@@ -484,17 +484,25 @@ const AccountPage = () => {
                   />
                 </div>
                 <div className="coolinput">
-                  <label htmlFor="input" className="text">
+                  <label htmlFor="degreeSelect" className="text">
                     Degree:
                   </label>
-                  <input
-                    type="text"
-                    placeholder="Degree"
-                    name="input"
+                  <select
+                    id="degreeSelect"
                     className="input"
                     value={userDetails.degree}
                     onChange={(e) => handleChange("degree", e.target.value)}
-                  />
+                  >
+                    <option value="">Select Degree</option>
+                    <option value="B.Sc.">B.Sc.</option>
+                    <option value="M.Sc.">M.Sc.</option>
+                    <option value="Ph.D.">Ph.D.</option>
+                    <option value="Postdoc">Postdoc</option>
+                    <option value="Faculty Member">Faculty Member</option>
+                    <option value="Research Assistant">
+                      Research Assistant
+                    </option>
+                  </select>
                 </div>
                 <div className="coolinput">
                   <label htmlFor="input" className="text">
