@@ -12,12 +12,12 @@ import {
 import { useEditMode } from "../../Context/EditModeContext";
 import ErrorPopup from "../../Components/PopUp/ErrorPopup";
 import SuccessPopup from "../../Components/PopUp/SuccessPopup";
-import { FaLinkedin, FaEnvelope } from "react-icons/fa";
+import { FaLinkedin, FaEnvelope, FaExternalLinkAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useWebsite } from "../../Context/WebsiteContext";
+
 const ParticipantsPage = () => {
   const { websiteData, setWebsite } = useWebsite();
-
   const navigate = useNavigate();
   const [selectedDegree, setSelectedDegree] = useState("All");
   const [participants, setParticipants] = useState([]);
@@ -106,7 +106,8 @@ const ParticipantsPage = () => {
 
   const editModeOption = (member) => {
     return (
-      editMode && (
+      editMode &&
+      !member.is_creator && (
         <div className="edit-options">
           <label>
             <input
@@ -205,6 +206,7 @@ const ParticipantsPage = () => {
       setErrorMessage("Error toggling alumni:", err);
     }
   };
+
   const sortedDegrees = Object.keys(groupedParticipants).sort(
     (a, b) => (degreeOrder[a] || 999) - (degreeOrder[b] || 999)
   );
@@ -229,6 +231,7 @@ const ParticipantsPage = () => {
       navigate(`/participant/${encodeURIComponent(email)}`);
     }
   };
+
   const handleAddParticipant = async () => {
     const { fullName, email, degree, isManager, isAlumni } = newParticipant;
     const userId = sessionStorage.getItem("sid");
@@ -346,14 +349,21 @@ const ParticipantsPage = () => {
           ) : (
             <div className="degree-section-items">
               {members.map((member) => (
-                <div
-                  key={member.email}
-                  className="participant"
-                  onClick={() => NavigateProfile(member.email)}
-                >
+                <div key={member.email} className="participant">
                   <div className="personal_photo"></div>
                   <div className="personal_info_member">
-                    <div className="fullname">{member.fullName}</div>
+                    <div className="name-with-icon">
+                      <span className="fullname">{member.fullName}</span>
+                      {websiteData.components.includes(
+                        "Page for Participant"
+                      ) && (
+                        <FaExternalLinkAlt
+                          className="profile-link-icon"
+                          onClick={() => NavigateProfile(member.email)}
+                          title="View Profile"
+                        />
+                      )}
+                    </div>
                     <div className="personal-bio">{member.bio}</div>
                     <div className="contact-links">
                       <a
@@ -393,8 +403,19 @@ const ParticipantsPage = () => {
               <div key={member.email} className="participant">
                 <div className="personal_photo"></div>
                 <div className="personal-bio">
-                  <strong>{member.fullName}</strong>
-                  <span className="alumni-degree"> [{member.degree}]</span>
+                  <div className="name-with-icon">
+                    <span className="fullname">{member.fullName}</span>
+                    <span className="alumni-degree"> [{member.degree}]</span>
+                    {websiteData.components.includes(
+                      "Page for Participant"
+                    ) && (
+                      <FaExternalLinkAlt
+                        className="profile-link-icon"
+                        onClick={() => NavigateProfile(member.email)}
+                        title="View Profile"
+                      />
+                    )}
+                  </div>
                   <p>{member.bio}</p>
                   <a href={`mailto:${member.email}`} className="email-link">
                     {member.email}

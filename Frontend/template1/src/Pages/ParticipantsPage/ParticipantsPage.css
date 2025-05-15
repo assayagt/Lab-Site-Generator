@@ -339,3 +339,12 @@
 .linkedin-link:hover {
   text-decoration: underline;
 }
+.name-with-icon {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
+.profile-link-icon {
+  cursor: pointer;
+}
