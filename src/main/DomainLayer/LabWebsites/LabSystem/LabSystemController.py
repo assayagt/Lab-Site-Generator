@@ -147,13 +147,13 @@ class LabSystemController:
             nominated_manager_email,
             domain
         )
-        name = self.allWebsitesUserFacade.get_fullName_by_email(nominated_manager_email, domain)
+        # name = self.allWebsitesUserFacade.get_fullName_by_email(nominated_manager_email, domain)
 
-        threading.Thread(
-            target=self.webCrawlerFacade.fetch_publications_new_member,
-            args=([name], domain),
-            daemon=True
-        ).start()
+        # threading.Thread(
+        #     target=self.webCrawlerFacade.fetch_publications_new_member,
+        #     args=([name], domain),
+        #     daemon=True
+        # ).start()
 
     def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName,
                                                lab_member_degree, domain):

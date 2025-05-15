@@ -402,7 +402,7 @@ const ParticipantsPage = () => {
             {alumni.map((member) => (
               <div key={member.email} className="participant">
                 <div className="personal_photo"></div>
-                <div className="personal-bio">
+                <div className="personal_info_member">
                   <div className="name-with-icon">
                     <span className="fullname">{member.fullName}</span>
                     <span className="alumni-degree"> [{member.degree}]</span>
