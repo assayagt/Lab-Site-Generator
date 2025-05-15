@@ -99,7 +99,7 @@ class Website:
         return None
 
     def final_approve_publication(self, paper_id) -> PublicationDTO:
-        publication = self.get_publication_by_paper_id(paper_id)
+        publication = self.get_publication_by_paper_id(paper_id) #Sometimes the publication is None that is what causing the problem.
         publication.approved = ApprovalStatus.APPROVED.value
         return publication
 

@@ -32,13 +32,13 @@ class WebCrawlerFacade:
             cls._instance = None
 
 
-    def fetch_publications(self, authors, domain):
+    def fetch_publications(self, scholar_links, domain): #=================================== refactored
         """
         Calls fetch_crawler_publications on each WebCrawler.
         """
         all_results = []
         for crawler in self.web_crawlers:
-            results = crawler.fetch_crawler_publications(authors, domain)
+            results = crawler.fetch_crawler_publications(scholarLinks=scholar_links, domain=domain)
             all_results.extend(results)
         return all_results
 
@@ -52,10 +52,16 @@ class WebCrawlerFacade:
                 return authors
         return None
 
+    def get_PublicationDTOs(self, scannedPub_keys: list[tuple[str, str]]): #===================================
+        """
+            Calls getPublicationDTOs on each WebCrawler.
+        """
+        for crawler in self.web_crawlers:
+            crawler.getPublicationDTOs(scannedPub_keys)
 
-    def fetch_publications_new_member(self, authors, domain):
+    def fetch_publications_new_member(self, scholar_ids, domain): #TODO: reduntant function can be removed later
         """
         Calls fetch_publications_new_member on each WebCrawler.
         """
         for crawler in self.web_crawlers:
-            crawler.fetch_publications_new_member(authors, domain)
+            crawler.fetch_crawler_publications(scholar_ids=scholar_ids, domain=domain)

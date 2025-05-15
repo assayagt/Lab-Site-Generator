@@ -205,6 +205,9 @@ class AllWebsitesUserFacade:
 
     def get_active_members_names(self, domain):
         return self.getUserFacadeByDomain(domain).get_active_members_names()
+    
+    def get_active_members_scholarLinks(self, domain):
+        return self.getUserFacadeByDomain(domain=domain).get_active_members_scholar_links()
 
     def get_all_members_names(self, domain):
         '''returns all lab members + managers + site creator + alumnis names'''
@@ -278,3 +281,6 @@ class AllWebsitesUserFacade:
     def get_fullName_by_email(self, nominated_manager_email, domain):
         userFacade = self.getUserFacadeByDomain(domain)
         return userFacade.get_fullName_by_email(nominated_manager_email)
+    
+    def get_scholar_link_by_email(self, email, domain):
+        return self.getUserFacadeByDomain(domain).get_scholar_link_by_email(email)

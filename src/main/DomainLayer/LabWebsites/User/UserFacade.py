@@ -148,18 +148,36 @@ class UserFacade:
         for email, member in self.members.items():
             lab_member_names.append(member.get_fullName())
         return lab_member_names
+    
+    def get_lab_members_scholar_links(self):
+        res = []
+        for member in self.members.values():
+            res.append(member.get_scholarLink())
+        return res
 
     def get_managers_names(self):
         manager_names = []
         for email, manager in self.managers.items():
             manager_names.append(manager.get_fullName())
         return manager_names
+    
+    def get_managers_scholar_links(self):
+        res = []
+        for manager in self.managers.values():
+            res.append(manager.get_scholarLink())
+        return res
 
     def get_site_creator_name(self):
         creator_names = []
         for email, site_creator in self.siteCreator.items():
             creator_names.append(site_creator.get_fullName())
         return creator_names
+    
+    def get_site_creator_scholar_links(self):
+        res = []
+        for site_creator in self.siteCreator.values():
+            res.append(site_creator.get_scholarLink())
+        return res
 
     def get_alumnis_names(self):
         alumni_names = []
@@ -179,6 +197,12 @@ class UserFacade:
         member_names.extend(self.get_managers_names())
         member_names.extend(self.get_site_creator_name())
         return member_names
+    
+    def get_active_members_scholar_links(self):
+        member_scholarIds = []
+        member_scholarIds.extend(self.get_lab_members_scholar_links())
+        member_scholarIds.extend(self.get_managers_scholar_links())
+        member_scholarIds.extend(self.get_site_creator_scholar_links())
 
     def login(self, userId, email):
         """Handle login logic after retrieving user info."""
@@ -468,14 +492,28 @@ class UserFacade:
         del self.members[nominate_email]
         self.dal_controller.LabMembers_repo.save_to_LabRoles_siteCreator(nominate_email, self.domain)
 
-    def get_fullName_by_email(self):
+    def get_fullName_by_email(self, email):
         """
         Get the full name of a member by their email.
         """
-        for email, member in self.members.items():
-            if member.email == email:
-                return member.fullName
-        return None
+        if email in self.members:
+            return self.members[email].get_fullName()
+        elif email in self.managers:
+            return self.managers[email].get_fullName()
+        elif email in self.siteCreator:
+            return self.siteCreator[email].get_fullName()
+    
+    def get_scholar_link_by_email(self, email):
+        """
+            Get Google Scholar profile link of member by email.
+        """
+        if email in self.members:
+            return self.members[email].get_scholarLink()
+        elif email in self.managers:
+            return self.managers[email].get_scholarLink()
+        elif email in self.siteCreator:
+            return self.siteCreator[email].get_scholarLink()
+        
 
     def _load_data(self):
         # Load members

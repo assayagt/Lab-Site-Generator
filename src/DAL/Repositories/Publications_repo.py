@@ -120,20 +120,19 @@ class PublicationRepository:
         
 
     def save_scanned_pub(self, scannedPub: ScannedPublication, domain: str):
+        scholar_data_json = json.dumps(scannedPub.scholar_N_author_pub_id)
         query = """
-        INSERT INTO scanned_pubs (title, publication_year, scholar_id, author_pub_id)
+        INSERT INTO scanned_pubs (title, publication_year, scholar_data, is_published)
         VALUES (?, ?, ?, ?)
         ON CONFLICT(title, publication_year) DO UPDATE SET
-            title = excluded.title,
-            publication_year = excluded.publication_year,
-            scholar_id = excluded.scholar_id,
-            author_pub_id = excluded.author_pub_id    
+            scholar_data = excluded.scholar_data,
+            is_published = excluded.is_published    
         """
         params = (
             scannedPub.title,
             scannedPub.publication_year,
-            scannedPub.scholar_id,
-            scannedPub.author_pub_id
+            scholar_data_json,
+            int(scannedPub.is_published)
         )
         link_query = """
         INSERT INTO domain_scannedPub(domain, title, publication_year)
@@ -184,11 +183,15 @@ class PublicationRepository:
     
     
     def _row_to_scanned_pub(self, row):
-        return ScannedPublication(
-            title=row['title'],
-            publication_year=row['publication_year'],
-            scholar_id=row['scholar_id'],
-            author_pub_id=row['author_pub_id']
+        scholar_data = json.loads(row['scholar_data']) # renamed field
+        scanned_pub = ScannedPublication(
+        title=row['title'],
+        publication_year=row['publication_year'],
+        scholar_id=scholar_data[0][0],               # first tuple scholar_id
+        author_pub_id=scholar_data[0][1]            # first tuple author_pub_id
         )
+        # Set the full list
+        scanned_pub.scholar_N_author_pub_id = [tuple(item) for item in scholar_data]
+        return scanned_pub
     
     

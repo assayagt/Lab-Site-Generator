@@ -298,8 +298,8 @@ class DatabaseManager:
         CREATE TABLE IF NOT EXISTS scanned_pubs(
             title TEXT,
             publication_year TEXT,
-            scholar_id TEXT,
-            author_pub_id TEXT,
+            scholar_data TEXT,
+            is_published INTEGER,
             PRIMARY KEY(title, publication_year)
         );
         """

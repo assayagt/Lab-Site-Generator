@@ -1,10 +1,10 @@
 import uuid
-
+from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
 
 class PublicationDTO:
-    def __init__(self, title, authors,
-                 publication_year, approved,
-                 publication_link, git_link=None, video_link=None, presentation_link=None, description=None, paper_id=None, author_emails :list[str]=None):
+    def __init__(self, title, publication_year, publication_link,
+                 approved=ApprovalStatus.INITIAL_PENDING,
+                 git_link=None, authors=None, video_link=None, presentation_link=None, description=None, paper_id=None, author_emails :list[str]=None):
         self.paper_id = str(uuid.uuid4()) if paper_id is None else paper_id
         self.title = title
         self.authors = authors 
@@ -17,6 +17,7 @@ class PublicationDTO:
         self.presentation_link = presentation_link
         self.description = description  # New description field
         self.author_emails = author_emails
+        self.scholar_N_author_pub_id = []
 
 
     def to_dict(self):
@@ -62,3 +63,8 @@ class PublicationDTO:
     def get_description(self):
         """Get the description of the publication."""
         return self.description
+
+    def add_scholar_N_author_pub_id(self, scholar_id, author_pub_id):
+        self.scholar_N_author_pub_id.append((scholar_id, author_pub_id))
+
+    

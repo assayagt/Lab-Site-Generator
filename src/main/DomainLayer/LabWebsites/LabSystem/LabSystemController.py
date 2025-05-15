@@ -76,8 +76,10 @@ class LabSystemController:
         userFacade.set_site_creator(site_creator_email, site_creator_full_name, site_creator_degree) #SAME AS ABOVE
 
         #fetch publications initially
-        members_names = self.allWebsitesUserFacade.get_active_members_names(domain)
-        self.webCrawlerFacade.fetch_publications_new_member(members_names, domain)
+        #members_names = self.allWebsitesUserFacade.get_active_members_names(domain)
+        member_links = self.allWebsitesUserFacade.get_active_members_scholarLinks(domain)
+        #self.webCrawlerFacade.fetch_publications_new_member(members_names, domain)
+        self.webCrawlerFacade.fetch_publications(scholar_links=member_links, domain=domain)
 
     def login(self, domain, userId, email):
         """
@@ -147,13 +149,12 @@ class LabSystemController:
             nominated_manager_email,
             domain
         )
-        name = self.allWebsitesUserFacade.get_fullName_by_email(nominated_manager_email, domain)
-
-        threading.Thread(
-            target=self.webCrawlerFacade.fetch_publications_new_member,
-            args=([name], domain),
-            daemon=True
-        ).start()
+        # #name = self.allWebsitesUserFacade.get_fullName_by_email(nominated_manager_email, domain)
+        # threading.Thread(
+        #     target=self.webCrawlerFacade.fetch_publications_new_member,
+        #     args=([name], domain),
+        #     daemon=True
+        # ).start()
 
     def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName,
                                                lab_member_degree, domain):
@@ -167,7 +168,8 @@ class LabSystemController:
             lab_member_degree,
             domain
         )
-
+        #TODO: refactor to call crawler with scholar_ids ================================================================================
+        # להוריד את כל מה שקשור לקרול אוטומטי ביצירה והוספה של חבר מעבדה ולהוסיף אפשרות לכפתור
         threading.Thread(
             target=self.webCrawlerFacade.fetch_publications_new_member,
             args=([lab_member_fullName], domain),
@@ -182,7 +184,7 @@ class LabSystemController:
             nominated_manager_email, domain
         )
         name = self.allWebsitesUserFacade.get_fullName_by_email(nominated_manager_email, domain)
-
+        #TODO: refactor to call crawler with scholar_ids ================================================================================
         threading.Thread(
             target=self.webCrawlerFacade.fetch_publications_new_member,
             args=([name], domain),
@@ -196,7 +198,7 @@ class LabSystemController:
         self.allWebsitesUserFacade.register_new_LabMember_from_generator(
             email_to_register, lab_member_fullName, lab_member_degree, domain
         )
-
+        #TODO: refactor to call crawler with scholar_ids ================================================================================
         threading.Thread(
             target=self.webCrawlerFacade.fetch_publications_new_member,
             args=([lab_member_fullName], domain),
@@ -213,8 +215,10 @@ class LabSystemController:
 
         # for each website, send to the webCrawler facade the members and current year to fetch publications
         for website in websites:
-            members_names = self.allWebsitesUserFacade.get_active_members_names(website.get_domain())
-            websitePublications = self.webCrawlerFacade.fetch_publications(members_names, website.get_domain())
+            #TODO: refactor to call crawler with scholar_ids ================================================================================
+            #members_names = self.allWebsitesUserFacade.get_active_members_names(website.get_domain())
+            member_scholar_links = self.allWebsitesUserFacade.get_active_members_scholarLinks(website.get_domain())
+            websitePublications = self.webCrawlerFacade.fetch_publications(scholar_links=member_scholar_links, domain=website.get_domain())
 
             # check for each publication that is not already in website members publications
             for publication in websitePublications:
