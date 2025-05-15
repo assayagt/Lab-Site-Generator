@@ -100,14 +100,12 @@ const useChooseComponents = () => {
   });
 
   const [aboutUsContent, setAboutUsContent] = useState(() => {
-    return sessionStorage.getItem("AboutUs") || ""; // Load from sessionStorage initially
+    return websiteData.about_us || ""; // Load from sessionStorage initially
   });
 
   const [contactUsData, setContactUsData] = useState(() => {
-    const savedData = sessionStorage.getItem("ContactUs");
-    return savedData
-      ? JSON.parse(savedData)
-      : { email: "", phoneNumber: "", address: "" };
+    const savedData = websiteData.contact_us;
+    return savedData ?? { email: "", phone_num: "", address: "" };
   });
   const [about_usSave, setAboutUsSaved] = useState(false);
   const [contactUs_usSave, setcontactUs] = useState(false);
@@ -371,7 +369,7 @@ const useChooseComponents = () => {
         websiteData.domain,
         contactUsData.address,
         contactUsData.email,
-        contactUsData.phoneNumber
+        contactUsData.phone_num
       );
       if (response.response === "true") {
         // alert('Contact information saved successfully');

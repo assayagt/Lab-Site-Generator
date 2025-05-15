@@ -559,9 +559,9 @@ const ChooseComponentsPage = () => {
                   <div className="input_container">
                     <input
                       className="contact_us_input"
-                      name="phoneNumber"
+                      name="phone_num"
                       placeholder="Enter your phone number"
-                      value={contactUsData.phoneNumber}
+                      value={contactUsData.phone_num}
                       onChange={handleContactUsChange}
                     />
                     <label htmlFor="phoneInput" className="floating_label">
