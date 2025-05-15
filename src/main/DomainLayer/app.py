@@ -743,7 +743,7 @@ class LoginWebsite(Resource):
                     # Check if the email from token matches the provided email
                     email = idinfo['email']
                 except ValueError as e:
-                    return jsonify({"error": "Invalid Google token", "response": "false"}), 401
+                    return jsonify({"error": "Invalid Google token", "response": "false"})
             response = lab_system_service.login(domain, args['user_id'], email)
             if response.is_success():
                 if response.get_data():
@@ -754,7 +754,7 @@ class LoginWebsite(Resource):
             #notify_registration(email, domain)
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}"})
         
 class LogoutWebsite(Resource):
     def post(self):
