@@ -805,12 +805,19 @@ const AccountPage = () => {
                     className={`publication-item crawled ${publication.status}`}
                   >
                     <div className="publication-header-account">
-                      <input
-                        type="checkbox"
-                        checked={selectedPublications.includes(publication.id)}
-                        onChange={() => handleSelectPublication(publication.id)}
-                        className="publication-checkbox"
-                      />
+                      {publication.status !== "pending" && (
+                        <input
+                          type="checkbox"
+                          checked={selectedPublications.includes(
+                            publication.id
+                          )}
+                          onChange={() =>
+                            handleSelectPublication(publication.id)
+                          }
+                          className="publication-checkbox"
+                        />
+                      )}
+
                       <div className="publication-info">
                         <strong>{publication.title}</strong>
                         <div className="pub-details">

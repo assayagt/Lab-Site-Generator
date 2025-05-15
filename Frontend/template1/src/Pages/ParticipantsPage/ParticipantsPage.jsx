@@ -222,10 +222,6 @@ const ParticipantsPage = () => {
     }
   };
 
-  const sortedDegrees = Object.keys(groupedParticipants).sort(
-    (a, b) => (degreeOrder[a] || 999) - (degreeOrder[b] || 999)
-  );
-
   const filteredParticipants =
     selectedDegree === "All"
       ? groupedParticipants
@@ -492,16 +488,16 @@ const ParticipantsPage = () => {
 
             <div className="modal-buttons">
               <button
-                className="modal-button add_button"
-                onClick={handleAddParticipant}
-              >
-                Add
-              </button>
-              <button
                 className="modal-button cancel-button"
                 onClick={() => setShowAddForm(false)}
               >
                 Cancel
+              </button>
+              <button
+                className="modal-button add_button"
+                onClick={handleAddParticipant}
+              >
+                Add
               </button>
             </div>
           </div>
