@@ -43,6 +43,7 @@ const AccountPage = () => {
     degree: "",
     linkedIn: "",
     fullname: "",
+    google_scholar: "",
   });
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
@@ -508,6 +509,21 @@ const AccountPage = () => {
                     onChange={(e) => handleChange("linkedIn", e.target.value)}
                   />
                 </div>
+                <div className="coolinput">
+                  <label htmlFor="input" className="text">
+                    Google Scholar Profile Link:
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Google Scholar Profile Link"
+                    name="input"
+                    className="input"
+                    value={userDetails.google_scholar}
+                    onChange={(e) =>
+                      handleChange("google_scholar", e.target.value)
+                    }
+                  />
+                </div>
               </div>
             </div>
             <div className="button-wrapper">
@@ -578,24 +594,27 @@ const AccountPage = () => {
                 </form>
               </div>
             ))}
+
             <div className="pagination">
-              <button
-                onClick={handlePrevPage}
-                className="pagination-buttons"
-                disabled={currentPage === 1}
-              >
-                Previous
-              </button>
-              <span>
-                Page {currentPage} of {totalPages}
-              </span>
-              <button
-                onClick={handleNextPage}
-                disabled={currentPage === totalPages}
-                className="pagination-buttons"
-              >
-                Next
-              </button>
+              <div className="pagination-container">
+                <button
+                  onClick={handlePrevPage}
+                  className="pagination-buttons"
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </button>
+                <span>
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                  className="pagination-buttons"
+                >
+                  Next
+                </button>
+              </div>
             </div>
 
             {isAddPublicationModalOpen && (
