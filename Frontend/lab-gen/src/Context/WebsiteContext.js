@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState } from "react";
 
 const WebsiteContext = createContext();
 
@@ -9,19 +9,26 @@ export const useWebsite = () => {
 export const WebsiteProvider = ({ children }) => {
   const initialWebsiteData = {
     components: [],
-    template: '',
-    domain: '',
-    websiteName: '',
+    template: "",
+    domain: "",
+    websiteName: "",
     created: false,
     generated: false,
+    about_us: "", // ✅ Add this
+    contact_us: {
+      // ✅ And this
+      address: "",
+      email: "",
+      phone_num: "",
+    },
   };
 
   const [websiteData, setWebsiteData] = useState(initialWebsiteData);
 
   const setWebsite = (newData) => {
-    setWebsiteData(prev => ({
+    setWebsiteData((prev) => ({
       ...prev,
-      ...newData
+      ...newData,
     }));
   };
 
@@ -30,7 +37,9 @@ export const WebsiteProvider = ({ children }) => {
   };
 
   return (
-    <WebsiteContext.Provider value={{ websiteData, setWebsite, resetWebsiteData }}>
+    <WebsiteContext.Provider
+      value={{ websiteData, setWebsite, resetWebsiteData }}
+    >
       {children}
     </WebsiteContext.Provider>
   );

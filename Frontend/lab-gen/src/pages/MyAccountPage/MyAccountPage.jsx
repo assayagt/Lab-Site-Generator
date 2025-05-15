@@ -61,6 +61,12 @@ const MyAccountPage = () => {
       websiteName: data.data.name || "",
       created: true,
       generated: selectedWebsite.generated || false,
+      about_us: data?.data?.about_us || "",
+      contact_us: data?.data?.contact_us || {
+        address: "",
+        email: "",
+        phone_num: "",
+      },
     });
 
     navigate("/choose-components");
