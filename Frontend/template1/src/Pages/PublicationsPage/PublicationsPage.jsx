@@ -5,6 +5,7 @@ import { useEditMode } from "../../Context/EditModeContext";
 import AddPublicationForm from "../../Components/AddPublicationForm/AddPubliactionForm";
 import SuccessPopup from "../../Components/PopUp/SuccessPopup";
 import ErrorPopup from "../../Components/PopUp/ErrorPopup";
+import { FaInfoCircle } from "react-icons/fa";
 
 import {
   setPublicationGitLink,
@@ -26,6 +27,7 @@ const PublicationPage = () => {
   const [popupMessage, setPopupMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [saveStatus, setSaveStatus] = useState({});
+  const [activeTooltip, setActiveTooltip] = useState(null);
 
   useEffect(() => {
     const fetchPublications = async () => {
@@ -175,6 +177,11 @@ const PublicationPage = () => {
     }
   }, [popupMessage, errorMessage]);
 
+  const handleViewPublication = (pub) => {
+    if (pub) {
+      window.open(pub, "_blank");
+    }
+  };
   return (
     <div className="publication-page">
       <div className="publication-header">
@@ -228,108 +235,227 @@ const PublicationPage = () => {
       <div className="publication-list">
         {paginatedPublications.map((pub) => (
           <div key={pub.paper_id} className="publication-item">
-            <a
+            {/* <a
               href={pub.publication_link}
               target="_blank"
               rel="noopener noreferrer"
               className="pub_item_link"
-            >
-              <div className="pub_item_title">{pub.title}</div>
-              <div className="publication-item-info">
-                {pub.video_link && (
-                  <iframe
-                    className="video"
-                    src={pub.video_link}
-                    title={pub.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
-                )}
-                <div>
-                  <p>
-                    <strong>Authors:</strong>{" "}
-                    {pub.authors.join(", ") || "Unknown Authors"}
-                  </p>
-                  <p>
-                    <strong>Year:</strong>{" "}
-                    {isNaN(new Date(pub.publication_year).getFullYear())
-                      ? pub.publication_year
-                      : new Date(pub.publication_year).getFullYear()}
-                  </p>
-                  <p className="description">{pub.description}</p>
-                  <div className="links">
-                    {pub.git_link && (
-                      <a
-                        href={pub.git_link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="git"
+            > */}
+            <div className="pub_item_title">{pub.title}</div>
+            <div className="publication-item-info">
+              {pub.video_link && (
+                <iframe
+                  className="video"
+                  src={pub.video_link}
+                  title={pub.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              )}
+              <div className="publication_inner_container">
+                <p>
+                  <strong>Authors:</strong>{" "}
+                  {pub.authors.join(", ") || "Unknown Authors"}
+                </p>
+                <p>
+                  <strong>Year:</strong>{" "}
+                  {isNaN(new Date(pub.publication_year).getFullYear())
+                    ? pub.publication_year
+                    : new Date(pub.publication_year).getFullYear()}
+                </p>
+                <p className="description">{pub.description}</p>
+                <div className="links">
+                  {pub.publication_link && (
+                    <button
+                      onClick={() =>
+                        handleViewPublication(pub.publication_link)
+                      }
+                      className="publication-link-button primary"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
-                        Git
-                      </a>
-                    )}
-                    {pub.presentation_link && (
-                      <a
-                        href={pub.presentation_link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="git"
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                      </svg>
+                      View Publication
+                    </button>
+                  )}
+                  {pub.git_link && (
+                    <button
+                      onClick={() => handleViewPublication(pub.git_link)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="publication-link-button primary"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
-                        Presentation
-                      </a>
-                    )}
-                  </div>
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                      </svg>
+                      GitHub
+                    </button>
+                  )}
+                  {pub.presentation_link && (
+                    <button
+                      onClick={() =>
+                        handleViewPublication(pub.publication_link)
+                      }
+                      className="publication-link-button primary"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                      </svg>
+                      Presentation
+                    </button>
+                  )}
                 </div>
               </div>
-            </a>
+            </div>
+            {/* </a> */}
             {editMode && (
               <form className="publication-form">
                 <div className="input-container">
-                  <input
-                    type="url"
-                    className="submit-pub_pg"
-                    placeholder="Enter GitHub link"
-                    defaultValue={pub.git_link || ""}
-                    onChange={(e) =>
-                      handleInputChange(
-                        pub.paper_id,
-                        "git_link",
-                        e.target.value
-                      )
-                    }
-                  />
+                  <div className="input-with-info">
+                    <input
+                      type="url"
+                      className="submit-pub_pg"
+                      placeholder="Enter GitHub link"
+                      defaultValue={pub.git_link || ""}
+                      onChange={(e) =>
+                        handleInputChange(
+                          pub.paper_id,
+                          "git_link",
+                          e.target.value
+                        )
+                      }
+                    />
+                    <div
+                      className={`info-icon-container ${
+                        activeTooltip === `${pub.paper_id}-github`
+                          ? "active"
+                          : ""
+                      }`}
+                      onClick={() =>
+                        setActiveTooltip(
+                          activeTooltip === `${pub.paper_id}-github`
+                            ? null
+                            : `${pub.paper_id}-github`
+                        )
+                      }
+                    >
+                      <FaInfoCircle className="input-info-icon" />
+                      <div className="info-tooltip">
+                        Format: https://github.com/username/repository
+                      </div>
+                    </div>
+                  </div>
                   <label className="hidden-label_pg">GitHub</label>
                 </div>
 
                 <div className="input-container">
-                  <input
-                    type="url"
-                    className="submit-pub_pg"
-                    placeholder="Enter Presentation link"
-                    defaultValue={pub.presentation_link || ""}
-                    onChange={(e) =>
-                      handleInputChange(
-                        pub.paper_id,
-                        "presentation_link",
-                        e.target.value
-                      )
-                    }
-                  />
+                  <div className="input-with-info">
+                    <input
+                      type="url"
+                      className="submit-pub_pg"
+                      placeholder="Enter Presentation link"
+                      defaultValue={pub.presentation_link || ""}
+                      onChange={(e) =>
+                        handleInputChange(
+                          pub.paper_id,
+                          "presentation_link",
+                          e.target.value
+                        )
+                      }
+                    />
+                    <div
+                      className={`info-icon-container ${
+                        activeTooltip === `${pub.paper_id}-presentation`
+                          ? "active"
+                          : ""
+                      }`}
+                      onClick={() =>
+                        setActiveTooltip(
+                          activeTooltip === `${pub.paper_id}-presentation`
+                            ? null
+                            : `${pub.paper_id}-presentation`
+                        )
+                      }
+                    >
+                      <FaInfoCircle className="input-info-icon" />
+                      <div className="info-tooltip">
+                        Format: https://docs.google.com/presentation/d/...
+                      </div>
+                    </div>
+                  </div>
                   <label className="hidden-label_pg">Presentation</label>
                 </div>
 
                 <div className="input-container">
-                  <input
-                    type="url"
-                    className="submit-pub_pg"
-                    placeholder="Enter Video link"
-                    defaultValue={pub.video_link || ""}
-                    onChange={(e) =>
-                      handleInputChange(pub.paper_id, "video", e.target.value)
-                    }
-                  />
+                  <div className="input-with-info">
+                    <input
+                      type="url"
+                      className="submit-pub_pg"
+                      placeholder="Enter Video link"
+                      defaultValue={pub.video_link || ""}
+                      onChange={(e) =>
+                        handleInputChange(pub.paper_id, "video", e.target.value)
+                      }
+                    />
+                    <div
+                      className={`info-icon-container ${
+                        activeTooltip === `${pub.paper_id}-video`
+                          ? "active"
+                          : ""
+                      }`}
+                      onClick={() =>
+                        setActiveTooltip(
+                          activeTooltip === `${pub.paper_id}-video`
+                            ? null
+                            : `${pub.paper_id}-video`
+                        )
+                      }
+                    >
+                      <FaInfoCircle className="input-info-icon" />
+                      <div className="info-tooltip">
+                        Format: https://youtube.com/watch?v=... or embed link
+                      </div>
+                    </div>
+                  </div>
                   <label className="hidden-label_pg">Video</label>
                 </div>
+
                 <button
                   type="button"
                   className="save-btn"

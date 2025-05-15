@@ -63,7 +63,7 @@ const AddPublicationForm = ({ onSuccess }) => {
           </label>
           <input
             type="url"
-            placeholder="https://doi.org/10.xxxx/xxxxx"
+            placeholder="https://scholar.google.com/xxxx/xxxxx"
             className="form-field__input"
             value={publication}
             onChange={(e) => setPublication(e.target.value)}
@@ -86,7 +86,7 @@ const AddPublicationForm = ({ onSuccess }) => {
           <label className="form-field__label">Presentation</label>
           <input
             type="url"
-            placeholder="Link to presentation slides"
+            placeholder="https://drive.google.com/drive/..."
             className="form-field__input"
             value={presentationLink}
             onChange={(e) => setPresentationLink(e.target.value)}
@@ -97,7 +97,7 @@ const AddPublicationForm = ({ onSuccess }) => {
           <label className="form-field__label">Video</label>
           <input
             type="url"
-            placeholder="Link to video presentation"
+            placeholder="youtube/google drive video"
             className="form-field__input"
             value={videoLink}
             onChange={(e) => setVideoLink(e.target.value)}
