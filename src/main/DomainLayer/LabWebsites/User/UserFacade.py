@@ -406,12 +406,16 @@ class UserFacade:
     def get_all_lab_managers_details(self):
         all_managers = []
         for email, member in self.managers.items():
-            all_managers.append(member.get_details())
-        all_managers.append(self.get_site_creator_details())
+            if email in self.siteCreator.keys():
+                 all_managers.append(self.get_site_creator_details())
+            else:
+                all_managers.append(member.get_details())
+       
         return all_managers
 
     def get_site_creator_details(self):
-        details = self.siteCreator[0].get_details()
+        creator = next(iter(self.siteCreator.values()))  # Get the first (and probably only) creator
+        details = creator.get_details()
         details["is_creator"] = True
         return details
 

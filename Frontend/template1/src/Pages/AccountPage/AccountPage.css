@@ -77,7 +77,11 @@
 button {
   margin-left: 10px;
 }
-
+.notifications_section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 .notifications_section,
 .notifications {
   padding: 20px;
