@@ -571,6 +571,15 @@ class LabSystemController:
         email = userFacade.get_email_by_userId(userId)
         return self.notificationsFacade.mark_notification_as_read(domain, email, notification_id)
 
+    def get_all_publications(self, user_id, domain):
+        """
+        Get all publications of a specific website.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(user_id)
+        userFacade.error_if_user_not_logged_in(user_id)
+        return self.websiteFacade.get_all_publications(domain)
+
     def connect_user_socket(self, email, domain, sid):
         """
         Connect a user socket to the system.

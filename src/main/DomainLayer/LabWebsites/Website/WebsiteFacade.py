@@ -200,3 +200,9 @@ class WebsiteFacade:
         Resets the entire system by clearing all stored websites.
         """
         self.websites.clear()
+
+    def get_all_publications(self, domain):
+        website = self.get_website(domain)
+        if website is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        return website.get_all_publications()

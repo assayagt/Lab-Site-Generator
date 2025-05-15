@@ -374,6 +374,13 @@ class LabSystemService:
         except Exception as e:
             return Response(None, str(e))
 
+    def get_all_publications(self, user_id, domain):
+        try:
+            publications = self.lab_system_controller.get_all_publications(user_id, domain)
+            return Response(publications, "Retrieved all publications successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
     def connect_user_socket(self, email, domain, sid):
         try:
             self.lab_system_controller.connect_user_socket(email, domain, sid)

@@ -165,3 +165,28 @@ class Website:
                 if author not in self.members_publications:
                     self.members_publications[author] = []
                 self.members_publications[author].append(pub)
+
+    def get_all_publications(self):
+        """
+        Returns a list of all publications in the website with their details.
+        Each publication is returned as a dictionary containing title, year, link and status.
+        
+        Returns:
+            list: List of dictionaries containing publication details
+        """
+        all_publications = []
+        seen_paper_ids = set()  # To track unique paper IDs
+
+        for publications in self.members_publications.values():
+            for publication in publications:
+                if publication.get_paper_id() not in seen_paper_ids:
+                    publication_dict = {
+                        'title': publication.title,
+                        'year': publication.publication_year,
+                        'link': publication.publication_link,
+                        'status': publication.approved
+                    }
+                    all_publications.append(publication_dict)
+                    seen_paper_ids.add(publication.get_paper_id())
+
+        return all_publications

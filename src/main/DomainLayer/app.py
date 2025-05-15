@@ -1455,6 +1455,19 @@ class GetAllMembersNotifications(Resource):
         except Exception as e:
             return jsonify({"error": str(e)})
 
+class GetAllPublications(Resource):
+    def get(self):
+        user_id = request.args.get('user_id')
+        domain = request.args.get('domain')
+
+        try:
+            response = lab_system_service.get_all_publications(user_id, domain)
+            if response.is_success():
+                return jsonify({"publications": response.get_data(), "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
 # Add resources to the API of lab
 api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')#
 api.add_resource(LoginWebsite, '/api/loginWebsite')#
