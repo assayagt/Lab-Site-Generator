@@ -145,18 +145,42 @@ const ParticipantProfile = () => {
   };
 
   const extractAvailableYears = () => {
-    const years = [...new Set(publications.map((pub) => pub.publication_year))];
+    const yearsSet = new Set();
+
+    publications.forEach((pub) => {
+      if (typeof pub.publication_year === "number") {
+        yearsSet.add(pub.publication_year);
+      } else {
+        const date = new Date(pub.publication_year);
+        if (!isNaN(date.getTime())) {
+          yearsSet.add(date.getFullYear());
+        }
+      }
+    });
+
+    const years = Array.from(yearsSet);
     years.sort((a, b) => b - a); // Sort years in descending order
     setAvailableYears(years);
   };
-
   const filterPublicationsByYear = () => {
     if (selectedYear === "all") {
       setFilteredPublications(publications);
     } else {
-      const filtered = publications.filter(
-        (pub) => pub.publication_year === parseInt(selectedYear)
-      );
+      const selectedYearInt = parseInt(selectedYear, 10);
+
+      const filtered = publications.filter((pub) => {
+        let year;
+
+        if (typeof pub.publication_year === "number") {
+          year = pub.publication_year;
+        } else {
+          const date = new Date(pub.publication_year);
+          year = isNaN(date.getTime()) ? null : date.getFullYear();
+        }
+
+        return year === selectedYearInt;
+      });
+
       setFilteredPublications(filtered);
     }
   };
@@ -223,25 +247,6 @@ const ParticipantProfile = () => {
 
   return (
     <div className="participant-profile">
-      {/* <div className="profile-header">
-        <button onClick={() => navigate(-1)} className="back-button">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
-          Back
-        </button>
-      </div> */}
-
       <div className="profile-content">
         <div className="profile-info-section">
           <div className="profile-photo-container">
@@ -266,19 +271,6 @@ const ParticipantProfile = () => {
                 <p>{participant.bio}</p>
               </div>
             )}
-
-            {/* <div className="profile-stats">
-              <div className="stat-item">
-                <span className="stat-value">{publications.length}</span>
-                <span className="stat-label">Total Publications</span>
-              </div>
-              {availableYears.length > 0 && (
-                <div className="stat-item">
-                  <span className="stat-value">{availableYears[0]}</span>
-                  <span className="stat-label">Latest Publication</span>
-                </div>
-              )}
-            </div> */}
 
             <div className="profile-links">
               {participant.linkedin_link && (
@@ -363,7 +355,14 @@ const ParticipantProfile = () => {
                   <div className="publication-header">
                     <h3 className="publication-title">{pub.title}</h3>
                     <span className="publication-year">
-                      {pub.publication_year}
+                      {typeof pub.publication_year === "number"
+                        ? pub.publication_year
+                        : (() => {
+                            const date = new Date(pub.publication_year);
+                            return isNaN(date.getTime())
+                              ? pub.publication_year
+                              : date.getFullYear();
+                          })()}
                     </span>
                   </div>
 
