@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Header.css";
 import accountIcon from "../../images/account_avatar.svg";
@@ -24,6 +24,11 @@ function Header(props) {
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const { editMode, toggleEditMode } = useEditMode();
 
+  // Create refs for the menu and navbar
+  const accountMenuRef = useRef(null);
+  const navbarRef = useRef(null);
+  const hamburgerRef = useRef(null);
+
   const handleClick = (item) => {
     setIsNavbarExpanded(false);
     setShowAccountMenu(false);
@@ -33,11 +38,44 @@ function Header(props) {
       navigate(`/${item.replace(" ", "")}`);
     }
   };
+
   useEffect(() => {
     if (!isLoggedIn && location.pathname === "/Account") {
       navigate("/");
     }
   }, [isLoggedIn, location.pathname]);
+
+  // Add click outside listener to close menus
+  useEffect(() => {
+    function handleClickOutside(event) {
+      // Close account menu if click is outside
+      if (
+        accountMenuRef.current &&
+        !accountMenuRef.current.contains(event.target) &&
+        showAccountMenu
+      ) {
+        setShowAccountMenu(false);
+      }
+
+      // Close navbar if click is outside (for mobile)
+      if (
+        navbarRef.current &&
+        !navbarRef.current.contains(event.target) &&
+        !hamburgerRef.current.contains(event.target) &&
+        isNavbarExpanded
+      ) {
+        setIsNavbarExpanded(false);
+      }
+    }
+
+    // Add event listener
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Clean up
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showAccountMenu, isNavbarExpanded]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -58,11 +96,8 @@ function Header(props) {
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      const token = credentialResponse.credential; // ✅ SEND THE RAW TOKEN
-
-      // const email = decoded.email;
-
-      const success = await login(token); // This still hits your backend
+      const token = credentialResponse.credential;
+      const success = await login(token);
       if (success) {
         setShowLogin(false);
         setLoginError("");
@@ -77,6 +112,7 @@ function Header(props) {
       setLoginError(true);
     }
   };
+
   const handleLogout = () => {
     const success = logout();
     if (success) {
@@ -89,10 +125,26 @@ function Header(props) {
       location.pathname === "/Account" ? navigate("/") : navigate("/");
     }
   };
+
   const handleNavigation = () => {
-    navigate("/Account?section=notifications");
+    // Create a custom event for section navigation
+    const event = new CustomEvent("NAVIGATE_TO_SECTION", {
+      detail: { section: "notifications" },
+    });
+
+    // If already on Account page, update URL and dispatch custom event
+    if (location.pathname === "/Account") {
+      navigate("/Account?section=notifications", { replace: true });
+      // Dispatch the event to notify the Account component
+      document.dispatchEvent(event);
+    } else {
+      // If not on Account page, just navigate normally
+      navigate("/Account?section=notifications");
+    }
+
     setShowAccountMenu(false);
   };
+
   return (
     <div className="header">
       <div className="header_title_name">
@@ -107,13 +159,19 @@ function Header(props) {
         </div>
       </div>
 
-      <div className={`navbar ${isNavbarExpanded ? "expanded" : ""}`}>
+      <div
+        ref={navbarRef}
+        className={`navbar ${isNavbarExpanded ? "expanded" : ""}`}
+      >
         {props.components
           .filter((item) => item !== "About Us")
           .map((item, index, filteredArray) => (
             <div className="navbar-item" key={index}>
               <button
-                onClick={() => handleClick(item)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleClick(item);
+                }}
                 className="navbar-item-button"
               >
                 {item}
@@ -127,6 +185,7 @@ function Header(props) {
 
       <div className="icon_photo">
         <button
+          ref={hamburgerRef}
           className="hamburger-menu-1"
           onClick={() => {
             setIsNavbarExpanded((prev) => !prev);
@@ -153,8 +212,10 @@ function Header(props) {
         )}
 
         <div
+          ref={accountMenuRef}
           className={`menu ${showAccountMenu ? "active" : ""}`}
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation();
             setShowAccountMenu((prev) => !prev);
             setIsNavbarExpanded(false);
           }}
@@ -164,7 +225,10 @@ function Header(props) {
           )}
 
           {showAccountMenu && (
-            <div className="hidden-box">
+            <div
+              className="hidden-box"
+              onClick={(e) => e.stopPropagation()} // Prevent clicks inside menu from closing it
+            >
               <div className="personal_menu">
                 <div className="icon_photo2">
                   <img src={accountIcon} alt="icon" />
@@ -175,7 +239,8 @@ function Header(props) {
                   <div className="choose_item">
                     <button
                       className="my_sites_button"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         navigate("Account");
                         setShowAccountMenu(false);
                       }}
@@ -198,7 +263,8 @@ function Header(props) {
                     </button>
                     <button
                       className="notifications_button"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         handleNavigation();
                         setShowAccountMenu(false);
                       }}
@@ -234,7 +300,8 @@ function Header(props) {
                     </button>
                     <button
                       className="logout_button"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         handleLogout();
                         setShowAccountMenu(false);
                       }}
@@ -261,7 +328,8 @@ function Header(props) {
                   <div className="choose_item">
                     <button
                       className="login_button"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setShowLogin(true);
                         setShowAccountMenu(false);
                       }}
@@ -292,35 +360,33 @@ function Header(props) {
       </div>
 
       {showLogin && (
-        <div className="login-popup-overlay">
+        <div
+          className="login-popup-overlay"
+          onClick={(e) => {
+            // Close login popup when clicking outside
+            if (e.target.className === "login-popup-overlay") {
+              setShowLogin(false);
+            }
+          }}
+        >
           <div className="login-popup">
             <button className="close-popup" onClick={() => setShowLogin(false)}>
               ×
             </button>
             <h2 className="login-title">Welcome Back</h2>
             <p className="login-subtitle">Enter your email to log in</p>
-            {/* <input
-              className="login-input"
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            /> */}
             {loginError && (
               <div className="login-error">
                 This email does not exist. Request sent to manager
               </div>
             )}
-            {/* <button className="login-button" onClick={handleLogin}>
-              Login
-            </button> */}
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
               onError={() => {
                 setLoginError(true);
                 console.log("Login Failed");
               }}
-              ux_mode="popup" // ensures a new token is fetched every time
+              ux_mode="popup"
             />
           </div>
         </div>

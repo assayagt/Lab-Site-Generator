@@ -76,6 +76,41 @@ const AccountPage = () => {
     setHasNewNotifications,
   } = useContext(NotificationContext); // Get notifications
 
+  // Add this useEffect to your AccountPage component, right after your existing useEffects
+  // This listens for the custom event from the Header component
+
+  useEffect(() => {
+    // Function to handle section change events
+    const handleSectionEvent = (event) => {
+      if (event.detail && event.detail.section) {
+        setActiveSection(event.detail.section);
+
+        // Update the URL to match the new section (optional but helps with consistency)
+        const url = new URL(window.location);
+        url.searchParams.set("section", event.detail.section);
+        window.history.replaceState({}, "", url);
+      }
+    };
+
+    // Add event listener for the custom event
+    document.addEventListener("NAVIGATE_TO_SECTION", handleSectionEvent);
+
+    // Cleanup function to remove event listener
+    return () => {
+      document.removeEventListener("NAVIGATE_TO_SECTION", handleSectionEvent);
+    };
+  }, []);
+
+  // Also update your existing URL parameter useEffect to handle both initial load
+  // and subsequent navigation within the same page:
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const section = params.get("section");
+    if (section) {
+      setActiveSection(section);
+    }
+  }, [location.search]); // This will run when the URL parameters change
   useEffect(() => {
     // Fetch user details
     const fetchUserDetails = async () => {
