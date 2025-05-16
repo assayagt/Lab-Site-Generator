@@ -128,19 +128,25 @@ const useChooseComponents = () => {
             ...participant,
             isLabManager: true,
             alumni: false,
+            isCreator:
+              participant.email === sessionStorage.getItem("userEmail"),
           })),
           ...members.map((participant) => ({
             ...participant,
             isLabManager: false,
             alumni: false,
+            isCreator: false,
           })),
           ...alumni.map((participant) => ({
             ...participant,
             isLabManager: false,
             alumni: true,
+            isCreator: false,
           })),
         ];
-
+        allParticipants.sort(
+          (a, b) => (b.isCreator ? 1 : 0) - (a.isCreator ? 1 : 0)
+        );
         setParticipants(allParticipants);
       } catch (err) {
         console.error("Error fetching participants:", err);

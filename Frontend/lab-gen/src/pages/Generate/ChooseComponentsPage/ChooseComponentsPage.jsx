@@ -481,7 +481,15 @@ const ChooseComponentsPage = () => {
                   className="input_creator_info"
                   disabled
                 />
-
+                {!websiteData.generated && (
+                  <input
+                    type="text"
+                    value={googleLink}
+                    onChange={(e) => handleParticipantChange(e.target.value)}
+                    className="input_creator_info"
+                    placeholder="Your Google Scholar Profile link"
+                  />
+                )}
                 {/* <label>Degree</label> */}
                 <select
                   name="degree"
@@ -498,15 +506,6 @@ const ChooseComponentsPage = () => {
                     </option>
                   ))}
                 </select>
-                {!websiteData.generated && (
-                  <input
-                    type="text"
-                    value={googleLink}
-                    onChange={(e) => handleParticipantChange(e.target.value)}
-                    className="input_creator_info"
-                    placeholder="Your Google Scholar Profile link"
-                  />
-                )}
 
                 <button
                   className="about_contact_button"
