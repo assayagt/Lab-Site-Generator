@@ -53,7 +53,7 @@ class LabSystemController:
         Create a new lab website with the given domain, lab members, lab managers, and site creator.
         Each lab member, lab manager, and site creator now includes a degree field.
         """
-        self.websiteFacade.create_new_website(domain)
+        website =self.websiteFacade.create_new_website(domain)
         self.allWebsitesUserFacade.add_new_webstie_userFacade(domain)
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
 
@@ -61,25 +61,23 @@ class LabSystemController:
         for lab_member_email, lab_member_details in lab_members.items():
             full_name = lab_member_details["full_name"]
             degree = lab_member_details["degree"]
-            userFacade.register_new_LabMember(lab_member_email, full_name, degree) #FOR DATA WE NEED: either return the member to save it here with domain or pass the domain to function
+            userFacade.register_new_LabMember(lab_member_email, full_name, degree) 
 
         # Add lab managers
         for lab_manager_email, lab_manager_details in lab_managers.items():
             full_name = lab_manager_details["full_name"]
             degree = lab_manager_details["degree"]
-            userFacade.create_new_site_manager(lab_manager_email, full_name, degree) #SAME AS ABOVE
+            userFacade.create_new_site_manager(lab_manager_email, full_name, degree) 
 
         # Set site creator
         site_creator_email = site_creator.get("email")
         site_creator_full_name = site_creator.get("full_name")
         site_creator_degree = site_creator.get("degree")
-        userFacade.set_site_creator(site_creator_email, site_creator_full_name, site_creator_degree) #SAME AS ABOVE
+        userFacade.set_site_creator(site_creator_email, site_creator_full_name, site_creator_degree) 
 
         #fetch publications initially
-        #members_names = self.allWebsitesUserFacade.get_active_members_names(domain)
-        member_links = self.allWebsitesUserFacade.get_active_members_scholarLinks(domain)
-        #self.webCrawlerFacade.fetch_publications_new_member(members_names, domain)
-        self.webCrawlerFacade.fetch_publications(scholar_links=member_links, domain=domain)
+        self.crawl_publications_for_website(website_domain=domain, with_notifications=False)
+
 
     def login(self, domain, userId, email):
         """
@@ -149,6 +147,7 @@ class LabSystemController:
             nominated_manager_email,
             domain
         )
+        #NOTE: not adding new user to the website so no crawling needed
         # #name = self.allWebsitesUserFacade.get_fullName_by_email(nominated_manager_email, domain)
         # threading.Thread(
         #     target=self.webCrawlerFacade.fetch_publications_new_member,
@@ -168,13 +167,12 @@ class LabSystemController:
             lab_member_degree,
             domain
         )
-        #TODO: refactor to call crawler with scholar_ids ================================================================================
-        # להוריד את כל מה שקשור לקרול אוטומטי ביצירה והוספה של חבר מעבדה ולהוסיף אפשרות לכפתור
-        threading.Thread(
-            target=self.webCrawlerFacade.fetch_publications_new_member,
-            args=([lab_member_fullName], domain),
-            daemon=True
-        ).start()
+        #NOTE: new users will need to crawl publications with button when adding scholar link================================================================================
+        # threading.Thread(
+        #     target=self.webCrawlerFacade.fetch_publications_new_member,
+        #     args=([lab_member_fullName], domain),
+        #     daemon=True
+        # ).start()
 
     def create_new_site_manager_from_generator(self, domain, nominated_manager_email):
         """
@@ -184,12 +182,12 @@ class LabSystemController:
             nominated_manager_email, domain
         )
         name = self.allWebsitesUserFacade.get_fullName_by_email(nominated_manager_email, domain)
-        #TODO: refactor to call crawler with scholar_ids ================================================================================
-        threading.Thread(
-            target=self.webCrawlerFacade.fetch_publications_new_member,
-            args=([name], domain),
-            daemon=True
-        ).start()
+        #NOTE: not adding new user to the website so no crawling needed
+        # threading.Thread(
+        #     target=self.webCrawlerFacade.fetch_publications_new_member,
+        #     args=([name], domain),
+        #     daemon=True
+        # ).start()
 
     def register_new_LabMember_from_generator(self, email_to_register, lab_member_fullName, lab_member_degree, domain):
         """
@@ -198,12 +196,12 @@ class LabSystemController:
         self.allWebsitesUserFacade.register_new_LabMember_from_generator(
             email_to_register, lab_member_fullName, lab_member_degree, domain
         )
-        #TODO: refactor to call crawler with scholar_ids ================================================================================
-        threading.Thread(
-            target=self.webCrawlerFacade.fetch_publications_new_member,
-            args=([lab_member_fullName], domain),
-            daemon=True
-        ).start()
+        #NOTE: new users will need to crawl publications with button when adding scholar link================================================================================
+        # threading.Thread(
+        #     target=self.webCrawlerFacade.fetch_publications_new_member,
+        #     args=([lab_member_fullName], domain),
+        #     daemon=True
+        # ).start()
 
     def crawl_for_publications(self):
         """
@@ -215,26 +213,33 @@ class LabSystemController:
 
         # for each website, send to the webCrawler facade the members and current year to fetch publications
         for website in websites:
-            #TODO: refactor to call crawler with scholar_ids ================================================================================
-            #members_names = self.allWebsitesUserFacade.get_active_members_names(website.get_domain())
-            member_scholar_links = self.allWebsitesUserFacade.get_active_members_scholarLinks(website.get_domain())
-            websitePublications = self.webCrawlerFacade.fetch_publications(scholar_links=member_scholar_links, domain=website.get_domain())
+            self.crawl_publications_for_website(website_domain=website.get_domain(), with_notifications=True)
 
-            # check for each publication that is not already in website members publications
-            for publication in websitePublications:
-                if not website.check_publication_exist(publication):
-                    authorsEmails = []
-                    for author in publication.authors:
-                        email = self.allWebsitesUserFacade.getMemberEmailByName(author, website.domain)
-                        if email is not None:
-                            authorsEmails.append(email)
-                    website.create_publication(publication, authorsEmails)
-
-                    # send notifications to the website authors about the new publications, for initial approve
-                    for authorEmail in authorsEmails:
-                        self.notificationsFacade.send_publication_notification(publication, authorEmail,
-                                                                               website.get_domain())
-
+    def initial_approve_publications_from_labWebsite(self, userId, domain, publication_ids: list[str]):
+        """
+        Approve a list of publications fetched with the web crawler.
+        The system send a notification to lab managers for review
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId)
+        userFacade.error_if_user_not_logged_in(userId)
+        email = userFacade.get_email_by_userId(userId)
+        for publication_id in publication_ids:
+            self.websiteFacade.error_if_member_is_not_publication_author(domain, publication_id, email)
+            if not self.websiteFacade.check_if_publication_approved(domain, publication_id):
+                managers_emails = list(userFacade.getManagers().keys())
+                # check if useId is manager. if he is not, do the following rows
+                if not userFacade.verify_if_member_is_manager(email):
+                    self.websiteFacade.initial_approve_publication(domain, publication_id)
+                    for manager_email in managers_emails:
+                        publicationDTO = self.websiteFacade.get_publication_by_paper_id(domain, publication_id)
+                        self.notificationsFacade.send_publication_notification_for_final_approval(publicationDTO,
+                                                                                                manager_email, domain)
+                else:
+                    self.final_approve_publication_by_manager(userId, domain, publication_id)
+            else:
+                raise Exception(ExceptionsEnum.PUBLICATION_ALREADY_APPROVED.value)
+                        
     def initial_approve_publication_by_author(self, userId, domain, notification_id):
         """
         Approve a publication by its author in the initial review stage.
@@ -261,7 +266,7 @@ class LabSystemController:
         else:
             raise Exception(ExceptionsEnum.PUBLICATION_ALREADY_APPROVED.value)
 
-    def final_approve_publication_by_manager(self, userId, domain, notification_id):
+    def final_approve_publication_by_manager(self, userId, domain, notification_id): #TODO place fill publication details here!
         """
         Approve a publication by a lab manager in the final review stage.
         """
@@ -322,6 +327,12 @@ class LabSystemController:
         (in order to display them on the publication component of the website)
         """
         return self.websiteFacade.get_all_approved_publication(domain)
+    
+    def get_all_not_approved_publications(self, domain):
+        """
+        return all non aprovved publications for some website
+        """
+        return self.websiteFacade.get_all_not_approved_publications(domain)
 
     def get_all_approved_publications_of_member(self, domain, user_id):
         """
@@ -563,7 +574,7 @@ class LabSystemController:
 
     def mark_as_read(self, userId, domain, notification_id):
         """
-        Mark notification as read, and return the email\ publication id of the notification.
+        Mark notification as read, and return the email/ publication id of the notification.
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userId)
@@ -590,3 +601,49 @@ class LabSystemController:
         self.allWebsitesUserFacade.reset_system()
         self.websiteFacade.reset_system()
         self.notificationsFacade.reset_system()
+
+    def crawl_publications_for_website(self, website_domain, with_notifications=True):
+        """
+            this function crawls publications for some website with the option to get notifications for every new publication found
+        """
+        website = self.websiteFacade.get_website(website_domain)
+        member_scholar_links = self.allWebsitesUserFacade.get_active_members_scholarLinks(website_domain)
+        publist = self.webCrawlerFacade.fetch_publications(member_scholar_links)
+        for pub in publist:
+            if not website.check_publication_exist(pub):
+                authorEmails = []
+                for author in pub.authors:
+                    email = self.allWebsitesUserFacade.getMemberEmailByName(author=author, domain=website_domain)
+                    if email:
+                        authorEmails.append(email)
+                pub.set_author_emails(authorEmails)
+                website.create_publication(publicationDTO=pub, authors_emails=authorEmails)
+                if with_notifications:
+                     # send notifications to the website authors about the new publications, for initial approve
+                    for authorEmail in authorEmails:
+                        self.notificationsFacade.send_publication_notification(pub, authorEmail,
+                                                                              website_domain)
+                        
+
+    def crawl_publications_for_labMember(self, website_domain, email, with_notifications=True):
+        website = self.websiteFacade.get_website(website_domain)
+        scholar_link = self.allWebsitesUserFacade.get_scholar_link_by_email(domain=website_domain, email=email)
+        if not scholar_link:
+            return
+        member_pubs = self.webCrawlerFacade.fetch_publications([scholar_link])
+        for pub in member_pubs:
+            if not website.check_publication_exist(pub):
+                authorEmails = []
+                for author in pub.authors:
+                    email = self.allWebsitesUserFacade.getMemberEmailByName(author=author, domain=website_domain)
+                    if email:
+                        authorEmails.append(email)
+                pub.set_author_emails(author_emails=authorEmails)
+                website.create_publication(publicationDTO=pub, authors_emails=authorEmails)
+                if with_notifications:
+                     # send notifications to the website authors about the new publications, for initial approve
+                    for authorEmail in authorEmails:
+                        self.notificationsFacade.send_publication_notification(pub, authorEmail,
+                                                                               website_domain)
+                      
+

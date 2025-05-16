@@ -152,7 +152,9 @@ class UserFacade:
     def get_lab_members_scholar_links(self):
         res = []
         for member in self.members.values():
-            res.append(member.get_scholarLink())
+            link = member.get_scholarLink()
+            if link:
+                res.append(link)
         return res
 
     def get_managers_names(self):
@@ -164,7 +166,9 @@ class UserFacade:
     def get_managers_scholar_links(self):
         res = []
         for manager in self.managers.values():
-            res.append(manager.get_scholarLink())
+            link = manager.get_scholarLink()
+            if link:
+                res.append(link)
         return res
 
     def get_site_creator_name(self):
@@ -176,7 +180,9 @@ class UserFacade:
     def get_site_creator_scholar_links(self):
         res = []
         for site_creator in self.siteCreator.values():
-            res.append(site_creator.get_scholarLink())
+            link = site_creator.get_scholarLink()
+            if link:
+                res.append(link)
         return res
 
     def get_alumnis_names(self):
@@ -513,6 +519,7 @@ class UserFacade:
             return self.managers[email].get_scholarLink()
         elif email in self.siteCreator:
             return self.siteCreator[email].get_scholarLink()
+        return None
         
 
     def _load_data(self):

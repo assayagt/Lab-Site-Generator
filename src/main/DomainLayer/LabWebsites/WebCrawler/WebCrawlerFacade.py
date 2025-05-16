@@ -1,7 +1,7 @@
 import threading
 
 from src.main.DomainLayer.LabWebsites.WebCrawler.GoogleScholarWebCrawler import GoogleScholarWebCrawler
-
+from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
 
 class WebCrawlerFacade:
     _instance = None
@@ -32,13 +32,13 @@ class WebCrawlerFacade:
             cls._instance = None
 
 
-    def fetch_publications(self, scholar_links, domain): #=================================== refactored
+    def fetch_publications(self, scholar_links)-> list[PublicationDTO]: #=================================== refactored
         """
         Calls fetch_crawler_publications on each WebCrawler.
         """
         all_results = []
         for crawler in self.web_crawlers:
-            results = crawler.fetch_crawler_publications(scholarLinks=scholar_links, domain=domain)
+            results = crawler.fetch_crawler_publications(scholarLinks=scholar_links)
             all_results.extend(results)
         return all_results
 
@@ -52,16 +52,10 @@ class WebCrawlerFacade:
                 return authors
         return None
 
-    def get_PublicationDTOs(self, scannedPub_keys: list[tuple[str, str]]): #===================================
+    def fill_pub_details(self, scannedPub_keys: list[PublicationDTO], domain): #==============PubDTO===should be refactored to work with other crawlers
         """
             Calls getPublicationDTOs on each WebCrawler.
         """
         for crawler in self.web_crawlers:
-            crawler.getPublicationDTOs(scannedPub_keys)
+            crawler.fill_details(scannedPub_keys=scannedPub_keys, domain=domain)
 
-    def fetch_publications_new_member(self, scholar_ids, domain): #TODO: reduntant function can be removed later
-        """
-        Calls fetch_publications_new_member on each WebCrawler.
-        """
-        for crawler in self.web_crawlers:
-            crawler.fetch_crawler_publications(scholar_ids=scholar_ids, domain=domain)

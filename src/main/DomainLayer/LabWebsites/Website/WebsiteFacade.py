@@ -46,6 +46,7 @@ class WebsiteFacade:
         website = Website(domain)
         self.add_website(website)
         self.dal_controller.website_repo.save(website_dto=website.to_dto()) #===========================================
+        return website
 
 
     def get_website(self, domain) -> Website:
@@ -55,7 +56,7 @@ class WebsiteFacade:
         return None
 
 
-    def get_all_websites(self):
+    def get_all_websites(self) -> list[Website]:
         return self.websites
 
 
@@ -64,6 +65,12 @@ class WebsiteFacade:
         if website is None:
             raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
         return website.get_all_approved_publication()
+    
+    def get_all_not_approved_publications(self, domain):
+        website = self.get_website(domain=domain)
+        if website is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        return website.get_all_not_approved_publications()
 
 
     def get_all_approved_publications_of_member(self, domain, email):
