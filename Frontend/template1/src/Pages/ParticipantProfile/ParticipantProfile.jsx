@@ -211,18 +211,18 @@ const ParticipantProfile = () => {
     );
   }
 
-  if (error || !participant) {
-    return (
-      <div className="participant-profile">
-        <div className="error">
-          {error || "Participant not found"}
-          <button onClick={() => navigate(-1)} className="back-button">
-            Go Back
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // if (error || !participant) {
+  //   return (
+  //     <div className="participant-profile">
+  //       <div className="error">
+  //         {error || "Participant not found"}
+  //         <button onClick={() => navigate(-1)} className="back-button">
+  //           Go Back
+  //         </button>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   const formatAuthors = (authors) => {
     if (!authors) return "";

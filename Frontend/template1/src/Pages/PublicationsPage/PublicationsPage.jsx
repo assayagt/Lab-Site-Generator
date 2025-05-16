@@ -53,8 +53,6 @@ const PublicationPage = () => {
           } else {
             date = new Date(pub.publication_year);
           }
-          console.log(date);
-
           return isNaN(date.getFullYear())
             ? pub.publication_year
             : date.getFullYear();
@@ -154,32 +152,51 @@ const PublicationPage = () => {
       const sid = sessionStorage.getItem("sid");
       const domain = sessionStorage.getItem("domain");
       const updatedLinks = editedLinks[paperId];
+      console.log(updatedLinks);
 
       if (!updatedLinks) return;
 
       const gitLink = updatedLinks.git_link ?? "";
       const presentationLink = updatedLinks.presentation_link ?? "";
       const videoLink = updatedLinks.video ?? "";
-
+      let res = null;
       let success = false;
       if (gitLink !== "") {
-        await setPublicationGitLink(sid, domain, paperId, gitLink);
+        res = await setPublicationGitLink(sid, domain, paperId, gitLink);
         success = true;
       }
       if (presentationLink !== "") {
-        await setPublicationPttxLink(sid, domain, paperId, presentationLink);
+        res = await setPublicationPttxLink(
+          sid,
+          domain,
+          paperId,
+          presentationLink
+        );
         success = true;
       }
       if (videoLink !== "") {
-        await setPublicationVideoLink(sid, domain, paperId, videoLink);
+        res = await setPublicationVideoLink(sid, domain, paperId, videoLink);
         success = true;
       }
 
-      if (success) {
+      if (res?.response === "true") {
         setPopupMessage("Changes saved successfully!");
         setSaveStatus((prev) => ({ ...prev, [paperId]: "Saved" }));
       } else {
-        setErrorMessage("No changes were made.");
+        if (!success) {
+          if (updatedLinks?.git_link === "") {
+            console.log("j");
+            setErrorMessage("Can not save empty filed for GitHub link");
+          }
+          if (updatedLinks?.presentation_link === "") {
+            setErrorMessage("Can not save empty filed for Presentation");
+          }
+          if (updatedLinks?.video === "") {
+            setErrorMessage("Can not save empty filed for Video");
+          }
+        } else {
+          setErrorMessage(res.message);
+        }
       }
     } catch (error) {
       console.error("Error updating publication links:", error);
@@ -255,12 +272,6 @@ const PublicationPage = () => {
       <div className="publication-list">
         {paginatedPublications.map((pub) => (
           <div key={pub.paper_id} className="publication-item">
-            {/* <a
-              href={pub.publication_link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="pub_item_link"
-            > */}
             <div className="pub_item_title">{pub.title}</div>
             <div className="publication-item-info">
               {pub.video_link && (

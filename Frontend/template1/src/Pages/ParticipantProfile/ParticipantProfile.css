@@ -378,8 +378,7 @@
   }
 }
 
-.loading,
-.error {
+.loading {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -388,10 +387,6 @@
   font-size: 18px;
   color: #666;
   gap: 20px;
-}
-
-.error {
-  color: #e74c3c;
 }
 
 /* Responsive Design */
