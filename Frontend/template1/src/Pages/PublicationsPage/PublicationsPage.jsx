@@ -47,7 +47,14 @@ const PublicationPage = () => {
     const years = Array.from(
       new Set(
         publications.map((pub) => {
-          const date = new Date(pub.publication_year);
+          let date = null;
+          if (typeof pub.publication_year == "number") {
+            date = new Date(pub.publication_year, 0);
+          } else {
+            date = new Date(pub.publication_year);
+          }
+          console.log(date);
+
           return isNaN(date.getFullYear())
             ? pub.publication_year
             : date.getFullYear();
@@ -74,11 +81,17 @@ const PublicationPage = () => {
 
   const filteredPublications = publications
     .filter((pub) => {
-      const publicationYear = isNaN(
-        new Date(pub.publication_year).getFullYear()
-      )
-        ? pub.publication_year
-        : new Date(pub.publication_year).getFullYear();
+      let publicationYear;
+
+      if (typeof pub.publication_year === "number") {
+        publicationYear = pub.publication_year;
+      } else {
+        const date = new Date(pub.publication_year);
+        publicationYear = isNaN(date.getTime())
+          ? pub.publication_year
+          : date.getFullYear();
+      }
+
       const matchesYear = yearFilter
         ? publicationYear === parseInt(yearFilter, 10)
         : true;
@@ -94,8 +107,15 @@ const PublicationPage = () => {
       return matchesYear && matchesAuthor;
     })
     .sort((a, b) => {
-      const yearA = new Date(a.publication_year).getFullYear();
-      const yearB = new Date(b.publication_year).getFullYear();
+      const getYear = (val) => {
+        if (typeof val === "number") return val;
+        const date = new Date(val);
+        return isNaN(date.getTime()) ? 0 : date.getFullYear();
+      };
+
+      const yearA = getYear(a.publication_year);
+      const yearB = getYear(b.publication_year);
+
       return yearB - yearA;
     });
 
@@ -259,7 +279,9 @@ const PublicationPage = () => {
                 </p>
                 <p>
                   <strong>Year:</strong>{" "}
-                  {isNaN(new Date(pub.publication_year).getFullYear())
+                  {typeof pub.publication_year === "number"
+                    ? pub.publication_year
+                    : isNaN(new Date(pub.publication_year))
                     ? pub.publication_year
                     : new Date(pub.publication_year).getFullYear()}
                 </p>

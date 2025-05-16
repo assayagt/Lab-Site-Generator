@@ -140,7 +140,7 @@
   align-items: center;
   gap: 8px;
   margin-top: 12px;
-  color: #666;
+  color: #000000;
   font-size: 14px;
 }
 
@@ -183,9 +183,8 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 16px;
-  background-color: #0077b5;
-  color: white;
+
+  color: rgb(0, 0, 0);
   text-decoration: none;
   border-radius: 8px;
   font-size: 14px;
@@ -194,7 +193,6 @@
 }
 
 .profile-link:hover {
-  background-color: #005885;
   transform: translateY(-2px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
