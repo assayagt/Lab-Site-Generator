@@ -89,7 +89,9 @@
 .profile-bio {
   margin-top: 20px;
 }
-
+.profile_bio_content {
+  white-space: pre-wrap;
+}
 .profile-bio h3 {
   font-size: 18px;
   font-weight: 600;
@@ -194,7 +196,7 @@
 
 .profile-link:hover {
   transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); */
 }
 
 .publications-section2 {
@@ -319,7 +321,7 @@
   padding: 8px 16px;
   background-color: rgba(255, 255, 255, 0.45);
   color: #333;
-  /* border: 1px solid #636363; */
+  border: 1px solid #636363;
   border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
@@ -339,7 +341,7 @@
 
 .publication-link-button:hover {
   background-color: #e0e0e0;
-  border-color: #ccc;
+  border-color: #636363;
   transform: translateY(-2px);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }

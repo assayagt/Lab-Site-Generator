@@ -100,9 +100,10 @@
   right: 0;
 }
 
-.saveButton:hover {
+.saveButton_contact:hover {
   background-color: rgba(255, 255, 255, 0.2);
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
 }
 /* Map Container */
 .map_container {

@@ -375,7 +375,7 @@ const ParticipantsPage = () => {
                         />
                       )}
                     </div>
-                    <div className="personal-bio">{member.bio}</div>
+                    <div className="personal_bio">{member.bio}</div>
                     <div className="contact-links">
                       <a
                         href={`mailto:${member.email}`}

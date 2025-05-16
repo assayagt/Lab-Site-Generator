@@ -268,7 +268,7 @@ const ParticipantProfile = () => {
             {participant.bio && (
               <div className="profile-bio">
                 <h3>Bio</h3>
-                <p>{participant.bio}</p>
+                <p className="profile_bio_content">{participant.bio}</p>
               </div>
             )}
 
@@ -402,9 +402,9 @@ const ParticipantProfile = () => {
                       </button>
                     )}
 
-                    {pub.github && (
+                    {pub.git_link && (
                       <a
-                        href={pub.github}
+                        href={pub.git_link}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="publication-link-button"
@@ -422,9 +422,9 @@ const ParticipantProfile = () => {
                       </a>
                     )}
 
-                    {pub.presentation && (
+                    {pub.presentation_link && (
                       <a
-                        href={pub.presentation}
+                        href={pub.presentation_link}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="publication-link-button"

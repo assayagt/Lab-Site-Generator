@@ -60,6 +60,7 @@
   max-width: 100%;
   overflow: hidden;
   height: 250px;
+  transition: all 0.3s ease;
 }
 
 .participant:hover {
@@ -128,11 +129,13 @@
   background: transparent;
   border: 1px solid #000000;
   right: 20px;
+  transition: transform 0.3s ease;
   cursor: pointer;
 }
 .add-participant-btn:hover {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
   background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
 }
 .tooltip-container {
   position: relative;
@@ -196,6 +199,20 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
+}
+
+.personal_bio {
+  /* margin-top: 10px; */
+  margin-right: 20px;
+  white-space: pre-wrap;
+  max-height: 100px;
+  overflow-y: auto;
+  word-break: break-word;
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: rgba(155, 155, 155, 0.5) transparent; /* For Firefox */
+
+  /* Adds some padding so content isn't touching the scrollbar */
+  padding-right: 10px;
 }
 
 .form-group label {
@@ -298,7 +315,7 @@
     gap: 10px;
     width: 100%; /* Ensures the grid doesn't exceed its container */
   }
-  .personal-bio {
+  .personal_bio {
     max-height: 160px;
     overflow-y: auto;
     word-break: break-word;
@@ -320,6 +337,8 @@
   flex-direction: column;
   gap: 10px;
   margin-top: 6px;
+  position: absolute;
+  top: 160px;
 }
 
 .email-link,
@@ -347,4 +366,8 @@
 }
 .profile-link-icon {
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+.profile-link-icon:hover {
+  transform: translateY(-2px);
 }

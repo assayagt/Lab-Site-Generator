@@ -54,12 +54,15 @@
   border: 1px solid #262626;
   transition: all 0.3s ease;
   width: 130px; /* Adjust width */
+  transition: transform 0.3s ease;
 }
 
 .save-changes:hover {
   background-color: rgba(255, 255, 255, 0.2); /* Blue background on hover */
   color: #000000; /* White text on hover */
   border: 1px solid #080808;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .user-photo {
@@ -393,10 +396,12 @@ select.input {
   border: 1px solid #000000;
   position: relative;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 .add-publication-button:hover {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
   background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
 }
 .custom-modal-overlay {
   position: fixed;
@@ -591,6 +596,8 @@ select.input {
 
 .save-publications:hover {
   background-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 @media (max-width: 1024px) {
   .account-page {
