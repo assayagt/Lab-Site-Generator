@@ -1018,3 +1018,45 @@ select.input {
 .publication-link a:hover {
   text-decoration: underline;
 }
+
+.force-crawl-btn {
+  background-color: transparent;
+  color: rgb(0, 0, 0);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+  margin-left: 15px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #000000;
+}
+
+.force-crawl-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #000000;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.force-crawl-btn:disabled {
+  background-color: #c0c0c0;
+  cursor: not-allowed;
+}
+
+.force-crawl-btn .spinner {
+  margin-left: 8px;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

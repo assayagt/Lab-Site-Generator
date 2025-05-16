@@ -749,6 +749,15 @@ const AccountPage = () => {
                   className="search-input"
                 />
               </div>
+              {currentPublicationType === "crawled" && (
+                <button
+                  className="force-crawl-btn"
+                  onClick={console.log("hello")}
+                >
+                  Force Crawl Publications
+                </button>
+              )}
+
               {currentPublicationType === "manual" ? (
                 <button
                   className="add-publication-button"
