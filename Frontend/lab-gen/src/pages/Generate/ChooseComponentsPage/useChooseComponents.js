@@ -40,6 +40,8 @@ const useChooseComponents = () => {
   const [template, setTemplate] = useState(websiteData.template || "");
   const [isChanged, setIsChanged] = useState(false);
   const [buttonText, setButtonText] = useState("Save");
+  const [googleLink, setGooogleLink] = useState("");
+
   const [domainError, setDomainError] = useState(false);
   const [step, setStep] = useState(!domain ? 1 : 3);
   const [showContentSidebar, setShowContentSidebar] = useState(false);
@@ -332,6 +334,12 @@ const useChooseComponents = () => {
       };
 
       return updatedParticipants;
+    });
+  };
+  const handleGoogleScolarChange = (value) => {
+    setParticipants((prevParticipants) => {
+      setButtonText("Save");
+      setGooogleLink(value);
     });
   };
 
@@ -717,6 +725,8 @@ const useChooseComponents = () => {
     isLoading,
     succsessMessage,
     setSuccsessMessage,
+    handleGoogleScolarChange,
+    googleLink,
   };
 };
 

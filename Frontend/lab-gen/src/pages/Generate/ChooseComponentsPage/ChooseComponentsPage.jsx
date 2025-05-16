@@ -73,6 +73,8 @@ const ChooseComponentsPage = () => {
     isLoading,
     succsessMessage,
     setSuccsessMessage,
+    handleGoogleScolarChange,
+    googleLink,
   } = useChooseComponents();
 
   // Fix leaflet icon issues (put this near the top of the component file)
@@ -496,6 +498,15 @@ const ChooseComponentsPage = () => {
                     </option>
                   ))}
                 </select>
+                {!websiteData.generated && (
+                  <input
+                    type="text"
+                    value={googleLink}
+                    onChange={(e) => handleParticipantChange(e.target.value)}
+                    className="input_creator_info"
+                    placeholder="Your Google Scholar Profile link"
+                  />
+                )}
 
                 <button
                   className="about_contact_button"

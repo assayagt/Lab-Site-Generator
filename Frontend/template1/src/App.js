@@ -86,7 +86,9 @@ function App() {
             template: data.data.template,
             logo: data.data.logo,
             home_picture: data.data.home_picture,
-            about_us: data.data.about_us,
+            about_us: data.data.components.includes("About Us")
+              ? data.data.about_us
+              : "",
           };
           console.log("here");
           setWebsite(mappedData);
