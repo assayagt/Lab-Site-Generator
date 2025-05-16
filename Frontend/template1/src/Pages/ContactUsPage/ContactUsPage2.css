@@ -173,7 +173,7 @@
   transition: all 0.2s ease;
   border: none;
 }
-
+/* 
 .button--primary {
   background-color: #3498db;
   color: white;
@@ -183,7 +183,7 @@
   background-color: #2980b9;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+} */
 
 .button--disabled {
   background-color: #f0f0f0;

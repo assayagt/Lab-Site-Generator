@@ -442,7 +442,7 @@ const ParticipantsPage = () => {
       {showAddForm && (
         <div className="modal-overlay" onClick={() => setShowAddForm(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h3>Add New Participant</h3>
+            <h3 className="title_add_user">Add New Participant</h3>
 
             <div className="form-group">
               <label htmlFor="fullName">Full Name:</label>

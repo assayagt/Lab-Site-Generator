@@ -183,7 +183,7 @@
 /* Modal Box */
 .modal-content {
   background: white;
-  padding: 20px;
+  padding: 25px;
   width: 400px;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
@@ -275,6 +275,9 @@
   background-color: rgba(255, 255, 255, 0.1);
   color: black;
   border: 1px solid rgba(31, 51, 71, 0.8);
+}
+.title_add_user {
+  margin-bottom: 20px;
 }
 
 @media (max-width: 768px) {

@@ -422,8 +422,7 @@ select.input {
   max-width: 500px;
   background: #efefef;
   border-radius: 10px;
-  padding: 20px;
-
+  padding: 30px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   position: relative;
   animation: fadeIn 0.3s ease-in-out;
@@ -436,12 +435,12 @@ select.input {
 /* Close Button */
 .close-button {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 15px;
+  right: 15px;
   background: none;
   border: none;
   font-size: 24px;
-  font-weight: bold;
+  /* font-weight: bold; */
   color: #333;
   cursor: pointer;
   transition: color 0.3s ease;

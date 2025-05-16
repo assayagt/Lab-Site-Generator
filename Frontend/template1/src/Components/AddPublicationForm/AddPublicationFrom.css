@@ -20,6 +20,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  margin-top: 20px;
 }
 
 /* Form Field Styles - Exactly matching AccountPage */
@@ -51,7 +52,7 @@
 
 .form-field__input:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #5c829c;
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
   background-color: white;
 }
@@ -68,23 +69,24 @@
 }
 
 /* Button Styles - Exactly matching AccountPage */
-.button {
+.submit_publication_button {
   padding: 10px 20px;
-  border-radius: 8px;
+  border-radius: 20px;
   font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  border: none;
+  border: 1px solid black;
 }
 
-.button--primary {
-  background-color: #3498db;
-  color: white;
+.submit_publication_button {
+  background-color: transparent;
+  color: rgb(0, 0, 0);
+  border-radius: 20px;
 }
 
-.button--primary:hover {
-  background-color: #2980b9;
+.submit_publication_button:hover {
+  /* background-color: rgba(0, 0, 0, 0.2); */
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

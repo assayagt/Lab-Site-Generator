@@ -107,7 +107,7 @@ const AddPublicationForm = ({ onSuccess }) => {
         <div className="form-actions">
           <button
             type="submit"
-            className="button button--primary"
+            className="submit_publication_button"
             disabled={loading}
           >
             {loading ? "Adding..." : "Add Publication"}
