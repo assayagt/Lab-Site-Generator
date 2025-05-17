@@ -280,7 +280,7 @@ class GenerateWebsiteResource(Resource):
             data = request.get_json()
 
             # Ensure required fields exist
-            required_fields = ['domain', 'about_us', 'lab_address', 'lab_mail', 'lab_phone_num', 'participants']
+            required_fields = ['domain', 'about_us', 'lab_address', 'lab_mail', 'lab_phone_num', 'participants', 'creator_schoalr_link']
             for field in required_fields:
                 if field not in data:
                     return jsonify({"error": f"Missing required field: {field}", "response": "false"})
@@ -291,6 +291,7 @@ class GenerateWebsiteResource(Resource):
             lab_mail = data['lab_mail']
             lab_phone_num = data['lab_phone_num']
             participants = data['participants']
+            creator_scholar_link = data['creator_schoalr_link']
             contact_info = ContactInfo(lab_address, lab_mail, lab_phone_num)
             # Extract lab members, managers, and site creator
             lab_members = {}
@@ -323,7 +324,7 @@ class GenerateWebsiteResource(Resource):
 
 
             # Call generator system to create a new lab website
-            response = generator_system.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
+            response = generator_system.create_new_lab_website(domain, lab_members, lab_managers, site_creator, creator_scholar_link)
 
             if response.is_success():
                 response2 = generator_system.set_site_about_us_on_creation_from_generator(domain, about_us)
@@ -341,6 +342,7 @@ class GenerateWebsiteResource(Resource):
 
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}", "response": "false"})
+        
 class ChooseDomain(Resource):
     def post(self):
         """
@@ -1454,6 +1456,87 @@ class GetAllMembersNotifications(Resource):
             return jsonify({"error": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
+        
+class SetScholarLink(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('userid', required=True, help="User ID is required")
+        parser.add_argument('scholar_link', required=True, help="Google Scholar profile link is required")
+        parser.add_argument('domain', required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.set_scholar_link_by_member(args['userid'], args['scholar_link'], args['domain'])
+            if response.is_success():
+                return jsonify({"message": "Google Scholar provile link updated successfully", "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class GetNotApprovedMemberPublications(Resource):
+    def get(self):
+        domain = request.args.get('domain')
+        user_id = request.args.get('user_id')
+        try:
+            response = lab_system_service.get_all_not_approved_publications_of_member(domain, user_id)
+            if response.is_success():
+                return jsonify({"publications": response.get_data(), "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+        
+class RejectMultiplePublications(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User ID is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        parser.add_argument('publication_IDs', type=list[str], required=True, help="A list of publication IDs is required")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.reject_publication(args['user_id'], args['domain'], args['publication_IDs'])
+            if response.is_success():
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class InitialApproveMultiplePublicationsByAuthor(Resource):
+    """
+    Approve a publication by its author in the initial review stage.
+    If the publication has not yet been final approved by a lab manager,
+    the system sends a notification to lab managers requesting final approval.
+    """
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', required=True, help="User ID is required")
+        parser.add_argument('domain', required=True, help="Domain is required")
+        parser.add_argument('publication_IDs', type=list[str], required=True, help="A list of publication IDs is required")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.initial_approve_multiple_publications_by_author(args['user_id'], args['domain'], args['publication_IDs'])
+            if response.is_success():
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+        
+class CrawlPublicationsForMember(Resource):
+     def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User ID is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.crawl_publications_for_labMember(args['user_id'], args['domain'])
+            if response.is_success():
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
 
 class RemoveAlumniFromLabWebsite(Resource):
     def post(self):
@@ -1493,6 +1576,7 @@ api.add_resource(SetPublicationVideoLink, '/api/setPublicationVideoLink')
 api.add_resource(SetPublicationGitLink, '/api/setPublicationGitLink')
 api.add_resource(SetPublicationPttxLink, '/api/setPublicationPttxLink')
 api.add_resource(InitialApprovePublicationByAuthor, '/api/initialApprovePublicationByAuthor')
+api.add_resource(InitialApproveMultiplePublicationsByAuthor, '/api/initialApproveMultiplePublicationsByAuthor')
 api.add_resource(FinalApprovePublicationByManager, '/api/finalApprovePublicationByManager')
 api.add_resource(AddAlumniFromLabWebsite, '/api/addAlumniFromLabWebsite')
 api.add_resource(RemoveAlumniFromLabWebsite, '/api/removeAlumniFromLabWebsite')
@@ -1500,6 +1584,7 @@ api.add_resource(RemoveManagerPermission, '/api/removeManagerPermission')
 api.add_resource(GetAllMembersNames, '/api/getAllMembersNames')
 api.add_resource(GetPendingRegistrationEmails, '/api/getPendingRegistrationEmails')
 api.add_resource(RejectPublication, '/api/RejectPublication')
+api.add_resource(RejectMultiplePublications, '/api/RejectMultiplePublications')
 
 # Add the resources to API
 api.add_resource(UploadFilesAndData, '/api/uploadFile')#
@@ -1520,6 +1605,7 @@ api.add_resource(AddAlumniFromGenerator, '/api/AddAlumniFromGenerator')
 api.add_resource(SiteCreatorResignationFromGenerator, '/api/siteCreatorResignationFromGenerator')
 
 api.add_resource(GetMemberPublications, '/api/getMemberPublications')
+api.add_resource(GetNotApprovedMemberPublications, '/api/getNotApprovedMemberPublications')
 api.add_resource(ApproveRegistration, '/api/approveRegistration') #
 api.add_resource(RejectRegistration, '/api/rejectRegistration') #
 api.add_resource(GetAllLabManagers, '/api/getAllLabManagers')#
@@ -1534,6 +1620,7 @@ api.add_resource(SetSecondEmail, '/api/setSecondEmail')#
 api.add_resource(SetLinkedInLink, '/api/setLinkedInLink')#
 api.add_resource(SetFullName, '/api/setFullName')#
 api.add_resource(SetDegree, '/api/setDegree')#
+api.add_resource(SetScholarLink, '/api/setScholarLink')#
 api.add_resource(SetBio, '/api/setBio')#
 api.add_resource(SetMedia, '/api/setMedia')#
 api.add_resource(SetSiteAboutUsByManagerFromGenerator, '/api/setSiteAboutUsByManagerFromGenerator')#
@@ -1549,6 +1636,7 @@ api.add_resource(GetContactUs, '/api/getContactUs')
 api.add_resource(GetAllMembersNotifications, '/api/getAllMembersNotifications')
 api.add_resource(DeleteWebsite, '/api/deleteWebsite')
 ##
+api.add_resource(CrawlPublicationsForMember, '/api/CrawlPublicationsForMember')
 
 if __name__ == '__main__':
     # notification_thread = threading.Thread(target=send_test_notifications, daemon=True)

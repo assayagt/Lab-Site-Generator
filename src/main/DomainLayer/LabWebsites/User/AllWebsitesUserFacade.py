@@ -38,7 +38,7 @@ class AllWebsitesUserFacade:
     def add_new_webstie_userFacade(self, domain):
         self.usersFacades[domain] = UserFacade.get_instance(domain)
 
-    def getUserFacadeByDomain(self, domain):
+    def getUserFacadeByDomain(self, domain) -> UserFacade:
         return self.usersFacades[domain]
 
     def error_if_domain_not_exist(self, domain):
@@ -156,6 +156,15 @@ class AllWebsitesUserFacade:
         email = userFacade.get_email_by_userId(userid)
         userFacade.set_linkedin_link_by_member(email, linkedin_link)
 
+    def set_scholar_link_by_member(self, userid, scholar_link, domain):
+        userFacade = self.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userid)
+        userFacade.error_if_user_not_logged_in(userid)
+        userFacade.error_if_user_is_not_labMember_manager_creator_alumni(userid)
+        userFacade.error_if_scholar_link_not_valid(scholar_link)
+        email = userFacade.get_email_by_userId(userid)
+        userFacade.set_scholar_link_by_member(email, scholar_link)
+
     def set_media_by_member(self, userid, media, domain):
         userFacade = self.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userid)
@@ -196,6 +205,9 @@ class AllWebsitesUserFacade:
 
     def get_active_members_names(self, domain):
         return self.getUserFacadeByDomain(domain).get_active_members_names()
+    
+    def get_active_members_scholarLinks(self, domain):
+        return self.getUserFacadeByDomain(domain=domain).get_active_members_scholar_links()
 
     def get_all_members_names(self, domain):
         '''returns all lab members + managers + site creator + alumnis names'''
@@ -286,3 +298,6 @@ class AllWebsitesUserFacade:
         """
         if domain in self.usersFacades:
             del self.usersFacades[domain]
+    
+    def get_scholar_link_by_email(self, email, domain):
+        return self.getUserFacadeByDomain(domain).get_scholar_link_by_email(email)

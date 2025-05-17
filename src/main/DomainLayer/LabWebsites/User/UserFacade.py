@@ -148,18 +148,42 @@ class UserFacade:
         for email, member in self.members.items():
             lab_member_names.append(member.get_fullName())
         return lab_member_names
+    
+    def get_lab_members_scholar_links(self):
+        res = []
+        for member in self.members.values():
+            link = member.get_scholarLink()
+            if link:
+                res.append(link)
+        return res
 
     def get_managers_names(self):
         manager_names = []
         for email, manager in self.managers.items():
             manager_names.append(manager.get_fullName())
         return manager_names
+    
+    def get_managers_scholar_links(self):
+        res = []
+        for manager in self.managers.values():
+            link = manager.get_scholarLink()
+            if link:
+                res.append(link)
+        return res
 
     def get_site_creator_name(self):
         creator_names = []
         for email, site_creator in self.siteCreator.items():
             creator_names.append(site_creator.get_fullName())
         return creator_names
+    
+    def get_site_creator_scholar_links(self):
+        res = []
+        for site_creator in self.siteCreator.values():
+            link = site_creator.get_scholarLink()
+            if link:
+                res.append(link)
+        return res
 
     def get_alumnis_names(self):
         alumni_names = []
@@ -179,6 +203,12 @@ class UserFacade:
         member_names.extend(self.get_managers_names())
         member_names.extend(self.get_site_creator_name())
         return member_names
+    
+    def get_active_members_scholar_links(self):
+        member_scholarIds = []
+        member_scholarIds.extend(self.get_lab_members_scholar_links())
+        member_scholarIds.extend(self.get_managers_scholar_links())
+        member_scholarIds.extend(self.get_site_creator_scholar_links())
 
     def login(self, userId, email):
         """Handle login logic after retrieving user info."""
@@ -211,7 +241,7 @@ class UserFacade:
         if email not in self.managers and email not in self.siteCreator:
             raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER_OR_CREATOR.value)
 
-    def get_member_by_email(self, email):
+    def get_member_by_email(self, email) -> LabMember:
         """Retrieve an active Member object by email."""
         if email in self.members:
             return self.members[email]
@@ -313,8 +343,8 @@ class UserFacade:
     def getAlumnis(self):
         return self.alumnis
 
-    def set_site_creator(self, creator_email, creator_fullName, creator_degree):
-        member = LabMember(creator_email, creator_fullName, creator_degree)
+    def set_site_creator(self, creator_email, creator_fullName, creator_degree, creator_scholar_link):
+        member = LabMember(creator_email, creator_fullName, creator_degree, scholar_link=creator_scholar_link)
         self.siteCreator[creator_email] = member
         self.dal_controller.LabMembers_repo.save_LabMember(member.get_dto(self.domain))  # ===========================
         self.dal_controller.LabMembers_repo.save_to_LabRoles_siteCreator(creator_email, self.domain)  # ===========================
@@ -332,6 +362,13 @@ class UserFacade:
         if member is None:
             member = self.get_alumni_by_email(email)
         member.set_linkedin_link(linkedin_link)
+        self.dal_controller.LabMembers_repo.save_LabMember(member.get_dto(self.domain))  # ===========================
+    
+    def set_scholar_link_by_member(self, email, scholar_link):
+        member = self.get_member_by_email(email)
+        if member is None:
+            member = self.get_alumni_by_email(email)
+        member.set_scholar_Link(scholar_link)
         self.dal_controller.LabMembers_repo.save_LabMember(member.get_dto(self.domain))  # ===========================
 
     def set_media_by_member(self, email, media):
@@ -391,7 +428,17 @@ class UserFacade:
         )
         if not linkedin_pattern.match(linkedin_link):
             raise ValueError(ExceptionsEnum.INVALID_LINKEDIN_LINK.value)
-
+        
+    def error_if_scholar_link_not_valid(self, scholar_link):
+        """
+        Validates if the given Google Scholar link is strictly a profile link.
+        """
+        # Strict regex for valid Google Scholar profile URLs only
+        scholar_pattern = re.compile(
+            r"^https://(www\.)?scholar\.google\.com/citations\?user=[a-zA-Z0-9_-]{5,}&?$"
+        )
+        if not scholar_pattern.match(scholar_link):
+            raise ValueError(ExceptionsEnum.INVALID_SCHOLAR_LINK.value)
 
     def get_pending_registration_emails(self):
         # Get all the emails that are in the registration requests list and that their value is RegistrationStatus.PENDING.value
@@ -457,14 +504,29 @@ class UserFacade:
         del self.members[nominate_email]
         self.dal_controller.LabMembers_repo.save_to_LabRoles_siteCreator(nominate_email, self.domain)
 
-    def get_fullName_by_email(self):
+    def get_fullName_by_email(self, email):
         """
         Get the full name of a member by their email.
         """
-        for email, member in self.members.items():
-            if member.email == email:
-                return member.fullName
+        if email in self.members:
+            return self.members[email].get_fullName()
+        elif email in self.managers:
+            return self.managers[email].get_fullName()
+        elif email in self.siteCreator:
+            return self.siteCreator[email].get_fullName()
+    
+    def get_scholar_link_by_email(self, email):
+        """
+            Get Google Scholar profile link of member by email.
+        """
+        if email in self.members:
+            return self.members[email].get_scholarLink()
+        elif email in self.managers:
+            return self.managers[email].get_scholarLink()
+        elif email in self.siteCreator:
+            return self.siteCreator[email].get_scholarLink()
         return None
+        
 
     def _load_data(self):
         # Load members
