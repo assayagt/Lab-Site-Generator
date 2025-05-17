@@ -75,6 +75,8 @@ const ChooseComponentsPage = () => {
     setSuccsessMessage,
     handleGoogleScolarChange,
     googleLink,
+    setSave,
+    save,
   } = useChooseComponents();
 
   // Fix leaflet icon issues (put this near the top of the component file)
@@ -261,7 +263,7 @@ const ChooseComponentsPage = () => {
                       className="generate_button"
                       onClick={handleGenerate}
                     >
-                      {websiteData.generated ? "Save" : "Generate Website"}
+                      {websiteData.generated ? save : "Generate Website"}
                     </button>
                   </div>
                 </ul>

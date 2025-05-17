@@ -57,7 +57,7 @@ const useChooseComponents = () => {
   const [newRoleAfterResignation, setNewRoleAfterResignation] =
     useState("manager");
   const [isLoading, setIsLoading] = useState(false);
-
+  const [save, setSave] = useState("Save");
   const showError = (message) => {
     setErrorMessage(message);
   };
@@ -167,6 +167,7 @@ const useChooseComponents = () => {
   };
 
   const toggleLabManager = async (index) => {
+    setSave("Save");
     const updatedParticipants = [...participants];
     const participant = updatedParticipants[index];
 
@@ -219,6 +220,7 @@ const useChooseComponents = () => {
   };
 
   const toggleAlumni = async (index) => {
+    setSave("Save");
     const updatedParticipants = [...participants];
     const participant = updatedParticipants[index];
 
@@ -255,12 +257,14 @@ const useChooseComponents = () => {
   };
 
   const removeParticipant = (index) => {
+    setSave("Save");
     setParticipants((prevParticipants) =>
       prevParticipants.filter((_, i) => i !== index)
     );
   };
 
   const handleInputChangeParticipant = (e) => {
+    setSave("Save");
     const { name, value, type, checked } = e.target;
     setNewParticipant((prev) => ({
       ...prev,
@@ -306,6 +310,7 @@ const useChooseComponents = () => {
   };
 
   const addParticipant = () => {
+    setSave("Save");
     setParticipants((prevParticipants) => {
       if (prevParticipants.length === 0) {
         // First row: Set the creator info (name is empty at first)
@@ -328,6 +333,7 @@ const useChooseComponents = () => {
   };
 
   const handleParticipantChange = (index, field, value) => {
+    setSave("Save");
     setParticipants((prevParticipants) => {
       setButtonText("Save");
       const updatedParticipants = [...prevParticipants]; // Copy array
@@ -350,6 +356,7 @@ const useChooseComponents = () => {
   };
 
   const handleAboutUsChange = (e) => {
+    setSave("Save");
     setAboutUsSaved(false);
     setAboutUsContent(e.target.value);
   };
@@ -372,6 +379,7 @@ const useChooseComponents = () => {
   };
 
   const handleContactUsChange = (e) => {
+    setSave("Save");
     setcontactUs(false);
     const { name, value } = e.target;
     setContactUsData((prev) => ({
@@ -400,6 +408,7 @@ const useChooseComponents = () => {
   };
 
   const handleFileChange = (e, component) => {
+    setSave("Save");
     const file = e.target.files[0];
     if (file) {
       setFormData((prev) => ({
@@ -481,7 +490,7 @@ const useChooseComponents = () => {
 
   const handleGenerate = async () => {
     if (websiteData.generated) {
-      setSuccsessMessage("Saved, Please reload your website");
+      setSave("Saved");
       return;
     }
     setIsLoading(true); // Show loading popup
@@ -733,6 +742,8 @@ const useChooseComponents = () => {
     setSuccsessMessage,
     handleGoogleScolarChange,
     googleLink,
+    setSave,
+    save,
   };
 };
 
