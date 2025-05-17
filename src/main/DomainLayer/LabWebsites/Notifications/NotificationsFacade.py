@@ -117,6 +117,22 @@ class NotificationsFacade:
         # Send Email notification and save it
         self.notify_user(email_notification, domain, recipientEmail)
 
+    def send_multiple_pubs_notification_for_final_approval(self, recipientEmail, domain):
+        """
+        Sends a notification email for final approval of a publication to the lab mangers
+        """
+        # Format email body
+        body = (
+            f"One or more publication requests were submitted by lab members and are awaiting your review.\n"
+            f"Please log in to your lab site to approve or reject them.\n\n"
+            f"Website link: {domain}"
+        )
+        # Create the email notification
+        id = str(uuid.uuid4())
+        email_notification = EmailNotification(id, recipientEmail, "New Publications Pending Final Approval", body, domain)
+        email_notification.send_email()
+
+
     def send_registration_request_notification(self, requestedEmail, recipientEmail, domain):
         """
         Sends a notification email containing a registration request.

@@ -83,6 +83,14 @@ class Website:
                 if publication.approved == ApprovalStatus.APPROVED.value:  # Check if the publication is approved
                     approved_publications.append(publication.to_dict())
         return approved_publications
+    
+    def get_all_not_approved_publications_of_member(self, email):
+        pubs = []
+        if email in self.members_publications:
+            for pub in self.members_publications[email]:
+                if pub.approved != ApprovalStatus.APPROVED.value:
+                    pubs.append(pub.to_dict())
+        return pubs
 
     def set_publication_video_link(self, publication_paper_id, video_link) -> PublicationDTO:
         for author_email in self.members_publications:
@@ -113,8 +121,8 @@ class Website:
         return False
 
     def get_publication_by_paper_id(self, paper_id):
-        for author_email in self.members_publications:
-            for publication in self.members_publications[author_email]:
+        for pub_list in self.members_publications.values():
+            for publication in pub_list:
                 if publication.get_paper_id() == paper_id:
                     return publication
         return None
