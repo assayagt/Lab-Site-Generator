@@ -73,7 +73,7 @@ class NotificationsFacade:
             }
         )
 
-    def send_publication_notification(self, publicationDto, recipientEmail, domain):
+    def send_publication_notification(self, publicationDto, recipientEmail, domain, emailOnly = False):
         """
         Sends a notification email for a new publication to its authors.
         """
@@ -91,9 +91,12 @@ class NotificationsFacade:
         id = str(uuid.uuid4())
 
         email_notification = EmailNotification(id, recipientEmail, "New Publication Pending Approval", body, domain, publication_id=publicationDto.get_paper_id())
-
+        if emailOnly:
+            email_notification.send_email()
+        else:
         # Send Email notification and save it
-        self.notify_user(email_notification, domain, recipientEmail)
+            self.notify_user(email_notification, domain, recipientEmail)
+  
 
     def send_publication_notification_for_final_approval(self, publicationDto, recipientEmail, domain):
         """

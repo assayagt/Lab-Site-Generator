@@ -1576,7 +1576,7 @@ api.add_resource(AddAlumniFromGenerator, '/api/AddAlumniFromGenerator')
 api.add_resource(SiteCreatorResignationFromGenerator, '/api/siteCreatorResignationFromGenerator')
 
 api.add_resource(GetMemberPublications, '/api/getMemberPublications')
-api.add_resource(GetNotApprovedMemberPublications, 'api/getNotApprovedMemberPublications')
+api.add_resource(GetNotApprovedMemberPublications, '/api/getNotApprovedMemberPublications')
 api.add_resource(ApproveRegistration, '/api/approveRegistration') #
 api.add_resource(RejectRegistration, '/api/rejectRegistration') #
 api.add_resource(GetAllLabManagers, '/api/getAllLabManagers')#
@@ -1606,7 +1606,7 @@ api.add_resource(GetUserDetails, '/api/getUserDetails')
 api.add_resource(GetContactUs, '/api/getContactUs')
 api.add_resource(GetAllMembersNotifications, '/api/getAllMembersNotifications')
 ##
-api.add_resource(CrawlPublicationsForMember, 'api/CrawlPublicationsForMember')
+api.add_resource(CrawlPublicationsForMember, '/api/CrawlPublicationsForMember')
 
 if __name__ == '__main__':
     # notification_thread = threading.Thread(target=send_test_notifications, daemon=True)

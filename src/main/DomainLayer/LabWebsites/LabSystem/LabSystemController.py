@@ -657,7 +657,7 @@ class LabSystemController:
                      # send notifications to the website authors about the new publications, for initial approval.
                     for authorEmail in authorEmails:
                         self.notificationsFacade.send_publication_notification(pub, authorEmail,
-                                                                              website_domain)
+                                                                              website_domain, emailOnly=True)
                         
 
     def crawl_publications_for_labMember(self, website_domain, userId, with_notifications=True):
@@ -683,6 +683,6 @@ class LabSystemController:
                      # send notifications to the website authors about the new publications, for initial approve
                     for authorEmail in authorEmails:
                         self.notificationsFacade.send_publication_notification(pub, authorEmail,
-                                                                               website_domain)
+                                                                               website_domain, emailOnly=True)
         return len(member_pubs)
 
