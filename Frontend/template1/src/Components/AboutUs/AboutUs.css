@@ -63,7 +63,11 @@
   resize: vertical;
   background: rgba(44, 62, 80, 0.05);
 }
-
+.editModeContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 .saveButton {
   width: 100px;
   padding: 5px;
