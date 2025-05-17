@@ -660,7 +660,11 @@ class LabSystemController:
                                                                               website_domain)
                         
 
-    def crawl_publications_for_labMember(self, website_domain, email, with_notifications=True):
+    def crawl_publications_for_labMember(self, website_domain, userId, with_notifications=True):
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(website_domain)
+        userFacade.error_if_user_notExist(userId)
+        userFacade.error_if_user_not_logged_in(userId)
+        email = userFacade.get_email_by_userId(userId)
         website = self.websiteFacade.get_website(website_domain)
         scholar_link = self.allWebsitesUserFacade.get_scholar_link_by_email(domain=website_domain, email=email)
         if not scholar_link:
@@ -680,5 +684,5 @@ class LabSystemController:
                     for authorEmail in authorEmails:
                         self.notificationsFacade.send_publication_notification(pub, authorEmail,
                                                                                website_domain)
-                      
+        return len(member_pubs)
 

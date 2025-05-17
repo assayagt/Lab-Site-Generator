@@ -75,6 +75,14 @@ class LabSystemService:
             return Response(True, "Crawling for publications completed successfully")
         except Exception as e:
             return Response(None, str(e))
+        
+    def crawl_publications_for_labMember(self, userId, domain):
+        """Crawl publications for a lab member"""
+        try:
+            new_pubs_num = self.lab_system_controller.crawl_publications_for_labMember(website_domain=domain, userId=userId)
+            return Response(True, f"Crawled {new_pubs_num} new publications successfully")
+        except Exception as e:
+            return Response(None, str(e))        
 
     def initial_approve_publication_by_author(self, user_id, domain, notification_id):
         """Initial approve a publication by its author."""

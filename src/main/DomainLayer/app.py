@@ -1521,6 +1521,21 @@ class InitialApproveMultiplePublicationsByAuthor(Resource):
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
+        
+class CrawlPublicationsForMember(Resource):
+     def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User ID is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.crawl_publications_for_labMember(args['user_id'], args['domain'])
+            if response.is_success():
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
 
         
 
@@ -1593,6 +1608,7 @@ api.add_resource(GetUserDetails, '/api/getUserDetails')
 api.add_resource(GetContactUs, '/api/getContactUs')
 api.add_resource(GetAllMembersNotifications, '/api/getAllMembersNotifications')
 ##
+api.add_resource(CrawlPublicationsForMember, 'api/CrawlPublicationsForMember')
 
 if __name__ == '__main__':
     # notification_thread = threading.Thread(target=send_test_notifications, daemon=True)
