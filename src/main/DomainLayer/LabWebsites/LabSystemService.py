@@ -16,11 +16,11 @@ class LabSystemService:
                 cls._instance._initialized = False
         return cls._instance
 
-    def __init__(self, lab_system_controller):
+    def __init__(self, lab_system_controller: LabSystemController):
         if self._initialized:
             return
 
-        self.lab_system_controller = lab_system_controller
+        self.lab_system_controller: LabSystemController = lab_system_controller
         self._initialized = True
 
     @classmethod
@@ -245,6 +245,13 @@ class LabSystemService:
         try:
             self.lab_system_controller.set_degree_by_member(userid, degree, domain)
             return Response(True, "Degree added successfully")
+        except Exception as e:
+            return Response(None, str(e))
+        
+    def set_scholar_link_by_member(self, userid, scholar_link, domain):
+        try:
+            self.lab_system_controller.set_scholar_link_by_member(userid=userid, schoalr_link=scholar_link, domain=domain)
+            return Response(True, "Google Scholar Profile link added successfully")
         except Exception as e:
             return Response(None, str(e))
 

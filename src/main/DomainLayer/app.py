@@ -1456,6 +1456,26 @@ class GetAllMembersNotifications(Resource):
             return jsonify({"error": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
+        
+class SetScholarLink(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('userid', required=True, help="User ID is required")
+        parser.add_argument('scholar_link', required=True, help="Google Scholar profile link is required")
+        parser.add_argument('domain', required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.set_scholar_link_by_member(args['userid'], args['scholar_link'], args['domain'])
+            if response.is_success():
+                return jsonify({"message": "Google Scholar provile link updated successfully", "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+        
+
+        
+
 
 # Add resources to the API of lab
 api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')#
@@ -1507,6 +1527,7 @@ api.add_resource(SetSecondEmail, '/api/setSecondEmail')#
 api.add_resource(SetLinkedInLink, '/api/setLinkedInLink')#
 api.add_resource(SetFullName, '/api/setFullName')#
 api.add_resource(SetDegree, '/api/setDegree')#
+api.add_resource(SetScholarLink, '/api/setScholarLink')#
 api.add_resource(SetBio, '/api/setBio')#
 api.add_resource(SetMedia, '/api/setMedia')#
 api.add_resource(SetSiteAboutUsByManagerFromGenerator, '/api/setSiteAboutUsByManagerFromGenerator')#
