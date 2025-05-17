@@ -48,7 +48,7 @@ class LabSystemController:
         self.allWebsitesUserFacade.error_if_domain_not_exist(domain)
         return self.allWebsitesUserFacade.add_user_to_website(domain)
 
-    def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator):
+    def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator, creator_scholar_link):
         """
         Create a new lab website with the given domain, lab members, lab managers, and site creator.
         Each lab member, lab manager, and site creator now includes a degree field.
@@ -73,7 +73,7 @@ class LabSystemController:
         site_creator_email = site_creator.get("email")
         site_creator_full_name = site_creator.get("full_name")
         site_creator_degree = site_creator.get("degree")
-        userFacade.set_site_creator(site_creator_email, site_creator_full_name, site_creator_degree) 
+        userFacade.set_site_creator(site_creator_email, site_creator_full_name, site_creator_degree, creator_scholar_link) 
 
         #fetch publications initially
         self.crawl_publications_for_website(website_domain=domain, with_notifications=False)

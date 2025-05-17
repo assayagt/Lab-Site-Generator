@@ -51,7 +51,7 @@ class GeneratorSystemController:
         self.site_custom_facade.create_new_site(domain, website_name, components, template, email)
         self.user_facade.create_new_site_manager(email, domain)
 
-    def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator):
+    def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator, creator_scholar_link):
         """
         Generates a new lab website once the custom site configuration is complete.
         Parameters:
@@ -66,7 +66,7 @@ class GeneratorSystemController:
         self.site_custom_facade.set_custom_site_as_generated(domain)
         lab_managers_emails = list(lab_managers.keys())
         self.user_facade.create_new_site_managers(lab_managers_emails, domain)
-        self.labSystem.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
+        self.labSystem.create_new_lab_website(domain, lab_members, lab_managers, site_creator, creator_scholar_link)
         self.set_site_logo_on_site_creation(domain)
         self.set_site_home_picture_on_site_creation(domain)
 

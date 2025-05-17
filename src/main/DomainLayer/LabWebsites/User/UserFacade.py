@@ -343,8 +343,8 @@ class UserFacade:
     def getAlumnis(self):
         return self.alumnis
 
-    def set_site_creator(self, creator_email, creator_fullName, creator_degree):
-        member = LabMember(creator_email, creator_fullName, creator_degree)
+    def set_site_creator(self, creator_email, creator_fullName, creator_degree, creator_scholar_link):
+        member = LabMember(creator_email, creator_fullName, creator_degree, scholar_link=creator_scholar_link)
         self.siteCreator[creator_email] = member
         self.dal_controller.LabMembers_repo.save_LabMember(member.get_dto(self.domain))  # ===========================
         self.dal_controller.LabMembers_repo.save_to_LabRoles_siteCreator(creator_email, self.domain)  # ===========================
