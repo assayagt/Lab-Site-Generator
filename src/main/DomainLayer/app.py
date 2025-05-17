@@ -280,7 +280,7 @@ class GenerateWebsiteResource(Resource):
             data = request.get_json()
 
             # Ensure required fields exist
-            required_fields = ['domain', 'about_us', 'lab_address', 'lab_mail', 'lab_phone_num', 'participants']
+            required_fields = ['domain', 'about_us', 'lab_address', 'lab_mail', 'lab_phone_num', 'participants', 'creator_schoalr_link']
             for field in required_fields:
                 if field not in data:
                     return jsonify({"error": f"Missing required field: {field}", "response": "false"})
@@ -291,6 +291,7 @@ class GenerateWebsiteResource(Resource):
             lab_mail = data['lab_mail']
             lab_phone_num = data['lab_phone_num']
             participants = data['participants']
+            creator_scholar_link = data['creator_schoalr_link']
             contact_info = ContactInfo(lab_address, lab_mail, lab_phone_num)
             # Extract lab members, managers, and site creator
             lab_members = {}
@@ -323,7 +324,7 @@ class GenerateWebsiteResource(Resource):
 
 
             # Call generator system to create a new lab website
-            response = generator_system.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
+            response = generator_system.create_new_lab_website(domain, lab_members, lab_managers, site_creator, creator_scholar_link)
 
             if response.is_success():
                 response2 = generator_system.set_site_about_us_on_creation_from_generator(domain, about_us)
@@ -341,6 +342,7 @@ class GenerateWebsiteResource(Resource):
 
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}", "response": "false"})
+        
 class ChooseDomain(Resource):
     def post(self):
         """

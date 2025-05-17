@@ -56,10 +56,10 @@ class GeneratorSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator):
+    def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator, creator_scholar_link):
         """Create a new lab website through GeneratorSystemController."""
         try:
-            self.generator_system_controller.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
+            self.generator_system_controller.create_new_lab_website(domain, lab_members, lab_managers, site_creator, creator_scholar_link)
             return Response(domain, "Lab website created successfully")
         except Exception as e:
             return Response(None, str(e))
