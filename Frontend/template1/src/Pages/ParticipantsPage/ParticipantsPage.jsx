@@ -268,9 +268,7 @@ const ParticipantsPage = () => {
         );
         return;
       } else {
-        setPopupMessage(
-          "Participant added successfully! It might take a while until you will see changes it website"
-        );
+        setPopupMessage("Participant added successfully! ");
       }
 
       if (isManager) {

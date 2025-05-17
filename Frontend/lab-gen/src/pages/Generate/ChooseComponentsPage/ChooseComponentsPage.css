@@ -146,8 +146,8 @@
   right: 10px;
   margin: 10px;
   border-radius: 20px;
-  width: 15%;
-  min-width: 150px;
+  /* width: 15%; */
+  min-width: 130px;
   height: 30px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(31, 51, 71, 0.8);
@@ -156,7 +156,7 @@
 .save_template_button {
   bottom: 0px;
   right: 10px;
-  width: 10%;
+  /* width: 10%; */
 }
 
 .save_domain_name_button:hover,
@@ -352,8 +352,8 @@
 
 .media_button {
   border-radius: 20px;
-  width: 15%;
-
+  /* width: 15%; */
+  min-width: 100px;
   height: 30px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(31, 51, 71, 0.8);
@@ -384,7 +384,7 @@
   flex-direction: column;
   position: relative;
   width: 64%;
-  /* max-width: 400px; */
+  max-width: 900px;
   background: rgba(255, 255, 255, 0.1);
   padding: 20px;
   border-radius: 10px;
@@ -424,7 +424,7 @@
 
 .about_contact_button {
   position: absolute;
-  bottom: 10px;
+  bottom: 15px;
   right: 35px;
   border-radius: 20px;
   width: 10%;
@@ -518,7 +518,7 @@
   padding: 10px 20px;
   font-size: 16px;
   border-radius: 20px;
-  width: 15%;
+  /* width: 15%; */
   min-width: 170px;
   height: 30px;
   background: rgba(255, 255, 255, 0.1);
@@ -591,7 +591,7 @@
 .modal-content {
   background: rgb(213, 213, 213);
   padding: 20px;
-  width: 40%;
+  width: 400px;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   position: relative;
@@ -601,9 +601,16 @@
 }
 
 /* Modal Input Fields */
-.modal-content-item,
-.modal-content select {
+.modal-content-item {
   width: 90%;
+  padding: 10px;
+  margin-top: 8px;
+  border: 1px solid #1c2c3d;
+  border-radius: 5px;
+  background-color: transparent;
+}
+.modal-content-item-select {
+  width: 96%;
   padding: 10px;
   margin-top: 8px;
   border: 1px solid #1c2c3d;
@@ -615,10 +622,10 @@
 .modal-buttons {
   margin-top: 15px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
-.modal-buttons button {
+.modal-buttons .modal-buttons-add_member {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
@@ -626,8 +633,7 @@
   font-size: 14px;
 }
 
-.modal-buttons button:first-child,
-.modal-buttons .cancel-button {
+.modal-buttons .modal-buttons-add_member {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -661,32 +667,50 @@
   cursor: pointer;
   font-size: 18px; /* Adjust size */
   border-radius: 5px;
-  transition: color 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+.delete-button svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  transition: fill 0.3s ease;
 }
 
 .delete-button:hover {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
 }
 
+.modal-buttons .x-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 40px; /* Increased from 35px */
+  height: 40px; /* Increased from 35px */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 24px; /* Increased from default size */
+  color: #555555;
+  transition: color 0.3s ease;
+}
+
+.modal-buttons .x-button:hover {
+  color: #000;
+}
 /* Specific Style for the Add Button */
-.modal-buttons .save_button {
+.modal-buttons .save_button .modal-buttons-add_member {
   background-color: rgba(255, 255, 255, 0.1);
   color: black;
   border: 1px solid rgba(31, 51, 71, 0.8);
 }
+Specific Style for the Cancel Button */
 
-/* Specific Style for the Cancel Button */
-.modal-buttons .cancel-button {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: black;
-  border: 1px solid rgba(31, 51, 71, 0.8);
-}
 /* Hover Effect */
-.modal-buttons button:hover,
-.modal-buttons .modal-button:hover,
+.modal-buttons-add_member:hover,
 .delete-button:hover {
   background: rgba(228, 240, 247, 0.3);
-  border: 1px solid rgba(31, 51, 71, 1);
+  color: black;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 }
 
@@ -803,22 +827,3 @@
   align-items: center;
   white-space: nowrap;
 }
-/* .domain-input-group {
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-} */
-
-/* .input_suffix {
-  flex: 1;
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 0 4px 4px 0;
-  font-family: monospace;
-}
-
-.domain-preview {
-  font-size: 14px;
-  margin-top: 4px;
-  color: #666;
-} */
