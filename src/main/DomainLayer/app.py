@@ -1537,8 +1537,6 @@ class CrawlPublicationsForMember(Resource):
         except Exception as e:
             return jsonify({"error": str(e)})
 
-        
-
 
 # Add resources to the API of lab
 api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')#
