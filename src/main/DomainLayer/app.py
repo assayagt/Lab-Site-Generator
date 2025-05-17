@@ -1472,7 +1472,34 @@ class SetScholarLink(Resource):
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
+
+class GetNotApprovedMemberPublications(Resource):
+    def get(self):
+        domain = request.args.get('domain')
+        user_id = request.args.get('user_id')
+        try:
+            response = lab_system_service.get_all_not_approved_publications_of_member(domain, user_id)
+            if response.is_success():
+                return jsonify({"publications": response.get_data(), "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
         
+class RejectMultiplePublications(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User ID is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        parser.add_argument('publication_IDs', type=list[str], required=True, help="A list of publication IDs is required")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.reject_publication(args['user_id'], args['domain'], args['publication_IDs'])
+            if response.is_success():
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
 
         
 
@@ -1493,6 +1520,7 @@ api.add_resource(RemoveManagerPermission, '/api/removeManagerPermission')
 api.add_resource(GetAllMembersNames, '/api/getAllMembersNames')
 api.add_resource(GetPendingRegistrationEmails, '/api/getPendingRegistrationEmails')
 api.add_resource(RejectPublication, '/api/RejectPublication')
+api.add_resource(RejectMultiplePublications, '/api/RejectMultiplePublications')
 
 # Add the resources to API
 api.add_resource(UploadFilesAndData, '/api/uploadFile')#
@@ -1513,6 +1541,7 @@ api.add_resource(AddAlumniFromGenerator, '/api/AddAlumniFromGenerator')
 api.add_resource(SiteCreatorResignationFromGenerator, '/api/siteCreatorResignationFromGenerator')
 
 api.add_resource(GetMemberPublications, '/api/getMemberPublications')
+api.add_resource(GetNotApprovedMemberPublications, 'api/getNotApprovedMemberPublications')
 api.add_resource(ApproveRegistration, '/api/approveRegistration') #
 api.add_resource(RejectRegistration, '/api/rejectRegistration') #
 api.add_resource(GetAllLabManagers, '/api/getAllLabManagers')#

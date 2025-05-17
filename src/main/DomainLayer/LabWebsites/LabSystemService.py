@@ -99,6 +99,14 @@ class LabSystemService:
             return Response(True, "Publication rejected successfully")
         except Exception as e:
             return Response(None, str(e))
+        
+    def reject_multiple_publications(self, user_id, domain, publicationIds: list[str]):
+        "Reject multiple publications"
+        try:
+            self.lab_system_controller.reject_multiple_publications(userId=user_id, domain=domain, publicationIds=publicationIds)
+            return Response(True, "Publications rejected successfully")
+        except Exception as e:
+            return Response(None, str(e))
 
     def add_publication_manually(self, user_id, domain, publication_link, git_link, video_link, presentation_link):
         """Add a publication manually to a lab website."""
@@ -121,6 +129,14 @@ class LabSystemService:
         try:
             publications = self.lab_system_controller.get_all_approved_publications_of_member(domain, user_id)
             return Response(publications, "Retrieved all approved publications for member successfully")
+        except Exception as e:
+            return Response(None, str(e))
+        
+    def get_all_not_approved_publications_of_member(self, domain, user_id):
+        """Get all not approved publications of a specific member for a specific website."""
+        try:
+            publications = self.lab_system_controller.get_all_not_approved_publications_of_member(domain, user_id)
+            return Response(publications, "Retrieved all not approved publications for member successfully")
         except Exception as e:
             return Response(None, str(e))
 
