@@ -369,13 +369,20 @@ const ParticipantProfile = () => {
                   <p className="publication-authors">
                     {formatAuthors(pub.authors)}
                   </p>
-
-                  {pub.journal_name && (
-                    <p className="publication-journal">{pub.journal_name}</p>
-                  )}
-                  {pub.description && (
-                    <p className="publication-journal">{pub.description}</p>
-                  )}
+                  <div className="description_video_container">
+                    {pub.video_link && (
+                      <iframe
+                        className="video"
+                        src={pub.video_link}
+                        title={pub.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      ></iframe>
+                    )}
+                    {pub.description && (
+                      <p className="publication-journal">{pub.description}</p>
+                    )}
+                  </div>
 
                   <div className="publication-links">
                     {pub.publication_link && (
@@ -452,38 +459,6 @@ const ParticipantProfile = () => {
                           <line x1="12" y1="17" x2="12" y2="21"></line>
                         </svg>
                         Presentation
-                      </a>
-                    )}
-
-                    {pub.video && (
-                      <a
-                        href={pub.video}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="publication-link-button"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <polygon points="23 7 16 12 23 17 23 7"></polygon>
-                          <rect
-                            x="1"
-                            y="5"
-                            width="15"
-                            height="14"
-                            rx="2"
-                            ry="2"
-                          ></rect>
-                        </svg>
-                        Video
                       </a>
                     )}
                   </div>
