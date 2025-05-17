@@ -1501,6 +1501,27 @@ class RejectMultiplePublications(Resource):
         except Exception as e:
             return jsonify({"error": str(e)})
 
+class InitialApproveMultiplePublicationsByAuthor(Resource):
+    """
+    Approve a publication by its author in the initial review stage.
+    If the publication has not yet been final approved by a lab manager,
+    the system sends a notification to lab managers requesting final approval.
+    """
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', required=True, help="User ID is required")
+        parser.add_argument('domain', required=True, help="Domain is required")
+        parser.add_argument('publication_IDs', type=list[str], required=True, help="A list of publication IDs is required")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.initial_approve_multiple_publications_by_author(args['user_id'], args['domain'], args['publication_IDs'])
+            if response.is_success():
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
         
 
 
@@ -1514,6 +1535,7 @@ api.add_resource(SetPublicationVideoLink, '/api/setPublicationVideoLink')
 api.add_resource(SetPublicationGitLink, '/api/setPublicationGitLink')
 api.add_resource(SetPublicationPttxLink, '/api/setPublicationPttxLink')
 api.add_resource(InitialApprovePublicationByAuthor, '/api/initialApprovePublicationByAuthor')
+api.add_resource(InitialApproveMultiplePublicationsByAuthor, '/api/initialApproveMultiplePublicationsByAuthor')
 api.add_resource(FinalApprovePublicationByManager, '/api/finalApprovePublicationByManager')
 api.add_resource(AddAlumniFromLabWebsite, '/api/addAlumniFromLabWebsite')
 api.add_resource(RemoveManagerPermission, '/api/removeManagerPermission')

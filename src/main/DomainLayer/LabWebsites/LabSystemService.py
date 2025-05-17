@@ -83,6 +83,14 @@ class LabSystemService:
             return Response(True, "Publication approved successfully by author")
         except Exception as e:
             return Response(None, str(e))
+        
+    def initial_approve_multiple_publications_by_author(self, user_id, domain, publicationIds: list[str]):
+        """Initial approve a publication by its author."""
+        try:
+            self.lab_system_controller.initial_approve_multiple_publications_by_author(user_id, domain, publication_ids=publicationIds)
+            return Response(True, "Publications approved successfully by author")
+        except Exception as e:
+            return Response(None, str(e))
 
     def final_approve_publication_by_manager(self, user_id, domain, notification_id):
         """Final approve a publication by a lab manager."""
