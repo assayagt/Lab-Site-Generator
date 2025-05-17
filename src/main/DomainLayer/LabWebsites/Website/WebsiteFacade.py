@@ -208,6 +208,16 @@ class WebsiteFacade:
             pubs = self.dal_controller.publications_repo.find_by_domain(domain=dto.domain)
             website.load_pub_dtos(pub_list=pubs)
             self.websites.append(website)
+    
+    def remove_website_data(self, domain):
+        """
+        Delete a website.
+        """
+        #remove website from websites list
+        for website in self.websites:
+            if website.domain == domain:
+                self.websites.remove(website)
+                break
 
     def reset_system(self):
         """

@@ -454,7 +454,13 @@ class UserFacade:
         all_managers = []
         for email, member in self.managers.items():
             all_managers.append(member.get_details())
+        all_managers.append(self.get_site_creator_details())
         return all_managers
+
+    def get_site_creator_details(self):
+        details = self.siteCreator[0].get_details()
+        details["is_creator"] = True
+        return details
 
     def get_all_alumnis_details(self):
         all_alumnis = []

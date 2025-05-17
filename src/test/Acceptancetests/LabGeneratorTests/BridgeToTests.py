@@ -90,3 +90,8 @@ class BridgeToTests(ABC):
     def remove_alumni_from_generator(self, manager_userId, email_toRemoveAlumni, domain):
         """Remove an alumni."""
         pass
+    
+    @abstractmethod
+    def delete_website(self, user_id, domain):
+        """Delete a website."""
+        pass
