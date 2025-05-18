@@ -16,11 +16,11 @@ class LabSystemService:
                 cls._instance._initialized = False
         return cls._instance
 
-    def __init__(self, lab_system_controller):
+    def __init__(self, lab_system_controller: LabSystemController):
         if self._initialized:
             return
 
-        self.lab_system_controller = lab_system_controller
+        self.lab_system_controller: LabSystemController = lab_system_controller
         self._initialized = True
 
     @classmethod
@@ -75,12 +75,28 @@ class LabSystemService:
             return Response(True, "Crawling for publications completed successfully")
         except Exception as e:
             return Response(None, str(e))
+        
+    def crawl_publications_for_labMember(self, userId, domain):
+        """Crawl publications for a lab member"""
+        try:
+            new_pubs_num = self.lab_system_controller.crawl_publications_for_labMember(website_domain=domain, userId=userId)
+            return Response(True, f"Crawled {new_pubs_num} new publications successfully")
+        except Exception as e:
+            return Response(None, str(e))        
 
     def initial_approve_publication_by_author(self, user_id, domain, notification_id):
         """Initial approve a publication by its author."""
         try:
             self.lab_system_controller.initial_approve_publication_by_author(user_id, domain, notification_id)
             return Response(True, "Publication approved successfully by author")
+        except Exception as e:
+            return Response(None, str(e))
+        
+    def initial_approve_multiple_publications_by_author(self, user_id, domain, publicationIds: list[str]):
+        """Initial approve a publication by its author."""
+        try:
+            self.lab_system_controller.initial_approve_multiple_publications_by_author(user_id, domain, publication_ids=publicationIds)
+            return Response(True, "Publications approved successfully by author")
         except Exception as e:
             return Response(None, str(e))
 
@@ -97,6 +113,14 @@ class LabSystemService:
         try:
             self.lab_system_controller.reject_publication(user_id, domain, notification_id)
             return Response(True, "Publication rejected successfully")
+        except Exception as e:
+            return Response(None, str(e))
+        
+    def reject_multiple_publications(self, user_id, domain, publicationIds: list[str]):
+        "Reject multiple publications"
+        try:
+            self.lab_system_controller.reject_multiple_publications(userId=user_id, domain=domain, publicationIds=publicationIds)
+            return Response(True, "Publications rejected successfully")
         except Exception as e:
             return Response(None, str(e))
 
@@ -121,6 +145,14 @@ class LabSystemService:
         try:
             publications = self.lab_system_controller.get_all_approved_publications_of_member(domain, user_id)
             return Response(publications, "Retrieved all approved publications for member successfully")
+        except Exception as e:
+            return Response(None, str(e))
+        
+    def get_all_not_approved_publications_of_member(self, domain, user_id):
+        """Get all not approved publications of a specific member for a specific website."""
+        try:
+            publications = self.lab_system_controller.get_all_not_approved_publications_of_member(domain, user_id)
+            return Response(publications, "Retrieved all not approved publications for member successfully")
         except Exception as e:
             return Response(None, str(e))
 
@@ -245,6 +277,13 @@ class LabSystemService:
         try:
             self.lab_system_controller.set_degree_by_member(userid, degree, domain)
             return Response(True, "Degree added successfully")
+        except Exception as e:
+            return Response(None, str(e))
+        
+    def set_scholar_link_by_member(self, userid, scholar_link, domain):
+        try:
+            self.lab_system_controller.set_scholar_link_by_member(userid=userid, schoalr_link=scholar_link, domain=domain)
+            return Response(True, "Google Scholar Profile link added successfully")
         except Exception as e:
             return Response(None, str(e))
 

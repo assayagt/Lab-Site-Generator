@@ -1,10 +1,10 @@
 import uuid
-
+from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
 
 class PublicationDTO:
-    def __init__(self, title, authors,
-                 publication_year, approved,
-                 publication_link, git_link=None, video_link=None, presentation_link=None, description=None, paper_id=None, author_emails :list[str]=None):
+    def __init__(self, title, publication_year, publication_link,
+                 approved=ApprovalStatus.INITIAL_PENDING.value,
+                 git_link=None, authors=None, video_link=None, presentation_link=None, description=None, paper_id=None, author_emails :list[str]=[]):
         self.paper_id = str(uuid.uuid4()) if paper_id is None else paper_id
         self.title = title
         self.authors = authors 
@@ -17,6 +17,7 @@ class PublicationDTO:
         self.presentation_link = presentation_link
         self.description = description  # New description field
         self.author_emails = author_emails
+        
 
 
     def to_dict(self):
@@ -39,9 +40,16 @@ class PublicationDTO:
                 self.title.lower() == other.title.lower() and
                 self.publication_year == other.publication_year
         )
+    
+    def __hash__(self):
+        #override hash function as well to make sure sets and dictionaries work properly as well
+        return hash((self.title.lower(), self.publication_year))
 
     def set_video_link(self, video_link):
         self.video_link = video_link
+
+    def set_author_emails(self, author_emails):
+        self.author_emails=  author_emails
 
     def set_git_link(self, git_link):
         self.git_link = git_link
@@ -53,6 +61,9 @@ class PublicationDTO:
         """Set the description for the publication."""
         self.description = description
 
+    def set_authors(self, authors):
+        self.authors = authors
+
     def get_paper_id(self):
         return self.paper_id
 
@@ -62,3 +73,5 @@ class PublicationDTO:
     def get_description(self):
         """Get the description of the publication."""
         return self.description
+
+    

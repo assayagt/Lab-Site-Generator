@@ -1,7 +1,7 @@
 import threading
 
 from src.main.DomainLayer.LabWebsites.WebCrawler.GoogleScholarWebCrawler import GoogleScholarWebCrawler
-
+from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
 
 class WebCrawlerFacade:
     _instance = None
@@ -32,13 +32,13 @@ class WebCrawlerFacade:
             cls._instance = None
 
 
-    def fetch_publications(self, authors, domain):
+    def fetch_publications(self, scholar_links)-> list[PublicationDTO]: #=================================== refactored
         """
         Calls fetch_crawler_publications on each WebCrawler.
         """
         all_results = []
         for crawler in self.web_crawlers:
-            results = crawler.fetch_crawler_publications(authors, domain)
+            results = crawler.fetch_crawler_publications(scholarLinks=scholar_links)
             all_results.extend(results)
         return all_results
 
@@ -52,13 +52,13 @@ class WebCrawlerFacade:
                 return authors
         return None
 
-
-    def fetch_publications_new_member(self, authors, domain):
+    def fill_pub_details(self, scannedPub_keys: list[PublicationDTO], domain): #==============PubDTO===should be refactored to work with other crawlers
         """
-        Calls fetch_publications_new_member on each WebCrawler.
+            Calls getPublicationDTOs on each WebCrawler.
         """
         for crawler in self.web_crawlers:
-            crawler.fetch_publications_new_member(authors, domain)
+            crawler.fill_details(scannedPub_keys=scannedPub_keys, domain=domain)
+
 
     def remove_website_data(self, domain):
         """

@@ -15,7 +15,6 @@ class LabMembersRepository:
     def find_all_users_by_domain(self, domain):
         return self._find_by_role(table="LabRoles_users", domain=domain)
 
-
     def find_all_members_by_domain(self, domain):
         return self._find_by_role(table="LabRoles_members", domain=domain)
 
@@ -43,13 +42,14 @@ class LabMembersRepository:
     def save_LabMember(self, labMemberDTO: lab_member_dto):
         query = """
         INSERT INTO lab_members (
-            domain, email, second_email, linkedin_link,
+            domain, email, second_email, linkedin_link, scholar_link,
             media, full_name, degree, bio
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(domain, email) DO UPDATE SET
             second_email = excluded.second_email,
             linkedin_link = excluded.linkedin_link,
+            scholar_link = excluded.scholar_link,
             media = excluded.media,
             full_name = excluded.full_name,
             degree = excluded.degree,
@@ -60,6 +60,7 @@ class LabMembersRepository:
             labMemberDTO.email,
             labMemberDTO.second_email,
             labMemberDTO.linkedin_link,
+            labMemberDTO.scholar_link,
             labMemberDTO.media,
             labMemberDTO.full_name,
             labMemberDTO.degree,
@@ -151,6 +152,7 @@ class LabMembersRepository:
             email=row['email'],
             second_email=row['second_email'],
             linkedin_link=row['linkedin_link'],
+            scholar_link=row['scholar_link'],
             media=row['media'],
             full_name=row['full_name'],
             degree=row['degree'],

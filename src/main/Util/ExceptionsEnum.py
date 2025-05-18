@@ -29,6 +29,7 @@ class ExceptionsEnum(Enum):
     REGISTRATION_REQUEST_REJECTED_BY_MANAGER = "Attention! Your registration request has been rejected by the site manager, so you can't login to the lab website"
     DECISION_ALREADY_MADE_FOR_THIS_REGISTRATION_REQUEST = "A decision has already been made for this registration request by one of the lab managers"
     INVALID_LINKEDIN_LINK = "Invalid LinkedIn link provided"
+    INVALID_SCHOLAR_LINK= "Invalid Google Scholar profile link provided"
     INVALID_FULL_NAME = "Invalid full name provided"
     INVALID_DEGREE = "Invalid degree provided"
     USER_IS_NOT_MANAGER_OF_THE_GIVEN_DOMAIN = "User is not a manager of the given domain"
