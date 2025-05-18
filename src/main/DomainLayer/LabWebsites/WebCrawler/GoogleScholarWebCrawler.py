@@ -37,9 +37,9 @@ class GoogleScholarWebCrawler:
                 author = scholarly.fill(author)
                 time.sleep(5)
                 for pub in author.get("publications", []):
-                    if pub_counter >= 5:
-                        print(f"[INFO] Reached max of {5} publications for scholar_id {scholar_id}")
-                        break
+                    # if pub_counter >= 5:
+                    #     print(f"[INFO] Reached max of {5} publications for scholar_id {scholar_id}")
+                    #     break
                     pub_title = pub.get("bib", {}).get("title")
                     pub_year = pub.get("bib", {}).get("pub_year")
                     author_pub_id = pub.get("author_pub_id")

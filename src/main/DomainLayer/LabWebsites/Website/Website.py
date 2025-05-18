@@ -114,7 +114,7 @@ class Website:
                     publication.set_presentation_link(link)
                     return publication
 
-    def check_if_member_is_publication_author(self, email, publication_paper_id):
+    def check_if_member_is_publication_author(self,publication_paper_id, email):
         if email in self.members_publications:
             for publication in self.members_publications[email]:
                 if publication.get_paper_id() == publication_paper_id:

@@ -646,6 +646,7 @@ export const initialApproveMultiplePublicationsByAuthor = async (
   publicationIds
 ) => {
   try {
+    console.log(publicationIds);
     const response = await axios.post(
       `${baseApiUrl}initialApproveMultiplePublicationsByAuthor`,
       {

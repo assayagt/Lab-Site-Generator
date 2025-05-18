@@ -1531,9 +1531,10 @@ class InitialApproveMultiplePublicationsByAuthor(Resource):
         parser.add_argument('domain', required=True, help="Domain is required")
         parser.add_argument('publication_IDs', type=str, required=True, help="A list of publication IDs is required")
         args = parser.parse_args()
-
+        print(args['publication_IDs'].split(", "))
+        pubs = args['publication_IDs'].split(", ")
         try:
-            response = lab_system_service.initial_approve_multiple_publications_by_author(args['user_id'], args['domain'], args['publication_IDs'].split(", "))
+            response = lab_system_service.initial_approve_multiple_publications_by_author(args['user_id'], args['domain'], pubs)
             if response.is_success():
                 return jsonify({"message": response.get_message(), "response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})

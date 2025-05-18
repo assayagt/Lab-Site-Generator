@@ -382,7 +382,7 @@ const AccountPage = () => {
       const response = await initialApproveMultiplePublicationsByAuthor(
         sessionStorage.getItem("sid"),
         sessionStorage.getItem("domain"),
-        selectedPublications
+        selectedPublications.join(", ")
       );
       if (response.response === "true") {
         setSelectedPublications([]);
@@ -821,7 +821,7 @@ const AccountPage = () => {
 
             {currentPublicationType === "manual"
               ? paginatedPublications.map((publication) => (
-                  <div key={publication.id} className="publication-item">
+                  <div key={publication.paper_id} className="publication-item">
                     <form className="publication-form">
                       <strong>{publication.title}</strong>
                       <div className="pub-year">
@@ -872,10 +872,10 @@ const AccountPage = () => {
                         <input
                           type="checkbox"
                           checked={selectedPublications.includes(
-                            publication.id
+                            publication.paper_id
                           )}
                           onChange={() =>
-                            handleSelectPublication(publication.id)
+                            handleSelectPublication(publication.paper_id)
                           }
                           className="publication-checkbox"
                         />

@@ -283,7 +283,7 @@ class UserFacade:
             raise Exception(ExceptionsEnum.USER_NOT_EXIST.value)
 
     def verify_if_member_is_manager(self, email):
-        if email in self.managers:
+        if email in self.managers or email in self.siteCreator:
             return True
         return False
 
