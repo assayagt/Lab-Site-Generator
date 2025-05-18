@@ -209,6 +209,7 @@ class UserFacade:
         member_scholarIds.extend(self.get_lab_members_scholar_links())
         member_scholarIds.extend(self.get_managers_scholar_links())
         member_scholarIds.extend(self.get_site_creator_scholar_links())
+        return member_scholarIds
 
     def login(self, userId, email):
         """Handle login logic after retrieving user info."""

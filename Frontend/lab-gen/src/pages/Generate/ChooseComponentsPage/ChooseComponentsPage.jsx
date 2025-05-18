@@ -487,7 +487,7 @@ const ChooseComponentsPage = () => {
                   <input
                     type="text"
                     value={googleLink}
-                    onChange={(e) => handleParticipantChange(e.target.value)}
+                    onChange={(e) => handleGoogleScolarChange(e.target.value)}
                     className="input_creator_info"
                     placeholder="Your Google Scholar Profile link"
                   />

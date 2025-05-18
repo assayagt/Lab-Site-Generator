@@ -349,10 +349,7 @@ const useChooseComponents = () => {
     });
   };
   const handleGoogleScolarChange = (value) => {
-    setParticipants((prevParticipants) => {
-      setButtonText("Save");
-      setGooogleLink(value);
-    });
+    setGooogleLink(value);
   };
 
   const handleAboutUsChange = (e) => {
@@ -493,11 +490,13 @@ const useChooseComponents = () => {
       setSave("Saved");
       return;
     }
+
     setIsLoading(true); // Show loading popup
     try {
       console.log(websiteData.domain);
       console.log(domain);
       console.log(participants);
+      console.log(googleLink);
       const response = await axios.post(
         `${baseApiUrl}generateWebsite`,
         {
@@ -513,6 +512,7 @@ const useChooseComponents = () => {
             isLabManager: p.isLabManager,
             alumni: p.alumni || false,
           })),
+          creator_scholar_link: googleLink,
         },
         {
           headers: { "Content-Type": "application/json" },

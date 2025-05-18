@@ -287,7 +287,7 @@ class GenerateWebsiteResource(Resource):
             data = request.get_json()
 
             # Ensure required fields exist
-            required_fields = ['domain', 'about_us', 'lab_address', 'lab_mail', 'lab_phone_num', 'participants', 'creator_schoalr_link']
+            required_fields = ['domain', 'about_us', 'lab_address', 'lab_mail', 'lab_phone_num', 'participants', 'creator_scholar_link']
             for field in required_fields:
                 if field not in data:
                     return jsonify({"error": f"Missing required field: {field}", "response": "false"})
@@ -298,7 +298,7 @@ class GenerateWebsiteResource(Resource):
             lab_mail = data['lab_mail']
             lab_phone_num = data['lab_phone_num']
             participants = data['participants']
-            creator_scholar_link = data['creator_schoalr_link']
+            creator_scholar_link = data['creator_scholar_link']
             contact_info = ContactInfo(lab_address, lab_mail, lab_phone_num)
             # Extract lab members, managers, and site creator
             lab_members = {}
@@ -343,12 +343,12 @@ class GenerateWebsiteResource(Resource):
                         process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH, shell=True)
 
                         return jsonify({"message": "Website generated successfully!", "response": "true"})
-                    return jsonify({"error": f"An error occurred: {response3.get_message()}", "response": "false"})
-                return jsonify({"error": f"An error occurred: {response2.get_message()}", "response": "false"})
-            return jsonify({"error": f"An error occurred: {response.get_message()}", "response": "false"})
+                    return jsonify({"error1": f"An error occurred: {response3.get_message()}", "response": "false"})
+                return jsonify({"error2": f"An error occurred: {response2.get_message()}", "response": "false"})
+            return jsonify({"error3": f"An error occurred: {response.get_message()}", "response": "false"})
 
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}", "response": "false"})
+            return jsonify({"error4": f"An error occurred: {str(e)}", "response": "false"})
         
 class ChooseDomain(Resource):
     def post(self):

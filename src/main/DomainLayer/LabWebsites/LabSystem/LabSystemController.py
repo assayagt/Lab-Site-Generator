@@ -660,7 +660,10 @@ class LabSystemController:
             this function crawls publications for some website with the option to get notifications for every new publication found
         """
         website = self.websiteFacade.get_website(website_domain)
+        print("hello")
+
         member_scholar_links = self.allWebsitesUserFacade.get_active_members_scholarLinks(website_domain)
+        print(member_scholar_links)
         publist = self.webCrawlerFacade.fetch_publications(member_scholar_links)
         for pub in publist:
             if not website.check_publication_exist(pub):

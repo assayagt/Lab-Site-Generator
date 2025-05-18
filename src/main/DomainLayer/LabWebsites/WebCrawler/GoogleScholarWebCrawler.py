@@ -28,7 +28,8 @@ class GoogleScholarWebCrawler:
             scholar_id = self.extract_scholar_id(link)
             try:
                 # Fetch author by scholar_id
-                author = scholarly.search_author(scholar_id)
+                author_gen = scholarly.search_author(scholar_id)
+                author = next(author_gen)
                 author = scholarly.fill(author)
 
                 for pub in author.get("publications", []):
