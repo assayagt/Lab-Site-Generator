@@ -1,8 +1,8 @@
 import time
 import re
-from bs4 import BeautifulSoup
-from scholarly import scholarly
-
+from bs4 import BeautifulSoup 
+from scholarly import scholarly 
+from datetime import datetime
 from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
 # from src.main.DomainLayer.LabWebsites.WebCrawler.ScannedPublication import ScannedPublication
@@ -26,20 +26,16 @@ class GoogleScholarWebCrawler:
         Returns:
             list[PublicationDTO]: List of publications found for the scholar links.
         """
-        crawled: list[PublicationDTO] = []
-        seen_keys = set()
-
+        crawled: set[PublicationDTO] = set()
+        current_year = datetime.now().year
+        min_year = current_year -2 # Includes this year and previous 2 years
         for link in scholarLinks:
             scholar_id = self.extract_scholar_id(link)
             try:
+                # Fetch author by scholar_id
                 author = scholarly.search_author_id(scholar_id)
-                if author is None:
-                    print(f"[WARN] No author found for scholar_id {scholar_id}")
-                    continue
-
                 author = scholarly.fill(author)
-                pub_counter = 0 
-
+                time.sleep(5)
                 for pub in author.get("publications", []):
                     if pub_counter >= 5:
                         print(f"[INFO] Reached max of {5} publications for scholar_id {scholar_id}")
@@ -47,31 +43,32 @@ class GoogleScholarWebCrawler:
                     pub_title = pub.get("bib", {}).get("title")
                     pub_year = pub.get("bib", {}).get("pub_year")
                     author_pub_id = pub.get("author_pub_id")
-
-                    if not pub_title or not pub_year:
-                        print(f"[SKIP] Missing title or year: title={pub_title}, year={pub_year}")
+                    if pub_title is None or pub_year is None:
+                        print(f"GOOGLE CRAWLER => publication title or year found empty")
                         continue
-
-                    key = (pub_title.strip().lower(), str(pub_year))
-                    if key in seen_keys:
-                        print(f"[DUPLICATE] Skipping duplicate: {pub_title} ({pub_year})")
+                    if int(pub_year) < min_year:
+                        print(f"Google Crawler => publication is not recent enough")
                         continue
-                    seen_keys.add(key)
-
-                    url = self.build_publication_url(scholar_id=scholar_id, author_pub_id=author_pub_id)
-                    new_pub = PublicationDTO(
-                        title=pub_title,
-                        publication_year=pub_year,
-                        publication_link=url,
-                        approved=ApprovalStatus.INITIAL_PENDING.value,
-                        authors= self.get_authors_from_citation(url)
-                    )
-                  
-                    pub_counter += 1  # ← increment
-
-                    crawled.append(new_pub)
-
-                time.sleep(1)  # Optional delay to avoid rate limiting
+                    filled_pub = scholarly.fill(pub)
+                    time.sleep(5)
+                    authors_str = filled_pub.get("bib", {}).get("author", "")
+                    authors_list = [a.strip() for a in authors_str.split(" and ")] if authors_str else []
+                    if  not authors_list:
+                        print(f"Google Crawler => publication {pub_title} has no authors mentioned")
+                        continue                   
+                    else:
+                        # New publication -> create new pub
+                        url = self.build_publication_url(scholar_id=scholar_id, author_pub_id=author_pub_id)
+                        new_pub = PublicationDTO(
+                            title= pub_title,
+                            publication_year= pub_year,
+                            publication_link= url,
+                            authors= authors_list
+                        )
+                        crawled.add(new_pub)
+                        print(f"carwled {len(crawled)} publications so far")
+                # time.sleep(5) #we might replace it to 1 bc scholarly already has a built-in delay mechanism
+                return list(crawled)
             except Exception as e:
                 print(f"[ERROR] Fetching publications for scholar_id {scholar_id}: {e}")
                 traceback.print_exc()

@@ -17,6 +17,7 @@ class Website:
                 self.members_publications[author_email] = []
             if publicationDTO not in self.members_publications[author_email]:
                 self.members_publications[author_email].append(publicationDTO)
+        print("publication added to website succesffully")
             
 
     def add_publication_manually(self, publication_link, publication_details, git_link, video_link, presentation_link,

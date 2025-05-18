@@ -94,7 +94,14 @@ class WebsiteFacade:
         pub_dto =  website.add_publication_manually(publication_link, publication_details, git_link, video_link, presentation_link, authors_emails)
         self.dal_controller.publications_repo.save(publication_dto=pub_dto, domain=domain)
         return pub_dto.get_paper_id()
-
+    
+    def create_new_publication_fromDTO(self, domain, pubDTO, author_emails):
+        website = self.get_website(domain)
+        if not website:
+             raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        website.create_publication(publicationDTO=pubDTO, authors_emails=author_emails)
+        self.dal_controller.publications_repo.save(publication_dto=pubDTO, domain=domain)
+        print(f"publication saved sucessfully")
 
     def set_publication_video_link(self, domain, publication_id, video_link):
         website = self.get_website(domain)
@@ -198,12 +205,14 @@ class WebsiteFacade:
     def _load_all_data(self):
         website_dtos = self.dal_controller.website_repo.find_all()
         for dto in website_dtos:
-            contact_info_dict = json.loads(dto.contact_info)
-            contact_info = ContactInfo(
-                lab_mail=contact_info_dict.get("email"),
-                lab_phone_num=contact_info_dict.get("phone_num"),
-                lab_address=contact_info_dict.get("address")
-            )
+            contact_info = None
+            if dto.contact_info:
+                contact_info_dict = json.loads(dto.contact_info)
+                contact_info = ContactInfo(
+                    lab_mail=contact_info_dict.get("email"),
+                    lab_phone_num=contact_info_dict.get("phone_num"),
+                    lab_address=contact_info_dict.get("address")
+                )
             website = Website(domain=dto.domain, contact_info=contact_info, about_us=dto.about_us)
             pubs = self.dal_controller.publications_repo.find_by_domain(domain=dto.domain)
             website.load_pub_dtos(pub_list=pubs)

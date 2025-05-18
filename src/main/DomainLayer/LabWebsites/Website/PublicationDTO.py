@@ -3,7 +3,7 @@ from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStat
 
 class PublicationDTO:
     def __init__(self, title, publication_year, publication_link,
-                 approved=ApprovalStatus.INITIAL_PENDING.value,
+                 approved=ApprovalStatus.INITIAL_PENDING,
                  git_link=None, authors=None, video_link=None, presentation_link=None, description=None, paper_id=None, author_emails :list[str]=[]):
         self.paper_id = str(uuid.uuid4()) if paper_id is None else paper_id
         self.title = title

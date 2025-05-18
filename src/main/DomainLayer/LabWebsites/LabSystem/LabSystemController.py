@@ -660,22 +660,26 @@ class LabSystemController:
             this function crawls publications for some website with the option to get notifications for every new publication found
         """
         website = self.websiteFacade.get_website(website_domain)
-        print("hello")
-
         member_scholar_links = self.allWebsitesUserFacade.get_active_members_scholarLinks(website_domain)
         print(member_scholar_links)
         publist = self.webCrawlerFacade.fetch_publications(member_scholar_links)
+        print("found pubs successfully")
         for pub in publist:
+            print(pub.authors)
+            print(pub.title)
             if not website.check_publication_exist(pub):
                 print(pub.authors)
                 authorEmails = []
                 for author in pub.authors:
                     email = self.allWebsitesUserFacade.getMemberEmailByName(author=author, domain=website_domain)
                     if email:
+                        print(f"found: {email}")
                         authorEmails.append(email)
-                        print(email)
+                if not authorEmails:
+                    continue
                 pub.set_author_emails(authorEmails)
-                website.create_publication(publicationDTO=pub, authors_emails=authorEmails)
+                self.websiteFacade.create_new_publication_fromDTO(domain=website_domain, pubDTO=pub, author_emails=authorEmails)
+                print("added pub successfully")
                 if with_notifications:
                      # send notifications to the website authors about the new publications, for initial approval.
                     for authorEmail in authorEmails:
