@@ -6,6 +6,7 @@ import {
   createCustomSite,
   changeComponents,
   changeDomain,
+  removeAlumni,
   changeName,
   getAllAlumni,
   getAllLabManagers,
@@ -39,6 +40,8 @@ const useChooseComponents = () => {
   const [template, setTemplate] = useState(websiteData.template || "");
   const [isChanged, setIsChanged] = useState(false);
   const [buttonText, setButtonText] = useState("Save");
+  const [googleLink, setGooogleLink] = useState("");
+
   const [domainError, setDomainError] = useState(false);
   const [step, setStep] = useState(!domain ? 1 : 3);
   const [showContentSidebar, setShowContentSidebar] = useState(false);
@@ -54,7 +57,7 @@ const useChooseComponents = () => {
   const [newRoleAfterResignation, setNewRoleAfterResignation] =
     useState("manager");
   const [isLoading, setIsLoading] = useState(false);
-
+  const [save, setSave] = useState("Save");
   const showError = (message) => {
     setErrorMessage(message);
   };
@@ -78,7 +81,13 @@ const useChooseComponents = () => {
       isLabManager: true, // The creator is always a manager
     },
   ]);
-  const degreeOptions = ["Ph.D.", "M.Sc.", "B.Sc.", "D.Sc."];
+  const degreeOptions = [
+    "Ph.D.",
+    "M.Sc.",
+    "B.Sc.",
+    "Research Assistant",
+    "Faculty Member",
+  ];
 
   const [selectedComponent, setSelectedComponent] = useState("AboutUs"); // Default to About Us
   const [showAddForm, setShowAddForm] = useState(false);
@@ -94,14 +103,12 @@ const useChooseComponents = () => {
   });
 
   const [aboutUsContent, setAboutUsContent] = useState(() => {
-    return sessionStorage.getItem("AboutUs") || ""; // Load from sessionStorage initially
+    return websiteData.about_us || ""; // Load from sessionStorage initially
   });
 
   const [contactUsData, setContactUsData] = useState(() => {
-    const savedData = sessionStorage.getItem("ContactUs");
-    return savedData
-      ? JSON.parse(savedData)
-      : { email: "", phoneNumber: "", address: "" };
+    const savedData = websiteData.contact_us;
+    return savedData ?? { email: "", phone_num: "", address: "" };
   });
   const [about_usSave, setAboutUsSaved] = useState(false);
   const [contactUs_usSave, setcontactUs] = useState(false);
@@ -121,19 +128,25 @@ const useChooseComponents = () => {
             ...participant,
             isLabManager: true,
             alumni: false,
+            isCreator:
+              participant.email === sessionStorage.getItem("userEmail"),
           })),
           ...members.map((participant) => ({
             ...participant,
             isLabManager: false,
             alumni: false,
+            isCreator: false,
           })),
           ...alumni.map((participant) => ({
             ...participant,
             isLabManager: false,
             alumni: true,
+            isCreator: false,
           })),
         ];
-
+        allParticipants.sort(
+          (a, b) => (b.isCreator ? 1 : 0) - (a.isCreator ? 1 : 0)
+        );
         setParticipants(allParticipants);
       } catch (err) {
         console.error("Error fetching participants:", err);
@@ -154,6 +167,7 @@ const useChooseComponents = () => {
   };
 
   const toggleLabManager = async (index) => {
+    setSave("Save");
     const updatedParticipants = [...participants];
     const participant = updatedParticipants[index];
 
@@ -206,6 +220,7 @@ const useChooseComponents = () => {
   };
 
   const toggleAlumni = async (index) => {
+    setSave("Save");
     const updatedParticipants = [...participants];
     const participant = updatedParticipants[index];
 
@@ -224,12 +239,16 @@ const useChooseComponents = () => {
           setParticipants(updatedParticipants);
         }
       } else {
-        // let data =await removeSiteManager(sessionStorage.getItem("sid"), email, websiteData.domain);
-        // console.log(email);
-        // if(data.response==="true"){
-        //   participant.isLabManager = !isLabManager;
-        //   setParticipants(updatedParticipants);
-        // }
+        let data = await removeAlumni(
+          sessionStorage.getItem("sid"),
+          email,
+          websiteData.domain
+        );
+        console.log(email);
+        if (data.response === "true") {
+          participant.alumni = !islumi;
+          setParticipants(updatedParticipants);
+        }
       }
     } catch (error) {
       console.error("Error toggling lab manager:", error);
@@ -238,12 +257,14 @@ const useChooseComponents = () => {
   };
 
   const removeParticipant = (index) => {
+    setSave("Save");
     setParticipants((prevParticipants) =>
       prevParticipants.filter((_, i) => i !== index)
     );
   };
 
   const handleInputChangeParticipant = (e) => {
+    setSave("Save");
     const { name, value, type, checked } = e.target;
     setNewParticipant((prev) => ({
       ...prev,
@@ -289,6 +310,7 @@ const useChooseComponents = () => {
   };
 
   const addParticipant = () => {
+    setSave("Save");
     setParticipants((prevParticipants) => {
       if (prevParticipants.length === 0) {
         // First row: Set the creator info (name is empty at first)
@@ -311,6 +333,7 @@ const useChooseComponents = () => {
   };
 
   const handleParticipantChange = (index, field, value) => {
+    setSave("Save");
     setParticipants((prevParticipants) => {
       setButtonText("Save");
       const updatedParticipants = [...prevParticipants]; // Copy array
@@ -325,8 +348,12 @@ const useChooseComponents = () => {
       return updatedParticipants;
     });
   };
+  const handleGoogleScolarChange = (value) => {
+    setGooogleLink(value);
+  };
 
   const handleAboutUsChange = (e) => {
+    setSave("Save");
     setAboutUsSaved(false);
     setAboutUsContent(e.target.value);
   };
@@ -349,6 +376,7 @@ const useChooseComponents = () => {
   };
 
   const handleContactUsChange = (e) => {
+    setSave("Save");
     setcontactUs(false);
     const { name, value } = e.target;
     setContactUsData((prev) => ({
@@ -365,7 +393,7 @@ const useChooseComponents = () => {
         websiteData.domain,
         contactUsData.address,
         contactUsData.email,
-        contactUsData.phoneNumber
+        contactUsData.phone_num
       );
       if (response.response === "true") {
         // alert('Contact information saved successfully');
@@ -377,6 +405,7 @@ const useChooseComponents = () => {
   };
 
   const handleFileChange = (e, component) => {
+    setSave("Save");
     const file = e.target.files[0];
     if (file) {
       setFormData((prev) => ({
@@ -413,41 +442,61 @@ const useChooseComponents = () => {
         method: "POST",
         body: formDataToSend,
       });
-      const data = await response.json();
-      if (response.ok) {
-        // alert(`${component} data saved successfully!`);
-        setMediaSaveStatus((prev) => ({ ...prev, [component_new]: true }));
 
-        setWebsite((prev) => ({
-          ...prev,
-          files: formData.files,
-        }));
-        if (websiteData.generated) {
-          const saveLogoResponse = await saveLogo(
-            sessionStorage.getItem("sid"),
-            websiteData.domain
-          );
-          console.log(saveLogoResponse);
-          const savePhotoResponse = await saveHomePicture(
-            sessionStorage.getItem("sid"),
-            websiteData.domain
-          );
-          console.log(savePhotoResponse);
+      const contentType = response.headers.get("content-type") || "";
+
+      if (contentType.includes("application/json")) {
+        const data = await response.json();
+
+        if (response.ok) {
+          // ✅ Success
+          setMediaSaveStatus((prev) => ({ ...prev, [component_new]: true }));
+
+          setWebsite((prev) => ({
+            ...prev,
+            files: formData.files,
+          }));
+
+          if (websiteData.generated) {
+            const saveLogoResponse = await saveLogo(
+              sessionStorage.getItem("sid"),
+              websiteData.domain
+            );
+            console.log(saveLogoResponse);
+
+            const savePhotoResponse = await saveHomePicture(
+              sessionStorage.getItem("sid"),
+              websiteData.domain
+            );
+            console.log(savePhotoResponse);
+          }
+        } else {
+          // ❌ Error response with JSON body
+          showError("Error: " + (data.error || "Unknown server error"));
         }
       } else {
-        showError("Error: " + data.error);
+        // ❌ Server didn't send JSON, probably HTML error page
+        const rawText = await response.text();
+        showError("Server error (non-JSON): " + rawText.slice(0, 100));
       }
     } catch (error) {
-      showError("Error: " + error.message);
+      // ❌ Network or parsing error
+      showError("Unexpected Error: " + error.message);
     }
   };
 
   const handleGenerate = async () => {
+    if (websiteData.generated) {
+      setSave("Saved");
+      return;
+    }
+
     setIsLoading(true); // Show loading popup
     try {
       console.log(websiteData.domain);
       console.log(domain);
       console.log(participants);
+      console.log(googleLink);
       const response = await axios.post(
         `${baseApiUrl}generateWebsite`,
         {
@@ -455,7 +504,7 @@ const useChooseComponents = () => {
           about_us: aboutUsContent,
           lab_address: contactUsData.address,
           lab_mail: contactUsData.email,
-          lab_phone_num: contactUsData.phoneNumber,
+          lab_phone_num: contactUsData.phone_num,
           participants: participants.map((p) => ({
             fullName: p.fullName,
             email: p.email,
@@ -463,6 +512,7 @@ const useChooseComponents = () => {
             isLabManager: p.isLabManager,
             alumni: p.alumni || false,
           })),
+          creator_scholar_link: googleLink,
         },
         {
           headers: { "Content-Type": "application/json" },
@@ -517,7 +567,7 @@ const useChooseComponents = () => {
       setIsChanged(false);
       setStep(3);
     } else {
-      setErrorMessage("Could not save. Domain name is invalid.");
+      setErrorMessage("Error:" + data.message);
     }
   };
 
@@ -559,8 +609,7 @@ const useChooseComponents = () => {
     }
   };
 
-  const isValidDomain = (domain) =>
-    /^(?!:\/\/)([A-Za-z0-9-]+\.)+[A-Za-z]{2,6}$/.test(domain);
+  const isValidDomain = (domain) => domain?.trim() !== "";
 
   const handleSaveComponents = async () => {
     if (components.length <= 1) {
@@ -691,6 +740,10 @@ const useChooseComponents = () => {
     isLoading,
     succsessMessage,
     setSuccsessMessage,
+    handleGoogleScolarChange,
+    googleLink,
+    setSave,
+    save,
   };
 };
 

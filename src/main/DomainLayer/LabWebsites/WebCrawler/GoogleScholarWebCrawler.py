@@ -46,7 +46,7 @@ class GoogleScholarWebCrawler:
                     filled_pub = scholarly.fill(pub)
                     time.sleep(5)
                     authors_str = filled_pub.get("bib", {}).get("author", "")
-                    authors_list = [a.strip() for a in authors_str.split(",")] if authors_str else []
+                    authors_list = [a.strip() for a in authors_str.split(" and ")] if authors_str else []
                     if  not authors_list:
                         print(f"Google Crawler => publication {pub_title} has no authors mentioned")
                         continue                   
@@ -57,7 +57,6 @@ class GoogleScholarWebCrawler:
                             title= pub_title,
                             publication_year= pub_year,
                             publication_link= url,
-                            approved=ApprovalStatus.INITIAL_PENDING.value,
                             authors= authors_list
                         )
                         crawled.add(new_pub)

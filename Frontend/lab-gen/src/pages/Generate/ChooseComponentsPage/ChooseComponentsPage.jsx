@@ -1,11 +1,14 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import useChooseComponents from "./useChooseComponents";
 import Tamplate from "../../../images/tamplate.svg";
 import "./ChooseComponentsPage.css";
 import ErrorPopup from "../../../components/Popups/ErrorPopup";
 import LoadingPopup from "../../../components/Popups/LoadingPopup";
 import SuccessPopup from "../../../components/Popups/SuccessPopup";
-
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 const ChooseComponentsPage = () => {
   const {
     domain,
@@ -70,7 +73,66 @@ const ChooseComponentsPage = () => {
     isLoading,
     succsessMessage,
     setSuccsessMessage,
+    handleGoogleScolarChange,
+    googleLink,
+    setSave,
+    save,
   } = useChooseComponents();
+
+  // Fix leaflet icon issues (put this near the top of the component file)
+  L.Marker.prototype.options.icon = L.icon({
+    iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  });
+
+  // Inside the ChooseComponentsPage component definition (add after useChooseComponents hook)
+  const [mapCoordinates, setMapCoordinates] = useState(null);
+
+  useEffect(() => {
+    const fetchCoordinates = async () => {
+      if (!contactUsData.address) return;
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+            contactUsData.address
+          )}&format=json`
+        );
+        const data = await response.json();
+        if (data.length > 0) {
+          setMapCoordinates({
+            lat: parseFloat(data[0].lat),
+            lng: parseFloat(data[0].lon),
+          });
+        }
+      } catch (err) {
+        console.error("Geocoding error:", err);
+      }
+    };
+    fetchCoordinates();
+  }, [contactUsData.address]);
+
+  const LocationSelector = () => {
+    useMapEvents({
+      click: async (e) => {
+        const { lat, lng } = e.latlng;
+        setMapCoordinates({ lat, lng });
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=en`
+          );
+          const data = await response.json();
+          if (data && data.display_name) {
+            handleContactUsChange({
+              target: { name: "address", value: data.display_name },
+            });
+          }
+        } catch (err) {
+          console.error("Reverse geocoding error:", err);
+        }
+      },
+    });
+    return null;
+  };
 
   return (
     <div className="choose_components_main">
@@ -78,29 +140,36 @@ const ChooseComponentsPage = () => {
         <div className="intro_card">
           <h2>Get Started</h2>
           <label>Enter your website domain:</label>
-          <input
-            placeholder="www.example.com"
-            type="text"
-            value={domain}
-            onChange={handleDomainChange}
-            className={
-              domainError
-                ? "input_name_domain error_domain"
-                : "input_name_domain"
-            }
-            onBlur={() => {
-              if (!isValidDomain(domain)) {
-                setDomainError(true);
-              } else {
-                setDomainError(false);
-              }
-            }}
-          />
-          {domainError && (
-            <p className="error_message">
-              Please enter a valid domain name (e.g., example.com)
-            </p>
-          )}
+          <div
+            className={`domain-input-group ${
+              domainError ? "error_wrapper" : ""
+            }`}
+          >
+            <span className="domain-prefix">lsg.cs.bgu.ac.il/labs/</span>
+
+            <input
+              type="text"
+              value={domain}
+              onChange={handleDomainChange}
+              className="input_suffix"
+              // className={
+              //   domainError
+              //     ? "input_name_domain error_domain"
+              //     : "input_name_domain"
+              // }
+              onBlur={() => {
+                if (!isValidDomain(domain)) {
+                  setDomainError(true);
+                } else {
+                  setDomainError(false);
+                }
+              }}
+            />
+            {domainError && (
+              <span className="error-message">Invalid domain</span>
+            )}
+          </div>
+
           <label>Enter your website name:</label>
           <input
             type="text"
@@ -194,7 +263,7 @@ const ChooseComponentsPage = () => {
                       className="generate_button"
                       onClick={handleGenerate}
                     >
-                      Generate Website
+                      {websiteData.generated ? save : "Generate Website"}
                     </button>
                   </div>
                 </ul>
@@ -301,8 +370,14 @@ const ChooseComponentsPage = () => {
                   <input type="checkbox" disabled />
                   Media
                 </label>
-                <label className="disabled">
-                  <input type="checkbox" disabled />
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={components?.includes("Page for Participant")}
+                    onChange={() =>
+                      handleComponentChange("Page for Participant")
+                    }
+                  />
                   Page for each participant
                 </label>
 
@@ -408,7 +483,15 @@ const ChooseComponentsPage = () => {
                   className="input_creator_info"
                   disabled
                 />
-
+                {!websiteData.generated && (
+                  <input
+                    type="text"
+                    value={googleLink}
+                    onChange={(e) => handleGoogleScolarChange(e.target.value)}
+                    className="input_creator_info"
+                    placeholder="Your Google Scholar Profile link"
+                  />
+                )}
                 {/* <label>Degree</label> */}
                 <select
                   name="degree"
@@ -488,9 +571,9 @@ const ChooseComponentsPage = () => {
                   <div className="input_container">
                     <input
                       className="contact_us_input"
-                      name="phoneNumber"
+                      name="phone_num"
                       placeholder="Enter your phone number"
-                      value={contactUsData.phoneNumber}
+                      value={contactUsData.phone_num}
                       onChange={handleContactUsChange}
                     />
                     <label htmlFor="phoneInput" className="floating_label">
@@ -508,6 +591,33 @@ const ChooseComponentsPage = () => {
                     <label htmlFor="addressInput" className="floating_label">
                       Enter your address
                     </label>
+                  </div>
+                  <div className="map_container">
+                    <MapContainer
+                      center={
+                        mapCoordinates
+                          ? [mapCoordinates.lat, mapCoordinates.lng]
+                          : [31.2615, 34.7978] // BGU as default
+                      }
+                      zoom={15}
+                      style={{
+                        height: "300px",
+                        width: "95%",
+                        marginTop: "20px",
+                        borderRadius: "10px",
+                      }}
+                    >
+                      <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution="&copy; OpenStreetMap contributors"
+                      />
+                      {mapCoordinates && (
+                        <Marker
+                          position={[mapCoordinates.lat, mapCoordinates.lng]}
+                        />
+                      )}
+                      <LocationSelector />
+                    </MapContainer>
                   </div>
 
                   {contactUs_usSave != "" ? (
@@ -683,8 +793,21 @@ const ChooseComponentsPage = () => {
                                 <button
                                   className="delete-button"
                                   onClick={() => removeParticipant(index + 1)}
+                                  title="Remove participant"
                                 >
-                                  🗑️
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 16 16"
+                                  >
+                                    <path
+                                      fill="currentColor"
+                                      d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"
+                                    />
+                                    <path
+                                      fill="currentColor"
+                                      d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                                    />
+                                  </svg>
                                 </button>
                               )}
                             </td>
@@ -788,6 +911,7 @@ const ChooseComponentsPage = () => {
                           <label>
                             Participant's degree:
                             <select
+                              className="modal-content-item-select"
                               name="degree"
                               value={newParticipant.degree}
                               onChange={handleInputChangeParticipant}
@@ -803,18 +927,19 @@ const ChooseComponentsPage = () => {
 
                           <div className="modal-buttons">
                             <button
+                              className="x-button"
+                              onClick={() => setShowAddForm(false)}
+                            >
+                              X
+                            </button>
+                            <button
+                              className="modal-buttons-add_member"
                               onClick={() => {
                                 setShowAddForm(false);
                                 addParticipantGen();
                               }}
                             >
                               Save
-                            </button>
-                            <button
-                              className="cancel-button"
-                              onClick={() => setShowAddForm(false)}
-                            >
-                              Cancel
                             </button>
                           </div>
                         </div>

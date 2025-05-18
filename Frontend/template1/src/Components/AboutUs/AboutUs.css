@@ -1,83 +1,87 @@
 .AboutUsComponent {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    border-radius: 10px;
-    font-size: 16px;
-    line-height: 1.5;
-    color: #090c10;
-    transition: transform 0.3s ease-in-out;
-    width: 100%;
-    max-width: 400px; /* Adjust width as needed */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-radius: 10px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #090c10;
+  transition: transform 0.3s ease-in-out;
+  width: 100%;
+  max-width: 400px; /* Adjust width as needed */
 }
 
 /* About Us Title - Always Visible */
 .aboutUsTitle {
-    font-family: 'Oswald', sans-serif;
+  font-family: "Oswald", sans-serif;
 
-    font-size: 28px;
-    font-weight: bold;
-    color: #090c10;
-    margin-bottom: 10px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #090c10;
+  margin-bottom: 10px;
 }
 
 /* About Us Paragraph - Scrollable when long */
 .aboutUsParagraph {
-    max-height: 300px; /* Set max height */
-    overflow-y: auto;
-    padding-right: 10px; /* Space for scrollbar */
+  max-height: 300px; /* Set max height */
+  overflow-y: auto;
+  padding-right: 10px; /* Space for scrollbar */
 }
 
 /* Scrollbar Styling */
 .aboutUsParagraph::-webkit-scrollbar {
-    width: 8px;
+  width: 8px;
 }
 
 .aboutUsParagraph::-webkit-scrollbar-track {
-    background:rgba(69, 69, 69, 0.1);;
-    border-radius: 5px;
+  background: rgba(69, 69, 69, 0.1);
+  border-radius: 5px;
 }
 
 .aboutUsParagraph::-webkit-scrollbar-thumb {
-    background: rgba(44, 62, 80, 0.05);
-    border-radius: 5px;
+  background: rgba(44, 62, 80, 0.05);
+  border-radius: 5px;
 }
 
 .aboutUsParagraph::-webkit-scrollbar-thumb:hover {
-    background: rgba(22, 29, 37, 0.1);
+  background: rgba(22, 29, 37, 0.1);
 }
 
 /* Hover Effect */
 .AboutUsComponent:hover {
-    transform: translateY(-3px);
+  transform: translateY(-3px);
 }
 
 .aboutUsTextarea {
-    width: 100%;
-    min-height: 200px;
-    max-height: 400px;
-    padding: 10px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    resize: vertical;
-    background: rgba(44, 62, 80, 0.05);
-    
+  width: 100%;
+  min-height: 200px;
+  max-height: 400px;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  resize: vertical;
+  background: rgba(44, 62, 80, 0.05);
+}
+.editModeContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.saveButton {
+  width: 100px;
+  padding: 5px;
+  border-radius: 25px;
+  background: transparent;
+  border: 1px solid #000000;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  position: relative;
+  font-size: 16px;
 }
 
-.saveButton {
-    width: 100px;
-    padding: 5px;
-    border-radius: 25px;
-    background: transparent;
-    border: 1px solid #000000;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    position: relative;
-    font-size: 16px;
-  }
-  
-  .saveButton:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-  }
+.saveButton:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}

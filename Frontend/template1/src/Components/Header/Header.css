@@ -5,7 +5,6 @@
 .header_title {
   font-size: 45px;
   font-weight: 700;
-  /* padding-right: 100px; */
   color: black;
 }
 
@@ -24,8 +23,6 @@
   align-items: center;
 }
 .icon_photo {
-  /* height: 40px;
-  width: 40px; */
   display: flex;
   align-items: center;
   position: absolute;
@@ -41,36 +38,30 @@
   width: 40px;
   border-radius: 50%;
   position: relative;
-  /* position: absolute;
-  right: 0; */
   margin-right: 15px;
   background-image: url("../../images/account_avatar.svg");
+  cursor: pointer;
 }
+
+/* Improved menu dropdown */
 .hidden-box {
-  display: none; /* Initially hidden */
+  display: none;
   position: absolute;
   right: 0;
+  top: 50px;
   background-color: white;
-  padding: 20px;
-  width: 150px; /* Adjust width as needed */
-  border-radius: 10px; /* Rounded corners to match the shape of the menu */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
-  transform: translateX(-15px) translateY(13.5px); /* Adjust horizontally */
-  z-index: 1;
-  -webkit-mask-image: radial-gradient(
-    circle at top right,
-    transparent 40px,
-    /* Cutout starts */ black 40px /* Solid color starts */
-  );
-  mask-image: radial-gradient(
-    circle at top right,
-    transparent 28px,
-    /* Cutout starts */ black 28px /* Solid color starts */
-  );
+  padding: 25px;
+  width: 230px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  border: 1px solid #eee;
 }
-.menu:hover .hidden-box {
+
+.menu.active .hidden-box {
   display: block;
 }
+
 .personal_menu {
   display: flex;
   flex-direction: column;
@@ -81,68 +72,44 @@
 .hr_line {
   height: 1px;
   width: 100%;
-  background-color: gray;
+  background-color: #e5e5e5;
+  border: none;
+  margin: 10px 0;
 }
 
 .choose_item {
   width: 100%;
-  /* display: flex;
+  display: flex;
   flex-direction: column;
-  gap:10px; */
+  gap: 8px;
 }
 
-.logout_button {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-  background-color: transparent;
-  border-color: transparent;
-  font-size: 16px;
-  border-radius: 10px;
-  width: 100%;
-  justify-content: center;
-  padding: 10px;
-}
-
-.logout_button:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
-}
-
-.my_sites_button {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-  background-color: transparent;
-  border-color: transparent;
-  font-size: 16px;
-  border-radius: 10px;
-  width: 100%;
-  justify-content: center;
-  padding: 10px;
-}
-
-.my_sites_button:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
-}
-
+.logout_button,
+.notifications_button,
+.my_sites_button,
 .login_button {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 10px;
   background-color: transparent;
-  border-color: transparent;
+  border: none;
   font-size: 16px;
-  border-radius: 10px;
+  border-radius: 8px;
   width: 100%;
-  justify-content: center;
-  padding: 10px;
+  justify-content: flex-start;
+  padding: 10px 15px;
+  color: #333;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
+.logout_button:hover,
+.notifications_button:hover,
+.my_sites_button:hover,
 .login_button:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
+  background-color: #f5f5f5;
+  color: #3498db;
 }
 
 .my_sites_icon {
@@ -170,12 +137,14 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
-  align-items: center;
+
   z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .login-content {
@@ -185,7 +154,7 @@
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
 .login-modal .login-content {
-  position: relative; /* Needed to position the close button absolutely within the content div */
+  position: relative;
 }
 
 .login-modal .close-button {
@@ -193,7 +162,7 @@
   top: 10px;
   right: 10px;
   cursor: pointer;
-  font-size: 24px; /* Large enough to be easily clickable */
+  font-size: 24px;
 }
 
 .login-error {
@@ -206,7 +175,7 @@
   align-items: center;
   padding: 15px 30px;
   gap: 30px;
-  justify-content: space-between; /* Even spacing */
+  justify-content: space-between;
   position: relative;
 }
 
@@ -217,7 +186,7 @@
   flex: 1;
 }
 
-/* NAVBAR */
+/* NAVBAR - Slight improvement */
 .navbar {
   position: absolute;
   left: 50%;
@@ -238,16 +207,14 @@
   transition: max-width 0.8s ease-out, transform 0.5s ease-out,
     height 0.8s ease-out;
   z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
-
-/* NAVBAR EXPANDS ON HOVER */
 
 /* NAVBAR ITEMS */
 .navbar-item {
   align-items: center;
-  cursor: pointer;
   flex-shrink: 0;
-  padding: 10px 20px;
+  padding: 10px 10px;
   display: flex;
   gap: 15px;
   color: rgb(64, 64, 64);
@@ -261,7 +228,6 @@
 /* NAVBAR BUTTONS */
 .navbar-item-button {
   font-family: "Oswald", sans-serif;
-
   font-size: 18px;
   cursor: pointer;
   color: rgb(64, 64, 64);
@@ -272,7 +238,7 @@
 }
 
 .navbar-item-button:hover {
-  color: black;
+  color: #3498db;
 }
 
 .switch {
@@ -333,7 +299,7 @@ input:checked + .slider:before {
 .login-popup {
   background: #fff;
   padding: 30px 25px;
-  width: 90vw; /* ✅ use viewport width for responsiveness */
+  width: 90vw;
   max-width: 320px;
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
@@ -416,7 +382,7 @@ input:checked + .slider:before {
 }
 
 /* Hamburger menu styling */
-.hamburger-menu {
+.hamburger-menu-1 {
   display: none;
   flex-direction: column;
   gap: 5px;
@@ -426,7 +392,7 @@ input:checked + .slider:before {
   padding: 10px;
 }
 
-.hamburger-menu span {
+.hamburger-menu-1 span {
   width: 25px;
   height: 3px;
   background-color: #000;
@@ -436,7 +402,7 @@ input:checked + .slider:before {
 
 /* Responsive behavior for mobile */
 @media (max-width: 1024px) {
-  .hamburger-menu {
+  .hamburger-menu-1 {
     display: flex;
   }
 }
@@ -444,7 +410,7 @@ input:checked + .slider:before {
   .navbar {
     display: none;
     flex-direction: column;
-    align-items: stretch; /* full width buttons */
+    align-items: stretch;
     position: absolute;
     top: 190px;
     right: 10px;
@@ -486,4 +452,33 @@ input:checked + .slider:before {
   .edit-mode-container {
     display: none !important;
   }
+}
+/* Add these CSS rules to your existing Header.css */
+
+.logout_button svg,
+.notifications_button svg,
+.my_sites_button svg,
+.login_button svg {
+  flex-shrink: 0;
+  color: #666;
+  transition: color 0.2s ease;
+}
+
+.logout_button:hover svg,
+.notifications_button:hover svg,
+.my_sites_button:hover svg,
+.login_button:hover svg {
+  color: #3498db;
+}
+
+/* Ensures proper alignment of the notification badge */
+.notifications_button {
+  position: relative;
+}
+
+/* Better spacing for buttons with icons */
+.choose_item button {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Space between icon and text */
 }

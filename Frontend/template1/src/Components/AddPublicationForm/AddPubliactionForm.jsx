@@ -7,8 +7,8 @@ const AddPublicationForm = ({ onSuccess }) => {
   const [githubLink, setGithubLink] = useState("");
   const [presentationLink, setPresentationLink] = useState("");
   const [videoLink, setVideoLink] = useState("");
-  const [error, setError] = useState(null); // Error message state
-  const [loading, setLoading] = useState(false); // Loading state
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,21 +30,19 @@ const AddPublicationForm = ({ onSuccess }) => {
         videoLink,
         presentationLink
       );
-      console.log(response);
+
       if (response.response === "true") {
-        // Reset fields on success
         setPublication("");
         setGithubLink("");
         setPresentationLink("");
         setVideoLink("");
         setError(null);
 
-        // Close the form if onSuccess function is provided
         if (onSuccess) {
           onSuccess();
         }
       } else {
-        setError(response.data || "Failed to add publication. Try again.");
+        setError("Failed to add publication. " + response.message);
       }
     } catch (error) {
       setError("An error occurred while adding the publication.");
@@ -55,58 +53,66 @@ const AddPublicationForm = ({ onSuccess }) => {
   };
 
   return (
-    <div className="upload-publication-section">
-      <h3>Add New Publication</h3>
-      {error && <p className="error-message">{error}</p>}{" "}
-      {/* Show error message if exists */}
-      <form className="upload-publication-form" onSubmit={handleSubmit}>
-        <div className="coolinput">
-          <label className="text">Publication Link:</label>
+    <div className="publication-form-container">
+      {error && <div className="error-alert">{error}</div>}
+
+      <form className="publication-form" onSubmit={handleSubmit}>
+        <div className="form-field">
+          <label className="form-field__label">
+            Publication Link <span className="required">*</span>
+          </label>
           <input
-            type="text"
-            placeholder="Publication link"
-            className="input"
+            type="url"
+            placeholder="https://scholar.google.com/xxxx/xxxxx"
+            className="form-field__input"
             value={publication}
             onChange={(e) => setPublication(e.target.value)}
+            required
           />
         </div>
 
-        <div className="coolinput">
-          <label className="text">GitHub Link:</label>
+        <div className="form-field">
+          <label className="form-field__label">GitHub Repository</label>
           <input
-            type="text"
-            placeholder="GitHub link"
-            className="input"
+            type="url"
+            placeholder="https://github.com/username/repo"
+            className="form-field__input"
             value={githubLink}
             onChange={(e) => setGithubLink(e.target.value)}
           />
         </div>
 
-        <div className="coolinput">
-          <label className="text">Presentation Link:</label>
+        <div className="form-field">
+          <label className="form-field__label">Presentation</label>
           <input
-            type="text"
-            placeholder="Presentation link"
-            className="input"
+            type="url"
+            placeholder="https://drive.google.com/drive/..."
+            className="form-field__input"
             value={presentationLink}
             onChange={(e) => setPresentationLink(e.target.value)}
           />
         </div>
 
-        <div className="coolinput">
-          <label className="text">Video Link:</label>
+        <div className="form-field">
+          <label className="form-field__label">Video</label>
           <input
-            type="text"
-            placeholder="Video link"
-            className="input"
+            type="url"
+            placeholder="youtube/google drive video"
+            className="form-field__input"
             value={videoLink}
             onChange={(e) => setVideoLink(e.target.value)}
           />
         </div>
 
-        <button type="submit" className="submit-pub" disabled={loading}>
-          {loading ? "Adding..." : "Add Publication"}
-        </button>
+        <div className="form-actions">
+          <button
+            type="submit"
+            className="submit_publication_button"
+            disabled={loading}
+          >
+            {loading ? "Adding..." : "Add Publication"}
+          </button>
+        </div>
       </form>
     </div>
   );

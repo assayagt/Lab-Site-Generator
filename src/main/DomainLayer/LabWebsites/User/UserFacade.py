@@ -247,12 +247,13 @@ class UserFacade:
         if email in self.members:
             return self.members[email]
         elif email in self.managers:
+            if email in self.siteCreator:
+                return self.siteCreator[email]
             return self.managers[email]
         # todo: verify if alumnis can log in
         # elif email in self.alumnis:
         #    return self.alumnis[email]
-        elif email in self.siteCreator:
-            return self.siteCreator[email]
+        
         return None
 
     def get_alumni_by_email(self, email):
@@ -454,12 +455,17 @@ class UserFacade:
     def get_all_lab_managers_details(self):
         all_managers = []
         for email, member in self.managers.items():
-            all_managers.append(member.get_details())
-        all_managers.append(self.get_site_creator_details())
+            if email in self.siteCreator.keys():
+                all_managers.append(self.get_site_creator_details())
+            else:
+                all_managers.append(member.get_details())
+       
         return all_managers
 
     def get_site_creator_details(self):
-        details = self.siteCreator[0].get_details()
+        creator = next(iter(self.siteCreator.values()))  # Get the first (and probably only) creator
+        details = creator.get_details()
+        print(details)
         details["is_creator"] = True
         return details
 
@@ -529,6 +535,8 @@ class UserFacade:
         return None
         
 
+
+##TODO: there is an error doesnt load all the fields
     def _load_data(self):
         # Load members
         members = self.dal_controller.LabMembers_repo.find_all_members_by_domain(self.domain)

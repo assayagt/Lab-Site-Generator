@@ -291,8 +291,33 @@ class AllWebsitesUserFacade:
 
     def remove_website_data(self, domain):
         """
+        Remove all data associated with a website from memory and database.
+
+        Args:
+            domain (str): The domain of the website to remove
+        """
+        if domain in self.usersFacades:
+            # Get all members before removing the facade
+            user_facade = self.usersFacades[domain]
+            creator = user_facade.get_site_creator_details()
+
+            # Delete member data from database
+            self.dal_controller.siteCustom_repo.delete_website_from_member(domain, creator.email)
+
+            # Remove from memory
+            del self.usersFacades[domain]
+
+    def remove_alumni_from_labWebsite(self, manager_userId, alumni_email, domain):
+        userFacade = self.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(manager_userId)
+        userFacade.error_if_user_not_logged_in(manager_userId)
+        userFacade.error_if_user_is_not_manager_or_site_creator(manager_userId)
+        userFacade.remove_alumni(alumni_email)
+
+    def remove_website_data(self, domain):
+        """
         Remove all data associated with a website from memory.
-        
+
         Args:
             domain (str): The domain of the website to remove
         """

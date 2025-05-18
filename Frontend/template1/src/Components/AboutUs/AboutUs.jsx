@@ -4,15 +4,16 @@ import { useEditMode } from "../../Context/EditModeContext";
 import { setSiteAboutUsByManager } from "../../services/websiteService";
 import SuccessPopup from "../PopUp/SuccessPopup";
 import ErrorPopup from "../PopUp/ErrorPopup";
+import { useWebsite } from "../../Context/WebsiteContext";
 
 function AboutUs(props) {
   const { editMode } = useEditMode();
-  const [aboutUsText, setAboutUsText] = useState(props.info || "");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [saveButtonText, setSaveButtonText] = useState("Save");
   const [popupMessage, setPopupMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
+  const { websiteData, setWebsite } = useWebsite();
+  const [aboutUsText, setAboutUsText] = useState(websiteData.about_us || "");
   useEffect(() => {
     if (popupMessage || errorMessage) {
       const timer = setTimeout(() => {
@@ -31,8 +32,11 @@ function AboutUs(props) {
       setPopupMessage("Changes saved successfully!");
       setSaveButtonText("Saved");
       setHasUnsavedChanges(false);
+      setWebsite({ about_us: aboutUsText });
+      // window.location.reload();
     } else {
       setErrorMessage("An error occurred while saving.");
+      setAboutUsText(websiteData.about_us);
     }
   };
 

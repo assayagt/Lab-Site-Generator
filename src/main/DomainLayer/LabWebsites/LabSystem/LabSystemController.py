@@ -329,7 +329,8 @@ class LabSystemController:
                 userFacade.getMemberEmailByName(author) for author in publication_details['authors']
             ) if email is not None
         ]
-
+        if len(authors_emails)==0:
+            raise Exception(ExceptionsEnum.AUTHOR_NOT_A_USER.value)
         # Create the new publication
         publication_id = self.websiteFacade.create_new_publication(
             domain, publication_link, publication_details, git_link, video_link, presentation_link, authors_emails
@@ -660,16 +661,24 @@ class LabSystemController:
         """
         website = self.websiteFacade.get_website(website_domain)
         member_scholar_links = self.allWebsitesUserFacade.get_active_members_scholarLinks(website_domain)
+        print(member_scholar_links)
         publist = self.webCrawlerFacade.fetch_publications(member_scholar_links)
+        print("found pubs successfully")
         for pub in publist:
+            print(pub.authors)
+            print(pub.title)
             if not website.check_publication_exist(pub):
                 authorEmails = []
                 for author in pub.authors:
                     email = self.allWebsitesUserFacade.getMemberEmailByName(author=author, domain=website_domain)
                     if email:
+                        print(f"found: {email}")
                         authorEmails.append(email)
+                if not authorEmails:
+                    continue
                 pub.set_author_emails(authorEmails)
-                website.create_publication(publicationDTO=pub, authors_emails=authorEmails)
+                self.websiteFacade.create_new_publication_fromDTO(domain=website_domain, pubDTO=pub, author_emails=authorEmails)
+                print("added pub successfully")
                 if with_notifications:
                      # send notifications to the website authors about the new publications, for initial approval.
                     for authorEmail in authorEmails:

@@ -8,12 +8,18 @@ import {
   createNewSiteManagerFromLabWebsite,
   addAlumniFromLabWebsite,
   removeManagerPermission,
+  removeAlumniFromLabWebsite,
 } from "../../services/websiteService";
 import { useEditMode } from "../../Context/EditModeContext";
 import ErrorPopup from "../../Components/PopUp/ErrorPopup";
 import SuccessPopup from "../../Components/PopUp/SuccessPopup";
+import { FaLinkedin, FaEnvelope, FaExternalLinkAlt } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { useWebsite } from "../../Context/WebsiteContext";
 
 const ParticipantsPage = () => {
+  const { websiteData, setWebsite } = useWebsite();
+  const navigate = useNavigate();
   const [selectedDegree, setSelectedDegree] = useState("All");
   const [participants, setParticipants] = useState([]);
   const [alumni, setAlumni] = useState([]);
@@ -33,11 +39,20 @@ const ParticipantsPage = () => {
   const degreeOrder = {
     "Ph.D.": 1,
     "M.Sc.": 2,
-    "D.Sc.": 3,
-    "B.Sc.": 4,
+    "B.Sc.": 3,
+    "Research Assistant": 4,
+    "Faculty Member": 5,
   };
+  const staticDegreeOptions = [
+    "Ph.D.",
+    "M.Sc.",
+    "B.Sc.",
+    "Research Assistant",
+    "Faculty Member",
+    "Alumni",
+  ];
 
-  const degreeOptions = ["Ph.D.", "M.Sc.", "B.Sc.", "D.Sc."];
+  const degreeOptions = staticDegreeOptions;
 
   const fetchParticipants = async () => {
     setLoading(true);
@@ -92,7 +107,8 @@ const ParticipantsPage = () => {
 
   const editModeOption = (member) => {
     return (
-      editMode && (
+      editMode &&
+      !member.is_creator && (
         <div className="edit-options">
           <label>
             <input
@@ -186,19 +202,32 @@ const ParticipantsPage = () => {
           setErrorMessage("Failed to promote to alumni: " + response?.message);
         }
       } else {
+        const response = await removeAlumniFromLabWebsite(
+          sessionStorage.getItem("sid"),
+          member.email,
+          sessionStorage.getItem("domain")
+        );
+
+        if (response?.response === "true") {
+          setAlumni((prev) => prev.filter((p) => p.email !== member.email)); // Remove from alumni
+
+          setParticipants((prev) => [
+            ...prev,
+            { ...member, isAlumni: false }, // Add back to participants
+          ]);
+        }
       }
     } catch (err) {
       setErrorMessage("Error toggling alumni:", err);
     }
   };
-  const sortedDegrees = Object.keys(groupedParticipants).sort(
-    (a, b) => (degreeOrder[a] || 999) - (degreeOrder[b] || 999)
-  );
 
   const filteredParticipants =
     selectedDegree === "All"
       ? groupedParticipants
-      : { [selectedDegree]: groupedParticipants[selectedDegree] };
+      : selectedDegree === "Alumni"
+      ? { Alumni: alumni }
+      : { [selectedDegree]: groupedParticipants[selectedDegree] || [] };
 
   const handleInputChangeParticipant = (e) => {
     const { name, value, type, checked } = e.target;
@@ -206,6 +235,12 @@ const ParticipantsPage = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+  };
+
+  const NavigateProfile = (email) => {
+    if (websiteData.components.includes("Page for Participant")) {
+      navigate(`/participant/${encodeURIComponent(email)}`);
+    }
   };
 
   const handleAddParticipant = async () => {
@@ -233,9 +268,7 @@ const ParticipantsPage = () => {
         );
         return;
       } else {
-        setPopupMessage(
-          "Participant added successfully! It might take a while until you will see changes it website"
-        );
+        setPopupMessage("Participant added successfully! ");
       }
 
       if (isManager) {
@@ -307,38 +340,69 @@ const ParticipantsPage = () => {
           onChange={(e) => setSelectedDegree(e.target.value)}
         >
           <option value="All">All Degrees</option>
-          {sortedDegrees.map((degree) => (
+          {degreeOptions.map((degree) => (
             <option key={degree} value={degree}>
               {degree}
             </option>
           ))}
-          <option value="Alumni">Alumni</option>
         </select>
       </div>
 
-      {sortedDegrees.map(
-        (degree) =>
-          filteredParticipants[degree] && (
-            <div key={degree} className="degree-section">
-              <div className="degree">{degree}</div>
-              <div className="degree-section-items">
-                {filteredParticipants[degree].map((member) => (
-                  <div key={member.email} className="participant">
-                    <div className="personal_photo"></div>
-                    <div className="personal_info_member">
-                      <div className="fullname">{member.fullName}</div>
-                      <div className="personal-bio">{member.bio}</div>
-                      <a href={`mailto:${member.email}`} className="email-link">
-                        {member.email}
-                      </a>
-                      {editModeOption(member)}
-                    </div>
-                  </div>
-                ))}
-              </div>
+      {Object.entries(filteredParticipants).map(([degree, members]) => (
+        <div key={degree} className="degree-section">
+          <div className="degree">{degree}</div>
+          {members.length === 0 ? (
+            <div className="no-participants-msg">
+              No participants found for this category.
             </div>
-          )
-      )}
+          ) : (
+            <div className="degree-section-items">
+              {members.map((member) => (
+                <div key={member.email} className="participant">
+                  <div className="personal_photo"></div>
+                  <div className="personal_info_member">
+                    <div className="name-with-icon">
+                      <span className="fullname">{member.fullName}</span>
+                      {websiteData.components.includes(
+                        "Page for Participant"
+                      ) && (
+                        <FaExternalLinkAlt
+                          className="profile-link-icon"
+                          onClick={() => NavigateProfile(member.email)}
+                          title="View Profile"
+                        />
+                      )}
+                    </div>
+                    <div className="personal_bio">{member.bio}</div>
+                    <div className="contact-links">
+                      <a
+                        href={`mailto:${member.email}`}
+                        className="email-link"
+                        title="Email"
+                      >
+                        <FaEnvelope /> {member.email}
+                      </a>
+
+                      {member.linkedin_link && (
+                        <a
+                          href={member.linkedin_link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="linkedin-link"
+                          title="LinkedIn"
+                        >
+                          <FaLinkedin /> LinkedIn
+                        </a>
+                      )}
+                    </div>
+                    {editModeOption(member)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
 
       {alumni.length > 0 && (
         <div className="degree-section">
@@ -347,13 +411,25 @@ const ParticipantsPage = () => {
             {alumni.map((member) => (
               <div key={member.email} className="participant">
                 <div className="personal_photo"></div>
-                <div className="personal-bio">
-                  <strong>{member.fullName}</strong>
-                  <span className="alumni-degree"> [{member.degree}]</span>
+                <div className="personal_info_member">
+                  <div className="name-with-icon">
+                    <span className="fullname">{member.fullName}</span>
+                    <span className="alumni-degree"> [{member.degree}]</span>
+                    {websiteData.components.includes(
+                      "Page for Participant"
+                    ) && (
+                      <FaExternalLinkAlt
+                        className="profile-link-icon"
+                        onClick={() => NavigateProfile(member.email)}
+                        title="View Profile"
+                      />
+                    )}
+                  </div>
                   <p>{member.bio}</p>
                   <a href={`mailto:${member.email}`} className="email-link">
                     {member.email}
                   </a>
+                  {editModeOption(member)}
                 </div>
               </div>
             ))}
@@ -364,7 +440,7 @@ const ParticipantsPage = () => {
       {showAddForm && (
         <div className="modal-overlay" onClick={() => setShowAddForm(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h3>Add New Participant</h3>
+            <h3 className="title_add_user">Add New Participant</h3>
 
             <div className="form-group">
               <label htmlFor="fullName">Full Name:</label>
@@ -410,16 +486,16 @@ const ParticipantsPage = () => {
 
             <div className="modal-buttons">
               <button
-                className="modal-button add_button"
-                onClick={handleAddParticipant}
-              >
-                Add
-              </button>
-              <button
                 className="modal-button cancel-button"
                 onClick={() => setShowAddForm(false)}
               >
                 Cancel
+              </button>
+              <button
+                className="modal-button add_button"
+                onClick={handleAddParticipant}
+              >
+                Add
               </button>
             </div>
           </div>

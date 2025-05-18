@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import "./AccountPage.css";
+import { useNavigate, useLocation } from "react-router-dom";
+
 import accountIcon from "../../images/account_avatar.svg";
 import cameraIcon from "../../images/camera_icon.svg";
 import searchIcon from "../../images/search_icon.svg";
@@ -27,7 +29,13 @@ import { NotificationContext } from "../../Context/NotificationContext";
 import ErrorPopup from "../../Components/PopUp/ErrorPopup";
 
 const AccountPage = () => {
-  const [activeSection, setActiveSection] = useState("personal-info");
+  const location = useLocation();
+
+  const [activeSection, setActiveSection] = useState(() => {
+    const params = new URLSearchParams(location.search);
+    const section = params.get("section");
+    return section || "personal-info";
+  });
   const [userDetails, setUserDetails] = useState({
     bio: "",
     email: "",
@@ -35,6 +43,8 @@ const AccountPage = () => {
     degree: "",
     linkedIn: "",
     fullname: "",
+    google_scholar: "",
+    emailNotifications: true, // New field for email notifications
   });
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
@@ -48,6 +58,11 @@ const AccountPage = () => {
   });
 
   const [publications, setPublications] = useState([]);
+  const [crawledPublications, setCrawledPublications] = useState([]);
+  const [selectedPublications, setSelectedPublications] = useState([]);
+  const [currentPublicationType, setCurrentPublicationType] =
+    useState("manual");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [uploadedPhoto, setUploadedPhoto] = useState(accountIcon);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -61,6 +76,41 @@ const AccountPage = () => {
     setHasNewNotifications,
   } = useContext(NotificationContext); // Get notifications
 
+  // Add this useEffect to your AccountPage component, right after your existing useEffects
+  // This listens for the custom event from the Header component
+
+  useEffect(() => {
+    // Function to handle section change events
+    const handleSectionEvent = (event) => {
+      if (event.detail && event.detail.section) {
+        setActiveSection(event.detail.section);
+
+        // Update the URL to match the new section (optional but helps with consistency)
+        const url = new URL(window.location);
+        url.searchParams.set("section", event.detail.section);
+        window.history.replaceState({}, "", url);
+      }
+    };
+
+    // Add event listener for the custom event
+    document.addEventListener("NAVIGATE_TO_SECTION", handleSectionEvent);
+
+    // Cleanup function to remove event listener
+    return () => {
+      document.removeEventListener("NAVIGATE_TO_SECTION", handleSectionEvent);
+    };
+  }, []);
+
+  // Also update your existing URL parameter useEffect to handle both initial load
+  // and subsequent navigation within the same page:
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const section = params.get("section");
+    if (section) {
+      setActiveSection(section);
+    }
+  }, [location.search]); // This will run when the URL parameters change
   useEffect(() => {
     // Fetch user details
     const fetchUserDetails = async () => {
@@ -75,8 +125,9 @@ const AccountPage = () => {
           email: data.user.email || "",
           secondaryEmail: data.user.secondEmail || "",
           degree: data.user.degree || "",
-          linkedIn: data.user.linkedIn || "",
+          linkedIn: data.user.linkedin_link || "",
           fullname: data.user.fullName,
+          emailNotifications: data.user.emailNotifications !== false, // Default to true if not set
         });
       }
     };
@@ -87,12 +138,57 @@ const AccountPage = () => {
       console.log("Fetched Publications:", data); // Debugging log
       setPublications(data || []);
     };
+
+    const fetchCrawledPublications = async () => {
+      const domain = sessionStorage.getItem("domain");
+      // You'll need to implement this API method
+      // const data = await getCrawledPublications(domain);
+      // console.log("Fetched Crawled Publications:", data);
+      // setCrawledPublications(data || []);
+
+      setCrawledPublications([
+        {
+          id: "crawl1",
+          title: "Crawled Publication 1",
+          publication_year: 2023,
+          status: "new", // Changed from 'approved' to 'new'
+          link: "https://example.com/publication1", // Added link property
+        },
+        {
+          id: "crawl2",
+          title: "Crawled Publication 2",
+          publication_year: 2023,
+          status: "new", // Changed from 'approved' to 'new'
+          link: "https://example.com/publication2", // Added link property
+        },
+        {
+          id: "crawl3",
+          title: "Crawled Publication 3",
+          publication_year: 2022,
+          status: "rejected",
+          link: "https://example.com/publication3", // Added link property
+        },
+        {
+          id: "crawl4",
+          title: "Crawled Publication 4",
+          publication_year: 2022,
+          status: "pending",
+          link: "https://example.com/publication3", // Added link property
+        },
+      ]);
+    };
+
     fetchUserDetails();
     fetchPublications();
+    fetchCrawledPublications();
   }, []);
 
   const handleSectionChange = (section) => {
     setActiveSection(section);
+    if (section != "my-publications") {
+      setCurrentPublicationType("manual");
+      setStatusFilter("all");
+    }
   };
 
   useEffect(() => {
@@ -110,20 +206,7 @@ const AccountPage = () => {
   }, [activeSection]);
 
   const handleUploadPhoto = () => {
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "image/*";
-    fileInput.onchange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          setUploadedPhoto(reader.result);
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-    fileInput.click();
+    setErrorMessage("feature not supported yet");
   };
 
   const handleSavePhoto = () => {
@@ -236,14 +319,84 @@ const AccountPage = () => {
     pub.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const cloned = [...crawledPublications]; // avoids referencing original state
+  const filteredCrawledPublications = cloned
+    .filter((pub) => pub.title.toLowerCase().includes(searchTerm.toLowerCase()))
+    .filter((pub) => {
+      const status = pub.status || "pending";
+      return statusFilter === "all" || status === statusFilter;
+    });
+
   const totalPages = Math.ceil(filteredPublications.length / itemsPerPage);
+  const totalCrawledPages = Math.ceil(
+    filteredCrawledPublications.length / itemsPerPage
+  );
+
   const paginatedPublications = filteredPublications.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
+  const paginatedCrawledPublications = filteredCrawledPublications.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handleSelectPublication = (publicationId) => {
+    setSelectedPublications((prev) => {
+      if (prev.includes(publicationId)) {
+        return prev.filter((id) => id !== publicationId);
+      } else {
+        return [...prev, publicationId];
+      }
+    });
+  };
+
+  const handleRestoreCrawled = async (publicationId) => {
+    try {
+      // TODO: Call API to restore crawled publication
+      // const response = await restoreCrawledPublication(publicationId);
+
+      // Update local state
+
+      setPopupMessage("Publication restored to pending");
+    } catch (error) {
+      setErrorMessage("Failed to restore publication");
+    }
+  };
+
+  const handleBulkApprove = async () => {
+    try {
+      // TODO: Call API to bulk approve
+      // const response = await bulkApproveCrawledPublications(selectedPublications);
+
+      // Update local state
+
+      setSelectedPublications([]);
+      setPopupMessage(`${selectedPublications.length} publications approved`);
+    } catch (error) {
+      setErrorMessage("Failed to approve publications");
+    }
+  };
+
+  const handleBulkReject = async () => {
+    try {
+      // TODO: Call API to bulk reject
+      // const response = await bulkRejectCrawledPublications(selectedPublications);
+
+      // Update local state
+
+      setSelectedPublications([]);
+      setPopupMessage(`${selectedPublications.length} publications rejected`);
+    } catch (error) {
+      setErrorMessage("Failed to reject publications");
+    }
+  };
+
   const handleNextPage = () => {
-    if (currentPage < totalPages) {
+    const maxPages =
+      currentPublicationType === "manual" ? totalPages : totalCrawledPages;
+    if (currentPage < maxPages) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -323,53 +476,70 @@ const AccountPage = () => {
       const domain = sessionStorage.getItem("domain");
       // Track if any update was successful
       let isUpdated = false;
-
+      let res = null;
       if (userDetails.bio) {
-        await setBioByMember(sid, userDetails.bio, domain);
-        isUpdated = true;
+        res = await setBioByMember(sid, userDetails.bio, domain);
+        if (res?.response === "true") {
+          isUpdated = true;
+        } else {
+          isUpdated = false;
+        }
       }
 
       if (userDetails.secondaryEmail) {
-        await setSecondEmailByMember(sid, userDetails.secondaryEmail, domain);
-        isUpdated = true;
+        res = await setSecondEmailByMember(
+          sid,
+          userDetails.secondaryEmail,
+          domain
+        );
+        if (res?.response === "true") {
+          isUpdated = true;
+        } else {
+          isUpdated = false;
+        }
       }
 
       if (userDetails.degree) {
-        await setDegreeByMember(sid, userDetails.degree, domain);
-        isUpdated = true;
+        res = await setDegreeByMember(sid, userDetails.degree, domain);
+        if (res?.response === "true") {
+          isUpdated = true;
+        } else {
+          isUpdated = false;
+        }
       }
 
       if (userDetails.linkedIn) {
-        await setLinkedInLinkByMember(sid, userDetails.linkedIn, domain);
-        isUpdated = true;
+        res = await setLinkedInLinkByMember(sid, userDetails.linkedIn, domain);
+        if (res?.response === "true") {
+          isUpdated = true;
+        } else {
+          isUpdated = false;
+        }
       }
+
+      // Handle email notification preference
+      // You'll need to add a new API method for this
+      // For now, we'll just simulate the update
+      console.log(
+        "Email notifications preference:",
+        userDetails.emailNotifications
+      );
+      // TODO: Call API to update email notification preference
+      // res = await setEmailNotificationPreference(sid, userDetails.emailNotifications, domain);
 
       if (isUpdated) {
         setPopupMessage("Changes saved successfully!");
         setSaveButtonText("Saved");
         setHasUnsavedChanges(false);
       } else {
-        setErrorMessage("An error occurred while saving changes.");
+        console.log(res);
+        setErrorMessage("Error: " + res?.message);
       }
     } catch (error) {
       console.error("Error saving changes:", error);
       setErrorMessage(`An error occurred: ${error.message}`);
     }
   };
-
-  // const renderBody = (body) => {
-  //   return (
-  //     <div className="notification-body">
-  //       {body
-  //         .split("\n")
-  //         .slice(1) // skip first line
-  //         .filter((line) => line.trim() !== "")
-  //         .map((line, i) => (
-  //           <div key={i}>{line}</div>
-  //         ))}
-  //     </div>
-  //   );
-  // };
 
   const renderNotification = (body) => {
     const lines = body
@@ -429,11 +599,11 @@ const AccountPage = () => {
                   <label htmlFor="input" className="text">
                     Bio:
                   </label>
-                  <input
+                  <textarea
                     type="text"
                     placeholder="Bio"
                     name="input"
-                    className="input"
+                    className="input input_bio"
                     value={userDetails.bio}
                     onChange={(e) => handleChange("bio", e.target.value)}
                   />
@@ -454,17 +624,25 @@ const AccountPage = () => {
                   />
                 </div>
                 <div className="coolinput">
-                  <label htmlFor="input" className="text">
+                  <label htmlFor="degreeSelect" className="text">
                     Degree:
                   </label>
-                  <input
-                    type="text"
-                    placeholder="Degree"
-                    name="input"
+                  <select
+                    id="degreeSelect"
                     className="input"
                     value={userDetails.degree}
                     onChange={(e) => handleChange("degree", e.target.value)}
-                  />
+                  >
+                    <option value="">Select Degree</option>
+                    <option value="B.Sc.">B.Sc.</option>
+                    <option value="M.Sc.">M.Sc.</option>
+                    <option value="Ph.D.">Ph.D.</option>
+                    <option value="Postdoc">Postdoc</option>
+                    <option value="Faculty Member">Faculty Member</option>
+                    <option value="Research Assistant">
+                      Research Assistant
+                    </option>
+                  </select>
                 </div>
                 <div className="coolinput">
                   <label htmlFor="input" className="text">
@@ -478,6 +656,36 @@ const AccountPage = () => {
                     value={userDetails.linkedIn}
                     onChange={(e) => handleChange("linkedIn", e.target.value)}
                   />
+                </div>
+                <div className="coolinput">
+                  <label htmlFor="input" className="text">
+                    Google Scholar Profile Link:
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Google Scholar Profile Link"
+                    name="input"
+                    className="input"
+                    value={userDetails.google_scholar}
+                    onChange={(e) =>
+                      handleChange("google_scholar", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="notification-preference">
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={userDetails.emailNotifications}
+                      onChange={(e) =>
+                        handleChange("emailNotifications", e.target.checked)
+                      }
+                    />
+                    <span>Receive email notifications</span>
+                  </label>
+                  <small className="notification-hint">
+                    Uncheck to unsubscribe from all email notifications
+                  </small>
                 </div>
               </div>
             </div>
@@ -495,7 +703,27 @@ const AccountPage = () => {
 
         {activeSection === "my-publications" && (
           <div id="my-publications" className="my-publications">
-            <h2>My Publications</h2>
+            <div className="publications-header">
+              <h2>Publications</h2>
+              <div className="toggle-container">
+                <button
+                  className={`toggle-btn ${
+                    currentPublicationType === "manual" ? "active" : ""
+                  }`}
+                  onClick={() => setCurrentPublicationType("manual")}
+                >
+                  My Publications
+                </button>
+                <button
+                  className={`toggle-btn ${
+                    currentPublicationType === "crawled" ? "active" : ""
+                  }`}
+                  onClick={() => setCurrentPublicationType("crawled")}
+                >
+                  Crawled Publications
+                </button>
+              </div>
+            </div>
 
             <div className="search-add">
               <div className="search-bar">
@@ -508,70 +736,184 @@ const AccountPage = () => {
                   className="search-input"
                 />
               </div>
-              <button
-                className="add-publication-button"
-                onClick={() => setIsAddPublicationModalOpen(true)}
-              >
-                + Add Publication
-              </button>
+              {currentPublicationType === "crawled" && (
+                <button
+                  className="force-crawl-btn"
+                  onClick={console.log("hello")}
+                >
+                  Force Crawl Publications
+                </button>
+              )}
+
+              {currentPublicationType === "manual" ? (
+                <button
+                  className="add-publication-button"
+                  onClick={() => setIsAddPublicationModalOpen(true)}
+                >
+                  + Add Publication
+                </button>
+              ) : (
+                selectedPublications.length > 0 && (
+                  <div className="bulk-actions">
+                    <button
+                      className="approve-bulk-btn"
+                      onClick={handleBulkApprove}
+                    >
+                      Approve Selected ({selectedPublications.length})
+                    </button>
+                    <button
+                      className="reject-bulk-btn"
+                      onClick={handleBulkReject}
+                    >
+                      Reject Selected ({selectedPublications.length})
+                    </button>
+                  </div>
+                )
+              )}
             </div>
-            {paginatedPublications.map((publication) => (
-              <div key={publication.id} className="publication-item">
-                <form className="publication-form">
-                  <strong>{publication.title}</strong>
-                  <div className="pub-year">{publication.publication_year}</div>
 
-                  <div className="field-group">
-                    <label>GitHub:</label>
-                    <input type="url" defaultValue={publication.github || ""} />
-                  </div>
-
-                  <div className="field-group">
-                    <label>Presentation:</label>
-                    <input
-                      type="url"
-                      defaultValue={publication.presentation || ""}
-                    />
-                  </div>
-
-                  <div className="field-group">
-                    <label>Video:</label>
-                    <input type="url" defaultValue={publication.video || ""} />
-                  </div>
-
-                  <button
-                    className="save-publications"
-                    type="button"
-                    onClick={() => handleSavePublicationLinks(publication)}
-                  >
-                    Save Changes
-                  </button>
-                </form>
+            {currentPublicationType === "crawled" && (
+              <div className="filter-status">
+                <label>Filter by status:</label>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                >
+                  <option value="all">All</option>
+                  <option value="new">New</option>
+                  <option value="pending">Pending</option>
+                  <option value="rejected">Rejected</option>
+                </select>
               </div>
-            ))}
-            <div className="pagination">
-              <button
-                onClick={handlePrevPage}
-                className="pagination-buttons"
-                disabled={currentPage === 1}
-              >
-                Previous
-              </button>
-              <span>
-                Page {currentPage} of {totalPages}
-              </span>
-              <button
-                onClick={handleNextPage}
-                disabled={currentPage === totalPages}
-                className="pagination-buttons"
-              >
-                Next
-              </button>
+            )}
+
+            {currentPublicationType === "manual"
+              ? paginatedPublications.map((publication) => (
+                  <div key={publication.id} className="publication-item">
+                    <form className="publication-form">
+                      <strong>{publication.title}</strong>
+                      <div className="pub-year">
+                        {publication.publication_year}
+                      </div>
+
+                      <div className="field-group">
+                        <label>GitHub:</label>
+                        <input
+                          type="url"
+                          defaultValue={publication.github || ""}
+                        />
+                      </div>
+
+                      <div className="field-group">
+                        <label>Presentation:</label>
+                        <input
+                          type="url"
+                          defaultValue={publication.presentation || ""}
+                        />
+                      </div>
+
+                      <div className="field-group">
+                        <label>Video:</label>
+                        <input
+                          type="url"
+                          defaultValue={publication.video || ""}
+                        />
+                      </div>
+
+                      <button
+                        className="save-publications"
+                        type="button"
+                        onClick={() => handleSavePublicationLinks(publication)}
+                      >
+                        Save Changes
+                      </button>
+                    </form>
+                  </div>
+                ))
+              : paginatedCrawledPublications.map((publication) => (
+                  <div
+                    key={publication.id}
+                    className={`publication-item crawled ${publication.status}`}
+                  >
+                    <div className="publication-header-account">
+                      {publication.status !== "pending" && (
+                        <input
+                          type="checkbox"
+                          checked={selectedPublications.includes(
+                            publication.id
+                          )}
+                          onChange={() =>
+                            handleSelectPublication(publication.id)
+                          }
+                          className="publication-checkbox"
+                        />
+                      )}
+
+                      <div className="publication-info">
+                        <strong>{publication.title}</strong>
+                        <div className="pub-details">
+                          <span className="pub-year">
+                            {publication.publication_year}
+                          </span>
+                          <span
+                            className={`status-badge ${publication.status}`}
+                          >
+                            {publication.status || "pending"}
+                          </span>
+                        </div>
+                        {/* Add link display */}
+                        {publication.link && (
+                          <div className="publication-link">
+                            <a
+                              href={publication.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              View Publication
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="publication-actions">
+                      {publication.status === "rejected" && (
+                        <button
+                          className="restore-btn"
+                          onClick={() => handleRestoreCrawled(publication.id)}
+                        >
+                          Restore
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+
+            <div className="pagination_t1">
+              <div className="pagination-container">
+                <button
+                  onClick={handlePrevPage}
+                  className="pagination-buttons"
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </button>
+                <span>
+                  Page {currentPage} of {totalPages || totalCrawledPages}
+                </span>
+                <button
+                  onClick={handleNextPage}
+                  disabled={currentPage === (totalPages || totalCrawledPages)}
+                  className="pagination-buttons"
+                >
+                  Next
+                </button>
+              </div>
             </div>
 
             {isAddPublicationModalOpen && (
               <div className="custom-modal-overlay">
                 <div className="custom-modal">
+                  <h2>Add New Publication</h2>
                   <button
                     className="close-button"
                     onClick={() => setIsAddPublicationModalOpen(false)}
@@ -579,7 +921,12 @@ const AccountPage = () => {
                     X
                   </button>
                   <AddPublicationForm
-                    onSuccess={() => setIsAddPublicationModalOpen(false)}
+                    onSuccess={() => {
+                      setIsAddPublicationModalOpen(false);
+                      // Refresh the page and navigate to my-publications
+                      window.location.href =
+                        window.location.pathname + "?section=my-publications";
+                    }}
                   />{" "}
                 </div>
               </div>

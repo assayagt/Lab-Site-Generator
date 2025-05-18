@@ -229,6 +229,8 @@ class GeneratorSystemService:
         """ Get a custom website dto for specific manager and domain, through GeneratorSystemController."""
         try:
             website = self.generator_system_controller.get_custom_website(user_id, domain)
+            about_us = self.generator_system_controller.get_site_about_us_from_generator(domain)
+            contact_us = self.generator_system_controller.get_contact_info_from_generator(domain)
             logo_path = website.logo  # Ensure `website.logo` contains the full file path
             if logo_path and os.path.exists(logo_path):
                 # Check the file extension
@@ -247,7 +249,9 @@ class GeneratorSystemService:
                 "components": website.get_components(),
                 "template": website.get_template().value,
                 "logo": logo_data_url,  # Include the logo
-                "home_picture": website.home_picture  # Include the home picture
+                "home_picture": website.home_picture,  # Include the home picture
+                "about_us": about_us,
+                "contact_us": contact_us
             }, "Successfully retrieved custom website")
         except Exception as e:
             return Response(None, str(e))

@@ -7,6 +7,7 @@ export const getCustomWebsites = async (userId) => {
     const response = await axios.get(
       `${baseApiUrl}getCustomWebsites?user_id=${userId}`
     );
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching custom websites:", error);
@@ -23,6 +24,22 @@ export const getCustomSite = async (userId, domain) => {
     return response.data;
   } catch (error) {
     console.error("Error getting custom site details:", error);
+    return null;
+  }
+};
+
+export const deleteWebsite = async (userId, domain) => {
+  try {
+    const response = await axios.delete(`${baseApiUrl}deleteWebsite`, {
+      params: {
+        user_id: userId,
+        domain: domain,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting website:", error);
     return null;
   }
 };

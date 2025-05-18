@@ -10,6 +10,8 @@ import pandas as pd
 from flask_socketio import SocketIO, emit
 import threading
 from src.main.DomainLayer.socketio_instance import socketio
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 def send_test_notifications():
     while True:
@@ -28,6 +30,7 @@ from src.main.DomainLayer.LabWebsites.Website.ContactInfo import ContactInfo
 app_secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app = Flask(__name__)
 app.config["SECRET_KEY"] = app_secret_key
+GOOGLE_CLIENT_ID = "894370088866-4jkvg622sluvf0k7cfv737tnjlgg00nt.apps.googleusercontent.com"
 # CORS(app)
 
 CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "http://localhost:3001"]}})  # Allow both frontends
@@ -236,41 +239,45 @@ class UploadFilesAndData(Resource):
                 extension = os.path.splitext(file.filename)[1].lower()
                 file_path = None
 
-                # Handle logo
                 if component == 'logo':
-                    if extension in ['.svg', '.png', '.jpg', '.jpeg']:
+                    if extension in ['svg', '.png', '.jpg', '.jpeg']:
                         file_path = os.path.join(website_folder, f"logo{extension}")
                     else:
-                        return jsonify({"error": "Invalid file type for logo. Allowed: SVG, PNG, JPG, JPEG"})
+                        return {
+                            "error": "Invalid file type for logo. Allowed: PNG, JPG, JPEG"
+                        }, 400
 
-                # Handle homepage photo
                 elif component == 'homepagephoto':
                     if extension in ['.jpg', '.jpeg', '.png']:
                         file_path = os.path.join(website_folder, f"homepagephoto{extension}")
                     else:
-                        return jsonify({"error": "Invalid file type for homepage photo. Allowed: JPG, JPEG, PNG"})
+                        return {
+                            "error": "Invalid file type for homepage photo. Allowed: JPG, JPEG, PNG"
+                        }, 400
 
                 else:
-                    return jsonify({"error": f"Invalid file type for component: {component} ({extension})"})
+                    return {
+                        "error": f"Unsupported component: {component}"
+                    }, 400
 
                 if file_path is None:
-                    return jsonify({"error": f"Failed to resolve file path for: {component}"})
+                    return {
+                        "error": f"Failed to resolve file path for: {component}"
+                    }, 500
 
-                print(f"Saving (or replacing): {file_path}")
                 file.save(file_path)
                 uploaded_files.append(os.path.basename(file_path))
 
-            # Optional: save metadata (like website name)
-            
-
-            return jsonify({
+            return {
                 "message": "Files and data uploaded successfully!",
                 "uploaded": uploaded_files
-            })
+            }, 200
 
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"})
-    
+            return {
+                "error": f"An error occurred: {str(e)}"
+            }, 500
+
 
 class GenerateWebsiteResource(Resource):
     def post(self):
@@ -280,7 +287,7 @@ class GenerateWebsiteResource(Resource):
             data = request.get_json()
 
             # Ensure required fields exist
-            required_fields = ['domain', 'about_us', 'lab_address', 'lab_mail', 'lab_phone_num', 'participants', 'creator_schoalr_link']
+            required_fields = ['domain', 'about_us', 'lab_address', 'lab_mail', 'lab_phone_num', 'participants', 'creator_scholar_link']
             for field in required_fields:
                 if field not in data:
                     return jsonify({"error": f"Missing required field: {field}", "response": "false"})
@@ -291,7 +298,7 @@ class GenerateWebsiteResource(Resource):
             lab_mail = data['lab_mail']
             lab_phone_num = data['lab_phone_num']
             participants = data['participants']
-            creator_scholar_link = data['creator_schoalr_link']
+            creator_scholar_link = data['creator_scholar_link']
             contact_info = ContactInfo(lab_address, lab_mail, lab_phone_num)
             # Extract lab members, managers, and site creator
             lab_members = {}
@@ -336,12 +343,12 @@ class GenerateWebsiteResource(Resource):
                         process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH, shell=True)
 
                         return jsonify({"message": "Website generated successfully!", "response": "true"})
-                    return jsonify({"error": f"An error occurred: {response3.get_message()}", "response": "false"})
-                return jsonify({"error": f"An error occurred: {response2.get_message()}", "response": "false"})
-            return jsonify({"error": f"An error occurred: {response.get_message()}", "response": "false"})
+                    return jsonify({"error1": f"An error occurred: {response3.get_message()}", "response": "false"})
+                return jsonify({"error2": f"An error occurred: {response2.get_message()}", "response": "false"})
+            return jsonify({"error3": f"An error occurred: {response.get_message()}", "response": "false"})
 
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}", "response": "false"})
+            return jsonify({"error4": f"An error occurred: {str(e)}", "response": "false"})
         
 class ChooseDomain(Resource):
     def post(self):
@@ -512,21 +519,26 @@ class RemoveSiteManagerFromGenerator(Resource):
 # Handles user login with email and password
 class Login(Resource):
     def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('email', type=str, required=True, help="email is required")
-        parser.add_argument('user_id', type=str, required=True, help="User id is required")
-
-        args = parser.parse_args()
-
-        email = args['email']
-        user_id = args['user_id']
+        data = request.get_json()
+        user_id = data.get('user_id')
+        google_token = data.get('google_token')
     
 
         try:
+            if google_token:
+                try:
+                    # Verify the token
+                    idinfo = id_token.verify_oauth2_token(google_token, requests.Request(), GOOGLE_CLIENT_ID)
+                    email = idinfo['email']
+                    
+                except ValueError as e:
+                    print("Token verification failed:", str(e))
+                    return jsonify({"error": "Invalid Google token", "response": "false"})
+
             response = generator_system.login(user_id, email)
             
             if response.is_success():
-                return jsonify({"message": "User logged in successfully","response" : "true" })
+                return jsonify({"message": "User logged in successfully","response" : "true", "email": email })
             return jsonify({"message": response.get_message(),"response" : "false" })
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}","response" : "false"})
@@ -713,26 +725,32 @@ class EnterLabWebsite(Resource):
 
 class LoginWebsite(Resource):
     def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('domain', type=str, required=True, help="Domain is required")
-        parser.add_argument('user_id', type=str, required=True, help="User ID is required")
-        parser.add_argument('email', type=str, required=True, help="Email is required")
-        args = parser.parse_args()
-        email = args['email']
-        domain = args['domain']
-        
+        data = request.get_json()
+        domain = data.get('domain')
+        user_id = data.get('user_id')
+        google_token = data.get('google_token')
+                
         try:
-            response = lab_system_service.login(domain, args['user_id'], email)
+            if google_token:
+                try:
+                    # Verify the token
+                    idinfo = id_token.verify_oauth2_token(google_token, requests.Request(), GOOGLE_CLIENT_ID)
+                    
+                    # Check if the email from token matches the provided email
+                    email = idinfo['email']
+                except ValueError as e:
+                    return jsonify({"error": "Invalid Google token", "response": "false"})
+            response = lab_system_service.login(domain, user_id, email)
             if response.is_success():
                 if response.get_data():
-                    return jsonify({"message": response.get_message(), "response": "true"})
+                    return jsonify({"message": response.get_message(), "response": "true", "email": email})
                 else:
                     #notify_registration(email, domain)
                     return jsonify({"message": response.get_message(), "response": "false"})
             #notify_registration(email, domain)
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}"})
         
 class LogoutWebsite(Resource):
     def post(self):
@@ -1564,7 +1582,7 @@ class DeleteWebsite(Resource):
                 return jsonify({"message": "Website deleted successfully", "response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}"})
 
 # Add resources to the API of lab
 api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')#

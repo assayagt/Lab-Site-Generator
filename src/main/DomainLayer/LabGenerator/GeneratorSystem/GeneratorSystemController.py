@@ -76,6 +76,12 @@ class GeneratorSystemController:
         """
         self.labSystem.set_site_about_us_from_generator(domain, about_us)
 
+    def get_site_about_us_from_generator(self, domain):
+        """
+        Get the about us section
+        """
+        return self.labSystem.get_about_us(domain)
+
     def set_site_about_us_by_manager_from_generator(self, user_id, domain, about_us):
         """
         Set the about us section by manager
@@ -90,6 +96,12 @@ class GeneratorSystemController:
         Set the contact us section on lab website creation. This function should be called after create_new_lab_website.
         """
         self.labSystem.set_site_contact_info_from_generator(domain, contact_info_dto)
+
+    def get_contact_info_from_generator(self, domain):
+        """
+        Get the contact us section
+        """
+        return self.labSystem.get_contact_us(domain)
 
     def set_site_contact_info_by_manager_from_generator(self, user_id, domain, contact_info_dto):
         """

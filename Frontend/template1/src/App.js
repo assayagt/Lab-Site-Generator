@@ -1,17 +1,28 @@
 import "./App.css";
 import HomePage from "./Pages/HomePage/HomePage";
-import React, { useEffect, useState } from "react";
+import HomePage2 from "./Pages/HomePage/HomePage2";
+import MediaPage from "./Pages/MediaPage/MediaPage";
 
+import React, { useEffect, useState } from "react";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import ParticipantProfile from "./Pages/ParticipantProfile/ParticipantProfile";
 import {
   BrowserRouter as Router,
   Route,
   Routes,
   Navigate,
 } from "react-router-dom"; // Import Routes, Navigate
+import ParticipantsPage2 from "./Pages/ParticipantsPage/ParticipantsPage2";
+
 import ParticipantsPage from "./Pages/ParticipantsPage/ParticipantsPage";
 import ContactUsPage from "./Pages/ContactUsPage/ContactUsPage";
+import ContactUsPage2 from "./Pages/ContactUsPage/ContactUsPage2";
 import Header from "./Components/Header/Header";
+import Header2 from "./Components/Header2/Header2";
 import AccountPage from "./Pages/AccountPage/AccountPage";
+
+import AccountPage2 from "./Pages/AccountPage/AccountPage2";
+
 import PublicationsPage from "./Pages/PublicationsPage/PublicationsPage";
 //import publications from "./publications.json"
 import { AuthProvider } from "./Context/AuthContext";
@@ -75,7 +86,9 @@ function App() {
             template: data.data.template,
             logo: data.data.logo,
             home_picture: data.data.home_picture,
-            about_us: data.data.about_us,
+            about_us: data.data.components.includes("About Us")
+              ? data.data.about_us
+              : "",
           };
           console.log("here");
           setWebsite(mappedData);
@@ -97,46 +110,98 @@ function App() {
     return <div>Loading...</div>; // Show loading indicator
   }
 
-  const components = [...new Set(websiteData.components)];
+  const components = [...new Set(websiteData.components)].filter(
+    (component) => component !== "Page for Participant"
+  );
 
   return (
-    <AuthProvider>
-      <NotificationProvider>
-        <EditModeProvider>
-          <Router>
-            <Header
-              components={components}
-              title={websiteData.websiteName}
-              logo={websiteData.logo}
-            ></Header>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <HomePage
-                    about_us={websiteData.about_us}
-                    photo={websiteData.home_picture}
-                  />
-                }
-              />
-              <Route path="/LabMembers" element={<ParticipantsPage />} />
-              <Route
-                path="/ContactUs"
-                element={
-                  <ContactUsPage
-                    address="Ben Gurion University of the Negev"
-                    email="roni@bgu.ac.il"
-                    phone="+972 523456789"
-                  />
-                }
-              />
-              <Route path="/Account" element={<AccountPage />} />
-              <Route path="/Publications" element={<PublicationsPage />} />
-            </Routes>
-          </Router>
-        </EditModeProvider>
-      </NotificationProvider>
-    </AuthProvider>
+    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+      <AuthProvider>
+        <NotificationProvider>
+          <EditModeProvider>
+            <Router>
+              {websiteData.template === "template1" ? (
+                <Header
+                  components={components}
+                  title={websiteData.websiteName}
+                  logo={websiteData.logo}
+                ></Header>
+              ) : (
+                <Header2
+                  components={components}
+                  title={websiteData.websiteName}
+                  logo={websiteData.logo}
+                ></Header2>
+              )}
+
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    websiteData.template === "template1" ? (
+                      <HomePage
+                        about_us={websiteData.about_us}
+                        photo={websiteData.home_picture}
+                      />
+                    ) : (
+                      <HomePage2
+                        about_us={websiteData.about_us}
+                        photo={websiteData.home_picture}
+                      />
+                    )
+                  }
+                />
+                <Route
+                  path="/participant/:email"
+                  element={<ParticipantProfile />}
+                />
+
+                <Route
+                  path="/LabMembers"
+                  element={
+                    websiteData.template === "template1" ? (
+                      <ParticipantsPage />
+                    ) : (
+                      <ParticipantsPage2 />
+                    )
+                  }
+                />
+                <Route
+                  path="/ContactUs"
+                  element={
+                    websiteData.template === "template1" ? (
+                      <ContactUsPage
+                        address="Ben Gurion University of the Negev"
+                        email="roni@bgu.ac.il"
+                        phone="+972 523456789"
+                      />
+                    ) : (
+                      <ContactUsPage2
+                        address="Ben Gurion University of the Negev"
+                        email="roni@bgu.ac.il"
+                        phone="+972 523456789"
+                      />
+                    )
+                  }
+                />
+                <Route
+                  path="/Account"
+                  element={
+                    websiteData.template === "template1" ? (
+                      <AccountPage />
+                    ) : (
+                      <AccountPage2 />
+                    )
+                  }
+                />
+                <Route path="/Publications" element={<PublicationsPage />} />
+                <Route path="/Media" element={<MediaPage />} />
+              </Routes>
+            </Router>
+          </EditModeProvider>
+        </NotificationProvider>
+      </AuthProvider>
+    </GoogleOAuthProvider>
   );
 }
 

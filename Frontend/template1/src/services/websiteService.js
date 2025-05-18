@@ -141,7 +141,8 @@ export const setLinkedInLinkByMember = async (userId, linkedInLink, domain) => {
       linkedin_link: linkedInLink,
       domain,
     });
-    return response.data.message;
+    console.log(response);
+    return response.data;
   } catch (error) {
     console.error("Error setting LinkedIn link:", error);
     return null;
@@ -155,7 +156,7 @@ export const setFullNameByMember = async (userId, fullName, domain) => {
       fullName,
       domain,
     });
-    return response.data.message;
+    return response.data;
   } catch (error) {
     console.error("Error setting full name:", error);
     return null;
@@ -169,7 +170,7 @@ export const setDegreeByMember = async (userId, degree, domain) => {
       degree,
       domain,
     });
-    return response.data.message;
+    return response.data;
   } catch (error) {
     console.error("Error setting degree:", error);
     return null;
@@ -183,7 +184,8 @@ export const setBioByMember = async (userId, bio, domain) => {
       bio,
       domain,
     });
-    return response.data.message;
+    console.log(response.data);
+    return response.data;
   } catch (error) {
     console.error("Error setting bio:", error);
     return null;
@@ -235,6 +237,7 @@ export const addPublication = async (
       presentation_link: presentation_link || "",
     });
     if (response) {
+      console.log(response.data);
       return response.data;
     }
   } catch (error) {
@@ -575,6 +578,28 @@ export const removeManagerPermission = async (
     return response.data;
   } catch (error) {
     console.error("Error removing manager permission:", error);
+    return null;
+  }
+};
+
+export const removeAlumniFromLabWebsite = async (
+  managerUserId,
+  alumniEmail,
+  domain
+) => {
+  try {
+    const response = await axios.post(
+      `${baseApiUrl}removeAlumniFromLabWebsite`,
+      {
+        manager_user_id: managerUserId,
+        alumni_email: alumniEmail,
+        domain: domain,
+      }
+    );
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error removing alumni from lab website:", error);
     return null;
   }
 };

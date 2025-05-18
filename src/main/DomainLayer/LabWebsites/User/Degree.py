@@ -6,3 +6,5 @@ class Degree(Enum):
     MSC = "M.Sc."
     PHD = "Ph.D."
     DSC = "D.Sc."
+    FM = "Faculty Member"
+    RA = "Research Assistant"
