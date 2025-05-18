@@ -30,7 +30,8 @@ class PublicationDTO:
             "video_link": self.video_link,
             "git_link": self.git_link,
             "presentation_link": self.presentation_link,
-            "description": self.description  # Include description in dict
+            "description": self.description , # Include description in dict
+            "status" : self.approved.value
         }
 
     def __eq__(self, other):

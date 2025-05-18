@@ -23,6 +23,10 @@ import {
   finalApprovePublicationByManager,
   initialApprovePublicationByAuthor,
   rejectPublication,
+  getNotApprovedMemberPublications,
+  setScholarLinkByMember,
+  initialApproveMultiplePublicationsByAuthor,
+  rejectMultiplePublications,
 } from "../../services/websiteService";
 import { fetchUserNotifications } from "../../services/UserService";
 import { NotificationContext } from "../../Context/NotificationContext";
@@ -142,40 +146,44 @@ const AccountPage = () => {
     const fetchCrawledPublications = async () => {
       const domain = sessionStorage.getItem("domain");
       // You'll need to implement this API method
-      // const data = await getCrawledPublications(domain);
-      // console.log("Fetched Crawled Publications:", data);
-      // setCrawledPublications(data || []);
+      const data = await getNotApprovedMemberPublications(
+        domain,
+        sessionStorage.getItem("sid")
+      );
 
-      setCrawledPublications([
-        {
-          id: "crawl1",
-          title: "Crawled Publication 1",
-          publication_year: 2023,
-          status: "new", // Changed from 'approved' to 'new'
-          link: "https://example.com/publication1", // Added link property
-        },
-        {
-          id: "crawl2",
-          title: "Crawled Publication 2",
-          publication_year: 2023,
-          status: "new", // Changed from 'approved' to 'new'
-          link: "https://example.com/publication2", // Added link property
-        },
-        {
-          id: "crawl3",
-          title: "Crawled Publication 3",
-          publication_year: 2022,
-          status: "rejected",
-          link: "https://example.com/publication3", // Added link property
-        },
-        {
-          id: "crawl4",
-          title: "Crawled Publication 4",
-          publication_year: 2022,
-          status: "pending",
-          link: "https://example.com/publication3", // Added link property
-        },
-      ]);
+      console.log("Fetched Crawled Publications:", data);
+      setCrawledPublications(data || []);
+
+      // setCrawledPublications([
+      //   // {
+      //   //   id: "crawl1",
+      //   //   title: "Crawled Publication 1",
+      //   //   publication_year: 2023,
+      //   //   status: "new", // Changed from 'approved' to 'new'
+      //   //   link: "https://example.com/publication1", // Added link property
+      //   // },
+      //   // {
+      //   //   id: "crawl2",
+      //   //   title: "Crawled Publication 2",
+      //   //   publication_year: 2023,
+      //   //   status: "new", // Changed from 'approved' to 'new'
+      //   //   link: "https://example.com/publication2", // Added link property
+      //   // },
+      //   // {
+      //   //   id: "crawl3",
+      //   //   title: "Crawled Publication 3",
+      //   //   publication_year: 2022,
+      //   //   status: "rejected",
+      //   //   link: "https://example.com/publication3", // Added link property
+      //   // },
+      //   // {
+      //   //   id: "crawl4",
+      //   //   title: "Crawled Publication 4",
+      //   //   publication_year: 2022,
+      //   //   status: "pending",
+      //   //   link: "https://example.com/publication3", // Added link property
+      //   // },
+      // ]);
     };
 
     fetchUserDetails();
@@ -371,9 +379,17 @@ const AccountPage = () => {
       // const response = await bulkApproveCrawledPublications(selectedPublications);
 
       // Update local state
-
-      setSelectedPublications([]);
-      setPopupMessage(`${selectedPublications.length} publications approved`);
+      const response = await initialApproveMultiplePublicationsByAuthor(
+        sessionStorage.getItem("sid"),
+        sessionStorage.getItem("domain"),
+        selectedPublications
+      );
+      if (response.response === "true") {
+        setSelectedPublications([]);
+        setPopupMessage(`${selectedPublications.length} publications approved`);
+      } else {
+        setErrorMessage("Failed to approve publications: " + response.message);
+      }
     } catch (error) {
       setErrorMessage("Failed to approve publications");
     }
@@ -381,13 +397,17 @@ const AccountPage = () => {
 
   const handleBulkReject = async () => {
     try {
-      // TODO: Call API to bulk reject
-      // const response = await bulkRejectCrawledPublications(selectedPublications);
-
-      // Update local state
-
-      setSelectedPublications([]);
-      setPopupMessage(`${selectedPublications.length} publications rejected`);
+      const response = await rejectMultiplePublications(
+        sessionStorage.getItem("sid"),
+        sessionStorage.getItem("domain"),
+        selectedPublications
+      );
+      if (response.response === "true") {
+        setSelectedPublications([]);
+        setPopupMessage(`${selectedPublications.length} publications rejected`);
+      } else {
+        setErrorMessage("Failed to reject publications: " + response.message);
+      }
     } catch (error) {
       setErrorMessage("Failed to reject publications");
     }
@@ -510,6 +530,18 @@ const AccountPage = () => {
 
       if (userDetails.linkedIn) {
         res = await setLinkedInLinkByMember(sid, userDetails.linkedIn, domain);
+        if (res?.response === "true") {
+          isUpdated = true;
+        } else {
+          isUpdated = false;
+        }
+      }
+      if (userDetails.google_scholar) {
+        res = await setScholarLinkByMember(
+          sid,
+          userDetails.google_scholar,
+          domain
+        );
         if (res?.response === "true") {
           isUpdated = true;
         } else {
@@ -736,14 +768,14 @@ const AccountPage = () => {
                   className="search-input"
                 />
               </div>
-              {currentPublicationType === "crawled" && (
+              {/* {currentPublicationType === "crawled" && (
                 <button
                   className="force-crawl-btn"
                   onClick={console.log("hello")}
                 >
                   Force Crawl Publications
                 </button>
-              )}
+              )} */}
 
               {currentPublicationType === "manual" ? (
                 <button

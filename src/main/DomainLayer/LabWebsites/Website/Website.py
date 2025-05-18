@@ -31,7 +31,7 @@ class Website:
             title=publication_details["title"],
             publication_year=publication_details["publication_year"],
             publication_link=publication_link,
-            approved=ApprovalStatus.FINAL_PENDING.value,
+            approved=ApprovalStatus.FINAL_PENDING,
             git_link=git_link,
             authors=publication_details["authors"],
             video_link=video_link,
