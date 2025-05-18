@@ -224,14 +224,15 @@ class LabSystemController:
         userFacade.error_if_user_not_logged_in(userId)
         email = userFacade.get_email_by_userId(userId)
         is_manager = userFacade.verify_if_member_is_manager(email=email)
+        if is_manager:
+            self.final_approve_multiple_publications_by_manager(userId, domain, publication_ids)
+            return
         for publication_id in publication_ids:
             self.websiteFacade.error_if_member_is_not_publication_author(domain, publication_id, email)
             if not self.websiteFacade.check_if_publication_approved(domain, publication_id):      
                 # check if userId is manager. if he is not, do the following rows
                 if not is_manager:
                     self.websiteFacade.initial_approve_publication(domain, publication_id)
-                else:
-                    self.final_approve_publication_by_manager(userId, domain, publication_id)
             else:
                 raise Exception(ExceptionsEnum.PUBLICATION_ALREADY_APPROVED.value)
         if not is_manager:
@@ -288,7 +289,7 @@ class LabSystemController:
         userFacade.error_if_user_is_not_manager(userId)
         for pubId in publicationIds:
             pub_dto = self.websiteFacade.get_publication_by_paper_id(domain,pubId)
-            self.webCrawlerFacade.fill_pub_details(pub_dto,domain)
+            self.webCrawlerFacade.fill_pub_details([pub_dto],domain)
             self.websiteFacade.final_approve_publication(domain, pubId)
 
     def reject_publication(self, userId, domain, notification_id):

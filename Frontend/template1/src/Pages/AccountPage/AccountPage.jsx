@@ -115,6 +115,7 @@ const AccountPage = () => {
       setActiveSection(section);
     }
   }, [location.search]); // This will run when the URL parameters change
+
   useEffect(() => {
     // Fetch user details
     const fetchUserDetails = async () => {
@@ -152,38 +153,7 @@ const AccountPage = () => {
       );
 
       console.log("Fetched Crawled Publications:", data);
-      setCrawledPublications(data || []);
-
-      // setCrawledPublications([
-      //   // {
-      //   //   id: "crawl1",
-      //   //   title: "Crawled Publication 1",
-      //   //   publication_year: 2023,
-      //   //   status: "new", // Changed from 'approved' to 'new'
-      //   //   link: "https://example.com/publication1", // Added link property
-      //   // },
-      //   // {
-      //   //   id: "crawl2",
-      //   //   title: "Crawled Publication 2",
-      //   //   publication_year: 2023,
-      //   //   status: "new", // Changed from 'approved' to 'new'
-      //   //   link: "https://example.com/publication2", // Added link property
-      //   // },
-      //   // {
-      //   //   id: "crawl3",
-      //   //   title: "Crawled Publication 3",
-      //   //   publication_year: 2022,
-      //   //   status: "rejected",
-      //   //   link: "https://example.com/publication3", // Added link property
-      //   // },
-      //   // {
-      //   //   id: "crawl4",
-      //   //   title: "Crawled Publication 4",
-      //   //   publication_year: 2022,
-      //   //   status: "pending",
-      //   //   link: "https://example.com/publication3", // Added link property
-      //   // },
-      // ]);
+      setCrawledPublications(data);
     };
 
     fetchUserDetails();
@@ -331,7 +301,9 @@ const AccountPage = () => {
   const filteredCrawledPublications = cloned
     .filter((pub) => pub.title.toLowerCase().includes(searchTerm.toLowerCase()))
     .filter((pub) => {
-      const status = pub.status || "pending";
+      const status = pub.status;
+      // Exclude approved publications from showing up
+      if (status === "Approved") return false;
       return statusFilter === "all" || status === statusFilter;
     });
 
@@ -339,7 +311,6 @@ const AccountPage = () => {
   const totalCrawledPages = Math.ceil(
     filteredCrawledPublications.length / itemsPerPage
   );
-
   const paginatedPublications = filteredPublications.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -436,7 +407,7 @@ const AccountPage = () => {
         const githubResponse = await setPublicationGitLink(
           sid,
           domain,
-          publication.id,
+          publication.paper_id,
           publication.github
         );
         if (githubResponse === "true") {
@@ -450,7 +421,7 @@ const AccountPage = () => {
         const presentationResponse = await setPublicationPttxLink(
           sid,
           domain,
-          publication.id,
+          publication.paper_id,
           publication.presentation
         );
         if (presentationResponse === "true") {
@@ -464,7 +435,7 @@ const AccountPage = () => {
         const videoResponse = await setPublicationVideoLink(
           sid,
           domain,
-          publication.id,
+          publication.paper_id,
           publication.video
         );
         if (videoResponse === "true") {
@@ -812,7 +783,7 @@ const AccountPage = () => {
                   onChange={(e) => setStatusFilter(e.target.value)}
                 >
                   <option value="all">All</option>
-                  <option value="new">New</option>
+                  <option value="Initial pending approval">New</option>
                   <option value="pending">Pending</option>
                   <option value="rejected">Rejected</option>
                 </select>
@@ -864,22 +835,23 @@ const AccountPage = () => {
                 ))
               : paginatedCrawledPublications.map((publication) => (
                   <div
-                    key={publication.id}
+                    key={publication.paper_id}
                     className={`publication-item crawled ${publication.status}`}
                   >
                     <div className="publication-header-account">
-                      {publication.status !== "pending" && (
-                        <input
-                          type="checkbox"
-                          checked={selectedPublications.includes(
-                            publication.paper_id
-                          )}
-                          onChange={() =>
-                            handleSelectPublication(publication.paper_id)
-                          }
-                          className="publication-checkbox"
-                        />
-                      )}
+                      {publication.status !== "pending" &&
+                        publication.status !== "Approved" && (
+                          <input
+                            type="checkbox"
+                            checked={selectedPublications.includes(
+                              publication.paper_id
+                            )}
+                            onChange={() =>
+                              handleSelectPublication(publication.paper_id)
+                            }
+                            className="publication-checkbox"
+                          />
+                        )}
 
                       <div className="publication-info">
                         <strong>{publication.title}</strong>
@@ -888,16 +860,18 @@ const AccountPage = () => {
                             {publication.publication_year}
                           </span>
                           <span
-                            className={`status-badge ${publication.status}`}
+                            className={`status-badge ${publication.status
+                              .toLowerCase()
+                              .replace(/\s+/g, "")}`}
                           >
                             {publication.status || "pending"}
                           </span>
                         </div>
                         {/* Add link display */}
-                        {publication.link && (
+                        {publication.publication_link && (
                           <div className="publication-link">
                             <a
-                              href={publication.link}
+                              href={publication.publication_link}
                               target="_blank"
                               rel="noopener noreferrer"
                             >
@@ -911,7 +885,9 @@ const AccountPage = () => {
                       {publication.status === "rejected" && (
                         <button
                           className="restore-btn"
-                          onClick={() => handleRestoreCrawled(publication.id)}
+                          onClick={() =>
+                            handleRestoreCrawled(publication.paper_id)
+                          }
                         >
                           Restore
                         </button>
@@ -930,11 +906,14 @@ const AccountPage = () => {
                   Previous
                 </button>
                 <span>
-                  Page {currentPage} of {totalPages || totalCrawledPages}
+                  Page {currentPage} of{" "}
+                  {currentPublicationType === "manual"
+                    ? totalPages
+                    : totalCrawledPages}
                 </span>
                 <button
                   onClick={handleNextPage}
-                  disabled={currentPage === (totalPages || totalCrawledPages)}
+                  disabled={currentPage === totalCrawledPages}
                   className="pagination-buttons"
                 >
                   Next
