@@ -667,11 +667,13 @@ class LabSystemController:
         publist = self.webCrawlerFacade.fetch_publications(member_scholar_links)
         for pub in publist:
             if not website.check_publication_exist(pub):
+                print(pub.authors)
                 authorEmails = []
                 for author in pub.authors:
                     email = self.allWebsitesUserFacade.getMemberEmailByName(author=author, domain=website_domain)
                     if email:
                         authorEmails.append(email)
+                        print(email)
                 pub.set_author_emails(authorEmails)
                 website.create_publication(publicationDTO=pub, authors_emails=authorEmails)
                 if with_notifications:

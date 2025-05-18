@@ -1508,11 +1508,11 @@ class RejectMultiplePublications(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('user_id', type=str, required=True, help="User ID is required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
-        parser.add_argument('publication_IDs', type=list[str], required=True, help="A list of publication IDs is required")
+        parser.add_argument('publication_IDs', type = str, required=True, help="A list of publication IDs is required")
         args = parser.parse_args()
 
         try:
-            response = lab_system_service.reject_publication(args['user_id'], args['domain'], args['publication_IDs'])
+            response = lab_system_service.reject_publication(args['user_id'], args['domain'], args['publication_IDs'].split(", ") )
             if response.is_success():
                 return jsonify({"message": response.get_message(), "response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})
@@ -1529,11 +1529,11 @@ class InitialApproveMultiplePublicationsByAuthor(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('user_id', required=True, help="User ID is required")
         parser.add_argument('domain', required=True, help="Domain is required")
-        parser.add_argument('publication_IDs', type=list[str], required=True, help="A list of publication IDs is required")
+        parser.add_argument('publication_IDs', type=str, required=True, help="A list of publication IDs is required")
         args = parser.parse_args()
 
         try:
-            response = lab_system_service.initial_approve_multiple_publications_by_author(args['user_id'], args['domain'], args['publication_IDs'])
+            response = lab_system_service.initial_approve_multiple_publications_by_author(args['user_id'], args['domain'], args['publication_IDs'].split(", "))
             if response.is_success():
                 return jsonify({"message": response.get_message(), "response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})
