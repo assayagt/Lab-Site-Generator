@@ -133,6 +133,7 @@ const AccountPage = () => {
           linkedIn: data.user.linkedin_link || "",
           fullname: data.user.fullName,
           emailNotifications: data.user.emailNotifications !== false, // Default to true if not set
+          google_scholar: data.user.scholar_link || "",
         });
       }
     };
