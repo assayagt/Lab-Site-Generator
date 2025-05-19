@@ -603,3 +603,87 @@ export const removeAlumniFromLabWebsite = async (
     return null;
   }
 };
+
+export const crawlPublicationsForLabMember = async (userId, domain) => {
+  try {
+    const response = await axios.post(
+      `${baseApiUrl}crawlPublicationsForLabMember`,
+      {
+        user_id: userId,
+        domain: domain,
+      }
+    );
+    return response.data; // { message: "...", response: "true" | "false" }
+  } catch (error) {
+    console.error("Error crawling publications for lab member:", error);
+    return null;
+  }
+};
+
+export const rejectMultiplePublications = async (
+  userId,
+  domain,
+  publicationIds
+) => {
+  try {
+    const response = await axios.post(
+      `${baseApiUrl}rejectMultiplePublications`,
+      {
+        user_id: userId,
+        domain: domain,
+        publication_IDs: publicationIds, // should be an array of strings
+      }
+    );
+    return response.data; // { message: "...", response: "true" | "false" }
+  } catch (error) {
+    console.error("Error rejecting multiple publications:", error);
+    return null;
+  }
+};
+export const initialApproveMultiplePublicationsByAuthor = async (
+  userId,
+  domain,
+  publicationIds
+) => {
+  try {
+    console.log(publicationIds);
+    const response = await axios.post(
+      `${baseApiUrl}initialApproveMultiplePublicationsByAuthor`,
+      {
+        user_id: userId,
+        domain: domain,
+        publication_IDs: publicationIds,
+      }
+    );
+    return response.data; // { message: "...", response: "true" | "false" }
+  } catch (error) {
+    console.error("Error during multiple initial approvals:", error);
+    return null;
+  }
+};
+
+export const setScholarLinkByMember = async (userId, scholarLink, domain) => {
+  try {
+    const response = await axios.post(`${baseApiUrl}setScholarLink`, {
+      userid: userId,
+      scholar_link: scholarLink,
+      domain: domain,
+    });
+    return response.data; // { message, response: "true" | "false" }
+  } catch (error) {
+    console.error("Error setting Google Scholar link:", error);
+    return null;
+  }
+};
+
+export const getNotApprovedMemberPublications = async (domain, userId) => {
+  try {
+    const response = await axios.get(
+      `${baseApiUrl}getNotApprovedMemberPublications?domain=${domain}&user_id=${userId}`
+    );
+    return response.data.publications || []; // Or handle error if response.response === "false"
+  } catch (error) {
+    console.error("Error getting not-approved member publications:", error);
+    return [];
+  }
+};

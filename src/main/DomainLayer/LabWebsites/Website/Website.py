@@ -32,7 +32,7 @@ class Website:
             title=publication_details["title"],
             publication_year=publication_details["publication_year"],
             publication_link=publication_link,
-            approved=ApprovalStatus.FINAL_PENDING.value,
+            approved=ApprovalStatus.FINAL_PENDING,
             git_link=git_link,
             authors=publication_details["authors"],
             video_link=video_link,
@@ -114,7 +114,7 @@ class Website:
                     publication.set_presentation_link(link)
                     return publication
 
-    def check_if_member_is_publication_author(self, email, publication_paper_id):
+    def check_if_member_is_publication_author(self,publication_paper_id, email):
         if email in self.members_publications:
             for publication in self.members_publications[email]:
                 if publication.get_paper_id() == publication_paper_id:

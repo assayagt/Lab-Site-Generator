@@ -16,12 +16,15 @@ class GoogleScholarWebCrawler:
 
 
     # (was) def fetch_publications_new_member(self, scholar_ids, domain):
-    def fetch_crawler_publications(self, scholarLinks) -> list[PublicationDTO]: # type: ignore
+    def fetch_crawler_publications(self, scholarLinks) -> list[PublicationDTO]:
         """
-        Fetches publications from Google Scholar for the given list of scholar IDs.
+        Fetches publications from Google Scholar for the given list of profile links.
 
         Args:
-            scholar_ids (list): List of scholar IDs for the authors.         
+            scholarLinks (list): List of Google Scholar profile links.
+
+        Returns:
+            list[PublicationDTO]: List of publications found for the scholar links.
         """
         crawled: set[PublicationDTO] = set()
         current_year = datetime.now().year
@@ -34,6 +37,9 @@ class GoogleScholarWebCrawler:
                 author = scholarly.fill(author)
                 time.sleep(5)
                 for pub in author.get("publications", []):
+                    # if pub_counter >= 5:
+                    #     print(f"[INFO] Reached max of {5} publications for scholar_id {scholar_id}")
+                    #     break
                     pub_title = pub.get("bib", {}).get("title")
                     pub_year = pub.get("bib", {}).get("pub_year")
                     author_pub_id = pub.get("author_pub_id")
@@ -64,9 +70,11 @@ class GoogleScholarWebCrawler:
                 # time.sleep(5) #we might replace it to 1 bc scholarly already has a built-in delay mechanism
                 return list(crawled)
             except Exception as e:
-                print(f"Error fectching publications for scholar_id {scholar_id}: {e}")
-                return []
-        
+                print(f"[ERROR] Fetching publications for scholar_id {scholar_id}: {e}")
+                traceback.print_exc()
+                continue
+
+        return crawled
 
     def fill_details(self, publicationDTOs: list[PublicationDTO]):
         """

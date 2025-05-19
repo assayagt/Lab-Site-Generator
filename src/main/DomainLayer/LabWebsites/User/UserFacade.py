@@ -283,7 +283,7 @@ class UserFacade:
             raise Exception(ExceptionsEnum.USER_NOT_EXIST.value)
 
     def verify_if_member_is_manager(self, email):
-        if email in self.managers:
+        if email in self.managers or email in self.siteCreator:
             return True
         return False
 
@@ -536,7 +536,7 @@ class UserFacade:
         
 
 
-##TODO: there is an error doesnt load all the fields
+##TODO: there is an error doesnt load all the fields!!!!!!
     def _load_data(self):
         # Load members
         members = self.dal_controller.LabMembers_repo.find_all_members_by_domain(self.domain)

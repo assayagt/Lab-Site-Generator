@@ -936,6 +936,10 @@ select.input {
   text-transform: uppercase;
 }
 
+.status-badge.initialpendingapproval {
+  background-color: #3b9dff;
+  color: white;
+}
 .status-badge.pending {
   background-color: #ffa726;
   color: white;

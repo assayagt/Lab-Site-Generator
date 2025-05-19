@@ -81,7 +81,7 @@ class LabMember(State):
     def get_bio(self):
         return self.bio
 
-    #TODO: fix this method so support scholar link as well.
+    #TODO: fix this method so support scholar link as well. I DID ITTTT
     def get_details(self):
         return {"email": self.email,
                 "secondEmail": self.secondEmail,
@@ -89,7 +89,8 @@ class LabMember(State):
                 "media": self.media,
                 "fullName": self.fullName,
                 "degree": self.degree,
-                "bio": self.bio}
+                "bio": self.bio,
+                "scholar_link": self.scholar_link,}
 
     def get_dto(self, domain) -> lab_member_dto:
         return lab_member_dto(
