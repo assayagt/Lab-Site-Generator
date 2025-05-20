@@ -58,11 +58,3 @@ class WebCrawlerFacade:
         """
         for crawler in self.web_crawlers:
             crawler.fill_details(publicationDTOs=scannedPub_keys)
-
-
-    def remove_website_data(self, domain):
-        """
-        Calls remove_website_data on each WebCrawler.
-        """
-        for crawler in self.web_crawlers:
-            crawler.remove_website_data(domain)

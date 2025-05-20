@@ -276,7 +276,7 @@ class LabSystemController:
         userFacade.error_if_user_is_not_manager(userId)
         publication_id = self.mark_as_read(userId, domain, notification_id)
         pub_dto = self.websiteFacade.get_publication_by_paper_id(domain, publication_id)
-        self.webCrawlerFacade.fill_pub_details(pub_dto,domain)
+        self.webCrawlerFacade.fill_pub_details([pub_dto],domain)
         self.websiteFacade.final_approve_publication(domain, publication_id)
         
     def final_approve_multiple_publications_by_manager(self, userId, domain, publicationIds:list[str]):
@@ -636,7 +636,6 @@ class LabSystemController:
         """
         Delete a website.
         """
-        self.webCrawlerFacade.remove_website_data(domain)
         self.websiteFacade.remove_website_data(domain)
         self.notificationsFacade.remove_website_data(domain)
         self.allWebsitesUserFacade.remove_website_data(domain)
@@ -680,6 +679,7 @@ class LabSystemController:
                 if not authorEmails:
                     continue
                 pub.set_author_emails(authorEmails)
+                pub.set_domain(website_domain)
                 self.websiteFacade.create_new_publication_fromDTO(domain=website_domain, pubDTO=pub, author_emails=authorEmails)
                 print("added pub successfully")
                 if with_notifications:

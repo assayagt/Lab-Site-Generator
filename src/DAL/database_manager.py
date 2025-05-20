@@ -127,23 +127,6 @@ class DatabaseManager:
 
     def _create_tables(self): 
 
-        publications_table = '''
-        CREATE TABLE IF NOT EXISTS publications (
-            paper_id TEXT PRIMARY KEY,
-            title TEXT NOT NULL,
-            authors TEXT NOT NULL,
-            publication_year INTEGER,
-            approved TEXT,
-            publication_link TEXT,
-            video_link TEXT,
-            git_link TEXT,
-            presentation_link TEXT,
-            description TEXT, 
-            author_emails TEXT
-        );
-        '''
-        self.execute_script(publications_table)
-
         # ====================================== pictures represented as path and not a BLOB
         SiteCustoms_table = '''
         CREATE TABLE IF NOT EXISTS site_customs(
@@ -170,16 +153,24 @@ class DatabaseManager:
         '''
         self.execute_script(Websites_table)
 
-        domain_paperID_table = '''
-        CREATE TABLE IF NOT EXISTS domain_paperID(
+        publications_table = '''
+        CREATE TABLE IF NOT EXISTS publications (
+            paper_id TEXT PRIMARY KEY,
+            title TEXT NOT NULL,
+            authors TEXT NOT NULL,
+            publication_year INTEGER,
+            approved TEXT,
+            publication_link TEXT,
+            video_link TEXT,
+            git_link TEXT,
+            presentation_link TEXT,
+            description TEXT, 
+            author_emails TEXT,
             domain TEXT,
-            paper_id TEXT,
-            PRIMARY KEY (domain, paper_id),
-            FOREIGN KEY (domain) REFERENCES websites(domain) ON DELETE CASCADE,
-            FOREIGN KEY (paper_id) REFERENCES publications(paper_id) ON DELETE CASCADE
+            FOREIGN KEY (domain) REFERENCES websites(domain) ON DELETE CASCADE
         );
         '''
-        self.execute_script(domain_paperID_table)
+        self.execute_script(publications_table)
 
         members_table='''
         CREATE TABLE IF NOT EXISTS member_emails(
@@ -293,29 +284,6 @@ class DatabaseManager:
         );
         '''
         self.execute_script(notifications_table)
-
-        scanned_pub_table = """
-        CREATE TABLE IF NOT EXISTS scanned_pubs(
-            title TEXT,
-            publication_year TEXT,
-            scholar_data TEXT,
-            is_published INTEGER,
-            PRIMARY KEY(title, publication_year)
-        );
-        """
-        self.execute_script(scanned_pub_table)
-
-        domain_scannedPub_table = """
-        CREATE TABLE IF NOT EXISTS domain_scannedPub(
-        domain TEXT,
-        title TEXT,
-        publication_year TEXT,
-        FOREIGN KEY (domain) REFERENCES site_customs ON DELETE CASCADE,
-        FOREIGN KEY (title, publication_year) REFERENCES scanned_pubs (title, publication_year) ON DELETE CASCADE,
-        PRIMARY KEY (domain, title, publication_year)
-        );
-        """
-        self.execute_script(domain_scannedPub_table)
 
         self.logger.info("Database tables created successfully")
 

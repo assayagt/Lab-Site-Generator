@@ -157,6 +157,19 @@ class UserFacade:
                 raise Exception(ExceptionsEnum.USER_IS_NOT_MANAGER_OF_THE_GIVEN_DOMAIN.value)
         else:
             raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER.value)
+    
+    def delete_website(self, user_id, domain):
+        email = self.get_email_by_userId(user_id)
+        #remove domain from the email
+        if email in self.members_customSites:
+            if domain in self.members_customSites[email]["domains"]:
+                self.members_customSites[email]["domains"].remove(domain)
+                self.dal_controller.members_repo.delete_domain_from_user(email=email, domain=domain)
+            else:
+                raise Exception(ExceptionsEnum.USER_IS_NOT_MANAGER_OF_THE_GIVEN_DOMAIN.value)
+        else:
+            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER.value)
+
 
     
     def _load_all_members(self):

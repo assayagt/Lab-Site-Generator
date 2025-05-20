@@ -528,7 +528,9 @@ class Login(Resource):
             if google_token:
                 try:
                     # Verify the token
-                    idinfo = id_token.verify_oauth2_token(google_token, requests.Request(), GOOGLE_CLIENT_ID)
+                    print("request token")
+                    idinfo = id_token.verify_oauth2_token(google_token, requests.Request(), GOOGLE_CLIENT_ID, clock_skew_in_seconds=2)
+                    print("token verified")
                     email = idinfo['email']
                     
                 except ValueError as e:
@@ -734,11 +736,12 @@ class LoginWebsite(Resource):
             if google_token:
                 try:
                     # Verify the token
-                    idinfo = id_token.verify_oauth2_token(google_token, requests.Request(), GOOGLE_CLIENT_ID)
+                    idinfo = id_token.verify_oauth2_token(google_token, requests.Request(), GOOGLE_CLIENT_ID, clock_skew_in_seconds=2)
                     
                     # Check if the email from token matches the provided email
                     email = idinfo['email']
                 except ValueError as e:
+                    print("Token verification failed:", str(e))
                     return jsonify({"error": "Invalid Google token", "response": "false"})
             response = lab_system_service.login(domain, user_id, email)
             if response.is_success():
@@ -908,25 +911,20 @@ class GetAllCustomWebsites(Resource):
         except Exception as e :
             return jsonify({"error": f"An error occurred: {str(e)}"})
         
-    class GetCustomSite(Resource):
-        def get(self):
-            parser = reqparse.RequestParser()
-            parser.add_argument('user_id', type=str, required=True, help="User id is required")
-            parser.add_argument('domain', type=str, required=True, help="Domain is required")
-            args = parser.parse_args()
+class GetCustomSite(Resource):
+    def get(self):
+        user_id = request.args.get('user_id')
+        domain = request.args.get('domain')
 
-            user_id = args['user_id']
-            domain = args['domain']
-
-            try :
-                response = generator_system.get_custom_website(user_id, domain)
-                if response.is_success():
-                    website_data = response.get_data() # Returned value is website name, template, components
-                    return jsonify({'data': website_data, "response": "true"})
-                return jsonify({"message": response.get_message(), "response": "false"})
-            except Exception as e:
-                return jsonify({"error": f"An error occurred: {str(e)}"})
-            
+        try :
+            response = generator_system.get_custom_website(user_id, domain)
+            if response.is_success():
+                website_data = response.get_data() # Returned value is website name, template, components
+                return jsonify({'data': website_data, "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"})
+        
 
 class GetMemberPublications(Resource):
     def get(self):
@@ -1508,11 +1506,11 @@ class RejectMultiplePublications(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('user_id', type=str, required=True, help="User ID is required")
         parser.add_argument('domain', type=str, required=True, help="Domain is required")
-        parser.add_argument('publication_IDs', type = str, required=True, help="A list of publication IDs is required")
+        parser.add_argument('publication_IDs', type = str, action='append', required=True, help="A list of publication IDs is required")
         args = parser.parse_args()
 
         try:
-            response = lab_system_service.reject_publication(args['user_id'], args['domain'], args['publication_IDs'].split(", ") )
+            response = lab_system_service.reject_multiple_publications(args['user_id'], args['domain'], args['publication_IDs'])
             if response.is_success():
                 return jsonify({"message": response.get_message(), "response": "true"})
             return jsonify({"message": response.get_message(), "response": "false"})
@@ -1603,7 +1601,7 @@ api.add_resource(RemoveManagerPermission, '/api/removeManagerPermission')
 api.add_resource(GetAllMembersNames, '/api/getAllMembersNames')
 api.add_resource(GetPendingRegistrationEmails, '/api/getPendingRegistrationEmails')
 api.add_resource(RejectPublication, '/api/RejectPublication')
-api.add_resource(RejectMultiplePublications, '/api/RejectMultiplePublications')
+api.add_resource(RejectMultiplePublications, '/api/rejectMultiplePublications')
 
 # Add the resources to API
 api.add_resource(UploadFilesAndData, '/api/uploadFile')#
