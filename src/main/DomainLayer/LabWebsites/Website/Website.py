@@ -38,7 +38,8 @@ class Website:
             video_link=video_link,
             presentation_link=presentation_link,
             description=publication_details["description"],
-            author_emails=authors_emails
+            author_emails=authors_emails,
+            domain=self.domain
         )
         self.create_publication(publication_dto, authors_emails)
         return publication_dto

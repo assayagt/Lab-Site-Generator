@@ -908,25 +908,25 @@ class GetAllCustomWebsites(Resource):
         except Exception as e :
             return jsonify({"error": f"An error occurred: {str(e)}"})
         
-    class GetCustomSite(Resource):
-        def get(self):
-            parser = reqparse.RequestParser()
-            parser.add_argument('user_id', type=str, required=True, help="User id is required")
-            parser.add_argument('domain', type=str, required=True, help="Domain is required")
-            args = parser.parse_args()
+class GetCustomSite(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User id is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        args = parser.parse_args()
 
-            user_id = args['user_id']
-            domain = args['domain']
+        user_id = args['user_id']
+        domain = args['domain']
 
-            try :
-                response = generator_system.get_custom_website(user_id, domain)
-                if response.is_success():
-                    website_data = response.get_data() # Returned value is website name, template, components
-                    return jsonify({'data': website_data, "response": "true"})
-                return jsonify({"message": response.get_message(), "response": "false"})
-            except Exception as e:
-                return jsonify({"error": f"An error occurred: {str(e)}"})
-            
+        try :
+            response = generator_system.get_custom_website(user_id, domain)
+            if response.is_success():
+                website_data = response.get_data() # Returned value is website name, template, components
+                return jsonify({'data': website_data, "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"})
+        
 
 class GetMemberPublications(Resource):
     def get(self):

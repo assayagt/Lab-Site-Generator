@@ -56,11 +56,10 @@ class PublicationRepository:
             List[Publication_dto]: A list of publications associated with the domain.
         """
         query="""
-        SELECT p.*
-        FROM publications p
-        INNER JOIN domain_paperID d ON p.paper_id = d.paper_id
-        WHERE d.domain = ?
-        ORDER BY p.publication_year DESC, p.title ASC
+        SELECT *
+        FROM publications
+        WHERE publications.domain = ?
+        ORDER BY publications.publication_year DESC, publications.title ASC
         """
         results = self.db_manager.execute_query(query, (domain,))
         return [self._row_to_publication_dto(row) for row in results]
@@ -73,9 +72,9 @@ class PublicationRepository:
         publication_query = """
         INSERT INTO publications (
             paper_id, title, authors, publication_year, approved,
-            publication_link, video_link, git_link, presentation_link, description, author_emails
+            publication_link, video_link, git_link, presentation_link, description, author_emails, domain
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(paper_id) DO UPDATE SET
             title = excluded.title,
             authors = excluded.authors,
@@ -86,7 +85,8 @@ class PublicationRepository:
             git_link = excluded.git_link,
             presentation_link = excluded.presentation_link,
             description = excluded.description, 
-            author_emails = excluded.author_emails
+            author_emails = excluded.author_emails,
+            domain = excluded.domain
         """
 
         publication_parameters = (
@@ -100,53 +100,15 @@ class PublicationRepository:
             publication_dto.git_link,
             publication_dto.presentation_link,
             publication_dto.description, 
-            json.dumps(publication_dto.author_emails)
+            json.dumps(publication_dto.author_emails),
+            publication_dto.domain
         )
-
-        link_query = """
-        INSERT INTO domain_paperID (domain, paper_id)
-        VALUES (?, ?)
-        ON CONFLICT(domain, paper_id) DO NOTHING
-        """
-        link_parameters = (domain, publication_dto.paper_id)
 
         try:
             self.db_manager.execute_update(publication_query, publication_parameters)
-            self.db_manager.execute_update(link_query, link_parameters)
             return True
         except Exception as e:
             self.db_manager.logger.error(f"Failed to save publication: {e}")
-            return False
-        
-
-    def save_scanned_pub(self, scannedPub: ScannedPublication, domain: str):
-        scholar_data_json = json.dumps(scannedPub.scholar_N_author_pub_id)
-        query = """
-        INSERT INTO scanned_pubs (title, publication_year, scholar_data, is_published)
-        VALUES (?, ?, ?, ?)
-        ON CONFLICT(title, publication_year) DO UPDATE SET
-            scholar_data = excluded.scholar_data,
-            is_published = excluded.is_published    
-        """
-        params = (
-            scannedPub.title,
-            scannedPub.publication_year,
-            scholar_data_json,
-            int(scannedPub.is_published)
-        )
-        link_query = """
-        INSERT INTO domain_scannedPub(domain, title, publication_year)
-        VALUES (?, ?, ?)
-        ON CONFLICT(domain, title, publication_year) DO NOTHING
-        """
-        link_params = (domain, scannedPub.title, scannedPub.publication_year)
-
-        try:
-            self.db_manager.execute_update(query, params)
-            self.db_manager.execute_update(link_query, link_params)
-            return True
-        except Exception as e:
-            self.db_manager.logger.error(f"failed to save scanned publication: {e}")
             return False
         
 
@@ -161,7 +123,7 @@ class PublicationRepository:
             bool: True if successful, False otherwise
         """
         query = "DELETE FROM publications WHERE paper_id = ?"
-        rows_affected = self.db_manager.execute_update(query, (paper_id,))
+        rows_affected = self.db_manager.execute_update(query, (paper_id))
         return rows_affected > 0
     
 
@@ -169,17 +131,18 @@ class PublicationRepository:
         
         return PublicationDTO(
             paper_id=row['paper_id'],
-                title=row['title'],
-                authors=json.loads(row['authors']),
-                publication_year=row['publication_year'],
-                approved=ApprovalStatus(row['approved']) if row['approved'] else None,
-                publication_link=row['publication_link'],
-                git_link=row['git_link'],
-                video_link=row['video_link'],
-                presentation_link=row['presentation_link'],
-                description=row['description'],
-                author_emails=json.loads(row['author_emails'])
-            )
+            title=row['title'],
+            authors=json.loads(row['authors']),
+            publication_year=row['publication_year'],
+            approved=ApprovalStatus(row['approved']) if row['approved'] else None,
+            publication_link=row['publication_link'],
+            git_link=row['git_link'],
+            video_link=row['video_link'],
+            presentation_link=row['presentation_link'],
+            description=row['description'],
+            author_emails=json.loads(row['author_emails']),
+            domain=row["domain"]
+        )
     
     
     def _row_to_scanned_pub(self, row):

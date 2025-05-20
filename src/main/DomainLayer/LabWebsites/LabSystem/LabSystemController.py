@@ -636,7 +636,6 @@ class LabSystemController:
         """
         Delete a website.
         """
-        self.webCrawlerFacade.remove_website_data(domain)
         self.websiteFacade.remove_website_data(domain)
         self.notificationsFacade.remove_website_data(domain)
         self.allWebsitesUserFacade.remove_website_data(domain)
@@ -680,6 +679,7 @@ class LabSystemController:
                 if not authorEmails:
                     continue
                 pub.set_author_emails(authorEmails)
+                pub.set_domain(website_domain)
                 self.websiteFacade.create_new_publication_fromDTO(domain=website_domain, pubDTO=pub, author_emails=authorEmails)
                 print("added pub successfully")
                 if with_notifications:
