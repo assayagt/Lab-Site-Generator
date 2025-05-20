@@ -53,6 +53,7 @@ class GoogleScholarWebCrawler:
                     time.sleep(5)
                     authors_str = filled_pub.get("bib", {}).get("author", "")
                     authors_list = [a.strip() for a in authors_str.split(" and ")] if authors_str else []
+                    description = filled_pub.get("bib", {}).get("abstract", "")
                     if  not authors_list:
                         print(f"Google Crawler => publication {pub_title} has no authors mentioned")
                         continue                   
@@ -63,7 +64,8 @@ class GoogleScholarWebCrawler:
                             title= pub_title,
                             publication_year= pub_year,
                             publication_link= url,
-                            authors= authors_list
+                            authors= authors_list,
+                            description=description
                         )
                         crawled.add(new_pub)
                         print(f"carwled {len(crawled)} publications so far")

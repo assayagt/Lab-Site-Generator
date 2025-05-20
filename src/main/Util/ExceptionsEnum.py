@@ -36,3 +36,4 @@ class ExceptionsEnum(Enum):
     USER_IS_NOT_A_LAB_MEMBER_OR_LAB_MANAGER_OR_CREATOR_OR_ALUMNI = "User is not a lab member or a lab manager or a site creator or an alumni"
     USER_IS_NOT_AN_ALUMNI = "User is not an alumni"
     AUTHOR_NOT_A_USER = "None of the authors is a member of website"
+    PUBLICATION_ALREADY_WAITING = "This publication is already pending or rejected"

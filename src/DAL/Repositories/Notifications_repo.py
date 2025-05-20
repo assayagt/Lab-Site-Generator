@@ -3,6 +3,11 @@ from src.DAL.DTOs.Notification_dto import notification_dto
 class NotificationRepository:
     def __init__(self, db_manager):
         self.db_manager = db_manager
+    
+    def find_all(self):
+        query = "SELECT * FROM notifications"
+        results = self.db_manager.execute_query(query)
+        return [self._row_to_notification_dto(row) for row in results]
 
     def find_notifications_by_domain_email(self, domain, email):
         query = """

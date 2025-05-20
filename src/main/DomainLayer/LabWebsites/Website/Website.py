@@ -1,6 +1,7 @@
 from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
 from src.DAL.DTOs.Website_dto import website_dto
+from src.main.Util.ExceptionsEnum import ExceptionsEnum
 import json
 
 class Website:
@@ -17,6 +18,13 @@ class Website:
                 self.members_publications[author_email] = []
             if publicationDTO not in self.members_publications[author_email]:
                 self.members_publications[author_email].append(publicationDTO)
+            else:
+                for pub in self.members_publications[author_email]:
+                    if pub == publicationDTO:
+                        if pub.approved == ApprovalStatus.APPROVED:
+                            raise Exception(ExceptionsEnum.PUBLICATION_ALREADY_APPROVED.value)
+                        else:
+                            raise Exception(ExceptionsEnum.PUBLICATION_ALREADY_WAITING.value)
         print("publication added to website succesffully")
             
 

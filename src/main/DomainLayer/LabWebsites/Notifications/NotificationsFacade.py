@@ -25,6 +25,7 @@ class NotificationsFacade:
         self.email_notifications_center = {}  # { website_id: { user_email: [notification_list] } }
         self.dal_controller = DAL_controller()
         self.web_socket_handler = WebSocketHandler()
+        self._load_all_data()
 
         self._initialized = True
 
@@ -202,6 +203,40 @@ class NotificationsFacade:
         Resets the entire system by clearing all stored notifications.
         """
         self.email_notifications_center.clear()
+    
+    def _load_all_data(self):
+        """
+        Loads all notifications from the database into the email_notifications_center dictionary.
+        This is called when the system starts up to ensure all notifications are in memory.
+        """
+        # Get all notifications from the database
+        notifications = self.dal_controller.notifications_repo.find_all()
+        
+        # Process each notification
+        for notif_dto in notifications:
+            # Create EmailNotification object from DTO
+            email_notification = EmailNotification(
+                id=notif_dto.id,
+                recipient=notif_dto.recipient,
+                subject=notif_dto.subject,
+                body=notif_dto.body,
+                domain=notif_dto.domain,
+                request_email=notif_dto.request_email,
+                publication_id=notif_dto.publication_id
+            )
+            
+            # Set read status
+            if notif_dto.isRead:
+                email_notification.mark_as_read()
+            
+            # Add to email_notifications_center
+            if notif_dto.domain not in self.email_notifications_center:
+                self.email_notifications_center[notif_dto.domain] = {}
+            
+            if notif_dto.recipient not in self.email_notifications_center[notif_dto.domain]:
+                self.email_notifications_center[notif_dto.domain][notif_dto.recipient] = []
+            
+            self.email_notifications_center[notif_dto.domain][notif_dto.recipient].append(email_notification)
 
     def remove_website_data(self, domain):
         """Remove all notifications associated with a website"""
