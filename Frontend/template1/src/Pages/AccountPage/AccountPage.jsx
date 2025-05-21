@@ -359,6 +359,13 @@ const AccountPage = () => {
       if (response.response === "true") {
         setSelectedPublications([]);
         setPopupMessage(`${selectedPublications.length} publications approved`);
+        setCrawledPublications((prev) =>
+          prev.map((pub) =>
+            selectedPublications.includes(pub.paper_id)
+              ? { ...pub, status: "Approved" } // or "rejected"
+              : pub
+          )
+        );
       } else {
         setErrorMessage("Failed to approve publications: " + response.message);
       }
@@ -377,6 +384,13 @@ const AccountPage = () => {
       if (response.response === "true") {
         setSelectedPublications([]);
         setPopupMessage(`${selectedPublications.length} publications rejected`);
+        setCrawledPublications((prev) =>
+          prev.map((pub) =>
+            selectedPublications.includes(pub.paper_id)
+              ? { ...pub, status: "Rejected" } // or "rejected"
+              : pub
+          )
+        );
       } else {
         setErrorMessage("Failed to reject publications: " + response.message);
       }
