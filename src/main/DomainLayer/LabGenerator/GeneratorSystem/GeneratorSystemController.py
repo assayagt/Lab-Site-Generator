@@ -80,7 +80,9 @@ class GeneratorSystemController:
         """
         Get the about us section
         """
-        return self.labSystem.get_about_us(domain)
+        if self.site_custom_facade.get_if_site_is_generated(domain=domain):
+            return self.labSystem.get_about_us(domain)
+        return ""
 
     def set_site_about_us_by_manager_from_generator(self, user_id, domain, about_us):
         """
@@ -101,7 +103,9 @@ class GeneratorSystemController:
         """
         Get the contact us section
         """
-        return self.labSystem.get_contact_us(domain)
+        if self.site_custom_facade.get_if_site_is_generated(domain=domain):
+            return self.labSystem.get_contact_us(domain)
+        return ""
 
     def set_site_contact_info_by_manager_from_generator(self, user_id, domain, contact_info_dto):
         """
