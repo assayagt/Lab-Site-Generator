@@ -332,17 +332,12 @@ const AccountPage = () => {
     });
   };
 
-  const handleRestoreCrawled = async (publicationId) => {
-    try {
-      // TODO: Call API to restore crawled publication
-      // const response = await restoreCrawledPublication(publicationId);
-
-      // Update local state
-
-      setPopupMessage("Publication restored to pending");
-    } catch (error) {
-      setErrorMessage("Failed to restore publication");
-    }
+  const handlePublicationLinkChange = (paperId, field, value) => {
+    setPublications((prev) =>
+      prev.map((pub) =>
+        pub.paper_id === paperId ? { ...pub, [field]: value } : pub
+      )
+    );
   };
 
   const handleBulkApprove = async () => {
@@ -359,6 +354,13 @@ const AccountPage = () => {
       if (response.response === "true") {
         setSelectedPublications([]);
         setPopupMessage(`${selectedPublications.length} publications approved`);
+        setCrawledPublications((prev) =>
+          prev.map((pub) =>
+            selectedPublications.includes(pub.paper_id)
+              ? { ...pub, status: "Approved" } // or "rejected"
+              : pub
+          )
+        );
       } else {
         setErrorMessage("Failed to approve publications: " + response.message);
       }
@@ -377,6 +379,13 @@ const AccountPage = () => {
       if (response.response === "true") {
         setSelectedPublications([]);
         setPopupMessage(`${selectedPublications.length} publications rejected`);
+        setCrawledPublications((prev) =>
+          prev.map((pub) =>
+            selectedPublications.includes(pub.paper_id)
+              ? { ...pub, status: "Rejected" } // or "rejected"
+              : pub
+          )
+        );
       } else {
         setErrorMessage("Failed to reject publications: " + response.message);
       }
@@ -404,42 +413,44 @@ const AccountPage = () => {
       let isUpdated = false; // Track if any field was successfully updated
       const sid = sessionStorage.getItem("sid");
       const domain = sessionStorage.getItem("domain");
-      if (publication.github) {
+      if (publication.git_link) {
         const githubResponse = await setPublicationGitLink(
           sid,
           domain,
           publication.paper_id,
-          publication.github
+          publication.git_link
         );
-        if (githubResponse === "true") {
+        if (githubResponse.response === "true") {
+          console.log(githubResponse);
           isUpdated = true;
         } else {
+          console.log(githubResponse);
           isUpdated = false;
         }
       }
 
-      if (publication.presentation) {
+      if (publication.presentation_link) {
         const presentationResponse = await setPublicationPttxLink(
           sid,
           domain,
           publication.paper_id,
-          publication.presentation
+          publication.presentation_link
         );
-        if (presentationResponse === "true") {
+        if (presentationResponse.response === "true") {
           isUpdated = true;
         } else {
           isUpdated = false;
         }
       }
 
-      if (publication.video) {
+      if (publication.video_link) {
         const videoResponse = await setPublicationVideoLink(
           sid,
           domain,
           publication.paper_id,
-          publication.video
+          publication.video_link
         );
-        if (videoResponse === "true") {
+        if (videoResponse.response === "true") {
           isUpdated = true;
         } else {
           isUpdated = false;
@@ -804,7 +815,14 @@ const AccountPage = () => {
                         <label>GitHub:</label>
                         <input
                           type="url"
-                          defaultValue={publication.github || ""}
+                          defaultValue={publication.git_link || ""}
+                          onChange={(e) =>
+                            handlePublicationLinkChange(
+                              publication.paper_id,
+                              "git_link",
+                              e.target.value
+                            )
+                          }
                         />
                       </div>
 
@@ -812,7 +830,14 @@ const AccountPage = () => {
                         <label>Presentation:</label>
                         <input
                           type="url"
-                          defaultValue={publication.presentation || ""}
+                          defaultValue={publication.presentation_link || ""}
+                          onChange={(e) =>
+                            handlePublicationLinkChange(
+                              publication.paper_id,
+                              "presentation_link",
+                              e.target.value
+                            )
+                          }
                         />
                       </div>
 
@@ -820,7 +845,14 @@ const AccountPage = () => {
                         <label>Video:</label>
                         <input
                           type="url"
-                          defaultValue={publication.video || ""}
+                          defaultValue={publication.video_link || ""}
+                          onChange={(e) =>
+                            handlePublicationLinkChange(
+                              publication.paper_id,
+                              "video_link",
+                              e.target.value
+                            )
+                          }
                         />
                       </div>
 
@@ -886,9 +918,8 @@ const AccountPage = () => {
                       {publication.status === "rejected" && (
                         <button
                           className="restore-btn"
-                          onClick={() =>
-                            handleRestoreCrawled(publication.paper_id)
-                          }
+                          // onClick={() =>
+                          // }
                         >
                           Restore
                         </button>
