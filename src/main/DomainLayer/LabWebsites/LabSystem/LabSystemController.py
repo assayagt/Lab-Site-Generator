@@ -207,11 +207,11 @@ class LabSystemController:
         notifications to authors for initial approve/disapprove.
         """
         # get list of all websites
-        websites = self.websiteFacade.get_all_websites()
+        website_domains = self.websiteFacade.get_all_website_domains()
 
         # for each website, send to the webCrawler facade the members and current year to fetch publications
-        for website in websites:
-            self.crawl_publications_for_website(website_domain=website.get_domain(), with_notifications=True)
+        for domain in website_domains:
+            self.crawl_publications_for_website(website_domain=domain, with_notifications=True)
 
     def initial_approve_multiple_publications_by_author(self, userId, domain, publication_ids: list[str]):
         """

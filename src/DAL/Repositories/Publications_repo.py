@@ -16,21 +16,21 @@ class PublicationRepository:
             return None
         return self._row_to_publication_dto(result[0])
     
-    def find_scanned_pubs_by_domain(self, domain):
-        query = """
-        SELECT sp.*
-        FROM domain_scannedPub AS dsp
-        INNER JOIN scanned_pubs AS sp
-        ON dsp.title = sp.title AND dsp.publication_year = sp.publication_year
-        WHERE dsp.domain = ?
-        """
-        results =  self.db_manager.execute_query(query, (domain,))
-        return [self._row_to_scanned_pub(row) for row in results]
+    # def find_scanned_pubs_by_domain(self, domain):
+    #     query = """
+    #     SELECT sp.*
+    #     FROM domain_scannedPub AS dsp
+    #     INNER JOIN scanned_pubs AS sp
+    #     ON dsp.title = sp.title AND dsp.publication_year = sp.publication_year
+    #     WHERE dsp.domain = ?
+    #     """
+    #     results =  self.db_manager.execute_query(query, (domain,))
+    #     return [self._row_to_scanned_pub(row) for row in results]
     
-    def find_all_domains_with_scannedPubs(self):
-        query = "SELECT DISTINCT domain FROM domain_scannedPub"
-        results = self.db_manager.execute_query(query)
-        return [row['domain'] for row in results]
+    # def find_all_domains_with_scannedPubs(self):
+    #     query = "SELECT DISTINCT domain FROM domain_scannedPub"
+    #     results = self.db_manager.execute_query(query)
+    #     return [row['domain'] for row in results]
     
     
     def find_all(self):

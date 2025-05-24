@@ -22,7 +22,7 @@ class WebsiteFacade:
         if self._initialized:
             return
 
-        self.websites = []
+        self.websites = {} # MAP instead of list
         self.dal_controller = DAL_controller()
         self._load_all_data()
 
@@ -38,8 +38,9 @@ class WebsiteFacade:
         with cls._instance_lock:
             cls._instance = None
 
-    def add_website(self, website):
-        self.websites.append(website)
+    def add_website(self, website: Website):
+        # self.websites.append(website)
+        self.websites[website.domain] = website
 
 
     def create_new_website(self, domain):
@@ -50,14 +51,17 @@ class WebsiteFacade:
 
 
     def get_website(self, domain) -> Website:
-        for website in self.websites:
-            if website.domain == domain:
-                return website
-        return None
+        # for website in self.websites:
+        #     if website.domain == domain:
+        #         return website
+        # return None
+        if domain not in self.websites:
+            self._load_website(domain)
+        return self.websites.get(domain)
 
 
-    def get_all_websites(self) -> list[Website]:
-        return self.websites
+    def get_all_website_domains(self) -> list[str]:
+        return self.dal_controller.website_repo.find_all_domains()
 
 
     def get_all_approved_publication(self, domain):
@@ -202,6 +206,23 @@ class WebsiteFacade:
             raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
         return website.get_contact_us()
     
+    def _load_website(self, domain):
+        dto = self.dal_controller.website_repo.find_by_domain(domain=domain)
+        if not dto:
+            return
+        contact_info = None
+        if dto.contact_info:
+            contact_info_dict = json.loads(dto.contact_info)
+            contact_info = ContactInfo(
+                lab_mail=contact_info_dict.get("email"),
+                lab_phone_num=contact_info_dict.get("phone_num"),
+                lab_address=contact_info_dict.get("address")
+            )
+        website = Website(domain=dto.domain, contact_info=contact_info, about_us=dto.about_us)
+        pubs = self.dal_controller.publications_repo.find_by_domain(domain=dto.domain)
+        website.load_pub_dtos(pub_list=pubs)
+        self.websites[domain] = website
+    
     def _load_all_data(self):
         website_dtos = self.dal_controller.website_repo.find_all()
         for dto in website_dtos:
@@ -216,17 +237,19 @@ class WebsiteFacade:
             website = Website(domain=dto.domain, contact_info=contact_info, about_us=dto.about_us)
             pubs = self.dal_controller.publications_repo.find_by_domain(domain=dto.domain)
             website.load_pub_dtos(pub_list=pubs)
-            self.websites.append(website)
+            self.websites[website.domain] = website
     
     def remove_website_data(self, domain):
         """
         Delete a website.
         """
         #remove website from websites list
-        for website in self.websites:
-            if website.domain == domain:
-                self.websites.remove(website)
-                break
+        # for website in self.websites:
+        #     if website.domain == domain:
+        #         self.websites.remove(website)
+        #         break
+        if domain in self.websites:
+            del self.websites[domain]
 
     def reset_system(self):
         """

@@ -1,7 +1,7 @@
 from src.DAL.DTOs.Website_dto import website_dto
-
+from src.DAL.database_manager import DatabaseManager
 class WebsiteRepository:
-    def __init__(self, db_manager):
+    def __init__(self, db_manager: DatabaseManager):
         self.db_manager = db_manager
 
     def find_by_domain(self, domain):
@@ -15,6 +15,11 @@ class WebsiteRepository:
         query = "SELECT * FROM websites"
         results = self.db_manager.execute_query(query)
         return [self._row_to_website_dto(row) for row in results] if results else []
+    
+    def find_all_domains(self):
+        query = "SELECT domain FROM websites"
+        results = self.db_manager.execute_query(query)
+        return [row['domain'] for row in results] if results else []
         
 
     def save(self, website_dto: website_dto):
