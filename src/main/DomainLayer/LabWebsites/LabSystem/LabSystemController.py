@@ -85,7 +85,7 @@ class LabSystemController:
         If the given email is not associated with a member, an email is sent to all managers in order to approve\reject
         the registration request
         """
-        self.allWebsitesUserFacade.error_if_domain_not_exist(domain)
+        # self.allWebsitesUserFacade.error_if_domain_not_exist(domain)
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userId)
         member = userFacade.get_member_by_email(email)
