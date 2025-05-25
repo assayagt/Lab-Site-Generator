@@ -53,8 +53,8 @@ class LabSystemController:
         Create a new lab website with the given domain, lab members, lab managers, and site creator.
         Each lab member, lab manager, and site creator now includes a degree field.
         """
-        website =self.websiteFacade.create_new_website(domain)
-        self.allWebsitesUserFacade.add_new_webstie_userFacade(domain)
+        self.websiteFacade.create_new_website(domain)
+        # self.allWebsitesUserFacade.add_new_webstie_userFacade(domain)
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
 
         # Add lab members

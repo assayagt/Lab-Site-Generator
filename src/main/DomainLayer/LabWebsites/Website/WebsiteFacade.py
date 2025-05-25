@@ -46,8 +46,7 @@ class WebsiteFacade:
     def create_new_website(self, domain):
         website = Website(domain)
         self.add_website(website)
-        self.dal_controller.website_repo.save(website_dto=website.to_dto()) #===========================================
-        return website
+        self.dal_controller.website_repo.save(website_dto=website.to_dto()) #===========================================       
 
 
     def get_website(self, domain) -> Website:

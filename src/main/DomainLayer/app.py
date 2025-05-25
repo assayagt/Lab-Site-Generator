@@ -1349,7 +1349,7 @@ class GetContactUs(Resource):
             response = lab_system_service.get_contact_us(domain)
             if response.is_success():
                 # the returned value is website name, template, components
-                    return jsonify({'data': response.get_data(), "response": "true"})
+                return jsonify({'data': response.get_data(), "response": "true"})
             return jsonify({"message2": response.get_message(), "response": "false"})
 
         except Exception as e:
