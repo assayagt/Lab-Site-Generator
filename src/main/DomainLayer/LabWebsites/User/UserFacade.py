@@ -536,49 +536,50 @@ class UserFacade:
         
 
 
+    def _LabMember_dto_to_Object(self, dto):
+        return LabMember(
+                email=dto.email,
+                fullName=dto.full_name,
+                degree=dto.degree,
+                secondEmail=dto.second_email,
+                linkedin_link=dto.linkedin_link,
+                media=dto.media,
+                user_id=None,
+                bio=dto.bio,
+                scholar_link=dto.scholar_link
+            )
+    
 ##TODO: there is an error doesnt load all the fields!!!!!!
     def _load_data(self):
+        repo = self.dal_controller.LabMembers_repo
+
         # Load members
-        members = self.dal_controller.LabMembers_repo.find_all_members_by_domain(self.domain)
-        for member in members:
-            email = member.email
-            full_name = member.full_name
-            degree = member.degree
-            self.members[email] = LabMember(email, full_name, degree)
+        for dto in repo.find_all_members_by_domain(self.domain):
+           self.members[dto.email] = self._LabMember_dto_to_Object(dto)
 
         # Load managers
-        managers = self.dal_controller.LabMembers_repo.find_all_managers_by_domain(self.domain)
-        for manager in managers:
-            email = manager.email
-            full_name = manager.full_name
-            degree = manager.degree
-            self.managers[email] = LabMember(email, full_name, degree)
+        for dto in repo.find_all_managers_by_domain(self.domain):
+            self.managers[dto.email] = self._LabMember_dto_to_Object(dto)
 
-        # Load site creators
-        creators = self.dal_controller.LabMembers_repo.find_all_siteCreators_by_domain(self.domain)
-        for creator in creators:
-            email = creator.email
-            full_name = creator.full_name
-            degree = creator.degree
-            self.siteCreator[email] = LabMember(email, full_name, degree)
-            self.managers[email] = LabMember(email, full_name, degree)
+        # Load site creators (and also treat them as a manager)
+        for dto in repo.find_all_siteCreators_by_domain(self.domain):
+            lm = self._LabMember_dto_to_Object(dto)
+            self.siteCreator[dto.email] = lm
+            self.managers[dto.email] = lm
 
         # Load alumnis
-        alumnis = self.dal_controller.LabMembers_repo.find_all_alumnis_by_domain(self.domain)
-        for alumni in alumnis:
-            email = alumni.email
-            full_name = alumni.full_name
-            degree = alumni.degree
-            self.alumnis[email] = LabMember(email, full_name, degree)
+        alumnis = self.dal_controller.LabMembers_
+        for dto in repo.find_all_alumnis_by_domain(self.domain):
+            self.alumnis[dto.email] = self._LabMember_dto_to_Object(dto)
 
         # Load pending registration emails
-        pending_emails = self.dal_controller.LabMembers_repo.find_all_pending_emails_by_domain(self.domain)
-        for email in pending_emails:
+        for email in repo.find_all_pending_emails_by_domain(self.domain):
             self.emails_requests_to_register[email] = RegistrationStatus.PENDING.value
-        # ===================== DEBUG PRINT ===========================
-        print(f"domain: {self.domain}")
-        print(f"members:\n{self.members}")
-        print(f"site creators:\n{self.siteCreator}")
-        print(f"managers:\n{self.managers}")
-        print(f"alumnis:\n{self.alumnis}")
+        # Debug output (optional)
+        print(f"Loaded UserFacade for domain={self.domain}: "
+              f"{len(self.members)} members, "
+              f"{len(self.managers)} managers, "
+              f"{len(self.siteCreator)} creators, "
+              f"{len(self.alumnis)} alumnis, "
+              f"{len(self.emails_requests_to_register)} pending requests")
         
