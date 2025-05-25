@@ -16,7 +16,7 @@ class WebsiteRepository:
         results = self.db_manager.execute_query(query)
         return [self._row_to_website_dto(row) for row in results] if results else []
     
-    def find_all_domains(self):
+    def find_all_domains(self) -> list[str]:
         query = "SELECT domain FROM websites"
         results = self.db_manager.execute_query(query)
         return [row['domain'] for row in results] if results else []

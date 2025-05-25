@@ -24,8 +24,7 @@ class WebsiteFacade:
 
         self.websites = {} # MAP instead of list
         self.dal_controller = DAL_controller()
-        self._load_all_data()
-
+        # self._load_all_data()
         self._initialized = True
 
     @classmethod
