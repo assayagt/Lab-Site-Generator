@@ -568,7 +568,6 @@ class UserFacade:
             self.managers[dto.email] = lm
 
         # Load alumnis
-        alumnis = self.dal_controller.LabMembers_
         for dto in repo.find_all_alumnis_by_domain(self.domain):
             self.alumnis[dto.email] = self._LabMember_dto_to_Object(dto)
 
