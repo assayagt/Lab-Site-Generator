@@ -315,7 +315,6 @@ class DatabaseManager:
             "lab_members",
             "member_domain",
             "member_emails",
-            "domain_paperID",
             "websites",
             "site_customs",
             "publications"

@@ -1626,6 +1626,17 @@ class DeleteWebsite(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
+class GetGalleryImages(Resource):
+    def get(self):
+        try:
+            domain = request.args.get('domain')
+            response = generator_system.get_gallery_images(domain)
+            if response.is_success():
+                return jsonify({"images": response.get_data(), "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
 # Add resources to the API of lab
 api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')#
 api.add_resource(LoginWebsite, '/api/loginWebsite')#

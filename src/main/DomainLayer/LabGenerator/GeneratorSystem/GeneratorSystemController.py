@@ -368,5 +368,4 @@ class GeneratorSystemController:
         Get the gallery images for a specific domain.
         """
         self.site_custom_facade.error_if_domain_not_exist(domain)
-        site = self.site_custom_facade.get_site_by_domain(domain)
-        return site.get_gallery_images()
+        return self.site_custom_facade.get_gallery_images(domain)
