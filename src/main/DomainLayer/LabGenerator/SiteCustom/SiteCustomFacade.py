@@ -175,6 +175,10 @@ class SiteCustomFacade:
         del self.sites[domain]
         self.dal_controller.siteCustom_repo.delete(domain)
 
+    def get_gallery_images(self, domain):
+        site = self.sites[domain]
+        return site.get_gallery_images()
+
     def _load_all_siteCustoms(self):
         res = self.dal_controller.siteCustom_repo.find_all()
         print(res)

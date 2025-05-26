@@ -137,7 +137,8 @@ class DatabaseManager:
             template TEXT,
             logo TEXT,
             home_pic TEXT,
-            generated INTEGER
+            generated INTEGER,
+            gallery_path TEXT
         );
         '''
         self.execute_script(SiteCustoms_table)

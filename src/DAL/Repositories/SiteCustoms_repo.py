@@ -42,9 +42,9 @@ class SiteCustomsRepository:
         query = """
         INSERT INTO site_customs (
             domain, name, components, template, creator_email,
-            logo, home_pic, generated
+            logo, home_pic, generated, gallery_path
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(domain) DO UPDATE SET
             name = excluded.name,
             components = excluded.components,
@@ -52,7 +52,8 @@ class SiteCustomsRepository:
             creator_email = excluded.creator_email,
             logo = excluded.logo,
             home_pic = excluded.home_pic,
-            generated =excluded.generated
+            generated =excluded.generated,
+            gallery_path = excluded.gallery_path
         """
         parameters = (
             siteCustom_dto.domain,
@@ -62,7 +63,8 @@ class SiteCustomsRepository:
             siteCustom_dto.site_creator_email,
             siteCustom_dto.logo,
             siteCustom_dto.home_picture,
-            int(siteCustom_dto.generated)
+            int(siteCustom_dto.generated),
+            siteCustom_dto.gallery_path
         )
 
         # Ensure membership exists in member_domain (INSERT OR IGNORE prevents duplicates)
@@ -102,5 +104,6 @@ class SiteCustomsRepository:
             logo=row['logo'],
             home_picture=row['home_pic'],
             site_creator_email=row['creator_email'],
-            generated=bool(row['generated'])
+            generated=bool(row['generated']),
+            gallery_path=row['gallery_path']
         ) 

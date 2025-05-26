@@ -371,3 +371,19 @@ class GeneratorSystemService:
             return Response(True, "Website deleted successfully")
         except Exception as e:
             return Response(None, str(e))
+
+    def get_gallery_images(self, domain):
+        """
+        Get the gallery images of a website.
+
+        Args:
+            domain (str): The domain of the website
+
+        Returns:
+            Response: A response object containing the gallery images or an error message
+        """
+        try:
+            images = self.generator_system_controller.get_gallery_images(domain)
+            return Response(images, "Gallery images retrieved successfully")
+        except Exception as e:
+            return Response(None, str(e))
