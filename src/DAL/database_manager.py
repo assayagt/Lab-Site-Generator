@@ -167,6 +167,7 @@ class DatabaseManager:
             description TEXT, 
             author_emails TEXT,
             domain TEXT,
+            scholarly_stub,
             FOREIGN KEY (domain) REFERENCES websites(domain) ON DELETE CASCADE
         );
         '''
