@@ -4,7 +4,7 @@ import json
 
 class siteCustom_dto:
     def __init__(self, domain=None, name=None, components_str:str=None, components_list:list=None, template=None, site_creator_email=None,
-                  logo=None, home_picture=None, generated=False):
+                  logo=None, home_picture=None, generated=False, gallery_path=None):
         self.domain = domain
         self.name = name
         if components_str is None:
@@ -16,6 +16,7 @@ class siteCustom_dto:
         self.home_picture = home_picture
         self.site_creator_email = site_creator_email
         self.generated = generated
+        self.gallery_path = gallery_path
 
     # def to_site_custom(self):
     #     """Convert a SiteCustomDTO object to a SiteCustom."""

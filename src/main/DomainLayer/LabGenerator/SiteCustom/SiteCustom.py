@@ -2,7 +2,7 @@ from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
 from src.DAL.DTOs.SiteCustom_dto import siteCustom_dto
 
 class SiteCustom:
-    def __init__(self, domain, name, components, template: Template, site_creator_email, logo=None, home_picture=None, generated=False):
+    def __init__(self, domain, name, components, template: Template, site_creator_email, logo=None, home_picture=None, generated=False, gallery_path=None):
         self.domain = domain
         self.name = name
         self.components = components
@@ -11,6 +11,7 @@ class SiteCustom:
         self.home_picture = home_picture
         self.generated = generated
         self.site_creator_email = site_creator_email
+        self.gallery_path = gallery_path
 
     def change_template(self, template: Template):
         self.template = template
@@ -49,6 +50,12 @@ class SiteCustom:
     def set_site_creator_email(self, site_creator_email):
         self.site_creator_email = site_creator_email
 
+    def set_gallery_path(self, gallery_path):
+        self.gallery_path = gallery_path
+
+    def get_gallery_path(self):
+        return self.gallery_path
+
     def to_dto(self):
         return siteCustom_dto(
             domain=self.domain,
@@ -58,5 +65,6 @@ class SiteCustom:
             logo=self.logo,
             home_picture=self.home_picture,
             site_creator_email= self.site_creator_email,
-            generated=self.generated
+            generated=self.generated,
+            gallery_path=self.gallery_path if self.gallery_path else None
         )

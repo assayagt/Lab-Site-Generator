@@ -137,7 +137,8 @@ class DatabaseManager:
             template TEXT,
             logo TEXT,
             home_pic TEXT,
-            generated INTEGER
+            generated INTEGER,
+            gallery_path TEXT
         );
         '''
         self.execute_script(SiteCustoms_table)
@@ -167,6 +168,7 @@ class DatabaseManager:
             description TEXT, 
             author_emails TEXT,
             domain TEXT,
+            scholarly_stub,
             FOREIGN KEY (domain) REFERENCES websites(domain) ON DELETE CASCADE
         );
         '''
@@ -314,7 +316,6 @@ class DatabaseManager:
             "lab_members",
             "member_domain",
             "member_emails",
-            "domain_paperID",
             "websites",
             "site_customs",
             "publications"

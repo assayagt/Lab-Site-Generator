@@ -53,8 +53,8 @@ class LabSystemController:
         Create a new lab website with the given domain, lab members, lab managers, and site creator.
         Each lab member, lab manager, and site creator now includes a degree field.
         """
-        website =self.websiteFacade.create_new_website(domain)
-        self.allWebsitesUserFacade.add_new_webstie_userFacade(domain)
+        self.websiteFacade.create_new_website(domain)
+        # self.allWebsitesUserFacade.add_new_webstie_userFacade(domain)
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
 
         # Add lab members
@@ -85,7 +85,7 @@ class LabSystemController:
         If the given email is not associated with a member, an email is sent to all managers in order to approve\reject
         the registration request
         """
-        self.allWebsitesUserFacade.error_if_domain_not_exist(domain)
+        # self.allWebsitesUserFacade.error_if_domain_not_exist(domain)
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userId)
         member = userFacade.get_member_by_email(email)
@@ -207,11 +207,11 @@ class LabSystemController:
         notifications to authors for initial approve/disapprove.
         """
         # get list of all websites
-        websites = self.websiteFacade.get_all_websites()
+        website_domains = self.websiteFacade.get_all_website_domains()
 
         # for each website, send to the webCrawler facade the members and current year to fetch publications
-        for website in websites:
-            self.crawl_publications_for_website(website_domain=website.get_domain(), with_notifications=True)
+        for domain in website_domains:
+            self.crawl_publications_for_website(website_domain=domain, with_notifications=True)
 
     def initial_approve_multiple_publications_by_author(self, userId, domain, publication_ids: list[str]):
         """
@@ -276,8 +276,10 @@ class LabSystemController:
         userFacade.error_if_user_is_not_manager(userId)
         publication_id = self.mark_as_read(userId, domain, notification_id)
         pub_dto = self.websiteFacade.get_publication_by_paper_id(domain, publication_id)
-        self.webCrawlerFacade.fill_pub_details([pub_dto],domain)
+        self.webCrawlerFacade.fill_pub_details([pub_dto])
+        self.websiteFacade.update_publication(domain, pub_dto)
         self.websiteFacade.final_approve_publication(domain, publication_id)
+        
         
     def final_approve_multiple_publications_by_manager(self, userId, domain, publicationIds:list[str]):
         """
@@ -289,7 +291,8 @@ class LabSystemController:
         userFacade.error_if_user_is_not_manager(userId)
         for pubId in publicationIds:
             pub_dto = self.websiteFacade.get_publication_by_paper_id(domain,pubId)
-            self.webCrawlerFacade.fill_pub_details([pub_dto],domain)
+            self.webCrawlerFacade.fill_pub_details([pub_dto])
+            self.websiteFacade.update_publication(domain, pub_dto)
             self.websiteFacade.final_approve_publication(domain, pubId)
 
     def reject_publication(self, userId, domain, notification_id):
@@ -664,10 +667,7 @@ class LabSystemController:
         member_scholar_links = self.allWebsitesUserFacade.get_active_members_scholarLinks(website_domain)
         print(member_scholar_links)
         publist = self.webCrawlerFacade.fetch_publications(member_scholar_links)
-        print("found pubs successfully")
         for pub in publist:
-            print(pub.authors)
-            print(pub.title)
             if not website.check_publication_exist(pub):
                 print(pub.authors)
                 authorEmails = []

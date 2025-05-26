@@ -2,7 +2,7 @@ from src.main.DomainLayer.LabWebsites.User.UserFacade import UserFacade
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.DAL.DAL_controller import DAL_controller
 
-import threading
+import threading, json
 
 class AllWebsitesUserFacade:
     _instance = None
@@ -21,8 +21,7 @@ class AllWebsitesUserFacade:
 
         self.usersFacades = {}  # key: website domain, value: userFacade
         self.dal_controller = DAL_controller()
-        self._load_all_data()
-
+        # self._load_all_data()
         self._initialized = True
 
     @classmethod
@@ -35,10 +34,18 @@ class AllWebsitesUserFacade:
         with cls._instance_lock:
             cls._instance = None
 
-    def add_new_webstie_userFacade(self, domain):
-        self.usersFacades[domain] = UserFacade.get_instance(domain)
+    # def add_new_webstie_userFacade(self, domain):
+    #     self.usersFacades[domain] = UserFacade.get_instance(domain) ==> Lazy-load mechanism covers that 
 
     def getUserFacadeByDomain(self, domain) -> UserFacade:
+        # first, verify this domain exists in the website table
+        if self.dal_controller.website_repo.find_by_domain(domain) is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST.value)
+        
+        # lazy-create the userFacade
+        if domain not in self.usersFacades:
+            # this calls UserFacade.__init__ and its _load_data()
+            self.usersFacades[domain] = UserFacade.get_instance(domain)
         return self.usersFacades[domain]
 
     def error_if_domain_not_exist(self, domain):

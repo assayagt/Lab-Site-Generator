@@ -247,7 +247,7 @@ class GeneratorSystemService:
                 "domain": domain,
                 "name": website.get_name(),
                 "components": website.get_components(),
-                "template": None if website.get_template() is None else website.get_template().value,
+                "template": website.get_template().value,
                 "logo": logo_data_url,  # Include the logo
                 "home_picture": website.home_picture,  # Include the home picture
                 "about_us": about_us,
@@ -369,5 +369,21 @@ class GeneratorSystemService:
             # Delete the website
             self.generator_system_controller.delete_website(user_id, domain)
             return Response(True, "Website deleted successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def get_gallery_images(self, domain):
+        """
+        Get the gallery images of a website.
+
+        Args:
+            domain (str): The domain of the website
+
+        Returns:
+            Response: A response object containing the gallery images or an error message
+        """
+        try:
+            images = self.generator_system_controller.get_gallery_images(domain)
+            return Response(images, "Gallery images retrieved successfully")
         except Exception as e:
             return Response(None, str(e))

@@ -2,6 +2,7 @@ from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStat
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
 from src.DAL.DTOs.Website_dto import website_dto
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
+from src.DAL.DAL_controller import DAL_controller
 import json
 
 class Website:
@@ -26,6 +27,21 @@ class Website:
                         else:
                             raise Exception(ExceptionsEnum.PUBLICATION_ALREADY_WAITING.value)
         print("publication added to website succesffully")
+
+    def update_publication(self, publicationDTO: PublicationDTO):
+        # Remove any existing entries equal to publicationDTO
+        for author_email, pubs in list(self.members_publications.items()):
+            # filter out old instances
+            new_list = [p for p in pubs if p != publicationDTO]
+            if new_list:
+                self.members_publications[author_email] = new_list
+            else:
+                # no publications left for this email → remove the key
+                del self.members_publications[author_email]
+
+        # Re-add the updated DTO under its current authors
+        self.create_publication(publicationDTO, publicationDTO.author_emails)
+                    
             
 
     def add_publication_manually(self, publication_link, publication_details, git_link, video_link, presentation_link,
@@ -135,6 +151,16 @@ class Website:
             for publication in pub_list:
                 if publication.get_paper_id() == paper_id:
                     return publication
+        
+        # # Lazy-load from DB if not found (we don't do that anymore)
+        # publication = DAL_controller().publications_repo.find_by_id(paper_id=paper_id)
+        # if publication:
+        #     for author in publication.author_emails:
+        #         if author not in self.members_publications:
+        #             self.members_publications[author] = []
+        #         if publication not in self.members_publications[author]:
+        #             self.members_publications[author].append(publication)
+        #     return publication
         return None
 
     def final_approve_publication(self, paper_id) -> PublicationDTO:
@@ -197,6 +223,17 @@ class Website:
             contact_info=json.dumps(self.contact_info.to_dict()) if self.contact_info else None,
             about_us=self.about_us
         )
+    
+    def load_author_publications(self, author_email: str):
+        if author_email in self.members_publications:
+            return
+        pub_list = DAL_controller().publications_repo.find_by_author_email(author_email, self.domain)
+        self.members_publications[author_email] = pub_list
+
+    def reload_all_publications(self):
+        self.members_publications.clear()
+        pub_list = DAL_controller().publications_repo.find_by_domain(self.domain)
+        self.load_pub_dtos(pub_list)
 
     def load_pub_dtos(self, pub_list: list[PublicationDTO]):
         for pub in pub_list:
