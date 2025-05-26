@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./MediaPage.css";
 
-import {} from "../../services/websiteService";
+import { fetchGalleryImages } from "../../services/websiteService";
 
 const MediaPage = () => {
   const [images, setImages] = useState([]);
@@ -49,21 +49,26 @@ const MediaPage = () => {
       alt: "Electronics soldering station close-up",
     },
   ];
-
-  // Example fetch on mount ─ replace with your own call / data shape
   useEffect(() => {
-    //   const fetchImages = async () => {
-    //     try {
-    //       /* Expected shape: [{ id: 1, url: "https://…", alt: "lab team" }, …] */
-    //       const data = await getMediaImages();
-    //       setImages(data);
-    //     } catch (err) {
-    //       console.error("Failed to load images:", err);
-    //     }
-    //   };
+    const loadGallery = async () => {
+      const domain = sessionStorage.getItem("domain");
+      if (!domain) return;
 
-    //   fetchImages();
-    setImages(sampleImages);
+      const data = await fetchGalleryImages(domain);
+      console.log(data);
+      if (Array.isArray(data)) {
+        const images = data.map((item, index) => ({
+          id: index,
+          url: item.data_url, // ✅ use the base64 data directly
+          alt: item.filename,
+        }));
+        setImages(images);
+      } else {
+        console.error(data);
+      }
+    };
+
+    loadGallery();
   }, []);
 
   return (

@@ -687,3 +687,17 @@ export const getNotApprovedMemberPublications = async (domain, userId) => {
     return [];
   }
 };
+
+export const fetchGalleryImages = async (domain) => {
+  try {
+    const response = await fetch(`${baseApiUrl}/getGallery?domain=${domain}`);
+    const data = await response.json();
+    if (data.response === "true") {
+      return data.images;
+    } else {
+      return "Failed to fetch gallery images";
+    }
+  } catch (error) {
+    console.error("Error loading gallery: " + error.message);
+  }
+};
