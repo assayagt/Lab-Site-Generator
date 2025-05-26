@@ -2,6 +2,7 @@ from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStat
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
 from src.DAL.DTOs.Website_dto import website_dto
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
+from src.DAL.DAL_controller import DAL_controller
 import json
 
 class Website:
@@ -135,6 +136,16 @@ class Website:
             for publication in pub_list:
                 if publication.get_paper_id() == paper_id:
                     return publication
+        
+        # Lazy-load from DB if not found
+        publication = DAL_controller().publications_repo.find_by_id(paper_id=paper_id)
+        if publication:
+            for author in publication.author_emails:
+                if author not in self.members_publications:
+                    self.members_publications[author] = []
+                if publication not in self.members_publications[author]:
+                    self.members_publications[author].append(publication)
+            return publication
         return None
 
     def final_approve_publication(self, paper_id) -> PublicationDTO:
@@ -197,6 +208,17 @@ class Website:
             contact_info=json.dumps(self.contact_info.to_dict()) if self.contact_info else None,
             about_us=self.about_us
         )
+    
+    def load_author_publications(self, author_email: str):
+        if author_email in self.members_publications:
+            return
+        pub_list = DAL_controller().publications_repo.find_by_author_email(author_email, self.domain)
+        self.members_publications[author_email] = pub_list
+
+    def reload_all_publications(self):
+        self.members_publications.clear()
+        pub_list = DAL_controller().publications_repo.find_by_domain(self.domain)
+        self.load_pub_dtos(pub_list)
 
     def load_pub_dtos(self, pub_list: list[PublicationDTO]):
         for pub in pub_list:

@@ -53,8 +53,8 @@ class LabSystemController:
         Create a new lab website with the given domain, lab members, lab managers, and site creator.
         Each lab member, lab manager, and site creator now includes a degree field.
         """
-        website =self.websiteFacade.create_new_website(domain)
-        self.allWebsitesUserFacade.add_new_webstie_userFacade(domain)
+        self.websiteFacade.create_new_website(domain)
+        # self.allWebsitesUserFacade.add_new_webstie_userFacade(domain)
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
 
         # Add lab members
@@ -85,7 +85,7 @@ class LabSystemController:
         If the given email is not associated with a member, an email is sent to all managers in order to approve\reject
         the registration request
         """
-        self.allWebsitesUserFacade.error_if_domain_not_exist(domain)
+        # self.allWebsitesUserFacade.error_if_domain_not_exist(domain)
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userId)
         member = userFacade.get_member_by_email(email)
@@ -207,11 +207,11 @@ class LabSystemController:
         notifications to authors for initial approve/disapprove.
         """
         # get list of all websites
-        websites = self.websiteFacade.get_all_websites()
+        website_domains = self.websiteFacade.get_all_website_domains()
 
         # for each website, send to the webCrawler facade the members and current year to fetch publications
-        for website in websites:
-            self.crawl_publications_for_website(website_domain=website.get_domain(), with_notifications=True)
+        for domain in website_domains:
+            self.crawl_publications_for_website(website_domain=domain, with_notifications=True)
 
     def initial_approve_multiple_publications_by_author(self, userId, domain, publication_ids: list[str]):
         """
