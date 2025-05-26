@@ -1,3 +1,5 @@
+import base64
+import os
 import re
 import json
 import threading
@@ -54,6 +56,9 @@ class SiteCustomFacade:
             raise Exception(ExceptionsEnum.INVALID_SITE_NAME.value)
         self.error_if_domain_is_not_valid(domain)
         site = SiteCustom(domain, name, components, template, email)
+        if "Media" in components:
+            gallery_path = self.create_gallery_directory(domain)
+            site.set_gallery_path(gallery_path)
         self.sites[domain] = site
         self.dal_controller.siteCustom_repo.save(site.to_dto(), email) #===========================================
         return site
@@ -100,6 +105,9 @@ class SiteCustomFacade:
             raise Exception(ExceptionsEnum.INVALID_COMPONENTS_FORMAT.value)
         site = self.sites[old_domain]
         site.add_component(components)
+        if "Media" in components:
+            gallery_path = self.create_gallery_directory(old_domain)
+            site.set_gallery_path(gallery_path)
         self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto())
 
     def remove_component_from_site(self, old_domain, component):
@@ -175,6 +183,53 @@ class SiteCustomFacade:
         del self.sites[domain]
         self.dal_controller.siteCustom_repo.delete(domain)
 
+    def create_gallery_directory(self, domain):
+        """
+        Create a gallery directory for the site.
+        """
+        website_folder = os.path.join("LabWebsitesUploads", domain)
+        gallery_folder = os.path.join(website_folder, 'gallery')
+        os.makedirs(gallery_folder, exist_ok=True)
+
+        return gallery_folder
+
+    def get_gallery_images(self, domain):
+        gallery_images = []
+        self.error_if_domain_not_exist(domain)
+        site = self.sites[domain]
+        gallery_path = site.get_gallery_path()
+        if gallery_path and os.path.exists(gallery_path):
+            # Get all files in the gallery directory
+            for filename in os.listdir(gallery_path):
+                file_path = os.path.join(gallery_path, filename)
+                # Check if it's a file and has a valid image extension
+                if os.path.isfile(file_path):
+                    extension = os.path.splitext(filename)[1].lower()
+                    if extension in ['.jpg', '.jpeg', '.png', '.gif']:
+                        try:
+                            with open(file_path, "rb") as image_file:
+                                # Determine the correct MIME type
+                                if extension == '.jpg' or extension == '.jpeg':
+                                    mime_type = 'image/jpeg'
+                                elif extension == '.png':
+                                    mime_type = 'image/png'
+                                elif extension == '.gif':
+                                    mime_type = 'image/gif'
+                                else:
+                                    mime_type = 'application/octet-stream'
+
+                                # Encode the image
+                                image_base64 = base64.b64encode(image_file.read()).decode()
+                                image_data_url = f"data:{mime_type};base64,{image_base64}"
+                                gallery_images.append({
+                                    'filename': filename,
+                                    'data_url': image_data_url
+                                })
+                        except Exception as e:
+                            print(f"Error processing image {filename}: {str(e)}")
+                            continue
+        return gallery_images
+
     def _load_all_siteCustoms(self):
         res = self.dal_controller.siteCustom_repo.find_all()
         print(res)
@@ -191,5 +246,6 @@ class SiteCustomFacade:
                 site_creator_email=dto.site_creator_email,
                 logo=dto.logo,
                 home_picture=dto.home_picture,
-                generated=bool(dto.generated)
+                generated=bool(dto.generated),
+                gallery_path=dto.gallery_path
             )

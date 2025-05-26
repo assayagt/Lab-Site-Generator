@@ -362,3 +362,10 @@ class GeneratorSystemController:
             self.labSystem.delete_website(domain)
         self.user_facade.delete_website(user_id, domain)
         self.site_custom_facade.delete_website(domain)
+
+    def get_gallery_images(self, domain):
+        """
+        Get the gallery images for a specific domain.
+        """
+        self.site_custom_facade.error_if_domain_not_exist(domain)
+        return self.site_custom_facade.get_gallery_images(domain)

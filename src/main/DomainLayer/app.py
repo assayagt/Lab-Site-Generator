@@ -279,6 +279,49 @@ class UploadFilesAndData(Resource):
             }, 500
 
 
+class UploadGalleryImages(Resource):
+    def post(self):
+        try:
+            domain = request.form['domain']
+            website_folder = os.path.join(GENERATED_WEBSITES_FOLDER, domain)
+            gallery_folder = os.path.join(website_folder, 'gallery')
+
+            files = request.files
+            uploaded_files = []
+
+            for component in files:
+                file = files[component]
+                print(f"Processing gallery image: {component}")
+
+                if not file:
+                    continue
+
+                extension = os.path.splitext(file.filename)[1].lower()
+
+                # Only allow image files
+                if extension not in ['.jpg', '.jpeg', '.png', '.gif']:
+                    return {
+                        "error": "Invalid file type for gallery image. Allowed: JPG, JPEG, PNG, GIF"
+                    }, 400
+
+                # Generate a unique filename using timestamp
+                timestamp = int(time.time() * 1000)
+                file_path = os.path.join(gallery_folder, f"gallery_{timestamp}{extension}")
+
+                file.save(file_path)
+                uploaded_files.append(os.path.basename(file_path))
+
+            return {
+                "message": "Gallery images uploaded successfully!",
+                "uploaded": uploaded_files
+            }, 200
+
+        except Exception as e:
+            return {
+                "error": f"An error occurred: {str(e)}"
+            }, 500
+
+
 class GenerateWebsiteResource(Resource):
     def post(self):
         try:
@@ -1583,6 +1626,17 @@ class DeleteWebsite(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
+class GetGalleryImages(Resource):
+    def get(self):
+        try:
+            domain = request.args.get('domain')
+            response = generator_system.get_gallery_images(domain)
+            if response.is_success():
+                return jsonify({"images": response.get_data(), "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
 # Add resources to the API of lab
 api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')#
 api.add_resource(LoginWebsite, '/api/loginWebsite')#
@@ -1652,6 +1706,7 @@ api.add_resource(GetUserDetails, '/api/getUserDetails')
 api.add_resource(GetContactUs, '/api/getContactUs')
 api.add_resource(GetAllMembersNotifications, '/api/getAllMembersNotifications')
 api.add_resource(DeleteWebsite, '/api/deleteWebsite')
+api.add_resource(UploadGalleryImages, '/api/uploadGalleryImages')
 ##
 api.add_resource(CrawlPublicationsForMember, '/api/CrawlPublicationsForMember')
 
