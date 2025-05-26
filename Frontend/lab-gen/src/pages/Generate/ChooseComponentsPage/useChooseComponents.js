@@ -406,13 +406,13 @@ const useChooseComponents = () => {
 
   const handleFileChange = (e, component) => {
     setSave("Save");
-    const file = e.target.files[0];
-    if (file) {
+    const files = e.target.files;
+    if (files && files.length > 0) {
       setFormData((prev) => ({
         ...prev,
         files: {
           ...prev.files,
-          [component]: file,
+          [component]: component === "gallery" ? [...files] : files[0],
         },
       }));
       setMediaSaveStatus((prev) => ({ ...prev, [component]: false }));
@@ -426,15 +426,111 @@ const useChooseComponents = () => {
     link.click();
   };
 
+  // const handleSubmit = async (component) => {
+  //   const component_new = component.replace(" ", "").toLowerCase();
+
+  //   const formDataToSend = new FormData();
+  //   formDataToSend.append("domain", domain);
+  //   formDataToSend.append("website_name", websiteName);
+
+  //   if (formData.files[component_new]) {
+  //     formDataToSend.append(component_new, formData.files[component_new]);
+  //   }
+
+  //   try {
+  //     const response = await fetch(`${baseApiUrl}/uploadFile`, {
+  //       method: "POST",
+  //       body: formDataToSend,
+  //     });
+
+  //     const contentType = response.headers.get("content-type") || "";
+
+  //     if (contentType.includes("application/json")) {
+  //       const data = await response.json();
+
+  //       if (response.ok) {
+  //         // ✅ Success
+  //         setMediaSaveStatus((prev) => ({ ...prev, [component_new]: true }));
+
+  //         setWebsite((prev) => ({
+  //           ...prev,
+  //           files: formData.files,
+  //         }));
+
+  //         if (websiteData.generated) {
+  //           const saveLogoResponse = await saveLogo(
+  //             sessionStorage.getItem("sid"),
+  //             websiteData.domain
+  //           );
+  //           console.log(saveLogoResponse);
+
+  //           const savePhotoResponse = await saveHomePicture(
+  //             sessionStorage.getItem("sid"),
+  //             websiteData.domain
+  //           );
+  //           console.log(savePhotoResponse);
+  //         }
+  //       } else {
+  //         // ❌ Error response with JSON body
+  //         showError("Error: " + (data.error || "Unknown server error"));
+  //       }
+  //     } else {
+  //       // ❌ Server didn't send JSON, probably HTML error page
+  //       const rawText = await response.text();
+  //       showError("Server error (non-JSON): " + rawText.slice(0, 100));
+  //     }
+  //   } catch (error) {
+  //     // ❌ Network or parsing error
+  //     showError("Unexpected Error: " + error.message);
+  //   }
+  // };
+
   const handleSubmit = async (component) => {
-    const component_new = component.replace(" ", "").toLowerCase();
+    const componentKey = component.replace(" ", "").toLowerCase();
+    const files = formData.files[componentKey];
 
     const formDataToSend = new FormData();
     formDataToSend.append("domain", domain);
     formDataToSend.append("website_name", websiteName);
 
-    if (formData.files[component_new]) {
-      formDataToSend.append(component_new, formData.files[component_new]);
+    // --- Handle gallery upload separately
+    console.log(files);
+    if (componentKey === "gallery" && Array.isArray(files)) {
+      files.forEach((file) => {
+        formDataToSend.append(componentKey, file);
+      });
+
+      try {
+        const response = await fetch(`${baseApiUrl}/uploadGalleryImages`, {
+          method: "POST",
+          body: formDataToSend,
+        });
+
+        const contentType = response.headers.get("content-type") || "";
+        if (contentType.includes("application/json")) {
+          const data = await response.json();
+          if (response.ok) {
+            setMediaSaveStatus((prev) => ({ ...prev, [componentKey]: true }));
+          } else {
+            showError(
+              "Gallery upload failed: " + (data.error || "Unknown error")
+            );
+          }
+        } else {
+          const rawText = await response.text();
+          showError(
+            "Gallery server error (non-JSON): " + rawText.slice(0, 100)
+          );
+        }
+      } catch (error) {
+        showError("Gallery upload exception: " + error.message);
+      }
+      return; // Exit early
+    }
+
+    // --- Handle logo and homepagephoto
+    if (files) {
+      formDataToSend.append(componentKey, files);
     }
 
     try {
@@ -444,44 +540,31 @@ const useChooseComponents = () => {
       });
 
       const contentType = response.headers.get("content-type") || "";
-
       if (contentType.includes("application/json")) {
         const data = await response.json();
-
         if (response.ok) {
-          // ✅ Success
-          setMediaSaveStatus((prev) => ({ ...prev, [component_new]: true }));
-
-          setWebsite((prev) => ({
-            ...prev,
-            files: formData.files,
-          }));
+          setMediaSaveStatus((prev) => ({ ...prev, [componentKey]: true }));
+          setWebsite((prev) => ({ ...prev, files: formData.files }));
 
           if (websiteData.generated) {
-            const saveLogoResponse = await saveLogo(
-              sessionStorage.getItem("sid"),
-              websiteData.domain
-            );
-            console.log(saveLogoResponse);
-
-            const savePhotoResponse = await saveHomePicture(
-              sessionStorage.getItem("sid"),
-              websiteData.domain
-            );
-            console.log(savePhotoResponse);
+            if (componentKey === "logo") {
+              await saveLogo(sessionStorage.getItem("sid"), websiteData.domain);
+            } else if (componentKey === "homepagephoto") {
+              await saveHomePicture(
+                sessionStorage.getItem("sid"),
+                websiteData.domain
+              );
+            }
           }
         } else {
-          // ❌ Error response with JSON body
-          showError("Error: " + (data.error || "Unknown server error"));
+          showError("Upload failed: " + (data.error || "Unknown error"));
         }
       } else {
-        // ❌ Server didn't send JSON, probably HTML error page
         const rawText = await response.text();
         showError("Server error (non-JSON): " + rawText.slice(0, 100));
       }
     } catch (error) {
-      // ❌ Network or parsing error
-      showError("Unexpected Error: " + error.message);
+      showError("Unexpected error: " + error.message);
     }
   };
 

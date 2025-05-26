@@ -30,10 +30,10 @@ function HomePage(props) {
       {/* Main section with dynamic layout */}
       <div
         className={`main_section_homePage ${
-          props.about_us || editMode ? "hasAboutUs" : "noAboutUs"
+          props.about_us ? "hasAboutUs" : "noAboutUs"
         }`}
       >
-        {(props.about_us || editMode) && (
+        {props.about_us && (
           <div className="aboutUsContainer">
             <AboutUs info={props.about_us} />
           </div>

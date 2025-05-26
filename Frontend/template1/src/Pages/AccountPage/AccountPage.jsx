@@ -7,7 +7,7 @@ import cameraIcon from "../../images/camera_icon.svg";
 import searchIcon from "../../images/search_icon.svg";
 import AddPublicationForm from "../../Components/AddPublicationForm/AddPubliactionForm";
 import SuccessPopup from "../../Components/PopUp/SuccessPopup";
-
+import LoadingPopup from "../../Components/PopUp/LoadingPopup";
 import {
   getUserDetails,
   approveRegistration,
@@ -79,6 +79,7 @@ const AccountPage = () => {
     updateNotifications,
     setHasNewNotifications,
   } = useContext(NotificationContext); // Get notifications
+  const [isLoading, setIsLoading] = useState(false);
 
   // Add this useEffect to your AccountPage component, right after your existing useEffects
   // This listens for the custom event from the Header component
@@ -346,6 +347,8 @@ const AccountPage = () => {
       // const response = await bulkApproveCrawledPublications(selectedPublications);
 
       // Update local state
+      setIsLoading(true); // ✅ Show loading popup
+
       const response = await initialApproveMultiplePublicationsByAuthor(
         sessionStorage.getItem("sid"),
         sessionStorage.getItem("domain"),
@@ -366,6 +369,8 @@ const AccountPage = () => {
       }
     } catch (error) {
       setErrorMessage("Failed to approve publications");
+    } finally {
+      setIsLoading(false); // ✅ Hide loading popup
     }
   };
 
@@ -1065,6 +1070,9 @@ const AccountPage = () => {
             message={errorMessage}
             onClose={() => setErrorMessage("")}
           />
+        )}
+        {isLoading && (
+          <LoadingPopup message="Approving selected publications..." />
         )}
       </div>
     </div>

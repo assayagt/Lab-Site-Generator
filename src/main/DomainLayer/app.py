@@ -240,7 +240,7 @@ class UploadFilesAndData(Resource):
                 file_path = None
 
                 if component == 'logo':
-                    if extension in ['svg', '.png', '.jpg', '.jpeg']:
+                    if extension in ['.svg', '.png', '.jpg', '.jpeg']:
                         file_path = os.path.join(website_folder, f"logo{extension}")
                     else:
                         return {
@@ -286,13 +286,14 @@ class UploadGalleryImages(Resource):
             website_folder = os.path.join(GENERATED_WEBSITES_FOLDER, domain)
             gallery_folder = os.path.join(website_folder, 'gallery')
 
-            files = request.files
+            if not os.path.exists(gallery_folder):
+                os.makedirs(gallery_folder)
+
+            # ✅ Use getlist to get all files under the same 'gallery' key
+            files = request.files.getlist('gallery')
             uploaded_files = []
 
-            for component in files:
-                file = files[component]
-                print(f"Processing gallery image: {component}")
-
+            for file in files:
                 if not file:
                     continue
 
@@ -320,7 +321,6 @@ class UploadGalleryImages(Resource):
             return {
                 "error": f"An error occurred: {str(e)}"
             }, 500
-
 
 class GenerateWebsiteResource(Resource):
     def post(self):
@@ -1707,6 +1707,7 @@ api.add_resource(GetContactUs, '/api/getContactUs')
 api.add_resource(GetAllMembersNotifications, '/api/getAllMembersNotifications')
 api.add_resource(DeleteWebsite, '/api/deleteWebsite')
 api.add_resource(UploadGalleryImages, '/api/uploadGalleryImages')
+api.add_resource(GetGalleryImages, '/api/getGallery')
 ##
 api.add_resource(CrawlPublicationsForMember, '/api/CrawlPublicationsForMember')
 

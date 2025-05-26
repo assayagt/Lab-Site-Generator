@@ -34,7 +34,14 @@ import { useAuth } from "./Context/AuthContext";
 function App() {
   const { websiteData, setWebsite } = useWebsite();
   const [loading, setLoading] = useState(true);
-
+  const desiredOrder = [
+    "Home",
+    "About Us",
+    "Lab Members",
+    "Publications",
+    "Media",
+    "Contact Us",
+  ];
   useEffect(() => {
     const domain = sessionStorage.getItem("domain");
 
@@ -90,7 +97,7 @@ function App() {
               ? data.data.about_us
               : "",
           };
-          console.log("here");
+          console.log(mappedData);
           setWebsite(mappedData);
           console.log(sessionStorage.getItem("domain"));
           // sessionStorage.setItem("domain", mappedData.domain);
@@ -110,8 +117,8 @@ function App() {
     return <div>Loading...</div>; // Show loading indicator
   }
 
-  const components = [...new Set(websiteData.components)].filter(
-    (component) => component !== "Page for Participant"
+  const components = desiredOrder.filter((comp) =>
+    websiteData.components.includes(comp)
   );
 
   return (
