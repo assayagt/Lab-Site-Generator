@@ -4,7 +4,8 @@ from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStat
 class PublicationDTO:
     def __init__(self, title, publication_year, publication_link,
                  approved=ApprovalStatus.INITIAL_PENDING,
-                 git_link=None, authors=None, video_link=None, presentation_link=None, description=None, paper_id=None, author_emails :list[str]=[], domain=None):
+                 git_link=None, authors=None, video_link=None, presentation_link=None, description=None, paper_id=None, author_emails :list[str]=[], domain=None,
+                 _scholarly_stub: dict = None):
         self.paper_id = str(uuid.uuid4()) if paper_id is None else paper_id
         self.title = title
         self.authors = authors 
@@ -18,6 +19,7 @@ class PublicationDTO:
         self.description = description  # New description field
         self.author_emails = author_emails
         self.domain = domain
+        self._scholarly_stub = _scholarly_stub # store the scholarly stub so we can refill it later
         
 
 
@@ -33,7 +35,8 @@ class PublicationDTO:
             "presentation_link": self.presentation_link,
             "description": self.description , # Include description in dict
             "status" : self.approved.value,
-            "domain": self.domain
+            "domain": self.domain,
+            "_scholarly_stub": self._scholarly_stub
         }
 
     def __eq__(self, other):

@@ -16,7 +16,7 @@ class GoogleScholarWebCrawler:
 
 
     # (was) def fetch_publications_new_member(self, scholar_ids, domain):
-    def fetch_crawler_publications(self, scholarLinks) -> list[PublicationDTO]:
+    def fetch_crawler_publications(self, scholarLinks: list[str]) -> list[PublicationDTO]:
         """
         Fetches publications from Google Scholar for the given list of profile links.
 
@@ -35,6 +35,7 @@ class GoogleScholarWebCrawler:
                 # Fetch author by scholar_id
                 author = scholarly.search_author_id(scholar_id)
                 author = scholarly.fill(author)
+                author_name = author.get("name")
                 time.sleep(5)
                 for pub in author.get("publications", []):
                     # if pub_counter >= 5:
@@ -48,15 +49,7 @@ class GoogleScholarWebCrawler:
                         continue
                     if int(pub_year) < min_year:
                         print(f"Google Crawler => publication is not recent enough")
-                        continue
-                    filled_pub = scholarly.fill(pub)
-                    time.sleep(5)
-                    authors_str = filled_pub.get("bib", {}).get("author", "")
-                    authors_list = [a.strip() for a in authors_str.split(" and ")] if authors_str else []
-                    description = filled_pub.get("bib", {}).get("abstract", "")
-                    if  not authors_list:
-                        print(f"Google Crawler => publication {pub_title} has no authors mentioned")
-                        continue                   
+                        continue                
                     else:
                         # New publication -> create new pub
                         url = self.build_publication_url(scholar_id=scholar_id, author_pub_id=author_pub_id)
@@ -64,82 +57,46 @@ class GoogleScholarWebCrawler:
                             title= pub_title,
                             publication_year= pub_year,
                             publication_link= url,
-                            authors= authors_list,
-                            description=description
+                            authors= [author_name],
+                            # description = desctiption
+                            _scholarly_stub = pub
                         )
                         crawled.add(new_pub)
                         print(f"carwled {len(crawled)} publications so far")
-                # time.sleep(5) #we might replace it to 1 bc scholarly already has a built-in delay mechanism
                 return list(crawled)
             except Exception as e:
                 print(f"[ERROR] Fetching publications for scholar_id {scholar_id}: {e}")
-                traceback.print_exc()
                 continue
-
-        return crawled
+        return list(crawled)
 
     def fill_details(self, publicationDTOs: list[PublicationDTO]):
         """
-        This method accepts a list of PublicationDTO and fills description and authors into it
+        This method accepts a list of PublicationDTO where and fills description and authors into it
         """
         for pub in publicationDTOs:
-            url = pub.publication_link
-            if url:
-                pub.set_description(self.get_description_from_citation(url))
-                # pub.set_authors(self.get_authors_from_citation(url))
+            stub = pub._scholarly_stub
+            if not stub:
+                continue
+            try:
+                # fetch full metadata for this stub
+                filled_pub = scholarly.fill(stub)
+                time.sleep(5)
+                bib = filled_pub.get("bib", {})
+                authors_str = bib.get("author", "")
+                if authors_str:
+                    authors_list = [a.strip() for a in authors_str.split(" and ")]
+                    pub.set_authors(authors=authors_list)
+
+                desc = filled_pub.get("bib", {}).get("abstract")
+                if desc:
+                    pub.set_description(desc)
+                # we can later fetch as many information as we need 
+
+
+
+            except Exception as e:
+                continue
                 
-       
-
-    # def fetch_crawler_publications(self, authors, domain):
-    #     results = []
-    #     scanned_pubs = self.crawled.get(domain, [])
-    #     for author_name in authors:
-    #         search_query = scholarly.search_author(author_name)
-    #         author = next(search_query, None)
-
-    #         author = scholarly.fill(author)
-
-    #         for publication in author.get("publications", []):
-    #             new_publication_title = publication.get("bib", {}).get("title")
-
-    #             if new_publication_title and not any(pub.title == new_publication_title for pub in scanned_pubs):
-    #                 # Create a ScannedPublication object
-    #                 publication_title = publication.get("bib", {}).get("title")
-    #                 publication_year = publication.get("bib", {}).get("pub_year")
-    #                 scholar_id = author.get("scholar_id")
-    #                 author_pub_id = publication['author_pub_id']
-    #                 scanned_publication = ScannedPublication(
-    #                     title=publication_title,
-    #                     publication_year=publication_year,
-    #                     scholar_id=scholar_id,
-    #                     author_pub_id=author_pub_id
-    #                 )
-    #                 url = scanned_publication.build_publication_url()
-
-    #                 publication_authors = self.get_authors_from_citation(url)
-
-    #                 publication_description = self.get_description_from_citation(url)
-
-    #                 pub_year = publication.get("bib", {}).get("pub_year")
-
-    #                 publication_dto = PublicationDTO(
-    #                     title=new_publication_title,
-    #                     authors=publication_authors,
-    #                     publication_year=pub_year,
-    #                     approved=ApprovalStatus.INITIAL_PENDING.value,  # Default value
-    #                     publication_link=url,
-    #                     description=publication_description
-    #                 )
-
-    #                 self.crawled[domain].append(scanned_publication)  # Add to crawled publications
-    #                 # ========================================= SAVE TO DATA =========================================
-    #                 self.dal_controller.publications_repo.save_scanned_pub(scannedPub=scanned_publication, domain=domain) 
-    #                 results.append(publication_dto)
-
-    #     #add 30 seconds delay
-    #     time.sleep(5)
-
-    #     return results
     
     def build_publication_url(self, scholar_id, author_pub_id):
         """
