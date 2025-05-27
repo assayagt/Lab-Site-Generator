@@ -10,17 +10,17 @@ from src.DAL.database_manager import DatabaseManager
 
 class DAL_controller:
     _instance = None
-    _instance_lock = threading.Lock()
+    _lock = threading.Lock()
 
     def __new__(cls, db_manager=None):
-        with cls._instance_lock:
-            if cls._instance is None:
-                cls._instance = super(DAL_controller, cls).__new__(cls)
-                cls._instance._initialized = False
+        if cls._instance is None:
+            with cls._lock:
+                if cls._instance is None:
+                    cls._instance = super().__new__(cls)
         return cls._instance
 
     def __init__(self, db_manager=None):
-        if self._initialized:
+        if getattr(self, "_inited", False):
             return
 
         self._db_manager = db_manager or DatabaseManager()
@@ -30,12 +30,12 @@ class DAL_controller:
         self.website_repo = WebsiteRepository(db_manager=self._db_manager)
         self.notifications_repo = NotificationRepository(db_manager=self._db_manager)
         self.LabMembers_repo = LabMembersRepository(db_manager=self._db_manager)
-        self._initialized = True
+        self._inited = True
 
     @classmethod
     def reset_instance(cls):
         """Reset the singleton instance. Safe to use in unit tests."""
-        with cls._instance_lock:
+        with cls._lock:
             cls._instance = None
 
     def drop_all_tables(self):

@@ -7,14 +7,31 @@ from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStat
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
 # from src.main.DomainLayer.LabWebsites.WebCrawler.ScannedPublication import ScannedPublication
 # from src.DAL.DAL_controller import DAL_controller
-import requests
+import requests, threading
 
 class GoogleScholarWebCrawler:
+    _instance = None
+    _lock = threading.Lock
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            with cls._lock:
+                if cls._instance is None:
+                    cls._instance = super().__new__(cls)
+        return cls._instance
+    
     def __init__(self):
+        if getattr(self, "_inited", False):
+            return
         """Initialize MyClass (no attributes by default)."""
-        pass
+        self._inited = True
 
-
+    def _year_limit(self, pub_year, yearGap = 2):
+        current_year = datetime.now().year
+        min_year = current_year - yearGap # Includes this year and previous 2 years by default
+        return int(pub_year) >= min_year
+            
+        
     # (was) def fetch_publications_new_member(self, scholar_ids, domain):
     def fetch_crawler_publications(self, scholarLinks: list[str]) -> list[PublicationDTO]:
         """
@@ -27,28 +44,20 @@ class GoogleScholarWebCrawler:
             list[PublicationDTO]: List of publications found for the scholar links.
         """
         crawled: set[PublicationDTO] = set()
-        current_year = datetime.now().year
-        min_year = current_year -2 # Includes this year and previous 2 years
         for link in scholarLinks:
             scholar_id = self.extract_scholar_id(link)
             try:
                 # Fetch author by scholar_id
                 author = scholarly.search_author_id(scholar_id)
                 author = scholarly.fill(author)
-                author_name = author.get("name")
                 time.sleep(5)
+                author_name = author.get("name")
                 for pub in author.get("publications", []):
-                    # if pub_counter >= 5:
-                    #     print(f"[INFO] Reached max of {5} publications for scholar_id {scholar_id}")
-                    #     break
                     pub_title = pub.get("bib", {}).get("title")
                     pub_year = pub.get("bib", {}).get("pub_year")
                     author_pub_id = pub.get("author_pub_id")
                     if pub_title is None or pub_year is None:
                         print(f"GOOGLE CRAWLER => publication title or year found empty")
-                        continue
-                    if int(pub_year) < min_year:
-                        print(f"Google Crawler => publication is not recent enough")
                         continue                
                     else:
                         # New publication -> create new pub
