@@ -1637,6 +1637,22 @@ class GetGalleryImages(Resource):
         except Exception as e:
             return jsonify({"error": str(e)})
 
+class DeleteGalleryImage(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User id is required")
+        parser.add_argument('image_name', type=str, required=True, help="Image name is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response = generator_system.delete_gallery_image(args['user_id'], args['domain'], args['image_name'])
+            if response.is_success():
+                return jsonify({"message": "Image deleted successfully", "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
 # Add resources to the API of lab
 api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')#
 api.add_resource(LoginWebsite, '/api/loginWebsite')#

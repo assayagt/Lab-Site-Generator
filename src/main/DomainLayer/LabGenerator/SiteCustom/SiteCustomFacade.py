@@ -230,6 +230,22 @@ class SiteCustomFacade:
                             continue
         return gallery_images
 
+    def delete_gallery_image(self, domain, image_filename):
+        """
+        Delete an image from the gallery.
+        """
+        self.error_if_domain_not_exist(domain)
+        site = self.sites[domain]
+        gallery_path = site.get_gallery_path()
+        if gallery_path:
+            image_path = os.path.join(gallery_path, image_filename)
+            if os.path.exists(image_path):
+                os.remove(image_path)
+            else:
+                raise Exception(ExceptionsEnum.IMAGE_NOT_FOUND.value)
+        else:
+            raise Exception(ExceptionsEnum.GALLERY_NOT_FOUND.value)
+
     def _load_all_siteCustoms(self):
         res = self.dal_controller.siteCustom_repo.find_all()
         print(res)
