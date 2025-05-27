@@ -37,3 +37,5 @@ class ExceptionsEnum(Enum):
     USER_IS_NOT_AN_ALUMNI = "User is not an alumni"
     AUTHOR_NOT_A_USER = "None of the authors is a member of website"
     PUBLICATION_ALREADY_WAITING = "This publication is already pending or rejected"
+    IMAGE_NOT_FOUND = "Image not found"
+    GALLERY_NOT_FOUND = "Gallery not found"
