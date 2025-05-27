@@ -832,3 +832,99 @@ Specific Style for the Cancel Button */
   align-items: center;
   white-space: nowrap;
 }
+
+.gallery_list_section {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.gallery_list {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.gallery_list_item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  transition: background-color 0.2s ease;
+}
+
+.gallery_list_item:last-child {
+  border-bottom: none;
+}
+
+.gallery_list_item:hover {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.gallery_list_item.pending {
+  background: rgba(255, 255, 255, 0.1);
+  border-left: 4px solid #535353;
+}
+
+.gallery_list_item.pending:hover {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.gallery_list_item.saved {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.gallery_list_item.saved:hover {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.image_name_clickable {
+  flex: 1;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  user-select: none;
+}
+
+.image_name_clickable:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+.remove_x_btn,
+.delete_x_btn {
+  background: none;
+  border: none;
+  color: #5c5c5c;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove_x_btn:hover,
+.delete_x_btn:hover {
+  color: rgb(0, 0, 0);
+  transform: scale(1.1);
+}
+
+.gallery_empty {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-style: italic;
+  background-color: #f8f9fa;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+  margin-top: 20px;
+}

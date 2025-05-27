@@ -21,6 +21,7 @@ export const WebsiteProvider = ({ children }) => {
       email: "",
       phone_num: "",
     },
+    gallery: [],
   };
 
   const [websiteData, setWebsiteData] = useState(initialWebsiteData);
