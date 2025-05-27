@@ -250,6 +250,14 @@ const ChooseComponentsPage = () => {
                       Contact Us
                     </li>
                   )}
+                  {components?.includes("Media") && (
+                    <li
+                      className={step === 10 ? "selected" : ""}
+                      onClick={() => setStep(10)}
+                    >
+                      Upload Pictures
+                    </li>
+                  )}
                   {components?.includes("Lab Members") && (
                     <li
                       className={step === 9 ? "selected" : ""}
@@ -366,8 +374,12 @@ const ChooseComponentsPage = () => {
                   <input type="checkbox" disabled />
                   News
                 </label>
-                <label className="disabled">
-                  <input type="checkbox" disabled />
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={components?.includes("Media")}
+                    onChange={() => handleComponentChange("Media")}
+                  />
                   Media
                 </label>
                 <label>
@@ -953,6 +965,35 @@ const ChooseComponentsPage = () => {
                 )}
               </div>
             )}
+            {step === 10 && (
+              <div className="file-upload-item">
+                <div className="media_section">
+                  <h3 className="file-upload_title">Gallery Images</h3>
+                  <div className="media_item">
+                    <label className="media_label">
+                      Upload Images
+                      <input
+                        className="media_input"
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={(e) => handleFileChange(e, "gallery")}
+                      />
+                    </label>
+                    <button
+                      className="media_button"
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleSubmit("gallery");
+                      }}
+                    >
+                      {mediaSaveStatus.gallery ? "Saved" : "Save"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -1001,6 +1042,7 @@ const ChooseComponentsPage = () => {
           </div>
         </div>
       )}
+
       <ErrorPopup message={errorMessage} onClose={() => setErrorMessage("")} />
       {isLoading && (
         <LoadingPopup message="Generating your website, please wait..." />

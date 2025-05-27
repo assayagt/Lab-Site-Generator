@@ -105,6 +105,14 @@ class WebsiteFacade:
         self.dal_controller.publications_repo.save(publication_dto=pubDTO, domain=domain)
         print(f"publication saved sucessfully")
 
+    def update_publication(self, domain, pubDTO):
+        website: Website = self.get_website(domain)
+        if not website:
+             raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        website.update_publication(pubDTO)
+        self.dal_controller.publications_repo.save(publication_dto=pubDTO, domain=domain)
+        print(f"publication updated succesfully")
+
     def set_publication_video_link(self, domain, publication_id, video_link):
         website = self.get_website(domain)
         if website is None:

@@ -52,9 +52,9 @@ class WebCrawlerFacade:
                 return authors
         return None
 
-    def fill_pub_details(self, scannedPub_keys: list[PublicationDTO], domain): #==============PubDTO===should be refactored to work with other crawlers
+    def fill_pub_details(self, pubDTOs: list[PublicationDTO]): # should be refactored to work with other crawlers
         """
             Calls getPublicationDTOs on each WebCrawler.
         """
         for crawler in self.web_crawlers:
-            crawler.fill_details(publicationDTOs=scannedPub_keys)
+            crawler.fill_details(publicationDTOs=pubDTOs)

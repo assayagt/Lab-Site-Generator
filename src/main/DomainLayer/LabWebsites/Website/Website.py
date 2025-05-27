@@ -27,6 +27,21 @@ class Website:
                         else:
                             raise Exception(ExceptionsEnum.PUBLICATION_ALREADY_WAITING.value)
         print("publication added to website succesffully")
+
+    def update_publication(self, publicationDTO: PublicationDTO):
+        # Remove any existing entries equal to publicationDTO
+        for author_email, pubs in list(self.members_publications.items()):
+            # filter out old instances
+            new_list = [p for p in pubs if p != publicationDTO]
+            if new_list:
+                self.members_publications[author_email] = new_list
+            else:
+                # no publications left for this email → remove the key
+                del self.members_publications[author_email]
+
+        # Re-add the updated DTO under its current authors
+        self.create_publication(publicationDTO, publicationDTO.author_emails)
+                    
             
 
     def add_publication_manually(self, publication_link, publication_details, git_link, video_link, presentation_link,
@@ -137,15 +152,15 @@ class Website:
                 if publication.get_paper_id() == paper_id:
                     return publication
         
-        # Lazy-load from DB if not found
-        publication = DAL_controller().publications_repo.find_by_id(paper_id=paper_id)
-        if publication:
-            for author in publication.author_emails:
-                if author not in self.members_publications:
-                    self.members_publications[author] = []
-                if publication not in self.members_publications[author]:
-                    self.members_publications[author].append(publication)
-            return publication
+        # # Lazy-load from DB if not found (we don't do that anymore)
+        # publication = DAL_controller().publications_repo.find_by_id(paper_id=paper_id)
+        # if publication:
+        #     for author in publication.author_emails:
+        #         if author not in self.members_publications:
+        #             self.members_publications[author] = []
+        #         if publication not in self.members_publications[author]:
+        #             self.members_publications[author].append(publication)
+        #     return publication
         return None
 
     def final_approve_publication(self, paper_id) -> PublicationDTO:
