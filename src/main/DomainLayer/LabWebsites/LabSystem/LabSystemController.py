@@ -715,3 +715,18 @@ class LabSystemController:
                                                                                website_domain, emailOnly=True)
         return len(member_pubs)
 
+    def add_news_record(self, user_id, domain, text, link, date):
+        """
+        Add a news record to the website.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(user_id)
+        userFacade.error_if_user_not_logged_in(user_id)
+        self.websiteFacade.add_news_record(domain, text, link, date)
+
+    def get_news(self, domain):
+        """
+        Get all news records of the website.
+        """
+        return self.websiteFacade.get_news(domain)
+

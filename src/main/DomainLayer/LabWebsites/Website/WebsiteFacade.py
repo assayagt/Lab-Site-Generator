@@ -1,5 +1,7 @@
 import threading
+import uuid
 
+from src.DAL.DTOs.NewsRecord_dto import NewsRecord_dto
 from src.main.DomainLayer.LabWebsites.Website.ContactInfo import ContactInfo
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.main.DomainLayer.LabWebsites.Website.Website import Website
@@ -211,6 +213,22 @@ class WebsiteFacade:
         if website is None:
             raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
         return website.get_contact_us()
+
+    def add_news_record(self, domain, text, link, date):
+        """
+        Adds a news record to the website.
+        """
+        website = self.get_website(domain)
+        if website is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        news_record_dto = NewsRecord_dto(
+            id=str(uuid.uuid4()),
+            domain=domain,
+            text=text,
+            link=link,
+            date=date
+        )
+        self.dal_controller.News_repo.save_news_record(news_record_dto=news_record_dto)
     
     def _load_website(self, domain):
         dto = self.dal_controller.website_repo.find_by_domain(domain=domain)
@@ -227,6 +245,8 @@ class WebsiteFacade:
         website = Website(domain=dto.domain, contact_info=contact_info, about_us=dto.about_us)
         pubs = self.dal_controller.publications_repo.find_by_domain(domain=dto.domain)
         website.load_pub_dtos(pub_list=pubs)
+        news = self.dal_controller.News_repo.find_news_by_domain(domain=dto.domain)
+        website.set_news(news_list=news)
         self.websites[domain] = website
     
     def _load_all_data(self):
@@ -243,6 +263,8 @@ class WebsiteFacade:
             website = Website(domain=dto.domain, contact_info=contact_info, about_us=dto.about_us)
             pubs = self.dal_controller.publications_repo.find_by_domain(domain=dto.domain)
             website.load_pub_dtos(pub_list=pubs)
+            news = self.dal_controller.News_repo.find_news_by_domain(domain=dto.domain)
+            website.set_news(news_list=news)
             self.websites[website.domain] = website
     
     def remove_website_data(self, domain):
@@ -262,3 +284,13 @@ class WebsiteFacade:
         Resets the entire system by clearing all stored websites.
         """
         self.websites.clear()
+
+    def get_news(self, domain):
+        """
+        Retrieves all news records for a specific website domain.
+        """
+        website = self.get_website(domain)
+        if website is None:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        news = website.get_news()
+        return [news_record.get_json() for news_record in news]
