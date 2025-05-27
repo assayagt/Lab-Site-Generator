@@ -79,6 +79,9 @@ const ChooseComponentsPage = () => {
     save,
     formData,
     setFormData,
+    previewImage,
+    setPreviewImage,
+    handleDeleteGalleryImage,
   } = useChooseComponents();
 
   // Fix leaflet icon issues (put this near the top of the component file)
@@ -1064,22 +1067,16 @@ const ChooseComponentsPage = () => {
                           <div key={index} className="gallery_list_item saved">
                             <span
                               className="image_name_clickable"
-                              onClick={() => window.open(image.url, "_blank")}
-                              title={`Click to preview ${image.name}`}
+                              onClick={() => setPreviewImage(image.data_url)}
+                              title={`Click to preview ${image.filename}`}
                             >
-                              🖼️ {image.name}
+                              📄 {image.filename}
                             </span>
                             <button
                               className="delete_x_btn"
-                              onClick={() => {
-                                const confirmed = window.confirm(
-                                  `Are you sure you want to delete "${image.name}"?`
-                                );
-                                if (confirmed) {
-                                  // Add your delete API call here
-                                  console.log("Delete image:", image.name);
-                                }
-                              }}
+                              onClick={() =>
+                                handleDeleteGalleryImage(image.filename)
+                              }
                               title="Delete image"
                             >
                               ✕
@@ -1102,6 +1099,22 @@ const ChooseComponentsPage = () => {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+      {previewImage && (
+        <div
+          className="overlay"
+          onClick={() => setPreviewImage(null)} // click anywhere to close
+        >
+          <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
+            <img src={previewImage} alt="Preview" />
+            <button
+              className="close-button"
+              onClick={() => setPreviewImage(null)}
+            >
+              ✕
+            </button>
           </div>
         </div>
       )}

@@ -73,7 +73,7 @@ const MyAccountPage = () => {
         email: "",
         phone_num: "",
       },
-      gallery: data?.data?.gallery || [], // Add gallery array here
+      gallery: data?.data?.gallery_images || [], // Add gallery array here
     });
 
     navigate("/choose-components");

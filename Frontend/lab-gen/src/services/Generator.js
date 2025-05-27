@@ -364,3 +364,18 @@ export const removeAlumni = async (managerUserId, alumniEmail, domain) => {
     return null;
   }
 };
+
+export const deleteGalleryImage = async (userId, domain, imageName) => {
+  try {
+    const response = await axios.post(`${baseApiUrl}deleteGalleryImage`, {
+      user_id: userId,
+      image_name: imageName,
+      domain: domain,
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting gallery image:", error);
+    return { response: "false", error: error.message };
+  }
+};
