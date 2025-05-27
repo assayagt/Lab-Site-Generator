@@ -287,6 +287,18 @@ class DatabaseManager:
         '''
         self.execute_script(notifications_table)
 
+        News_table = '''
+        CREATE TABLE IF NOT EXISTS news(
+            id TEXT PRIMARY KEY,
+            domain TEXT,
+            text TEXT,
+            link TEXT,
+            news_date TEXT,
+            FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE
+        );
+        '''
+        self.execute_script(News_table)
+
         self.logger.info("Database tables created successfully")
 
     def close(self):
@@ -318,7 +330,8 @@ class DatabaseManager:
             "member_emails",
             "websites",
             "site_customs",
-            "publications"
+            "publications",
+            "news"
         ]
 
         conn = self.connect()

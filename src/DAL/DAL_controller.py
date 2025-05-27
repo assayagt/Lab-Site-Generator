@@ -7,6 +7,7 @@ from src.DAL.Repositories.Publications_repo import PublicationRepository
 from src.DAL.Repositories.SiteCustoms_repo import SiteCustomsRepository
 from src.DAL.Repositories.Websites_repo import WebsiteRepository
 from src.DAL.database_manager import DatabaseManager
+from  src.DAL.Repositories.News_repo import News_repo
 
 class DAL_controller:
     _instance = None
@@ -30,6 +31,7 @@ class DAL_controller:
         self.website_repo = WebsiteRepository(db_manager=self._db_manager)
         self.notifications_repo = NotificationRepository(db_manager=self._db_manager)
         self.LabMembers_repo = LabMembersRepository(db_manager=self._db_manager)
+        self.News_repo = News_repo(db_manager=self._db_manager)
         self._initialized = True
 
     @classmethod
