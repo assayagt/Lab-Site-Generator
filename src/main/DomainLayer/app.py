@@ -1793,6 +1793,7 @@ api.add_resource(UploadGalleryImages, '/api/uploadGalleryImages')
 api.add_resource(GetGalleryImages, '/api/getGallery')
 api.add_resource(DeleteGalleryImage, '/api/deleteGalleryImage')
 api.add_resource(AddNewsRecord, '/api/addNewsRecord')
+api.add_resource(UploadProfilePicture, '/api/uploadProfilePicture')
 ##
 api.add_resource(CrawlPublicationsForMember, '/api/CrawlPublicationsForMember')
 
