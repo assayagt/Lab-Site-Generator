@@ -204,6 +204,7 @@ class DatabaseManager:
             full_name TEXT,
             degree TEXT,
             bio TEXT,
+            profile_picture TEXT,
             PRIMARY KEY (domain, email),
             FOREIGN KEY (domain) REFERENCES site_customs (domain) ON DELETE CASCADE
         );

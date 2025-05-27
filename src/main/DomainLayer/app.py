@@ -1675,6 +1675,51 @@ class AddNewsRecord(Resource):
         except Exception as e:
             return jsonify({"error": str(e)})
 
+
+class UploadProfilePicture(Resource):
+    def post(self):
+        try:
+            domain = request.form['domain']
+            user_id = request.form['user_id']
+
+            website_folder = os.path.join(GENERATED_WEBSITES_FOLDER, domain)
+            profile_pictures_folder = os.path.join(website_folder, 'profile_pictures')
+
+            if not os.path.exists(profile_pictures_folder):
+                os.makedirs(profile_pictures_folder)
+
+            file = request.files['profile_picture']
+            if not file:
+                return {
+                    "error": "No file provided"
+                }, 400
+
+            extension = os.path.splitext(file.filename)[1].lower()
+
+            # Only allow image files
+            if extension not in ['.jpg', '.jpeg', '.png', '.gif']:
+                return {
+                    "error": "Invalid file type for profile picture. Allowed: JPG, JPEG, PNG, GIF"
+                }, 400
+
+            # Generate a unique filename using user_id and timestamp
+            timestamp = int(time.time() * 1000)
+            file_path = os.path.join(profile_pictures_folder, f"profile_{timestamp}{extension}")
+
+            response = lab_system_service.add_profile_picture(user_id, domain, file_path)
+
+            file.save(file_path)
+
+            return {
+                "message": "Profile picture uploaded successfully!",
+                "filename": os.path.basename(file_path)
+            }, 200
+
+        except Exception as e:
+            return {
+                "error": f"An error occurred: {str(e)}"
+            }, 500
+
 # Add resources to the API of lab
 api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')#
 api.add_resource(LoginWebsite, '/api/loginWebsite')#
@@ -1748,6 +1793,7 @@ api.add_resource(UploadGalleryImages, '/api/uploadGalleryImages')
 api.add_resource(GetGalleryImages, '/api/getGallery')
 api.add_resource(DeleteGalleryImage, '/api/deleteGalleryImage')
 api.add_resource(AddNewsRecord, '/api/addNewsRecord')
+api.add_resource(UploadProfilePicture, '/api/uploadProfilePicture')
 ##
 api.add_resource(CrawlPublicationsForMember, '/api/CrawlPublicationsForMember')
 
