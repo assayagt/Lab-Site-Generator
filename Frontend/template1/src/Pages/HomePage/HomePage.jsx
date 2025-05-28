@@ -40,9 +40,11 @@ function HomePage(props) {
               <div className="aboutUsContainer">
                 <AboutUs info={props.about_us} />
               </div>
-              <div className="newsWrapper">
-                <NewsSection info={props.news} domain={props.domain} />
-              </div>
+              {props.news && (
+                <div className="newsWrapper">
+                  <NewsSection info={props.news} domain={props.domain} />
+                </div>
+              )}
             </div>
           )}
 

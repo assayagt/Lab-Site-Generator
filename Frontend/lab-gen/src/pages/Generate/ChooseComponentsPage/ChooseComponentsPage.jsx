@@ -375,8 +375,12 @@ const ChooseComponentsPage = () => {
                   />
                   Publications
                 </label>
-                <label className="disabled">
-                  <input type="checkbox" disabled />
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={components?.includes("News")}
+                    onChange={() => handleComponentChange("News")}
+                  />
                   News
                 </label>
                 <label>

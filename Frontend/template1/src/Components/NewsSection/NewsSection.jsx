@@ -100,7 +100,7 @@ const NewsSection = (props) => {
                 onClick={() => setShowAddForm(false)}
               >
                 <div
-                  className="popup-content"
+                  className="popup-content-news"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <h3>Add New News Item</h3>
