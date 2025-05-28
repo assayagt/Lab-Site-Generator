@@ -29,47 +29,47 @@ class LabSystemController:
         self.notificationsFacade = NotificationsFacade()
         self.allWebsitesUserFacade = AllWebsitesUserFacade()
 
-        # ===== new last-access tracking and eviction mechanism ====
-        self._last_access: dict[str, datetime] = {} # domain -> last accessed map
-        self._stop_eviction = threading.Event()
-        self._start_eviction_thread()
-        # patch the two "get" methods so they auto-touch on every access
-        self._wrap_facade_accessors()
+        # # ===== new last-access tracking and eviction mechanism ====
+        # self._last_access: dict[str, datetime] = {} # domain -> last accessed map
+        # self._stop_eviction = threading.Event()
+        # self._start_eviction_thread()
+        # # patch the two "get" methods so they auto-touch on every access
+        # self._wrap_facade_accessors()
 
         self._initialized = True
 
-    def _start_eviction_thread(self):
-        def _evict_loop():
-            while not self._start_eviction.is_set():
-                cutoff = datetime.now() - timedelta(minutes=20)
-                # find stale domains
-                stale = [d for d, ts in self._last_access.itmes() if ts < cutoff]
-                for domain in stale:
-                    # remove from both facades
-                    self.websiteFacade.remove_website_data(domain)
-                    self.allWebsitesUserFacade.remove_website_data(domain)
-                    del self._last_access[domain]
-                time.sleep(60)
-        t = threading.Thread(target=_evict_loop, daemon=True)
-        t.start()
+    # def _start_eviction_thread(self):
+    #     def _evict_loop():
+    #         while not self._start_eviction.is_set():
+    #             cutoff = datetime.now() - timedelta(minutes=20)
+    #             # find stale domains
+    #             stale = [d for d, ts in self._last_access.itmes() if ts < cutoff]
+    #             for domain in stale:
+    #                 # remove from both facades
+    #                 self.websiteFacade.remove_website_data(domain)
+    #                 self.allWebsitesUserFacade.remove_website_data(domain)
+    #                 del self._last_access[domain]
+    #             time.sleep(60)
+    #     t = threading.Thread(target=_evict_loop, daemon=True)
+    #     t.start()
 
-    def _touch(self, domain: str):
-        """Record that 'domain' was just accessed."""
-        self._last_access[domain] = datetime.now()
+    # def _touch(self, domain: str):
+    #     """Record that 'domain' was just accessed."""
+    #     self._last_access[domain] = datetime.now()
 
-    def _wrap_facade_accessors(self):
-        # wrap WebsiteFacade.get_website
-        orig_ws = self.websiteFacade.get_website
-        def wrapped_get_website(domain):
-            self._touch(domain)
-            return orig_ws(domain)
-        self.websiteFacade.get_website = wrapped_get_website
-        # wrap AllWebsiteUserFacade.getUserFacadeByDomain
-        orig_uf = self.allWebsitesUserFacade.getUserFacadeByDomain
-        def wrapped_get_userFacade(domain):
-            self._touch(domain)
-            return orig_uf(domain)
-        self.allWebsitesUserFacade.getUserFacadeByDomain = wrapped_get_userFacade
+    # def _wrap_facade_accessors(self):
+    #     # wrap WebsiteFacade.get_website
+    #     orig_ws = self.websiteFacade.get_website
+    #     def wrapped_get_website(domain):
+    #         self._touch(domain)
+    #         return orig_ws(domain)
+    #     self.websiteFacade.get_website = wrapped_get_website
+    #     # wrap AllWebsiteUserFacade.getUserFacadeByDomain
+    #     orig_uf = self.allWebsitesUserFacade.getUserFacadeByDomain
+    #     def wrapped_get_userFacade(domain):
+    #         self._touch(domain)
+    #         return orig_uf(domain)
+    #     self.allWebsitesUserFacade.getUserFacadeByDomain = wrapped_get_userFacade
 
 
     @classmethod
@@ -320,9 +320,18 @@ class LabSystemController:
         userFacade.error_if_user_is_not_manager(userId)
         publication_id = self.mark_as_read(userId, domain, notification_id)
         pub_dto = self.websiteFacade.get_publication_by_paper_id(domain, publication_id)
-        self.webCrawlerFacade.fill_pub_details([pub_dto])
-        self.websiteFacade.update_publication(domain, pub_dto)
-        self.websiteFacade.final_approve_publication(domain, publication_id)
+        future = self.webCrawlerFacade.fill_async([pub_dto])
+        def _on_done(fut):
+            try:
+                filled_pubs = fut.result()
+                filled_pub = filled_pubs[0]
+                self.websiteFacade.update_publication(domain, pub_dto)
+                self.websiteFacade.final_approve_publication(domain, publication_id)
+            except Exception as e:
+                print(f"[ERROR] final approve callback failed: {e}")
+        future.add_done_callback(_on_done)
+        return future
+        
         
         
     def final_approve_multiple_publications_by_manager(self, userId, domain, publicationIds:list[str]):
@@ -333,11 +342,25 @@ class LabSystemController:
         userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
         userFacade.error_if_user_is_not_manager(userId)
-        for pubId in publicationIds:
-            pub_dto = self.websiteFacade.get_publication_by_paper_id(domain,pubId)
-            self.webCrawlerFacade.fill_pub_details([pub_dto])
-            self.websiteFacade.update_publication(domain, pub_dto)
-            self.websiteFacade.final_approve_publication(domain, pubId)
+
+        pub_dtos = [self.websiteFacade.get_publication_by_paper_id(domain, pubId)
+                     for pubId in publicationIds]
+        future = self.webCrawlerFacade.fill_async(pubs=pub_dtos)
+        def _on_done(fut):
+            try:
+                filled_pubs = fut.result()
+                for pub in filled_pubs:
+                    self.websiteFacade.update_publication(domain, pub)
+                    self.websiteFacade.final_approve_publication(domain, pub.get_paper_id())
+            except Exception as e:
+                print(f"[ERROR] final-approve-multiple callback failed: {e}")
+        future.add_done_callback(_on_done)
+        return future
+        # for pubId in publicationIds:
+        #     pub_dto = self.websiteFacade.get_publication_by_paper_id(domain,pubId)
+        #     self.webCrawlerFacade.fill_pub_details([pub_dto])
+        #     self.websiteFacade.update_publication(domain, pub_dto)
+        #     self.websiteFacade.final_approve_publication(domain, pubId)
 
     def reject_publication(self, userId, domain, notification_id):
         """
@@ -710,27 +733,34 @@ class LabSystemController:
         website = self.websiteFacade.get_website(website_domain)
         member_scholar_links = self.allWebsitesUserFacade.get_active_members_scholarLinks(website_domain)
         print(member_scholar_links)
-        publist = self.webCrawlerFacade.fetch_publications(member_scholar_links)
-        for pub in publist:
-            if not website.check_publication_exist(pub):
-                print(pub.authors)
-                authorEmails = []
-                for author in pub.authors:
-                    email = self.allWebsitesUserFacade.getMemberEmailByName(author=author, domain=website_domain)
-                    if email:
-                        print(f"found: {email}")
-                        authorEmails.append(email)
-                if not authorEmails:
-                    continue
-                pub.set_author_emails(authorEmails)
-                pub.set_domain(website_domain)
-                self.websiteFacade.create_new_publication_fromDTO(domain=website_domain, pubDTO=pub, author_emails=authorEmails)
-                print("added pub successfully")
-                if with_notifications:
-                     # send notifications to the website authors about the new publications, for initial approval.
-                    for authorEmail in authorEmails:
-                        self.notificationsFacade.send_publication_notification(pub, authorEmail,
-                                                                              website_domain, emailOnly=True)
+        future = self.webCrawlerFacade.fetch_async(member_scholar_links)
+        def _on_done(fut):
+            try:
+                publist = fut.result()
+                for pub in publist:
+                    if not website.check_publication_exist(pub):
+                        print(pub.authors)
+                        authorEmails = []
+                        for author in pub.authors:
+                            email = self.allWebsitesUserFacade.getMemberEmailByName(author=author, domain=website_domain)
+                            if email:
+                                print(f"found: {email}")
+                                authorEmails.append(email)
+                        if not authorEmails:
+                            continue
+                        pub.set_author_emails(authorEmails)
+                        pub.set_domain(website_domain)
+                        self.websiteFacade.create_new_publication_fromDTO(domain=website_domain, pubDTO=pub, author_emails=authorEmails)
+                        print("added pub successfully")
+                        if with_notifications:
+                            # send notifications to the website authors about the new publications, for initial approval.
+                            for authorEmail in authorEmails:
+                                self.notificationsFacade.send_publication_notification(pub, authorEmail,
+                                                                                    website_domain, emailOnly=True)
+            except Exception as e:
+                print(f"[ERROR] post-crawl processing failed: {e}")
+        future.add_done_callback(_on_done)
+        return future
                         
 
     def crawl_publications_for_labMember(self, website_domain, userId, with_notifications=True):
@@ -742,20 +772,27 @@ class LabSystemController:
         scholar_link = self.allWebsitesUserFacade.get_scholar_link_by_email(domain=website_domain, email=email)
         if not scholar_link:
             return
-        member_pubs = self.webCrawlerFacade.fetch_publications([scholar_link])
-        for pub in member_pubs:
-            if not website.check_publication_exist(pub):
-                authorEmails = []
-                for author in pub.authors:
-                    email = self.allWebsitesUserFacade.getMemberEmailByName(author=author, domain=website_domain)
-                    if email:
-                        authorEmails.append(email)
-                pub.set_author_emails(author_emails=authorEmails)
-                website.create_publication(publicationDTO=pub, authors_emails=authorEmails)
-                if with_notifications:
-                     # send notifications to the website authors about the new publications, for initial approve
-                    for authorEmail in authorEmails:
-                        self.notificationsFacade.send_publication_notification(pub, authorEmail,
-                                                                               website_domain, emailOnly=True)
-        return len(member_pubs)
+        fetch_fut = self.webCrawlerFacade.fetch_async([scholar_link])
+        def _on_done(fut):
+            try:
+                member_pubs = fut.result()
+                for pub in member_pubs:
+                    if not website.check_publication_exist(pub):
+                        authorEmails = []
+                        for author in pub.authors:
+                            email = self.allWebsitesUserFacade.getMemberEmailByName(author=author, domain=website_domain)
+                            if email:
+                                authorEmails.append(email)
+                        pub.set_author_emails(author_emails=authorEmails)
+                        website.create_publication(publicationDTO=pub, authors_emails=authorEmails)
+                        if with_notifications:
+                            # send notifications to the website authors about the new publications, for initial approve
+                            for authorEmail in authorEmails:
+                                self.notificationsFacade.send_publication_notification(pub, authorEmail,
+                                                                                    website_domain, emailOnly=True)
+            except Exception as e:
+                print(f"[ERROR] crawl failed for {scholar_link}: {e}")
+                return
+        fetch_fut.add_done_callback(_on_done)
+        return fetch_fut
 

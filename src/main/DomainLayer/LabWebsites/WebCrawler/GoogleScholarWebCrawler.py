@@ -91,20 +91,25 @@ class GoogleScholarWebCrawler:
                 filled_pub = scholarly.fill(stub)
                 time.sleep(5)
                 bib = filled_pub.get("bib", {})
+                # authors
                 authors_str = bib.get("author", "")
                 if authors_str:
                     authors_list = [a.strip() for a in authors_str.split(" and ")]
                     pub.set_authors(authors=authors_list)
-
-                desc = filled_pub.get("bib", {}).get("abstract")
-                if desc:
-                    pub.set_description(desc)
-                # we can later fetch as many information as we need
-
-
-
+                # description
+                if bib.get("abstract"):
+                    pub.set_description(bib["abstract"])
+                # ArXiv/PDF link (if present)
+                eprint = filled_pub.get("eprint_url")
+                if eprint:
+                    pub.set_arxiv_link(eprint)
+                # bibTex *an additional access to Google Scholar
+                bibtex_str = filled_pub.bibtex
+                if bibtex_str:
+                    pub.set_bibtex(bibtex_str)
+                time.sleep(5)
             except Exception as e:
-                continue
+                 print(f"[WARN] could not refill '{pub.title}': {e}")
                 
     
     def build_publication_url(self, scholar_id, author_pub_id):
@@ -134,6 +139,7 @@ class GoogleScholarWebCrawler:
         except Exception as e:
             print(f"Error occurred: {e}")
             return []
+        
 
     def get_details_by_link(self, link):
         try:
