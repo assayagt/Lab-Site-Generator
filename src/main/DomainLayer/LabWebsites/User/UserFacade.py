@@ -26,8 +26,6 @@ class UserFacade:
     def __init__(self, domain):
         if self._initialized:
             return
-
-
         self.domain = domain
         self.users = {}
         self.members = {}
@@ -37,7 +35,6 @@ class UserFacade:
         self.emails_requests_to_register = {}
         self.dal_controller = DAL_controller()
         self._load_data()
-
         self._initialized = True
 
     @classmethod

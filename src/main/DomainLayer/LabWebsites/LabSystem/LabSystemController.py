@@ -1,5 +1,6 @@
 import threading
-from datetime import datetime
+import time
+from datetime import datetime, timedelta
 import re
 from src.main.DomainLayer.LabWebsites.WebCrawler.WebCrawlerFacade import WebCrawlerFacade
 from src.main.DomainLayer.LabWebsites.Website.WebsiteFacade import WebsiteFacade
@@ -28,7 +29,48 @@ class LabSystemController:
         self.notificationsFacade = NotificationsFacade()
         self.allWebsitesUserFacade = AllWebsitesUserFacade()
 
+        # ===== new last-access tracking and eviction mechanism ====
+        self._last_access: dict[str, datetime] = {} # domain -> last accessed map
+        self._stop_eviction = threading.Event()
+        self._start_eviction_thread()
+        # patch the two "get" methods so they auto-touch on every access
+        self._wrap_facade_accessors()
+
         self._initialized = True
+
+    def _start_eviction_thread(self):
+        def _evict_loop():
+            while not self._start_eviction.is_set():
+                cutoff = datetime.now() - timedelta(minutes=20)
+                # find stale domains
+                stale = [d for d, ts in self._last_access.itmes() if ts < cutoff]
+                for domain in stale:
+                    # remove from both facades
+                    self.websiteFacade.remove_website_data(domain)
+                    self.allWebsitesUserFacade.remove_website_data(domain)
+                    del self._last_access[domain]
+                time.sleep(60)
+        t = threading.Thread(target=_evict_loop, daemon=True)
+        t.start()
+
+    def _touch(self, domain: str):
+        """Record that 'domain' was just accessed."""
+        self._last_access[domain] = datetime.now()
+
+    def _wrap_facade_accessors(self):
+        # wrap WebsiteFacade.get_website
+        orig_ws = self.websiteFacade.get_website
+        def wrapped_get_website(domain):
+            self._touch(domain)
+            return orig_ws(domain)
+        self.websiteFacade.get_website = wrapped_get_website
+        # wrap AllWebsiteUserFacade.getUserFacadeByDomain
+        orig_uf = self.allWebsitesUserFacade.getUserFacadeByDomain
+        def wrapped_get_userFacade(domain):
+            self._touch(domain)
+            return orig_uf(domain)
+        self.allWebsitesUserFacade.getUserFacadeByDomain = wrapped_get_userFacade
+
 
     @classmethod
     def get_instance(cls):
@@ -38,6 +80,8 @@ class LabSystemController:
     def reset_instance(cls):
         """Reset the singleton instance. Useful for unit tests."""
         with cls._instance_lock:
+            if cls._instance:
+                cls._instance._stop_eviction.set()
             cls._instance = None
 
     def enter_lab_website(self, domain):
@@ -639,7 +683,7 @@ class LabSystemController:
         """
         Delete a website.
         """
-        self.websiteFacade.remove_website_data(domain)
+        self.websiteFacade.remove_website_data(domain) # Ask Tomer about deleting publications from websites
         self.notificationsFacade.remove_website_data(domain)
         self.allWebsitesUserFacade.remove_website_data(domain)
 

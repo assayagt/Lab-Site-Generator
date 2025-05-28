@@ -78,7 +78,7 @@ class GoogleScholarWebCrawler:
                 continue
         return list(crawled)
 
-    def fill_details(self, publicationDTOs: list[PublicationDTO]):
+    def fill_details(self, publicationDTOs: list[PublicationDTO]): #TODO: complete this function to also fill bibtex and arxiv, also think of how can we implement a queue of fill / crawl requests.
         """
         This method accepts a list of PublicationDTO where and fills description and authors into it
         """
@@ -99,7 +99,7 @@ class GoogleScholarWebCrawler:
                 desc = filled_pub.get("bib", {}).get("abstract")
                 if desc:
                     pub.set_description(desc)
-                # we can later fetch as many information as we need 
+                # we can later fetch as many information as we need
 
 
 
