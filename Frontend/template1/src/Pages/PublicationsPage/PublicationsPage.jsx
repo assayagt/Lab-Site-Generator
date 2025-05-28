@@ -182,6 +182,19 @@ const PublicationPage = () => {
       if (res?.response === "true") {
         setPopupMessage("Changes saved successfully!");
         setSaveStatus((prev) => ({ ...prev, [paperId]: "Saved" }));
+        setPublications((prev) =>
+          prev.map((pub) =>
+            pub.paper_id === paperId
+              ? {
+                  ...pub,
+                  git_link: updatedLinks.git_link ?? pub.git_link,
+                  presentation_link:
+                    updatedLinks.presentation_link ?? pub.presentation_link,
+                  video_link: updatedLinks.video ?? pub.video_link,
+                }
+              : pub
+          )
+        );
       } else {
         if (!success) {
           if (updatedLinks?.git_link === "") {
@@ -209,7 +222,7 @@ const PublicationPage = () => {
       const timer = setTimeout(() => {
         setPopupMessage("");
         setErrorMessage("");
-      }, 3000);
+      }, 300000000);
       return () => clearTimeout(timer);
     }
   }, [popupMessage, errorMessage]);
@@ -531,7 +544,12 @@ const PublicationPage = () => {
               X
             </button>
             <h2 className="modal__title">Add New Publication</h2>
-            <AddPublicationForm onSuccess={() => setShowAddForm(false)} />
+            <AddPublicationForm
+              onSuccess={() => {
+                setShowAddForm(false);
+                window.location.reload();
+              }}
+            />
           </div>
         </div>
       )}

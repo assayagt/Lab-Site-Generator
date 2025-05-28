@@ -766,9 +766,9 @@ class EnterLabWebsite(Resource):
             response = lab_system_service.enter_lab_website(domain)
             if response.is_success():
                 return jsonify({"message": response.get_message(), "user_id": response.get_data() , "response": "true"})
-            return jsonify({"message": response.get_message(), "response": "false"}), 400
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}"})
 
 
 

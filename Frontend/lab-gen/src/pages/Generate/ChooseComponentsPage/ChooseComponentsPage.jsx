@@ -77,6 +77,11 @@ const ChooseComponentsPage = () => {
     googleLink,
     setSave,
     save,
+    formData,
+    setFormData,
+    previewImage,
+    setPreviewImage,
+    handleDeleteGalleryImage,
   } = useChooseComponents();
 
   // Fix leaflet icon issues (put this near the top of the component file)
@@ -370,8 +375,12 @@ const ChooseComponentsPage = () => {
                   />
                   Publications
                 </label>
-                <label className="disabled">
-                  <input type="checkbox" disabled />
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={components?.includes("News")}
+                    onChange={() => handleComponentChange("News")}
+                  />
                   News
                 </label>
                 <label>
@@ -969,6 +978,8 @@ const ChooseComponentsPage = () => {
               <div className="file-upload-item">
                 <div className="media_section">
                   <h3 className="file-upload_title">Gallery Images</h3>
+
+                  {/* Upload new images */}
                   <div className="media_item">
                     <label className="media_label">
                       Upload Images
@@ -991,9 +1002,123 @@ const ChooseComponentsPage = () => {
                       {mediaSaveStatus.gallery ? "Saved" : "Save"}
                     </button>
                   </div>
+
+                  {/* Display selected files (before saving) */}
+                  {formData?.files?.gallery &&
+                    formData.files.gallery.length > 0 && (
+                      <div className="gallery_list_section">
+                        <h4>
+                          Selected Images ({formData.files.gallery.length})
+                        </h4>
+                        <div className="gallery_list">
+                          {Array.from(formData.files.gallery).map(
+                            (file, index) => {
+                              const imageUrl = URL.createObjectURL(file);
+                              return (
+                                <div
+                                  key={index}
+                                  className="gallery_list_item pending"
+                                >
+                                  <span
+                                    className="image_name_clickable"
+                                    onClick={() =>
+                                      window.open(imageUrl, "_blank")
+                                    }
+                                    title={`Click to preview ${file.name}`}
+                                  >
+                                    📄 {file.name}
+                                  </span>
+                                  <button
+                                    className="remove_x_btn"
+                                    onClick={() => {
+                                      // Remove this file from selection
+                                      const newFiles = Array.from(
+                                        formData.files.gallery
+                                      ).filter((_, i) => i !== index);
+                                      setFormData((prev) => ({
+                                        ...prev,
+                                        files: {
+                                          ...prev.files,
+                                          gallery:
+                                            newFiles.length > 0
+                                              ? newFiles
+                                              : null,
+                                        },
+                                      }));
+                                      // Clean up the object URL
+                                      URL.revokeObjectURL(imageUrl);
+                                    }}
+                                    title="Remove from selection"
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                              );
+                            }
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                  {/* Display saved gallery images from database */}
+                  {websiteData?.gallery && websiteData.gallery.length > 0 && (
+                    <div className="gallery_list_section">
+                      <h4>
+                        Saved Gallery Images ({websiteData.gallery.length})
+                      </h4>
+                      <div className="gallery_list">
+                        {websiteData.gallery.map((image, index) => (
+                          <div key={index} className="gallery_list_item saved">
+                            <span
+                              className="image_name_clickable"
+                              onClick={() => setPreviewImage(image.data_url)}
+                              title={`Click to preview ${image.filename}`}
+                            >
+                              📄 {image.filename}
+                            </span>
+                            <button
+                              className="delete_x_btn"
+                              onClick={() =>
+                                handleDeleteGalleryImage(image.filename)
+                              }
+                              title="Delete image"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Show message if no images */}
+                  {(!formData?.files?.gallery ||
+                    formData.files.gallery.length === 0) &&
+                    (!websiteData?.gallery ||
+                      websiteData.gallery.length === 0) && (
+                      <div className="gallery_empty">
+                        <p>No images selected or uploaded yet.</p>
+                      </div>
+                    )}
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+      {previewImage && (
+        <div
+          className="overlay"
+          onClick={() => setPreviewImage(null)} // click anywhere to close
+        >
+          <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
+            <img src={previewImage} alt="Preview" />
+            <button
+              className="close-button"
+              onClick={() => setPreviewImage(null)}
+            >
+              ✕
+            </button>
           </div>
         </div>
       )}

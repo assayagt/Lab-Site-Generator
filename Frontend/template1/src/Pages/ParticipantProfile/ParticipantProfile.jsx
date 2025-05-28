@@ -251,7 +251,7 @@ const ParticipantProfile = () => {
         <div className="profile-info-section">
           <div className="profile-photo-container">
             <img
-              src={participant.photo || defaultProfileIcon}
+              src={participant.profile_picture || defaultProfileIcon}
               alt={participant.fullName}
               className="profile-photo"
             />

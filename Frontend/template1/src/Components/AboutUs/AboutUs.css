@@ -8,7 +8,7 @@
   color: #090c10;
   transition: transform 0.3s ease-in-out;
   width: 100%;
-  max-width: 400px; /* Adjust width as needed */
+  /* max-width: 400px;  */
 }
 
 /* About Us Title - Always Visible */
@@ -23,9 +23,11 @@
 
 /* About Us Paragraph - Scrollable when long */
 .aboutUsParagraph {
-  max-height: 300px; /* Set max height */
+  max-height: 280px; /* Set max height */
   overflow-y: auto;
   padding-right: 10px; /* Space for scrollbar */
+  word-wrap: break-word;
+  white-space: normal;
 }
 
 /* Scrollbar Styling */

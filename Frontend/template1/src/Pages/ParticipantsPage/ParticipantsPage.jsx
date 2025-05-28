@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./ParticipantsPage.css";
+import accountIcon from "../../images/account_avatar.svg";
+
 import {
   getAllAlumni,
   getAllLabManagers,
@@ -359,7 +361,15 @@ const ParticipantsPage = () => {
             <div className="degree-section-items">
               {members.map((member) => (
                 <div key={member.email} className="participant">
-                  <div className="personal_photo"></div>
+                  <img
+                    src={
+                      member.profile_picture
+                        ? member.profile_picture
+                        : accountIcon
+                    }
+                    alt="User"
+                    className="personal_photo"
+                  />
                   <div className="personal_info_member">
                     <div className="name-with-icon">
                       <span className="fullname">{member.fullName}</span>
@@ -410,7 +420,11 @@ const ParticipantsPage = () => {
           <div className="degree-section-items">
             {alumni.map((member) => (
               <div key={member.email} className="participant">
-                <div className="personal_photo"></div>
+                <img
+                  src={member.profile_picture}
+                  alt="User"
+                  className="personal_photo"
+                />
                 <div className="personal_info_member">
                   <div className="name-with-icon">
                     <span className="fullname">{member.fullName}</span>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./HomePage.css";
 import AboutUs from "../../Components/AboutUs/AboutUs";
+import NewsSection from "../../Components/NewsSection/NewsSection";
 import { useAuth } from "../../Context/AuthContext";
 import { useEditMode } from "../../Context/EditModeContext";
 
@@ -28,17 +29,27 @@ function HomePage(props) {
       <div className="subTitle">Welcome to our lab website.</div>
 
       {/* Main section with dynamic layout */}
-      <div
-        className={`main_section_homePage ${
-          props.about_us ? "hasAboutUs" : "noAboutUs"
-        }`}
-      >
-        {props.about_us && (
-          <div className="aboutUsContainer">
-            <AboutUs info={props.about_us} />
-          </div>
-        )}
-        <img src={props.photo} className="homeImg" alt="home_page_photo" />
+      <div className="main_section_homePage_entire">
+        <div
+          className={`main_section_homePage ${
+            props.about_us ? "hasAboutUs" : "noAboutUs"
+          }`}
+        >
+          {props.about_us && (
+            <div className="section_news">
+              <div className="aboutUsContainer">
+                <AboutUs info={props.about_us} />
+              </div>
+              {props.news && (
+                <div className="newsWrapper">
+                  <NewsSection info={props.news} domain={props.domain} />
+                </div>
+              )}
+            </div>
+          )}
+
+          <img src={props.photo} className="homeImg" alt="home_page_photo" />
+        </div>
       </div>
     </div>
   );

@@ -21,6 +21,7 @@ import {
   addAlumni,
   changeTemplate,
   generate,
+  deleteGalleryImage,
 } from "../../../services/Generator";
 
 import axios from "axios";
@@ -29,6 +30,7 @@ import { baseApiUrl } from "../../../services/BaseUrl"; // Ensure the path is co
 const useChooseComponents = () => {
   const navigate = useNavigate();
   const { websiteData, setWebsite } = useWebsite();
+  const [previewImage, setPreviewImage] = useState(null);
 
   const [domain, setDomain] = useState(websiteData.domain || "");
   const [websiteName, setWebsiteName] = useState(websiteData.websiteName || "");
@@ -751,6 +753,30 @@ const useChooseComponents = () => {
     }
   };
 
+  const handleDeleteGalleryImage = async (imageName) => {
+    // const confirmed = window.confirm(
+    //   `Are you sure you want to delete "${imageName}"?`
+    // );
+    // if (!confirmed) return;
+
+    const userId = sessionStorage.getItem("sid");
+    const response = await deleteGalleryImage(
+      userId,
+      websiteData.domain,
+      imageName
+    );
+
+    if (response.response === "true") {
+      setWebsite({
+        gallery: websiteData.gallery.filter(
+          (img) => img.filename !== imageName
+        ),
+      });
+    } else {
+      setErrorMessage(response.error || "Failed to delete image.");
+    }
+  };
+
   return {
     domain,
     websiteName,
@@ -827,6 +853,11 @@ const useChooseComponents = () => {
     googleLink,
     setSave,
     save,
+    formData,
+    setFormData,
+    previewImage,
+    setPreviewImage,
+    handleDeleteGalleryImage,
   };
 };
 

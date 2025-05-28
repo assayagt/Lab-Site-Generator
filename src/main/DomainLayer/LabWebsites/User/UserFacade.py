@@ -438,7 +438,8 @@ class UserFacade:
         """
         # Strict regex for valid Google Scholar profile URLs only
         scholar_pattern = re.compile(
-            r"^https://(www\.)?scholar\.google\.com/citations\?user=[a-zA-Z0-9_-]{5,}&?$"
+           r"^https://(www\.)?scholar\.google\.com/citations\?user=[a-zA-Z0-9_-]{5,}(&[a-zA-Z0-9=_-]+)*$"
+
         )
         if not scholar_pattern.match(scholar_link):
             raise ValueError(ExceptionsEnum.INVALID_SCHOLAR_LINK.value)
