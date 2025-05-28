@@ -16,7 +16,7 @@ const NewsSection = (props) => {
   const [newItem, setNewItem] = useState({
     date: "",
     link: "",
-    description: "",
+    text: "",
   });
   const [showAddForm, setShowAddForm] = useState(false);
 
@@ -54,7 +54,7 @@ const NewsSection = (props) => {
           id: Date.now(),
           date: newItem.date,
           link: newItem.link,
-          description: newItem.description,
+          text: newItem.description,
         };
 
         // Add new item and re-sort the array
@@ -65,7 +65,7 @@ const NewsSection = (props) => {
         });
 
         setTimelineData(updatedData);
-        setNewItem({ date: "", link: "", description: "" });
+        setNewItem({ date: "", link: "", text: "" });
         setShowAddForm(false);
       } else {
         console.error("Failed to add news:", response?.message);

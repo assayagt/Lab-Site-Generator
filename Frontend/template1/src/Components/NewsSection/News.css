@@ -139,7 +139,7 @@
 }
 
 .save-button:hover {
-  background-color: #059669;
+  background-color: rgba(90, 90, 90, 0.2);
 }
 
 .cancel-button {
@@ -157,7 +157,7 @@
 }
 
 .cancel-button:hover {
-  background-color: #4b5563;
+  background-color: rgba(90, 90, 90, 0.2);
 }
 
 .timeline {
