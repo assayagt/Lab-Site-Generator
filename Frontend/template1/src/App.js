@@ -96,6 +96,7 @@ function App() {
             about_us: data.data.components.includes("About Us")
               ? data.data.about_us
               : "",
+            news: data.data.news,
           };
           console.log(mappedData);
           setWebsite(mappedData);
