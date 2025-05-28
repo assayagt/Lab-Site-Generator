@@ -5,7 +5,7 @@ class PublicationDTO:
     def __init__(self, title, publication_year, publication_link,
                  approved=ApprovalStatus.INITIAL_PENDING,
                  git_link=None, authors=None, video_link=None, presentation_link=None, description=None, paper_id=None, author_emails :list[str]=[], domain=None,
-                 _scholarly_stub: dict = None):
+                 _scholarly_stub: dict = None, bibtex=None, arxiv_link=None):
         self.paper_id = str(uuid.uuid4()) if paper_id is None else paper_id
         self.title = title
         self.authors = authors 
@@ -20,6 +20,8 @@ class PublicationDTO:
         self.author_emails = author_emails
         self.domain = domain
         self._scholarly_stub = _scholarly_stub # store the scholarly stub so we can refill it later
+        self.bibtex = bibtex
+        self.arxiv_link = arxiv_link
         
 
 
@@ -50,6 +52,12 @@ class PublicationDTO:
     def __hash__(self):
         #override hash function as well to make sure sets and dictionaries work properly as well
         return hash((self.title.lower(), self.publication_year))
+    
+    def set_bibtex(self, bibtex):
+        self.bibtex = bibtex
+
+    def set_arxiv_link(self, arxiv_link):
+        self.arxiv_link = arxiv_link
 
     def set_video_link(self, video_link):
         self.video_link = video_link

@@ -102,11 +102,12 @@ class GoogleScholarWebCrawler:
                 eprint = filled_pub.get("eprint_url")
                 if eprint:
                     pub.set_arxiv_link(eprint)
-                # bibTex *an additional access to Google Scholar
-                bibtex_str = filled_pub.bibtex
+                # bibTex 
+                bibtex_str = bib.get("bibtex")
+                # bibtex_str = scholarly.bibtex(pub._scholarly_stub) # last resort
                 if bibtex_str:
                     pub.set_bibtex(bibtex_str)
-                time.sleep(5)
+                # time.sleep(5)
             except Exception as e:
                  print(f"[WARN] could not refill '{pub.title}': {e}")
                 

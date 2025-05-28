@@ -72,7 +72,7 @@ class PublicationRepository:
         publication_query = """
         INSERT INTO publications (
             paper_id, title, authors, publication_year, approved,
-            publication_link, video_link, git_link, presentation_link, description, author_emails, domain, scholarly_stub
+            publication_link, video_link, git_link, presentation_link, description, author_emails, domain, scholarly_stub, bibtex, arxiv_link
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(paper_id) DO UPDATE SET
@@ -88,6 +88,8 @@ class PublicationRepository:
             author_emails = excluded.author_emails,
             domain = excluded.domain,
             scholarly_stub = excluded.scholarly_stub
+            bibtex = excluded.bibtex
+            arxiv_link = excluded.arxiv_link
         """
 
         publication_parameters = (
@@ -103,7 +105,9 @@ class PublicationRepository:
             publication_dto.description, 
             json.dumps(publication_dto.author_emails),
             publication_dto.domain,
-            json.dumps(publication_dto._scholarly_stub or {})
+            json.dumps(publication_dto._scholarly_stub or {}),
+            publication_dto.bibtex,
+            publication_dto.arxiv_link
         )
 
         try:
@@ -143,7 +147,9 @@ class PublicationRepository:
             description=row['description'],
             author_emails=json.loads(row['author_emails']),
             domain=row["domain"],
-            _scholarly_stub=json.loads(row["scholarly_stub"] or "{}")
+            _scholarly_stub=json.loads(row["scholarly_stub"] or "{}"),
+            bibtex=row['bibtex'],
+            arxiv_link=row['arxiv_link']
         )
     
     
