@@ -121,6 +121,7 @@ class LabSystemController:
 
         #fetch publications initially
         self.crawl_publications_for_website(website_domain=domain, with_notifications=False)
+        time.sleep(10)
 
 
     def login(self, domain, userId, email):
