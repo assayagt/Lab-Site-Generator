@@ -730,3 +730,12 @@ class LabSystemController:
         """
         return self.websiteFacade.get_news(domain)
 
+    def add_profile_picture(self, user_id, domain, file_path):
+        """
+        Add a profile picture for a user.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(user_id)
+        userFacade.error_if_user_not_logged_in(user_id)
+        userFacade.add_profile_picture(user_id, file_path)
+

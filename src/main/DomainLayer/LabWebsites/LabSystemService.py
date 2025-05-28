@@ -457,3 +457,11 @@ class LabSystemService:
             return Response(news, "Retrieved all news records successfully")
         except Exception as e:
             return Response(None, str(e))
+
+    def add_profile_picture(self, user_id, domain, file_path):
+        """Add a profile picture for a user."""
+        try:
+            self.lab_system_controller.add_profile_picture(user_id, domain, file_path)
+            return Response(True, "Profile picture added successfully")
+        except Exception as e:
+            return Response(None, str(e))
