@@ -67,3 +67,26 @@ export const fetchUserNotifications = async (email) => {
     return [];
   }
 };
+
+export const uploadProfilePicture = async (file) => {
+  const formData = new FormData();
+  formData.append("profile_picture", file);
+  formData.append("user_id", sessionStorage.getItem("sid"));
+  formData.append("domain", "www.localhost.com");
+
+  try {
+    const response = await axios.post(
+      `${baseApiUrl}uploadProfilePicture`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error uploading profile picture:", error);
+    throw error;
+  }
+};
