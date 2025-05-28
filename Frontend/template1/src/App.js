@@ -150,6 +150,8 @@ function App() {
                       <HomePage
                         about_us={websiteData.about_us}
                         photo={websiteData.home_picture}
+                        news={websiteData.news}
+                        domain={websiteData.domain}
                       />
                     ) : (
                       <HomePage2

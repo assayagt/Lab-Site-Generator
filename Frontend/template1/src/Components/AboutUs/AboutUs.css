@@ -8,7 +8,7 @@
   color: #090c10;
   transition: transform 0.3s ease-in-out;
   width: 100%;
-  max-width: 400px; /* Adjust width as needed */
+  /* max-width: 400px;  */
 }
 
 /* About Us Title - Always Visible */

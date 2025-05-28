@@ -36,5 +36,6 @@ class NewsRecord_dto:
             "id": self.id,
             "domain": self.domain,
             "text": self.text,
-            "link": self.link
+            "link": self.link,
+            "date" : self.date
         }

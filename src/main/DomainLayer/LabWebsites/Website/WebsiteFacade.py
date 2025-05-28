@@ -228,6 +228,7 @@ class WebsiteFacade:
             link=link,
             date=date
         )
+        website.add_news_record(news_record_dto)
         self.dal_controller.News_repo.save_news_record(news_record_dto=news_record_dto)
     
     def _load_website(self, domain):

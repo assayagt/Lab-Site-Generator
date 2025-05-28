@@ -41,7 +41,7 @@ function HomePage(props) {
                 <AboutUs info={props.about_us} />
               </div>
               <div className="newsWrapper">
-                <NewsSection />
+                <NewsSection info={props.news} domain={props.domain} />
               </div>
             </div>
           )}

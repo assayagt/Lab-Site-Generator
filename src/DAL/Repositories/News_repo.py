@@ -18,14 +18,14 @@ class News_repo:
     def save_news_record(self, news_record_dto: NewsRecord_dto):
         query = """
         INSERT INTO news (
-            id, domain, text, link, date
+            id, domain, text, link,  news_date
         )
         VALUES (?, ?, ?, ?, ?)
         ON CONFLICT(id) DO UPDATE SET
             domain = excluded.domain,
             text = excluded.text,
             link = excluded.link,
-            date = excluded.date
+            news_date = excluded. news_date
         """
         params = (
             news_record_dto.id,
@@ -48,5 +48,5 @@ class News_repo:
             id=row['id'],
             text=row['text'],
             link=row['link'],
-            date=row['date']
+            date=row['news_date']
         )

@@ -690,7 +690,7 @@ export const getNotApprovedMemberPublications = async (domain, userId) => {
 
 export const fetchGalleryImages = async (domain) => {
   try {
-    const response = await fetch(`${baseApiUrl}/getGallery?domain=${domain}`);
+    const response = await fetch(`${baseApiUrl}getGallery?domain=${domain}`);
     const data = await response.json();
     if (data.response === "true") {
       return data.images;
@@ -699,5 +699,21 @@ export const fetchGalleryImages = async (domain) => {
     }
   } catch (error) {
     console.error("Error loading gallery: " + error.message);
+  }
+};
+
+export const addNewsRecord = async (userId, domain, text, link, date) => {
+  try {
+    const response = await axios.post(`${baseApiUrl}addNewsRecord`, {
+      user_id: userId,
+      domain: domain,
+      text: text,
+      link: link,
+      date: date,
+    });
+    return response.data; // { message, response: "true" | "false" }
+  } catch (error) {
+    console.error("Error adding news record:", error);
+    return null;
   }
 };
