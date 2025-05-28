@@ -11,7 +11,7 @@ import requests, threading
 
 class GoogleScholarWebCrawler:
     _instance = None
-    _lock = threading.Lock
+    _lock = threading.Lock()
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
@@ -67,7 +67,6 @@ class GoogleScholarWebCrawler:
                             publication_year= pub_year,
                             publication_link= url,
                             authors= [author_name],
-                            # description = desctiption
                             _scholarly_stub = pub
                         )
                         crawled.add(new_pub)
