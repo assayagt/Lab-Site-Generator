@@ -38,7 +38,9 @@ class PublicationDTO:
             "description": self.description , # Include description in dict
             "status" : self.approved.value,
             "domain": self.domain,
-            "_scholarly_stub": self._scholarly_stub
+            "_scholarly_stub": self._scholarly_stub,
+            "bibtex": self.bibtex,
+            "arxiv": self.arxiv_link
         }
 
     def __eq__(self, other):

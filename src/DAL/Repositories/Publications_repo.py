@@ -87,8 +87,8 @@ class PublicationRepository:
             description = excluded.description, 
             author_emails = excluded.author_emails,
             domain = excluded.domain,
-            scholarly_stub = excluded.scholarly_stub
-            bibtex = excluded.bibtex
+            scholarly_stub = excluded.scholarly_stub,
+            bibtex = excluded.bibtex,
             arxiv_link = excluded.arxiv_link
         """
 
