@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import "./AccountPage.css";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -7,7 +7,7 @@ import cameraIcon from "../../images/camera_icon.svg";
 import searchIcon from "../../images/search_icon.svg";
 import AddPublicationForm from "../../Components/AddPublicationForm/AddPubliactionForm";
 import SuccessPopup from "../../Components/PopUp/SuccessPopup";
-
+import LoadingPopup from "../../Components/PopUp/LoadingPopup";
 import {
   getUserDetails,
   approveRegistration,
@@ -28,12 +28,18 @@ import {
   initialApproveMultiplePublicationsByAuthor,
   rejectMultiplePublications,
 } from "../../services/websiteService";
-import { fetchUserNotifications } from "../../services/UserService";
+import {
+  fetchUserNotifications,
+  uploadProfilePicture,
+} from "../../services/UserService";
 import { NotificationContext } from "../../Context/NotificationContext";
 import ErrorPopup from "../../Components/PopUp/ErrorPopup";
 
 const AccountPage = () => {
   const location = useLocation();
+  // Add file input ref and selected file state
+  const fileInputRef = useRef(null);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const [activeSection, setActiveSection] = useState(() => {
     const params = new URLSearchParams(location.search);
@@ -49,6 +55,7 @@ const AccountPage = () => {
     fullname: "",
     google_scholar: "",
     emailNotifications: true, // New field for email notifications
+    profile_picture: "",
   });
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
@@ -67,7 +74,9 @@ const AccountPage = () => {
   const [currentPublicationType, setCurrentPublicationType] =
     useState("manual");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [uploadedPhoto, setUploadedPhoto] = useState(accountIcon);
+  const [uploadedPhoto, setUploadedPhoto] = useState(
+    userDetails.profile_picture || accountIcon
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
   const [searchTerm, setSearchTerm] = useState("");
@@ -79,6 +88,7 @@ const AccountPage = () => {
     updateNotifications,
     setHasNewNotifications,
   } = useContext(NotificationContext); // Get notifications
+  const [isLoading, setIsLoading] = useState(false);
 
   // Add this useEffect to your AccountPage component, right after your existing useEffects
   // This listens for the custom event from the Header component
@@ -109,6 +119,12 @@ const AccountPage = () => {
   // and subsequent navigation within the same page:
 
   useEffect(() => {
+    if (userDetails.profile_picture) {
+      setUploadedPhoto(userDetails.profile_picture);
+    }
+  }, [userDetails.profile_picture]);
+
+  useEffect(() => {
     const params = new URLSearchParams(location.search);
     const section = params.get("section");
     if (section) {
@@ -134,6 +150,7 @@ const AccountPage = () => {
           fullname: data.user.fullName,
           emailNotifications: data.user.emailNotifications !== false, // Default to true if not set
           google_scholar: data.user.scholar_link || "",
+          profile_picture: data.user.profile_picture || "",
         });
       }
     };
@@ -185,11 +202,57 @@ const AccountPage = () => {
   }, [activeSection]);
 
   const handleUploadPhoto = () => {
-    setErrorMessage("feature not supported yet");
+    // Trigger the hidden file input
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
   };
+  const handleFileSelect = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Validate file type
+      const allowedTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/gif",
+      ];
+      if (!allowedTypes.includes(file.type)) {
+        setErrorMessage(
+          "Please select a valid image file (JPEG, PNG, or GIF)."
+        );
+        return;
+      }
 
-  const handleSavePhoto = () => {
-    setPopupMessage("Photo saved successfully!");
+      // Validate file size (e.g., max 5MB)
+      const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+      if (file.size > maxSize) {
+        setErrorMessage("File size must be less than 5MB.");
+        return;
+      }
+
+      setSelectedFile(file);
+
+      // Create a preview URL and update the displayed photo
+      const previewUrl = URL.createObjectURL(file);
+      setUploadedPhoto(previewUrl);
+
+      // Clear any previous error messages
+      setErrorMessage("");
+    }
+  };
+  const handleSavePhoto = async () => {
+    if (!selectedFile) {
+      setErrorMessage("Please select a photo first.");
+      return;
+    }
+
+    try {
+      const response = await uploadProfilePicture(selectedFile);
+      console.log(response);
+    } catch (error) {
+      setErrorMessage("Error uploading photo.");
+    }
   };
 
   const handleApproveNotification = async (notif) => {
@@ -346,6 +409,8 @@ const AccountPage = () => {
       // const response = await bulkApproveCrawledPublications(selectedPublications);
 
       // Update local state
+      setIsLoading(true); // ✅ Show loading popup
+
       const response = await initialApproveMultiplePublicationsByAuthor(
         sessionStorage.getItem("sid"),
         sessionStorage.getItem("domain"),
@@ -366,6 +431,8 @@ const AccountPage = () => {
       }
     } catch (error) {
       setErrorMessage("Failed to approve publications");
+    } finally {
+      setIsLoading(false); // ✅ Hide loading popup
     }
   };
 
@@ -602,9 +669,30 @@ const AccountPage = () => {
                 <div className="camera-icon" onClick={handleUploadPhoto}>
                   <img src={cameraIcon} alt="Upload" />
                 </div>
-                <button className="save-photo" onClick={handleSavePhoto}>
-                  Save Photo
+                {/* Hidden file input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileSelect}
+                  style={{ display: "none" }}
+                />
+                <button
+                  className="save-photo"
+                  onClick={handleSavePhoto}
+                  disabled={!selectedFile}
+                  style={{
+                    opacity: selectedFile ? 1 : 0.6,
+                    cursor: selectedFile ? "pointer" : "not-allowed",
+                  }}
+                >
+                  {selectedFile ? "Save Photo" : "Select Photo"}
                 </button>
+                {selectedFile && (
+                  <div className="file-info">
+                    <small>Selected: {selectedFile.name}</small>
+                  </div>
+                )}
               </div>
               <div className="details">
                 <label className="detail-bio">
@@ -1065,6 +1153,9 @@ const AccountPage = () => {
             message={errorMessage}
             onClose={() => setErrorMessage("")}
           />
+        )}
+        {isLoading && (
+          <LoadingPopup message="Approving selected publications..." />
         )}
       </div>
     </div>

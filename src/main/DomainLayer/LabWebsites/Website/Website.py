@@ -1,6 +1,7 @@
 from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
 from src.DAL.DTOs.Website_dto import website_dto
+from src.DAL.DTOs.NewsRecord_dto import NewsRecord_dto
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.DAL.DAL_controller import DAL_controller
 import json
@@ -11,6 +12,7 @@ class Website:
         self.domain = domain
         self.contact_info = contact_info
         self.about_us = about_us
+        self.news: list[NewsRecord_dto] = []
 
     def create_publication(self, publicationDTO, authors_emails):
         # get new publicationDTO and add it to the dictionary
@@ -216,6 +218,12 @@ class Website:
         publication = self.get_publication_by_paper_id(publication_id)
         publication.approved = ApprovalStatus.REJECTED
         return publication
+
+    def add_news_record(self, news_record: NewsRecord_dto):
+        """
+        Adds a news record to the website's news list.
+        """
+        self.news.append(news_record)
     
     def to_dto(self) -> website_dto:
         return website_dto(
@@ -244,3 +252,9 @@ class Website:
                 if author not in self.members_publications:
                     self.members_publications[author] = []
                 self.members_publications[author].append(pub)
+
+    def set_news(self, news_list):
+        self.news = news_list
+
+    def get_news(self):
+        return self.news

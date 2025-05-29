@@ -232,6 +232,7 @@ class GeneratorSystemService:
             about_us = self.generator_system_controller.get_site_about_us_from_generator(domain)
             contact_us = self.generator_system_controller.get_contact_info_from_generator(domain)
             logo_path = website.logo  # Ensure `website.logo` contains the full file path
+            gallery_images = self.generator_system_controller.get_gallery_images(domain)
             if logo_path and os.path.exists(logo_path):
                 # Check the file extension
                 extension = os.path.splitext(logo_path)[1].lower()
@@ -247,11 +248,12 @@ class GeneratorSystemService:
                 "domain": domain,
                 "name": website.get_name(),
                 "components": website.get_components(),
-                "template": website.get_template().value,
+                "template": None if website.get_template() is None else website.get_template().value, 
                 "logo": logo_data_url,  # Include the logo
                 "home_picture": website.home_picture,  # Include the home picture
                 "about_us": about_us,
-                "contact_us": contact_us
+                "contact_us": contact_us,
+                "gallery_images": gallery_images
             }, "Successfully retrieved custom website")
         except Exception as e:
             return Response(None, str(e))
@@ -260,6 +262,7 @@ class GeneratorSystemService:
         try:
             website = self.generator_system_controller.get_site_by_domain(domain)
             logo_path = website.get_logo()  # Ensure `website.logo` contains the full file path
+            gallery_images = self.generator_system_controller.get_gallery_images(domain)
             if logo_path and os.path.exists(logo_path):
                 # Check the file extension
                 extension = os.path.splitext(logo_path)[1].lower()
@@ -308,7 +311,8 @@ class GeneratorSystemService:
                 "components": website.get_components(),
                 "template": website.get_template().value,
                 "logo": logo_data_url,  # Include the logo
-                "home_picture":  picture_data_url  # Include the home picture
+                "home_picture":  picture_data_url,  # Include the home picture,
+                "gallery_images": gallery_images
             }, "Successfully retrieved custom website")
         except Exception as e:
             return Response(None, str(e))
@@ -369,5 +373,38 @@ class GeneratorSystemService:
             # Delete the website
             self.generator_system_controller.delete_website(user_id, domain)
             return Response(True, "Website deleted successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def get_gallery_images(self, domain):
+        """
+        Get the gallery images of a website.
+
+        Args:
+            domain (str): The domain of the website
+
+        Returns:
+            Response: A response object containing the gallery images or an error message
+        """
+        try:
+            images = self.generator_system_controller.get_gallery_images(domain)
+            return Response(images, "Gallery images retrieved successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def delete_gallery_image(self, user_id, domain, image_name):
+        """
+        Delete a specific gallery image from the website.
+
+        Args:
+            domain (str): The domain of the website
+            image_name (str): The name of the image to delete
+
+        Returns:
+            Response: A response object indicating success or failure
+        """
+        try:
+            self.generator_system_controller.delete_gallery_image(user_id, domain, image_name)
+            return Response(True, "Gallery image deleted successfully")
         except Exception as e:
             return Response(None, str(e))

@@ -797,3 +797,27 @@ class LabSystemController:
         fetch_fut.add_done_callback(_on_done)
         return fetch_fut
 
+    def add_news_record(self, user_id, domain, text, link, date):
+        """
+        Add a news record to the website.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(user_id)
+        userFacade.error_if_user_not_logged_in(user_id)
+        self.websiteFacade.add_news_record(domain, text, link, date)
+
+    def get_news(self, domain):
+        """
+        Get all news records of the website.
+        """
+        return self.websiteFacade.get_news(domain)
+
+    def add_profile_picture(self, user_id, domain, file_path):
+        """
+        Add a profile picture for a user.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(user_id)
+        userFacade.error_if_user_not_logged_in(user_id)
+        userFacade.add_profile_picture(user_id, file_path)
+

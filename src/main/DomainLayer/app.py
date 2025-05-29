@@ -240,7 +240,7 @@ class UploadFilesAndData(Resource):
                 file_path = None
 
                 if component == 'logo':
-                    if extension in ['svg', '.png', '.jpg', '.jpeg']:
+                    if extension in ['.svg', '.png', '.jpg', '.jpeg']:
                         file_path = os.path.join(website_folder, f"logo{extension}")
                     else:
                         return {
@@ -278,6 +278,49 @@ class UploadFilesAndData(Resource):
                 "error": f"An error occurred: {str(e)}"
             }, 500
 
+
+class UploadGalleryImages(Resource):
+    def post(self):
+        try:
+            domain = request.form['domain']
+            website_folder = os.path.join(GENERATED_WEBSITES_FOLDER, domain)
+            gallery_folder = os.path.join(website_folder, 'gallery')
+
+            if not os.path.exists(gallery_folder):
+                os.makedirs(gallery_folder)
+
+            # ✅ Use getlist to get all files under the same 'gallery' key
+            files = request.files.getlist('gallery')
+            uploaded_files = []
+
+            for file in files:
+                if not file:
+                    continue
+
+                extension = os.path.splitext(file.filename)[1].lower()
+
+                # Only allow image files
+                if extension not in ['.jpg', '.jpeg', '.png', '.gif']:
+                    return {
+                        "error": "Invalid file type for gallery image. Allowed: JPG, JPEG, PNG, GIF"
+                    }, 400
+
+                # Generate a unique filename using timestamp
+                timestamp = int(time.time() * 1000)
+                file_path = os.path.join(gallery_folder, f"gallery_{timestamp}{extension}")
+
+                file.save(file_path)
+                uploaded_files.append(os.path.basename(file_path))
+
+            return {
+                "message": "Gallery images uploaded successfully!",
+                "uploaded": uploaded_files
+            }, 200
+
+        except Exception as e:
+            return {
+                "error": f"An error occurred: {str(e)}"
+            }, 500
 
 class GenerateWebsiteResource(Resource):
     def post(self):
@@ -699,10 +742,14 @@ class GetHomepageDetails(Resource):
                 # the returned value is website name, template, components
                 response_2 = lab_system_service.get_about_us(domain)
                 if response_2.is_success():
-                    website_data = response_1.get_data()
-                    about_us_data = response_2.get_data()
-                    website_data['about_us'] = about_us_data
-                    return jsonify({'data': website_data, "response": "true"})
+                    response_3 = lab_system_service.get_news(domain)
+                    if response_3.is_success():
+                        news_data = response_3.get_data()
+                        website_data = response_1.get_data()
+                        about_us_data = response_2.get_data()
+                        website_data['about_us'] = about_us_data
+                        website_data['news'] = news_data
+                        return jsonify({'data': website_data, "response": "true"})
 
                 return jsonify({"message1": response_2.get_message(), "response": "false"})
             return jsonify({"message2": response_1.get_message(), "response": "false"})
@@ -719,9 +766,9 @@ class EnterLabWebsite(Resource):
             response = lab_system_service.enter_lab_website(domain)
             if response.is_success():
                 return jsonify({"message": response.get_message(), "user_id": response.get_data() , "response": "true"})
-            return jsonify({"message": response.get_message(), "response": "false"}), 400
+            return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}"})
 
 
 
@@ -1583,6 +1630,96 @@ class DeleteWebsite(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
+class GetGalleryImages(Resource):
+    def get(self):
+        try:
+            domain = request.args.get('domain')
+            response = generator_system.get_gallery_images(domain)
+            if response.is_success():
+                return jsonify({"images": response.get_data(), "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class DeleteGalleryImage(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User id is required")
+        parser.add_argument('image_name', type=str, required=True, help="Image name is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        args = parser.parse_args()
+
+        try:
+            response = generator_system.delete_gallery_image(args['user_id'], args['domain'], args['image_name'])
+            if response.is_success():
+                return jsonify({"message": "Image deleted successfully", "response": "true"})
+            return jsonify({"error": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+class AddNewsRecord(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User ID is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        parser.add_argument('text', type=str, required=True, help="News text is required")
+        parser.add_argument('link', type=str, required=False)
+        parser.add_argument('date', type=str, required=True, help="Date is required")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.add_news_record(args['user_id'], args['domain'], args['text'], args['link'], args['date'])
+            if response.is_success():
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
+
+class UploadProfilePicture(Resource):
+    def post(self):
+        try:
+            domain = request.form['domain']
+            user_id = request.form['user_id']
+
+            website_folder = os.path.join(GENERATED_WEBSITES_FOLDER, domain)
+            profile_pictures_folder = os.path.join(website_folder, 'profile_pictures')
+
+            if not os.path.exists(profile_pictures_folder):
+                os.makedirs(profile_pictures_folder)
+
+            file = request.files['profile_picture']
+            if not file:
+                return {
+                    "error": "No file provided"
+                }, 400
+
+            extension = os.path.splitext(file.filename)[1].lower()
+
+            # Only allow image files
+            if extension not in ['.jpg', '.jpeg', '.png', '.gif']:
+                return {
+                    "error": "Invalid file type for profile picture. Allowed: JPG, JPEG, PNG, GIF"
+                }, 400
+
+            # Generate a unique filename using user_id and timestamp
+            timestamp = int(time.time() * 1000)
+            file_path = os.path.join(profile_pictures_folder, f"profile_{timestamp}{extension}")
+
+            response = lab_system_service.add_profile_picture(user_id, domain, file_path)
+
+            file.save(file_path)
+
+            return {
+                "message": "Profile picture uploaded successfully!",
+                "filename": os.path.basename(file_path)
+            }, 200
+
+        except Exception as e:
+            return {
+                "error": f"An error occurred: {str(e)}"
+            }, 500
+
 # Add resources to the API of lab
 api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')#
 api.add_resource(LoginWebsite, '/api/loginWebsite')#
@@ -1652,6 +1789,11 @@ api.add_resource(GetUserDetails, '/api/getUserDetails')
 api.add_resource(GetContactUs, '/api/getContactUs')
 api.add_resource(GetAllMembersNotifications, '/api/getAllMembersNotifications')
 api.add_resource(DeleteWebsite, '/api/deleteWebsite')
+api.add_resource(UploadGalleryImages, '/api/uploadGalleryImages')
+api.add_resource(GetGalleryImages, '/api/getGallery')
+api.add_resource(DeleteGalleryImage, '/api/deleteGalleryImage')
+api.add_resource(AddNewsRecord, '/api/addNewsRecord')
+api.add_resource(UploadProfilePicture, '/api/uploadProfilePicture')
 ##
 api.add_resource(CrawlPublicationsForMember, '/api/CrawlPublicationsForMember')
 

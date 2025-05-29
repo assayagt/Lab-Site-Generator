@@ -12,6 +12,15 @@
       },
       "args": ["run", "--no-debugger", "--no-reload"],
       "jinja": true
+    },
+    {
+      "name": "Debug Acceptance Test",
+      "type": "python",
+      "request": "launch",
+      "module": "src.test.Acceptancetests.crawlerTest",
+      "justMyCode": false,
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
     }
 ]
 }

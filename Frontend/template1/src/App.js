@@ -34,7 +34,14 @@ import { useAuth } from "./Context/AuthContext";
 function App() {
   const { websiteData, setWebsite } = useWebsite();
   const [loading, setLoading] = useState(true);
-
+  const desiredOrder = [
+    "Home",
+    "About Us",
+    "Lab Members",
+    "Publications",
+    "Media",
+    "Contact Us",
+  ];
   useEffect(() => {
     const domain = sessionStorage.getItem("domain");
 
@@ -89,8 +96,9 @@ function App() {
             about_us: data.data.components.includes("About Us")
               ? data.data.about_us
               : "",
+            news: data.data.components.includes("News") ? data.data.news : "",
           };
-          console.log("here");
+          console.log(mappedData);
           setWebsite(mappedData);
           console.log(sessionStorage.getItem("domain"));
           // sessionStorage.setItem("domain", mappedData.domain);
@@ -110,8 +118,8 @@ function App() {
     return <div>Loading...</div>; // Show loading indicator
   }
 
-  const components = [...new Set(websiteData.components)].filter(
-    (component) => component !== "Page for Participant"
+  const components = desiredOrder.filter((comp) =>
+    websiteData.components.includes(comp)
   );
 
   return (
@@ -142,6 +150,8 @@ function App() {
                       <HomePage
                         about_us={websiteData.about_us}
                         photo={websiteData.home_picture}
+                        news={websiteData.news}
+                        domain={websiteData.domain}
                       />
                     ) : (
                       <HomePage2

@@ -137,7 +137,8 @@ class DatabaseManager:
             template TEXT,
             logo TEXT,
             home_pic TEXT,
-            generated INTEGER
+            generated INTEGER,
+            gallery_path TEXT
         );
         '''
         self.execute_script(SiteCustoms_table)
@@ -205,6 +206,7 @@ class DatabaseManager:
             full_name TEXT,
             degree TEXT,
             bio TEXT,
+            profile_picture TEXT,
             PRIMARY KEY (domain, email),
             FOREIGN KEY (domain) REFERENCES site_customs (domain) ON DELETE CASCADE
         );
@@ -288,6 +290,18 @@ class DatabaseManager:
         '''
         self.execute_script(notifications_table)
 
+        News_table = '''
+        CREATE TABLE IF NOT EXISTS news(
+            id TEXT PRIMARY KEY,
+            domain TEXT,
+            text TEXT,
+            link TEXT,
+            news_date TEXT,
+            FOREIGN KEY (domain) REFERENCES websites (domain) ON DELETE CASCADE
+        );
+        '''
+        self.execute_script(News_table)
+
         self.logger.info("Database tables created successfully")
 
     def close(self):
@@ -317,10 +331,10 @@ class DatabaseManager:
             "lab_members",
             "member_domain",
             "member_emails",
-            "domain_paperID",
             "websites",
             "site_customs",
-            "publications"
+            "publications",
+            "news"
         ]
 
         conn = self.connect()

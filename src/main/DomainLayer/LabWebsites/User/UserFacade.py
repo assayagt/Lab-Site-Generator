@@ -1,3 +1,4 @@
+import os
 import threading
 import uuid
 import re
@@ -434,7 +435,8 @@ class UserFacade:
         """
         # Strict regex for valid Google Scholar profile URLs only
         scholar_pattern = re.compile(
-            r"^https://(www\.)?scholar\.google\.com/citations\?user=[a-zA-Z0-9_-]{5,}&?$"
+           r"^https://(www\.)?scholar\.google\.com/citations\?user=[a-zA-Z0-9_-]{5,}(&[a-zA-Z0-9=_-]+)*$"
+
         )
         if not scholar_pattern.match(scholar_link):
             raise ValueError(ExceptionsEnum.INVALID_SCHOLAR_LINK.value)
@@ -578,4 +580,25 @@ class UserFacade:
               f"{len(self.siteCreator)} creators, "
               f"{len(self.alumnis)} alumnis, "
               f"{len(self.emails_requests_to_register)} pending requests")
+
+    def add_profile_picture(self, user_id, file_path):
+        user = self.get_user_by_id(user_id)
+        if user is None:
+            raise Exception(ExceptionsEnum.USER_NOT_EXIST.value)
+        member = self.get_member_by_email(user.get_email())
+        if member is None:
+            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MEMBER.value)
+        curr_picture = member.get_profile_picture()
+        if curr_picture is not None:
+            # remove the old profile picture
+            self.remove_profile_picture(curr_picture)
+
+        member.set_profile_picture(file_path)
+        self.dal_controller.LabMembers_repo.save_LabMember(member.get_dto(self.domain))
+
+    def remove_profile_picture(self, curr_picture):
+        if os.path.exists(curr_picture):
+            os.remove(curr_picture)
+        else:
+            raise Exception(ExceptionsEnum.IMAGE_NOT_FOUND.value)
         

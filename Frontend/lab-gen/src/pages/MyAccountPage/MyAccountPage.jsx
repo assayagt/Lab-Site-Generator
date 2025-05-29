@@ -22,6 +22,13 @@ const MyAccountPage = () => {
       template: "",
       created: false,
       generated: false,
+      about_us: "",
+      contact_us: {
+        address: "",
+        email: "",
+        phone_num: "",
+      },
+      gallery: [], // Add gallery array here
     });
     navigate("/choose-components"); // Redirect user to start website creation
   };
@@ -73,6 +80,7 @@ const MyAccountPage = () => {
         email: "",
         phone_num: "",
       },
+      gallery: data?.data?.gallery_images || [], // Add gallery array here
     });
 
     navigate("/choose-components");

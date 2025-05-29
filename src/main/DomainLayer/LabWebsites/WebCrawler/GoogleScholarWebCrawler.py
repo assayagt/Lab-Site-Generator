@@ -1,7 +1,8 @@
 import time
 import re
 from bs4 import BeautifulSoup 
-from scholarly import scholarly 
+from scholarly import scholarly
+from urllib.parse import urljoin
 from datetime import datetime
 from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
@@ -48,66 +49,72 @@ class GoogleScholarWebCrawler:
             scholar_id = self.extract_scholar_id(link)
             try:
                 # Fetch author by scholar_id
-                author = scholarly.search_author_id(scholar_id)
-                author = scholarly.fill(author)
+                author_stub = scholarly.search_author_id(scholar_id)
+                time.sleep(1)
+                author = scholarly.fill(author_stub)
                 time.sleep(5)
                 author_name = author.get("name")
-                for pub in author.get("publications", []):
-                    pub_title = pub.get("bib", {}).get("title")
-                    pub_year = pub.get("bib", {}).get("pub_year")
+                for pub in author.get("publications"):
+                    pub_title = pub.get("bib").get("title")
+                    pub_year = pub.get("bib").get("pub_year")
                     author_pub_id = pub.get("author_pub_id")
-                    if pub_title is None or pub_year is None:
+                    if not pub_title or not pub_year:
                         print(f"GOOGLE CRAWLER => publication title or year found empty")
                         continue                
-                    else:
-                        # New publication -> create new pub
-                        url = self.build_publication_url(scholar_id=scholar_id, author_pub_id=author_pub_id)
-                        new_pub = PublicationDTO(
-                            title= pub_title,
-                            publication_year= pub_year,
-                            publication_link= url,
-                            authors= [author_name],
-                            _scholarly_stub = pub
-                        )
-                        crawled.add(new_pub)
-                        print(f"carwled {len(crawled)} publications so far")
-                return list(crawled)
+                    
+                    # New publication -> create new pub
+                    url = self.build_publication_url(scholar_id=scholar_id, author_pub_id=author_pub_id)
+                    new_pub = PublicationDTO(
+                        title= pub_title,
+                        publication_year= pub_year,
+                        publication_link= url,
+                        authors= [author_name],
+                        _scholarly_stub = pub
+                    )
+                    crawled.add(new_pub)
+                    print(f"carwled {len(crawled)} publications so far")
             except Exception as e:
                 print(f"[ERROR] Fetching publications for scholar_id {scholar_id}: {e}")
                 continue
         return list(crawled)
-
+    
+    
     def fill_details(self, publicationDTOs: list[PublicationDTO]): #TODO: complete this function to also fill bibtex and arxiv, also think of how can we implement a queue of fill / crawl requests.
         """
         This method accepts a list of PublicationDTO where and fills description and authors into it
         """
         for pub in publicationDTOs:
-            stub = pub._scholarly_stub
-            if not stub:
-                continue
+            # stub = pub._scholarly_stub
+            title = pub.title
+            year = pub.publication_year
+            author = pub.authors[0]
+            query = f"{title} {author} {year}"
+            # if not stub:
+            #     continue
             try:
                 # fetch full metadata for this stub
-                filled_pub = scholarly.fill(stub)
-                time.sleep(5)
-                bib = filled_pub.get("bib", {})
-                # authors
-                authors_str = bib.get("author", "")
-                if authors_str:
-                    authors_list = [a.strip() for a in authors_str.split(" and ")]
+                # pub_obj = scholarly.search_single_pub(query) # HTML REQUEST
+                # if not pub_obj:
+                #     print(f"[WARN] No exact match found for pub: {title}")
+                #     continue
+                time.sleep(1)
+                filled_pub = scholarly.fill(pub._scholarly_stub) #HTML REQUEST
+                bib = filled_pub.get("bib") or {}
+                # --authors--
+                if "author" in bib:
+                    authors_list = [a.strip() for a in bib.get("author").split(" and ")]
                     pub.set_authors(authors=authors_list)
-                # description
-                if bib.get("abstract"):
-                    pub.set_description(bib["abstract"])
-                # ArXiv/PDF link (if present)
-                eprint = filled_pub.get("eprint_url")
-                if eprint:
-                    pub.set_arxiv_link(eprint)
-                # bibTex 
-                bibtex_str = bib.get("bibtex")
-                # bibtex_str = scholarly.bibtex(pub._scholarly_stub) # last resort
+                # --description--
+                if "abstract" in bib:
+                    pub.set_description(bib.get("abstract"))
+                # --ArXiv/PDF link-- (if present)
+                pub_url = filled_pub.get("pub_url") or bib.get("url")
+                if pub_url and "arxiv.org" in pub_url:
+                    pub.set_arxiv_link(pub_url)
+                # --bibTex-- 
+                bibtex_str = self.get_bibtex_from_citation_page(link=pub.publication_link) # no HTTP request
                 if bibtex_str:
                     pub.set_bibtex(bibtex_str)
-                # time.sleep(5)
             except Exception as e:
                  print(f"[WARN] could not refill '{pub.title}': {e}")
                 
@@ -139,7 +146,46 @@ class GoogleScholarWebCrawler:
         except Exception as e:
             print(f"Error occurred: {e}")
             return []
-        
+    
+    def normalize_title(self, title):
+        title = title.lower()
+        title = re.sub(r"[^a-z0-9]+", " ", title)
+        return " ".join(title.split())
+
+    def get_bibtex_from_citation_page(self, link: str) -> str | None:
+        """
+        Given a Google Scholar publication citation link, fetch the BibTeX citation using BeautifulSoup.
+        """
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
+
+        try:
+            # Step 1: Load the citation page
+            response = requests.get(link, headers=headers)
+            response.raise_for_status()
+            soup = BeautifulSoup(response.text, "html.parser")
+
+            # Step 2: Find the "Cite" (BibTeX) export link
+            cite_link = soup.find("a", text="BibTeX")
+            if not cite_link:
+                # Try a more flexible search
+                cite_link = soup.find("a", href=True, string=re.compile("BibTeX", re.IGNORECASE))
+
+            if cite_link:
+                bibtex_url = urljoin("https://scholar.google.com", cite_link["href"])
+                time.sleep(1)  # politeness delay
+                bib_response = requests.get(bibtex_url, headers=headers)
+                bib_response.raise_for_status()
+                return bib_response.text.strip()
+
+            print(f"[WARN] BibTeX link not found on page: {link}")
+            return None
+
+        except Exception as e:
+            print(f"[ERROR] Failed to fetch BibTeX from citation page: {e}")
+            return None
+
 
     def get_details_by_link(self, link):
         try:

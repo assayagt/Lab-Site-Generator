@@ -441,3 +441,27 @@ class LabSystemService:
             return Response(True, "Alumni removed successfully and reverted to lab member")
         except Exception as e:
             return Response(None, str(e))
+
+    def add_news_record(self, user_id, domain, text, link, date):
+        """Add a news record to the lab website."""
+        try:
+            self.lab_system_controller.add_news_record(user_id, domain, text, link, date)
+            return Response(True, "News record added successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def get_news(self, domain):
+        """Get all news records for the lab website."""
+        try:
+            news = self.lab_system_controller.get_news(domain)
+            return Response(news, "Retrieved all news records successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def add_profile_picture(self, user_id, domain, file_path):
+        """Add a profile picture for a user."""
+        try:
+            self.lab_system_controller.add_profile_picture(user_id, domain, file_path)
+            return Response(True, "Profile picture added successfully")
+        except Exception as e:
+            return Response(None, str(e))

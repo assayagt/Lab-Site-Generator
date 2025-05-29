@@ -20,6 +20,7 @@ export const WebsiteProvider = ({ children }) => {
       phone: "",
       address: "",
     },
+    news: [],
   };
 
   const [websiteData, setWebsiteData] = useState(initialWebsiteData);
