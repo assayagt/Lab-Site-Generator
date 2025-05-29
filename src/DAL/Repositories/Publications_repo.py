@@ -74,7 +74,7 @@ class PublicationRepository:
             paper_id, title, authors, publication_year, approved,
             publication_link, video_link, git_link, presentation_link, description, author_emails, domain, scholarly_stub, bibtex, arxiv_link
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(paper_id) DO UPDATE SET
             title = excluded.title,
             authors = excluded.authors,
