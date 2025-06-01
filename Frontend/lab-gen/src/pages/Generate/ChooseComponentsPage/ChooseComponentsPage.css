@@ -709,7 +709,7 @@
   color: black;
   border: 1px solid rgba(31, 51, 71, 0.8);
 }
-Specific Style for the Cancel Button */
+/* Specific Style for the Cancel Button */
 
 /* Hover Effect */
 .modal-buttons-add_member:hover,
@@ -729,6 +729,7 @@ Specific Style for the Cancel Button */
   font-size: 0.9rem;
   margin-top: 4px;
 }
+
 .creator_info_card {
   display: flex;
   flex-direction: column;
