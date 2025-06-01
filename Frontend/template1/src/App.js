@@ -55,19 +55,21 @@ function App() {
   }, []);
   useEffect(() => {
     const fetchHomepageDetails = async () => {
-      let domain = window.location.hostname;
-      domain = domain.replace(/^https?:\/\//, "");
-      domain = domain.replace(":3001", "");
-      console.log(domain);
+      //let domain = window.location.hostname;
+      //domain = domain.replace(/^https?:\/\//, "");
+      //domain = domain.replace(":3001", "");
+      let pathParts = window.location.pathname.split('/');
+      let domain = pathParts[2]; // "/labs-beta/beta4/" → ['', 'labs-beta', 'beta4', '']
+      console.log("Detected lab domain:", domain);
       // Add "www." if missing
-      if (!domain.startsWith("www.")) {
-        domain = `www.${domain}`;
-      }
+      //if (!domain.startsWith("www.")) {
+      //  domain = `www.${domain}`;
+      //}
 
       // Add ".com" if missing
-      if (!domain.endsWith(".com")) {
-        domain = `${domain}.com`;
-      }
+      //if (!domain.endsWith(".com")) {
+      //  domain = `${domain}.com`;
+      //}
       console.log(domain);
       sessionStorage.setItem("domain", domain);
       try {
@@ -127,7 +129,7 @@ function App() {
       <AuthProvider>
         <NotificationProvider>
           <EditModeProvider>
-            <Router>
+            <Router basename={process.env.PUBLIC_URL}>
               {websiteData.template === "template1" ? (
                 <Header
                   components={components}

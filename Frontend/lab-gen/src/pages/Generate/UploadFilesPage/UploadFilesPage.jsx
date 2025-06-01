@@ -4,7 +4,7 @@ import { useWebsite } from '../../../Context/WebsiteContext';
 import './UploadFilesPage.css';
 import axios from "axios";
 import { getAllAlumni,getAllLabManagers,getAllLabMembers,createNewSiteManager, removeSiteManager,addLabMember,setSiteContactInfo, setSiteAboutUs ,saveLogo,saveHomePicture,addAlumni} from '../../../services/Generator';
-const baseApiUrl = "http://127.0.0.1:5000/api/";
+import { baseApiUrl } from '../../../services/BaseUrl';
 const UploadFilesPage = () => {
 
 
@@ -272,7 +272,7 @@ const UploadFilesPage = () => {
     }
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/uploadFile', {
+      const response = await fetch(`${baseApiUrl}uploadFile`, {
         method: 'POST',
         body: formDataToSend,
       });

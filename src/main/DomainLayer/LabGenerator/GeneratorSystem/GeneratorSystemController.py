@@ -189,7 +189,7 @@ class GeneratorSystemController:
         self.user_facade.error_if_user_not_logged_in(user_id)
         self.site_custom_facade.error_if_domain_not_exist(domain)
         self.user_facade.error_if_user_is_not_site_manager(user_id, domain)
-        self.site_custom_facade.error_if_domain_is_not_valid(new_domain)
+        #self.site_custom_facade.error_if_domain_is_not_valid(new_domain)
         self.site_custom_facade.error_if_domain_already_exist(new_domain)
         self.site_custom_facade.change_site_domain(domain, new_domain)
         self.user_facade.change_site_domain(domain, new_domain)

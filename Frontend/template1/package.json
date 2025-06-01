@@ -2,7 +2,7 @@
   "name": "template1",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:5000/",
+  "homepage": ".",
   "dependencies": {
     "@craco/craco": "^7.1.0",
     "@react-oauth/google": "^0.12.2",
@@ -24,7 +24,7 @@
     "ws": "^8.18.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "HOST=0.0.0.0 PORT=3001 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

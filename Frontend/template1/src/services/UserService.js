@@ -53,7 +53,7 @@ export const EnterSystem = async () => {
 export const fetchUserNotifications = async (email) => {
   try {
     const data = await axios.get(
-      `http://127.0.0.1:5000/api/getAllMembersNotifications?user_id=${sessionStorage.getItem(
+      `${baseApiUrl}getAllMembersNotifications?user_id=${sessionStorage.getItem(
         "sid"
       )}&domain=${sessionStorage.getItem("domain")}`
     );

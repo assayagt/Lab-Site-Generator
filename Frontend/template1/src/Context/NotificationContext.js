@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import { useAuth } from "../Context/AuthContext";
+import { socketUrl } from "../services/BaseUrl";
 
 export const NotificationContext = createContext();
 
@@ -22,8 +23,8 @@ export const NotificationProvider = ({ children }) => {
   }, [hasNewNotifications]);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:5000", {
-      transports: ["websocket", "polling"],
+    const newSocket = io(socketUrl, {
+    transports: ["websocket", "polling"],
     });
 
     newSocket.on("connect", () => {
