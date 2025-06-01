@@ -110,7 +110,7 @@
 }
 
 .input_name_domain.error_domain {
-  border: 1.5px solid b50c0c;
+  border: 1.5px solid #b50c0c;
 }
 .domain-error-message {
   font-size: 12px;
