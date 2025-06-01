@@ -9,6 +9,9 @@ import SuccessPopup from "../../../components/Popups/SuccessPopup";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { validateFileSize, validateMultipleFiles, showFileSizeError } from '../../../utils/fileValidation';
+import FileSizeInfo from '../../../components/FileSizeInfo/FileSizeInfo';
+
 const ChooseComponentsPage = () => {
   const {
     domain,
@@ -444,12 +447,13 @@ const ChooseComponentsPage = () => {
                         type="file"
                         onChange={(e) => handleFileChange(e, "logo")}
                       />
+                      <FileSizeInfo />
                     </label>
                     <button
                       type="button"
                       className="media_button"
                       onClick={(e) => {
-                        e.preventDefault(); // ✅ this prevents the page from reloading
+                        e.preventDefault();
                         handleSubmit("logo");
                       }}
                     >

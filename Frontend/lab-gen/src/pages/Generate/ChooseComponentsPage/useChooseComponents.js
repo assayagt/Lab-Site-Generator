@@ -503,7 +503,7 @@ const useChooseComponents = () => {
       });
 
       try {
-        const response = await fetch(`${baseApiUrl}/uploadGalleryImages`, {
+        const response = await fetch(`${baseApiUrl}uploadGalleryImages`, {
           method: "POST",
           body: formDataToSend,
         });
