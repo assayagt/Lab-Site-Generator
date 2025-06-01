@@ -5,8 +5,6 @@ import './UploadFilesPage.css';
 import axios from "axios";
 import { getAllAlumni,getAllLabManagers,getAllLabMembers,createNewSiteManager, removeSiteManager,addLabMember,setSiteContactInfo, setSiteAboutUs ,saveLogo,saveHomePicture,addAlumni} from '../../../services/Generator';
 import { baseApiUrl } from '../../../services/BaseUrl';
-import { validateFileSize, showFileSizeError } from '../../../utils/fileValidation';
-
 const UploadFilesPage = () => {
 
 
@@ -244,15 +242,6 @@ const UploadFilesPage = () => {
   const handleFileChange = (e, component) => {
     const file = e.target.files[0];
     if (file) {
-      // Validate file size before setting
-      const validation = validateFileSize(file);
-      if (!validation.isValid) {
-        showFileSizeError(validation.error);
-        // Clear the input
-        e.target.value = '';
-        return;
-      }
-
       setFormData((prev) => ({
         ...prev,
         files: {
