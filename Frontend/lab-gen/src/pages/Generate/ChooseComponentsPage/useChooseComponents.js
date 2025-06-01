@@ -536,7 +536,7 @@ const useChooseComponents = () => {
     }
 
     try {
-      const response = await fetch(`${baseApiUrl}/uploadFile`, {
+      const response = await fetch(`${baseApiUrl}uploadFile`, {
         method: "POST",
         body: formDataToSend,
       });
