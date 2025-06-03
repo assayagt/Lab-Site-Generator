@@ -83,6 +83,7 @@ const ChooseComponentsPage = () => {
     setPreviewImage,
     handleDeleteGalleryImage,
     uploadProgress,
+    gallery,
   } = useChooseComponents();
 
   // Fix leaflet icon issues (put this near the top of the component file)
@@ -1125,14 +1126,14 @@ const ChooseComponentsPage = () => {
                     )}
 
                   {/* Display saved gallery images from database */}
-                  {websiteData?.gallery && websiteData.gallery.length > 0 && (
+                  {gallery && gallery.length > 0 && (
                     <div className="gallery_list_section">
                       <h4>
-                        Saved Gallery Images ({websiteData.gallery.length})
+                        Saved Gallery Images ({gallery.length})
                         <span className="status-indicator saved">Saved</span>
                       </h4>
                       <div className="gallery_list">
-                        {websiteData.gallery.map((image, index) => (
+                        {gallery.map((image, index) => (
                           <div key={index} className="gallery_list_item saved">
                             <span
                               className="image_name_clickable"

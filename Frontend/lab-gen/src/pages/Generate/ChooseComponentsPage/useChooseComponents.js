@@ -40,6 +40,8 @@ const useChooseComponents = () => {
       : ["Home"];
   });
   const [template, setTemplate] = useState(websiteData.template || "");
+  const [gallery, setGallery] = useState(websiteData.gallery || []);
+
   const [isChanged, setIsChanged] = useState(false);
   const [buttonText, setButtonText] = useState("Save");
   const [googleLink, setGooogleLink] = useState("");
@@ -617,7 +619,6 @@ const useChooseComponents = () => {
         // Force update with new timestamp to trigger re-render
         const newGalleryData = {
           gallery: data.images || [],
-          galleryUpdatedAt: Date.now(), // Always update timestamp
         };
 
         console.log("Updating gallery with:", newGalleryData);
@@ -626,6 +627,7 @@ const useChooseComponents = () => {
           ...prev,
           ...newGalleryData,
         }));
+        setGallery(data.images);
 
         // Also update local websiteData reference if needed
         return newGalleryData;
@@ -724,7 +726,7 @@ const useChooseComponents = () => {
       if (uploadedCount > 0) {
         setMediaSaveStatus((prev) => ({ ...prev, [componentKey]: true }));
 
-        // await refreshGalleryData();
+        await refreshGalleryData();
 
         setFormData((prev) => ({
           ...prev,
@@ -1090,6 +1092,7 @@ const useChooseComponents = () => {
     setPreviewImage,
     handleDeleteGalleryImage,
     uploadProgress,
+    gallery,
   };
 };
 
