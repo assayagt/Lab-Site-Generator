@@ -22,7 +22,8 @@ class TestCreateWebsiteAndLab(unittest.TestCase):
         self.template = Template.template1
         self.lab_members = {"member1@example.com": {"full_name": "Member One", "degree": "B.Sc."}, "member2@example.com": {"full_name": "Member Two", "degree": "M.Sc."}}
         self.lab_managers = {"manager1@example.com": {"full_name": "Manager One", "degree": "Ph.D."}}
-        self.site_creator = {"email": "creator@example.com", "full_name": "Site Creator", "degree": "Ph.D."}
+        self.site_creator = {"email": "creator@example.com", "full_name": "Liron David", "degree": "Ph.D."}
+        self.creator_scholar_link = "https://scholar.google.com/citations?user=rgUqRpYAAAAJ&hl=en"
 
         # Create the custom website first
         self.generator_system_service.create_website(self.user_id, self.website_name, self.domain,
@@ -37,7 +38,8 @@ class TestCreateWebsiteAndLab(unittest.TestCase):
         lab_website_creation_response = self.generator_system_service.create_new_lab_website(self.domain,
                                                                                              self.lab_members,
                                                                                              self.lab_managers,
-                                                                                             self.site_creator)
+                                                                                             self.site_creator,
+                                                                                             self.creator_scholar_link)
         self.assertTrue(lab_website_creation_response.is_success())
 
     def test_website_not_exist(self):
@@ -48,6 +50,7 @@ class TestCreateWebsiteAndLab(unittest.TestCase):
         lab_website_creation_response = self.generator_system_service.create_new_lab_website(invalid_domain,
                                                                                              self.lab_members,
                                                                                              self.lab_managers,
-                                                                                             self.site_creator)
+                                                                                             self.site_creator,
+                                                                                             self.creator_scholar_link)
         self.assertFalse(lab_website_creation_response.is_success())
         self.assertEqual(lab_website_creation_response.get_message(), ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST.value)

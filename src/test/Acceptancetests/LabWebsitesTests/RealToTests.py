@@ -98,3 +98,6 @@ class RealToTests(BridgeToTests):
 
     def reset_system(self):
         return self.lab_system_service.reset_system()
+
+    def get_all_not_approved_publications_of_member(self, domain, user_id):
+        return self.lab_system_service.get_all_not_approved_publications_of_member(domain, user_id)

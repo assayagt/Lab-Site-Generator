@@ -137,3 +137,7 @@ class BridgeToTests(ABC):
     def reset_system(self):
         """Reset the system."""
         pass
+
+    def get_all_not_approved_publications_of_member(self, domain, user_id):
+        """Get all not approved publications of a specific member for a specific website."""
+        pass
