@@ -2,7 +2,7 @@ import time
 import re
 from bs4 import BeautifulSoup 
 from scholarly import scholarly
-from urllib.parse import urljoin
+from urllib.parse import urlparse, parse_qs
 from datetime import datetime
 from src.main.DomainLayer.LabWebsites.Website.ApprovalStatus import ApprovalStatus
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
@@ -112,7 +112,7 @@ class GoogleScholarWebCrawler:
                 if pub_url and "arxiv.org" in pub_url:
                     pub.set_arxiv_link(pub_url)
                 # --bibTex-- 
-                bibtex_str = self.get_bibtex_from_citation_page(link=pub.publication_link) # no HTTP request
+                bibtex_str = self._construct_bibtex_from_filledPub(filled_pub)# no HTTP request
                 if bibtex_str:
                     pub.set_bibtex(bibtex_str)
             except Exception as e:
@@ -152,39 +152,185 @@ class GoogleScholarWebCrawler:
         title = re.sub(r"[^a-z0-9]+", " ", title)
         return " ".join(title.split())
 
-    def get_bibtex_from_citation_page(self, link: str) -> str | None:
+    def get_bibtex_from_citation_page(self, link: str) -> str:
         """
-        Given a Google Scholar publication citation link, fetch the BibTeX citation using BeautifulSoup.
+        Extract BibTeX from a Google Scholar citation page URL.
+        
+        Args:
+            link (str): Google Scholar citation page URL
+            
+        Returns:
+            str: BibTeX string or empty string if extraction fails
         """
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-        }
-
         try:
-            # Step 1: Load the citation page
-            response = requests.get(link, headers=headers)
-            response.raise_for_status()
-            soup = BeautifulSoup(response.text, "html.parser")
-
-            # Step 2: Find the "Cite" (BibTeX) export link
-            cite_link = soup.find("a", text="BibTeX")
-            if not cite_link:
-                # Try a more flexible search
-                cite_link = soup.find("a", href=True, string=re.compile("BibTeX", re.IGNORECASE))
-
-            if cite_link:
-                bibtex_url = urljoin("https://scholar.google.com", cite_link["href"])
-                time.sleep(1)  # politeness delay
-                bib_response = requests.get(bibtex_url, headers=headers)
-                bib_response.raise_for_status()
-                return bib_response.text.strip()
-
-            print(f"[WARN] BibTeX link not found on page: {link}")
-            return None
-
+            # Parse the URL to extract citation parameters
+            parsed_url = urlparse(link)
+            query_params = parse_qs(parsed_url.query)
+            
+            # Extract required parameters for BibTeX URL
+            user_id = query_params.get('user', [None])[0]
+            citation_id = query_params.get('citation_for_view', [None])[0]
+            
+            if not user_id or not citation_id:
+                print(f"[WARN] Could not extract user_id or citation_id from URL: {link}")
+                return ""     
+            # Construct BibTeX export URL
+            bibtex_url = f"https://scholar.google.com/scholar.bib?q=info:{citation_id.split(':')[-1]}:scholar.google.com/&output=citation&scisdr=CgXm-LIEEP-IhLHwAA:AGlGAw8AAAAAZrDyCA&scisig=AGlGAw8AAAAAZrDyCA&scisf=4&ct=citation&cd=-1&hl=en"      
+            # Alternative approach: Use the citation page to get BibTeX link
+            return self._extract_bibtex_via_citation_page(link)
+            
         except Exception as e:
-            print(f"[ERROR] Failed to fetch BibTeX from citation page: {e}")
-            return None
+            print(f"[WARN] Error extracting BibTeX from {link}: {e}")
+            return ""
+
+    def _construct_bibtex_from_filledPub(self, filled_pub):
+        # ============ this part tries to avoid building the bibtex
+        if 'bibtex' in filled_pub:
+            return filled_pub['bibtex']
+        bib = filled_pub.get('bib', {})
+        if 'bibtex' in bib:
+            return bib['bibtex']
+        
+        pub_url = filled_pub.get('pub_url', '')
+        if 'scholar.bib' in pub_url:
+            return self._fetch_bibtex_from_url(pub_url)
+        # =============== up to here
+        title = bib.get('title', 'Unknown Title')
+        author = bib.get('author', 'Unknown Author')
+        year = bib.get('pub_year', 'Unknown Year')
+        venue = bib.get('venue', bib.get('journal', bib.get('booktitle', 'Unknown Venue')))
+        # Generate a citation key
+        first_author = author.split(' and ')[0]
+        first_author_lastname = first_author.split()[-1].lower()
+        citation_key = f"{first_author_lastname}{year}"
+        citation_key = re.sub(r'[^a-zA-Z0-9]', '', citation_key) # remove special characters from citation key
+        pub_type = self._determine_pub_type(bib, filled_pub)
+        bibtex_lines = [f"@{pub_type}{{{citation_key},"]
+        # Add fields
+        if title:
+            bibtex_lines.append(f'  title={{{title}}},')
+        if author:
+            bibtex_lines.append(f'  author={{{author}}},')
+        if year and year != 'Unknown Year':
+            bibtex_lines.append(f'  year={{{year}}},')
+        # Add venue-specific fields
+        if pub_type == 'article' and venue:
+            bibtex_lines.append(f'  journal={{{venue}}},')
+        elif pub_type == 'inproceedings' and venue:
+            bibtex_lines.append(f'  booktitle={{{venue}}},')
+        elif venue:
+            bibtex_lines.append(f'  venue={{{venue}}},')
+        # Add additional fields if available
+        if 'volume' in bib:
+            bibtex_lines.append(f'  volume={{{bib["volume"]}}},')
+        if 'number' in bib:
+            bibtex_lines.append(f'  number={{{bib["number"]}}},')
+        if 'pages' in bib:
+            bibtex_lines.append(f'  pages={{{bib["pages"]}}},')
+        if 'publisher' in bib:
+            bibtex_lines.append(f'  publisher={{{bib["publisher"]}}},')
+        # Add URL if available
+        if pub_url:
+            bibtex_lines.append(f'  url={{{pub_url}}},')
+        
+        # Remove trailing comma from last entry and close
+        if bibtex_lines[-1].endswith(','):
+            bibtex_lines[-1] = bibtex_lines[-1][:-1]
+        
+        bibtex_lines.append('}')
+        
+        return '\n'.join(bibtex_lines)
+
+    def _determine_pub_type(self, bib: dict, filled_pub: dict):
+        """
+        Determine the BibTeX publication type based on available metadata.
+        """
+        venue = bib.get('venue', '').lower()
+        journal = bib.get('journal', '').lower()
+        booktitle = bib.get('booktitle', '').lower()
+        title = bib.get('title', '').lower()
+        pub_url = filled_pub.get('pub_url', '')
+        
+        # Check for ArXiv papers first (high priority)
+        if ('arxiv' in venue or 'arxiv' in pub_url.lower() or 
+            'arxiv' in bib.get('eprint', '').lower()):
+            return 'misc'
+        
+        # Check for other preprint servers
+        preprint_servers = ['biorxiv', 'medrxiv', 'chemrxiv', 'preprints.org', 'ssrn']
+        if any(server in pub_url.lower() for server in preprint_servers):
+            return 'misc'
+        
+        # Check for thesis/dissertation
+        thesis_keywords = ['thesis', 'dissertation', 'phd', 'master', 'msc', 'bachelor']
+        if any(keyword in venue for keyword in thesis_keywords) or any(keyword in title for keyword in thesis_keywords):
+            if 'phd' in venue or 'phd' in title or 'doctoral' in venue or 'doctoral' in title:
+                return 'phdthesis'
+            else:
+                return 'mastersthesis'
+        
+        # Check for books
+        book_keywords = ['book', 'handbook', 'manual', 'textbook']
+        if any(keyword in venue for keyword in book_keywords):
+            return 'book'
+        
+        # Check for book chapters
+        chapter_keywords = ['chapter', 'book chapter']
+        if any(keyword in venue for keyword in chapter_keywords):
+            return 'incollection'
+        
+        # Check for conference proceedings/papers
+        conference_keywords = ['conference', 'proceedings', 'workshop', 'symposium', 'meeting', 'summit', 'congress']
+        if (any(keyword in venue for keyword in conference_keywords) or 
+            any(keyword in booktitle for keyword in conference_keywords)):
+            return 'inproceedings'
+        
+        # Check for unpublished works (before journal check)
+        unpublished_keywords = ['unpublished', 'preprint', 'draft', 'submitted', 'under review']
+        if any(keyword in venue for keyword in unpublished_keywords):
+            return 'misc'  # Use misc instead of unpublished for preprints
+        
+        # Check for journal articles
+        journal_keywords = ['journal', 'transactions', 'letters', 'review', 'magazine', 'quarterly', 'annual']
+        if (any(keyword in venue for keyword in journal_keywords) or 
+            journal or 'issn' in bib):
+            return 'article'
+        
+        # Check for technical reports
+        report_keywords = ['report', 'technical report', 'tech report', 'tr-', 'working paper']
+        if any(keyword in venue for keyword in report_keywords):
+            return 'techreport'
+        
+        # Check for online/web sources
+        online_keywords = ['online', 'website', 'web', 'blog', 'url', 'http']
+        if (any(keyword in venue for keyword in online_keywords) or 
+            (pub_url and not any(ext in pub_url.lower() for ext in ['.pdf', '.ps', '.doc']))):
+            return 'misc'
+        
+        # Check for patents
+        if 'patent' in venue:
+            return 'misc'  # BibTeX doesn't have a patent type, use misc
+        
+        # If we have a venue but can't classify it, default to misc
+        if venue and venue != 'unknown venue':
+            return 'misc'
+        
+        # Final fallback - if no clear venue info, use misc for safety
+        return 'misc'
+    
+    def _fetch_bibtex_from_url(self, url: str):
+        """
+        Fetch BibTeX content from a URL (if scholarly provieds a direct BibTeX link)
+        """
+        try:
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()
+            content = response.text.strip()
+            if content.startswith('@'):
+                return content
+        except Exception as e:
+            print(f"[WARN] Could not fecth BibTeX fro URL {url}: {e}")
+        return ""
 
 
     def get_details_by_link(self, link):

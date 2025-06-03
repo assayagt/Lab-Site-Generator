@@ -76,13 +76,13 @@ class LabSystemController:
     def get_instance(cls):
         return cls()
 
-    @classmethod
-    def reset_instance(cls):
-        """Reset the singleton instance. Useful for unit tests."""
-        with cls._instance_lock:
-            if cls._instance:
-                cls._instance._stop_eviction.set()
-            cls._instance = None
+    # @classmethod
+    # def reset_instance(cls):
+    #     """Reset the singleton instance. Useful for unit tests."""
+    #     with cls._instance_lock:
+    #         if cls._instance:
+    #             cls._instance._stop_eviction.set()
+    #         cls._instance = None
 
     def enter_lab_website(self, domain):
         """
