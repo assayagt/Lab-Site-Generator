@@ -37,7 +37,8 @@ class TestSetFullNameByMember(unittest.TestCase):
         self.generator_system_service.create_new_lab_website(
             self.domain, {self.labMember1_email: {"full_name":self.labMember1_name, "degree":"M.Sc."}, self.labMember2_email: {"full_name":self.labMember2_name, "degree":"B.Sc."}},
             self.lab_managers,
-            {"email": self.site_creator_email, "full_name": "Site Creator", "degree": "Ph.D."}
+            {"email": self.site_creator_email, "full_name": "Site Creator", "degree": "Ph.D."},
+            ""
         )
 
         # Simulate a lab member login

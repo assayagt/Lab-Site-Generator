@@ -28,11 +28,19 @@ class TestRemoveManagerPermission(unittest.TestCase):
         self.template = Template.template1
         self.generator_system_service.create_website(self.user_id, self.website_name, self.domain, self.components,
                                                      self.template)
-        self.generator_system_service.create_new_lab_website(
+        self.lab_members = {"member1@example.com": {"full_name": "Member One", "degree": "B.Sc."}}
+        self.lab_managers = {
+            self.manager1_email: {"full_name": "Manager One", "degree": "M.Sc."},
+            self.manager2_email: {"full_name": "Manager Two", "degree": "M.Sc."}
+        }
+        self.site_creator = {"email": self.lab_creator_email, "full_name": self.lab_creator_name, "degree": "Ph.D."}
+        self.creator_scholar_link = "https://scholar.google.com/citations?user=creator"
+        response = self.generator_system_service.create_new_lab_website(
             self.domain,
-            {"member1@example.com": {"full_name":"Member One", "degree": "B.Sc."}},
-            {self.manager1_email: {"full_name":"Manager One", "degree":"M.Sc."}, self.manager2_email: {"full_name":"Manager Two", "degree": "M.Sc."}},
-            {"email": self.lab_creator_email, "full_name": self.lab_creator_name, "degree": "Ph.D."}
+            self.lab_members,
+            self.lab_managers,
+            self.site_creator,
+            self.creator_scholar_link
         )
 
         # Simulate a lab manager login

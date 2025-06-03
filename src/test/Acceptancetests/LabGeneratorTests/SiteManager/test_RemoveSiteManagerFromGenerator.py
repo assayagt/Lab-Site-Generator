@@ -10,6 +10,9 @@ class TestRemoveSiteManagerFromGenerator(unittest.TestCase):
     def setUp(self):
         # Initialize ProxyToTest with "Real"
         self.generator_system_service = ProxyToTest("Real")
+        
+        # Reset system before each test to ensure clean state
+        self.generator_system_service.reset_system()
 
         # Simulate entering the generator system for a user
         self.nominator_manager_userId = self.generator_system_service.enter_generator_system().get_data()
@@ -30,9 +33,10 @@ class TestRemoveSiteManagerFromGenerator(unittest.TestCase):
         self.lab_members = {"member1@example.com": {"full_name": "Member One", "degree": "B.Sc."},
                             "member2@example.com": {"full_name": "Member Two", "degree": "M.Sc."}}
         self.lab_managers = {self.manager_toRemove_email: {"full_name": "Manager One", "degree": "Ph.D."}}
-        self.site_creator = {"email": "creator@example.com", "full_name": "Site Creator", "degree": "Ph.D."}
+        self.site_creator = {"email": "creator@example.com", "full_name": "Liron David", "degree": "Ph.D."}
+        self.creator_scholar_link = "https://scholar.google.com/citations?user=rgUqRpYAAAAJ&hl=en"
 
-        self.generator_system_service.create_new_lab_website(self.domain, self.lab_members, self.lab_managers, self.site_creator)
+        self.generator_system_service.create_new_lab_website(self.domain, self.lab_members, self.lab_managers, self.site_creator, self.creator_scholar_link)
 
     def tearDown(self):
         # Reset the system after each test
@@ -69,12 +73,12 @@ class TestRemoveSiteManagerFromGenerator(unittest.TestCase):
             other_userId, self.manager_toRemove_email, self.domain
         )
         self.assertFalse(response.is_success())
-        self.assertEqual(response.get_message(), ExceptionsEnum.USER_IS_NOT_SITE_MANAGER.value)
+        self.assertEqual(response.get_message(), ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER.value)
 
     def test_creator_permissions_cannot_be_removed(self):
         # Test that the permissions of the creator cannot be removed
         response = self.generator_system_service.remove_site_manager_from_generator(
-            self.nominator_manager_userId, "manager_1@example.com", self.domain
+            self.nominator_manager_userId, self.site_creator["email"], self.domain
         )
         self.assertFalse(response.is_success())
         self.assertEqual(response.get_message(), ExceptionsEnum.PERMISSIONS_OF_SITE_CREATOR_CANNOT_BE_REMOVED.value)
@@ -86,4 +90,4 @@ class TestRemoveSiteManagerFromGenerator(unittest.TestCase):
             self.nominator_manager_userId, self.manager_toRemove_email, invalid_domain
         )
         self.assertFalse(response.is_success())
-        self.assertEqual(response.get_message(), ExceptionsEnum.USER_IS_NOT_MANAGER_OF_THE_GIVEN_DOMAIN.value)
+        self.assertEqual(response.get_message(), ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER.value)

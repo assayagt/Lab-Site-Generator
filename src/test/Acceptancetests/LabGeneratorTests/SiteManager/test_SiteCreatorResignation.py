@@ -22,11 +22,12 @@ class TestRegisterNewLabMember(unittest.TestCase):
         self.lab_member_degree = "Ph.D."
         self.lab_members = {"member1@example.com": {"full_name": "Member One", "degree": "M.Sc."}, "member2@example.com": {"full_name": "Member Two", "degree": "B.Sc."}}
         self.lab_managers = {"manager1@example.com": {"full_name": "Manager One", "degree": "Ph.D."}}
-        self.site_creator = {"email": "creator@example.com", "full_name": "Site Creator", "degree": "Ph.D."}
+        self.site_creator = {"email": "creator@example.com", "full_name": "Liron David", "degree": "Ph.D."}
+        self.creator_scholar_link = "https://scholar.google.com/citations?user=rgUqRpYAAAAJ&hl=en"
 
         # Create a new lab website
         self.generator_system_service.create_website(self.manager_user_id, "Lab Website", self.domain, ["Homepage", "Contact Us", "Publications"], Template.template1)
-        self.generator_system_service.create_new_lab_website(self.domain, self.lab_members, self.lab_managers, self.site_creator)
+        self.generator_system_service.create_new_lab_website(self.domain, self.lab_members, self.lab_managers, self.site_creator, self.creator_scholar_link)
 
     def tearDown(self):
         # Reset the system after each test
@@ -34,10 +35,9 @@ class TestRegisterNewLabMember(unittest.TestCase):
 
     def test_successful_website_creation(self):
         # Test creating a website successfully
-        response = self.generator_system_service.site_creator_resignation(self.manager_user_id, self.domain, self.lab_member_email)
+        response = self.generator_system_service.site_creator_resignation_from_generator(self.manager_user_id, self.domain, "member1@example.com", "member")
         self.assertTrue(response.is_success())
 
     def test_unsuccessful_no_site_creator(self):
-        response = self.generator_system_service.site_creator_resignation(self.user_id2, self.domain,
-                                                                          self.lab_member_email)
+        response = self.generator_system_service.site_creator_resignation_from_generator(self.user_id2, self.domain, "member1@example.com", "member")
         self.assertFalse(response.is_success())
