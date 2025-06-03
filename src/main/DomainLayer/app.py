@@ -233,24 +233,34 @@ class UploadFilesAndData(Resource):
 
             for component in files:
                 file = files[component]
-                print(f"Processing: {component}")
+                print(f"Processing component: {component}")
 
                 if not file:
-                    continue  
+                    continue
 
                 extension = os.path.splitext(file.filename)[1].lower()
                 file_path = None
 
                 if component == 'logo':
                     if extension in ['.svg', '.png', '.jpg', '.jpeg']:
+                        # Delete existing logo.* files
+                        for existing_file in glob.glob(os.path.join(website_folder, "logo.*")):
+                            print(f"Deleting old logo: {existing_file}")
+                            os.remove(existing_file)
+
                         file_path = os.path.join(website_folder, f"logo{extension}")
                     else:
                         return {
-                            "error": "Invalid file type for logo. Allowed: PNG, JPG, JPEG"
+                            "error": "Invalid file type for logo. Allowed: SVG, PNG, JPG, JPEG"
                         }, 400
 
                 elif component == 'homepagephoto':
                     if extension in ['.jpg', '.jpeg', '.png']:
+                        # Delete existing homepagephoto.* files
+                        for existing_file in glob.glob(os.path.join(website_folder, "homepagephoto.*")):
+                            print(f"Deleting old homepage photo: {existing_file}")
+                            os.remove(existing_file)
+
                         file_path = os.path.join(website_folder, f"homepagephoto{extension}")
                     else:
                         return {
@@ -268,6 +278,7 @@ class UploadFilesAndData(Resource):
                     }, 500
 
                 file.save(file_path)
+                print(f"Saved file: {file_path}")
                 uploaded_files.append(os.path.basename(file_path))
 
             return {
@@ -276,9 +287,10 @@ class UploadFilesAndData(Resource):
             }, 200
 
         except Exception as e:
+            print(f"Exception during upload: {e}")
             return {
                 "error": f"An error occurred: {str(e)}"
-            }, 500
+  },500
 
 
 class UploadGalleryImages(Resource):

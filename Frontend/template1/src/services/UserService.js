@@ -68,11 +68,11 @@ export const fetchUserNotifications = async (email) => {
   }
 };
 
-export const uploadProfilePicture = async (file) => {
+export const uploadProfilePicture = async (file, domain) => {
   const formData = new FormData();
   formData.append("profile_picture", file);
   formData.append("user_id", sessionStorage.getItem("sid"));
-  formData.append("domain", "www.localhost.com");
+  formData.append("domain", domain);
 
   try {
     const response = await axios.post(
@@ -88,5 +88,5 @@ export const uploadProfilePicture = async (file) => {
   } catch (error) {
     console.error("Error uploading profile picture:", error);
     throw error;
-  }
+}
 };

@@ -248,12 +248,15 @@ const AccountPage = () => {
     }
 
     try {
-      const response = await uploadProfilePicture(selectedFile);
+      const response = await uploadProfilePicture(
+        selectedFile,
+        sessionStorage.getItem("domain")
+      );
       console.log(response);
     } catch (error) {
       setErrorMessage("Error uploading photo.");
-    }
-  };
+    }
+  };
 
   const handleApproveNotification = async (notif) => {
     setSelectedNotification(notif);
