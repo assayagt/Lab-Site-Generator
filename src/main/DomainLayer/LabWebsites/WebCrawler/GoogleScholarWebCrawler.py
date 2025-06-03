@@ -146,43 +146,7 @@ class GoogleScholarWebCrawler:
         except Exception as e:
             print(f"Error occurred: {e}")
             return []
-    
-    def normalize_title(self, title):
-        title = title.lower()
-        title = re.sub(r"[^a-z0-9]+", " ", title)
-        return " ".join(title.split())
-
-    def get_bibtex_from_citation_page(self, link: str) -> str:
-        """
-        Extract BibTeX from a Google Scholar citation page URL.
-        
-        Args:
-            link (str): Google Scholar citation page URL
-            
-        Returns:
-            str: BibTeX string or empty string if extraction fails
-        """
-        try:
-            # Parse the URL to extract citation parameters
-            parsed_url = urlparse(link)
-            query_params = parse_qs(parsed_url.query)
-            
-            # Extract required parameters for BibTeX URL
-            user_id = query_params.get('user', [None])[0]
-            citation_id = query_params.get('citation_for_view', [None])[0]
-            
-            if not user_id or not citation_id:
-                print(f"[WARN] Could not extract user_id or citation_id from URL: {link}")
-                return ""     
-            # Construct BibTeX export URL
-            bibtex_url = f"https://scholar.google.com/scholar.bib?q=info:{citation_id.split(':')[-1]}:scholar.google.com/&output=citation&scisdr=CgXm-LIEEP-IhLHwAA:AGlGAw8AAAAAZrDyCA&scisig=AGlGAw8AAAAAZrDyCA&scisf=4&ct=citation&cd=-1&hl=en"      
-            # Alternative approach: Use the citation page to get BibTeX link
-            return self._extract_bibtex_via_citation_page(link)
-            
-        except Exception as e:
-            print(f"[WARN] Error extracting BibTeX from {link}: {e}")
-            return ""
-
+       
     def _construct_bibtex_from_filledPub(self, filled_pub):
         # ============ this part tries to avoid building the bibtex
         if 'bibtex' in filled_pub:
