@@ -601,6 +601,44 @@ const useChooseComponents = () => {
   //     showError("Unexpected error: " + error.message);
   //   }
   // };
+  const refreshGalleryData = async () => {
+    try {
+      console.log("Calling refreshGalleryData with domain:", domain);
+      const response = await fetch(`${baseApiUrl}getGallery?domain=${domain}`);
+      const data = await response.json();
+
+      console.log("Raw data received:", data);
+
+      if (data.response === "true") {
+        if (!data.images || data.images.length === 0) {
+          console.warn("No images found in response.");
+        }
+
+        // Force update with new timestamp to trigger re-render
+        const newGalleryData = {
+          gallery: data.images || [],
+          galleryUpdatedAt: Date.now(), // Always update timestamp
+        };
+
+        console.log("Updating gallery with:", newGalleryData);
+
+        setWebsite((prev) => ({
+          ...prev,
+          ...newGalleryData,
+        }));
+
+        // Also update local websiteData reference if needed
+        return newGalleryData;
+      } else {
+        console.warn(
+          "❌ Failed to fetch gallery images. Server response:",
+          data
+        );
+      }
+    } catch (error) {
+      console.error("❌ Error loading gallery:", error.message);
+    }
+  };
 
   const handleSubmit = async (component) => {
     const componentKey = component.replace(" ", "").toLowerCase();
@@ -686,13 +724,8 @@ const useChooseComponents = () => {
       if (uploadedCount > 0) {
         setMediaSaveStatus((prev) => ({ ...prev, [componentKey]: true }));
 
-        // Update websiteData with all successfully uploaded images
-        setWebsite((prev) => ({
-          ...prev,
-          gallery: [...(prev.gallery || []), ...newGalleryImages],
-        }));
+        // await refreshGalleryData();
 
-        // Clear the selected files after successful upload
         setFormData((prev) => ({
           ...prev,
           files: {
