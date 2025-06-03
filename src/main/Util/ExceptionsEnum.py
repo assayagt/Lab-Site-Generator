@@ -39,3 +39,4 @@ class ExceptionsEnum(Enum):
     PUBLICATION_ALREADY_WAITING = "This publication is already pending or rejected"
     IMAGE_NOT_FOUND = "Image not found"
     GALLERY_NOT_FOUND = "Gallery not found"
+    PERMISSIONS_OF_SITE_CREATOR_CANNOT_BE_REMOVED = "The permissions of the site creator cannot be removed"

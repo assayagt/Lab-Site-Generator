@@ -282,6 +282,9 @@ class AllWebsitesUserFacade:
         """
         Resets the entire system by clearing all stored websites.
         """
+        #reset all UserFacade instances
+        for userFacade in self.usersFacades.values():
+            userFacade.reset_all_instances()
         self.usersFacades.clear()
         self.dal_controller.drop_all_tables()
 

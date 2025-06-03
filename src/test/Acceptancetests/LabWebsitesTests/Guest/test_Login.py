@@ -1,7 +1,5 @@
 import unittest
 
-from selenium.webdriver.common.devtools.v85.browser import set_window_bounds
-
 from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
 from src.main.DomainLayer.LabWebsites.User.Degree import Degree
 from src.test.Acceptancetests.LabWebsitesTests.ProxyToTests import ProxyToTests
@@ -30,7 +28,7 @@ class TestLoginFunction(unittest.TestCase):
         self.lab_members = {"member1@example.com": {"full_name": "Member One", "degree": "B.Sc."}, "member2@example.com": {"full_name":"Member Two", "degree": "M.Sc."}}
         self.lab_managers = {}
         self.site_creator = {"email": self.site_creator_email, "full_name": "Site Creator", "degree": "Ph.D."}
-        self.generator_system_service.create_new_lab_website(self.domain, self.lab_members, self.lab_managers, self.site_creator)
+        self.generator_system_service.create_new_lab_website(self.domain, self.lab_members, self.lab_managers, self.site_creator, "")
 
         self.user_id_lab_website = self.lab_system_service.enter_lab_website(self.domain).get_data()
         self.site_creator_userId = self.lab_system_service.enter_lab_website(self.domain).get_data()

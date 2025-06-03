@@ -317,22 +317,30 @@ class DatabaseManager:
         """
         Delete all data from all tables in the database.
         This preserves the schema but removes all rows.
+        Tables are deleted in order of their dependencies to avoid foreign key constraint violations.
         """
         tables = [
-            "notifications",
-            "emails_pending",
-            "LabRoles_alumnis",
-            "LabRoles_siteCreator",
-            "LabRoles_managers",
-            "LabRoles_members",
-            "LabRoles_users",
-            "lab_members",
-            "member_domain",
-            "member_emails",
-            "websites",
-            "site_customs",
-            "publications",
-            "news"
+            # First: Tables with foreign keys to other tables
+            "notifications",        # depends on websites
+            "emails_pending",       # depends on websites
+            "publications",         # depends on websites
+            "news",                 # depends on websites
+            
+            # Second: Role tables that depend on lab_members
+            "LabRoles_alumnis",     # depends on lab_members
+            "LabRoles_siteCreator", # depends on lab_members
+            "LabRoles_managers",    # depends on lab_members
+            "LabRoles_members",     # depends on lab_members
+            "LabRoles_users",       # depends on lab_members
+            
+            # Third: Tables that depend on site_customs
+            "lab_members",          # depends on site_customs
+            "member_domain",        # depends on site_customs and member_emails
+            "websites",            # depends on site_customs
+            
+            # Finally: Base tables with no foreign key dependencies
+            "member_emails",        # independent table
+            "site_customs"         # independent table
         ]
 
         conn = self.connect()

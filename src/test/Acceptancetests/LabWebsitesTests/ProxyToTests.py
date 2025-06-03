@@ -164,3 +164,8 @@ class ProxyToTests(BridgeToTests):
         if self.real_service_adapter:
             return self.real_service_adapter.reset_system()
         return Response(None, "Not Implemented yet")
+
+    def get_all_not_approved_publications_of_member(self, domain, user_id):
+        if self.real_service_adapter:
+            return self.real_service_adapter.get_all_not_approved_publications_of_member(domain, user_id)
+        return Response(None, "Not Implemented yet")

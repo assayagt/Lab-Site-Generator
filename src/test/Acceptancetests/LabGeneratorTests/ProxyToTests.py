@@ -25,9 +25,9 @@ class ProxyToTest(BridgeToTests):
             return self.real_service_adapter.create_website(userId, website_name, domain, components, template)
         return Response(None, "Not Implemented yet")
 
-    def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator):
+    def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator, google_scholar_link):
         if self.real_service_adapter:
-            return self.real_service_adapter.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
+            return self.real_service_adapter.create_new_lab_website(domain, lab_members, lab_managers, site_creator, google_scholar_link)
         return Response(None, "Not Implemented yet")
 
     def change_website_name(self, userId, new_name, domain):
@@ -108,5 +108,10 @@ class ProxyToTest(BridgeToTests):
     def delete_website(self, user_id, domain):
         if self.real_service_adapter:
             return self.real_service_adapter.delete_website(user_id, domain)
+        return Response(None, "Not Implemented yet")
+
+    def site_creator_resignation_from_generator(self, site_creator_user_id, domain, nominated_email, new_role):
+        if self.real_service_adapter:
+            return self.real_service_adapter.site_creator_resignation_from_generator(site_creator_user_id, domain, nominated_email, new_role)
         return Response(None, "Not Implemented yet")
 
