@@ -14,6 +14,7 @@ import shutil
 import logging
 from google.oauth2 import id_token
 from google.auth.transport import requests
+import glob
 
 def send_test_notifications():
     while True:
