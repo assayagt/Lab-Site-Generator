@@ -60,6 +60,16 @@ const useChooseComponents = () => {
     useState("manager");
   const [isLoading, setIsLoading] = useState(false);
   const [save, setSave] = useState("Save");
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
+  const BATCH_SIZE = 10; // Upload 10 files per batch
+  const [uploadProgress, setUploadProgress] = useState({
+    isUploading: false,
+    currentBatch: 0,
+    totalBatches: 0,
+    uploadedFiles: 0,
+    totalFiles: 0,
+    failedFiles: 0,
+  });
   const showError = (message) => {
     setErrorMessage(message);
   };
@@ -406,19 +416,100 @@ const useChooseComponents = () => {
     setcontactUs(true);
   };
 
+  const validateFileSize = (file, maxSize, componentName) => {
+    if (file.size > maxSize) {
+      const maxSizeMB = (maxSize / (1024 * 1024)).toFixed(1);
+      showError(
+        `${componentName} file "${file.name}" is too large. Maximum size is ${maxSizeMB}MB.`
+      );
+      return false;
+    }
+    return true;
+  };
+
+  // const handleFileChange = (e, component) => {
+  //   setSave("Save");
+  //   const files = e.target.files;
+  //   if (files && files.length > 0) {
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       files: {
+  //         ...prev.files,
+  //         [component]: component === "gallery" ? [...files] : files[0],
+  //       },
+  //     }));
+  //     setMediaSaveStatus((prev) => ({ ...prev, [component]: false }));
+  //   }
+  // };
+
   const handleFileChange = (e, component) => {
     setSave("Save");
     const files = e.target.files;
-    if (files && files.length > 0) {
+
+    if (!files || files.length === 0) return;
+
+    // Validate file sizes
+    const validateFileSize = (file, maxSize, componentName) => {
+      if (file.size > maxSize) {
+        const maxSizeMB = (maxSize / (1024 * 1024)).toFixed(1);
+        showError(
+          `${componentName} file "${file.name}" is too large. Maximum size is ${maxSizeMB}MB.`
+        );
+        return false;
+      }
+      return true;
+    };
+
+    if (component === "gallery") {
+      // Validate all gallery files (no count limit during selection)
+      const validFiles = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (validateFileSize(file, MAX_FILE_SIZE, "Gallery image")) {
+          validFiles.push(file);
+        }
+      }
+
+      if (validFiles.length === 0) {
+        e.target.value = ""; // Clear the input
+        return;
+      }
+
+      if (validFiles.length < files.length) {
+        showError(
+          `${
+            files.length - validFiles.length
+          } file(s) were rejected due to size limits.`
+        );
+      }
+
       setFormData((prev) => ({
         ...prev,
         files: {
           ...prev.files,
-          [component]: component === "gallery" ? [...files] : files[0],
+          [component]: validFiles,
         },
       }));
-      setMediaSaveStatus((prev) => ({ ...prev, [component]: false }));
+    } else {
+      // Validate single file (logo or homepage photo)
+      const file = files[0];
+      const componentName = component === "logo" ? "Logo" : "Homepage photo";
+
+      if (!validateFileSize(file, MAX_FILE_SIZE, componentName)) {
+        e.target.value = ""; // Clear the input
+        return;
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        files: {
+          ...prev.files,
+          [component]: file,
+        },
+      }));
     }
+
+    setMediaSaveStatus((prev) => ({ ...prev, [component]: false }));
   };
 
   const handleDownload = (component) => {
@@ -429,14 +520,51 @@ const useChooseComponents = () => {
   };
 
   // const handleSubmit = async (component) => {
-  //   const component_new = component.replace(" ", "").toLowerCase();
+  //   const componentKey = component.replace(" ", "").toLowerCase();
+  //   const files = formData.files[componentKey];
 
   //   const formDataToSend = new FormData();
   //   formDataToSend.append("domain", domain);
   //   formDataToSend.append("website_name", websiteName);
 
-  //   if (formData.files[component_new]) {
-  //     formDataToSend.append(component_new, formData.files[component_new]);
+  //   // --- Handle gallery upload separately
+  //   console.log(files);
+  //   if (componentKey === "gallery" && Array.isArray(files)) {
+  //     files.forEach((file) => {
+  //       formDataToSend.append(componentKey, file);
+  //     });
+
+  //     try {
+  //       const response = await fetch(`${baseApiUrl}/uploadGalleryImages`, {
+  //         method: "POST",
+  //         body: formDataToSend,
+  //       });
+
+  //       const contentType = response.headers.get("content-type") || "";
+  //       if (contentType.includes("application/json")) {
+  //         const data = await response.json();
+  //         if (response.ok) {
+  //           setMediaSaveStatus((prev) => ({ ...prev, [componentKey]: true }));
+  //         } else {
+  //           showError(
+  //             "Gallery upload failed: " + (data.error || "Unknown error")
+  //           );
+  //         }
+  //       } else {
+  //         const rawText = await response.text();
+  //         showError(
+  //           "Gallery server error (non-JSON): " + rawText.slice(0, 100)
+  //         );
+  //       }
+  //     } catch (error) {
+  //       showError("Gallery upload exception: " + error.message);
+  //     }
+  //     return; // Exit early
+  //   }
+
+  //   // --- Handle logo and homepagephoto
+  //   if (files) {
+  //     formDataToSend.append(componentKey, files);
   //   }
 
   //   try {
@@ -446,44 +574,31 @@ const useChooseComponents = () => {
   //     });
 
   //     const contentType = response.headers.get("content-type") || "";
-
   //     if (contentType.includes("application/json")) {
   //       const data = await response.json();
-
   //       if (response.ok) {
-  //         // ✅ Success
-  //         setMediaSaveStatus((prev) => ({ ...prev, [component_new]: true }));
-
-  //         setWebsite((prev) => ({
-  //           ...prev,
-  //           files: formData.files,
-  //         }));
+  //         setMediaSaveStatus((prev) => ({ ...prev, [componentKey]: true }));
+  //         setWebsite((prev) => ({ ...prev, files: formData.files }));
 
   //         if (websiteData.generated) {
-  //           const saveLogoResponse = await saveLogo(
-  //             sessionStorage.getItem("sid"),
-  //             websiteData.domain
-  //           );
-  //           console.log(saveLogoResponse);
-
-  //           const savePhotoResponse = await saveHomePicture(
-  //             sessionStorage.getItem("sid"),
-  //             websiteData.domain
-  //           );
-  //           console.log(savePhotoResponse);
+  //           if (componentKey === "logo") {
+  //             await saveLogo(sessionStorage.getItem("sid"), websiteData.domain);
+  //           } else if (componentKey === "homepagephoto") {
+  //             await saveHomePicture(
+  //               sessionStorage.getItem("sid"),
+  //               websiteData.domain
+  //             );
+  //           }
   //         }
   //       } else {
-  //         // ❌ Error response with JSON body
-  //         showError("Error: " + (data.error || "Unknown server error"));
+  //         showError("Upload failed: " + (data.error || "Unknown error"));
   //       }
   //     } else {
-  //       // ❌ Server didn't send JSON, probably HTML error page
   //       const rawText = await response.text();
   //       showError("Server error (non-JSON): " + rawText.slice(0, 100));
   //     }
   //   } catch (error) {
-  //     // ❌ Network or parsing error
-  //     showError("Unexpected Error: " + error.message);
+  //     showError("Unexpected error: " + error.message);
   //   }
   // };
 
@@ -495,42 +610,125 @@ const useChooseComponents = () => {
     formDataToSend.append("domain", domain);
     formDataToSend.append("website_name", websiteName);
 
-    // --- Handle gallery upload separately
-    console.log(files);
+    // Handle gallery upload separately with batch processing
     if (componentKey === "gallery" && Array.isArray(files)) {
-      files.forEach((file) => {
-        formDataToSend.append(componentKey, file);
+      const totalFiles = files.length;
+      const totalBatches = Math.ceil(totalFiles / BATCH_SIZE);
+      let uploadedCount = 0;
+      let failedCount = 0;
+      const newGalleryImages = [];
+
+      // Initialize progress
+      setUploadProgress({
+        isUploading: true,
+        currentBatch: 0,
+        totalBatches,
+        uploadedFiles: 0,
+        totalFiles,
+        failedFiles: 0,
       });
 
-      try {
-        const response = await fetch(`${baseApiUrl}/uploadGalleryImages`, {
-          method: "POST",
-          body: formDataToSend,
+      for (let batchIndex = 0; batchIndex < totalBatches; batchIndex++) {
+        const startIndex = batchIndex * BATCH_SIZE;
+        const endIndex = Math.min(startIndex + BATCH_SIZE, totalFiles);
+        const batchFiles = files.slice(startIndex, endIndex);
+
+        // Update current batch progress
+        setUploadProgress((prev) => ({
+          ...prev,
+          currentBatch: batchIndex + 1,
+        }));
+
+        const batchFormData = new FormData();
+        batchFormData.append("domain", domain);
+        batchFormData.append("website_name", websiteName);
+
+        batchFiles.forEach((file) => {
+          batchFormData.append(componentKey, file);
         });
 
-        const contentType = response.headers.get("content-type") || "";
-        if (contentType.includes("application/json")) {
-          const data = await response.json();
-          if (response.ok) {
-            setMediaSaveStatus((prev) => ({ ...prev, [componentKey]: true }));
+        try {
+          const response = await fetch(`${baseApiUrl}/uploadGalleryImages`, {
+            method: "POST",
+            body: batchFormData,
+          });
+
+          const contentType = response.headers.get("content-type") || "";
+          if (contentType.includes("application/json")) {
+            const data = await response.json();
+            if (response.ok) {
+              uploadedCount += batchFiles.length;
+
+              // Add successful uploads to gallery images
+              const batchGalleryImages = batchFiles.map((file) => ({
+                filename: file.name,
+                data_url: URL.createObjectURL(file),
+              }));
+              newGalleryImages.push(...batchGalleryImages);
+            } else {
+              failedCount += batchFiles.length;
+            }
           } else {
-            showError(
-              "Gallery upload failed: " + (data.error || "Unknown error")
-            );
+            failedCount += batchFiles.length;
           }
-        } else {
-          const rawText = await response.text();
-          showError(
-            "Gallery server error (non-JSON): " + rawText.slice(0, 100)
-          );
+        } catch (error) {
+          failedCount += batchFiles.length;
         }
-      } catch (error) {
-        showError("Gallery upload exception: " + error.message);
+
+        // Update progress after each batch
+        setUploadProgress((prev) => ({
+          ...prev,
+          uploadedFiles: uploadedCount,
+          failedFiles: failedCount,
+        }));
       }
-      return; // Exit early
+      // Final results
+      if (uploadedCount > 0) {
+        setMediaSaveStatus((prev) => ({ ...prev, [componentKey]: true }));
+
+        // Update websiteData with all successfully uploaded images
+        setWebsite((prev) => ({
+          ...prev,
+          gallery: [...(prev.gallery || []), ...newGalleryImages],
+        }));
+
+        // Clear the selected files after successful upload
+        setFormData((prev) => ({
+          ...prev,
+          files: {
+            ...prev.files,
+            [componentKey]: null,
+          },
+        }));
+
+        const fileInput = document.querySelector(
+          'input[type="file"][multiple]'
+        );
+        if (fileInput) fileInput.value = "";
+      }
+
+      // Reset progress after completion
+      setTimeout(() => {
+        setUploadProgress({
+          isUploading: false,
+          currentBatch: 0,
+          totalBatches: 0,
+          uploadedFiles: 0,
+          totalFiles: 0,
+          failedFiles: 0,
+        });
+      }, 3000); // Show final results for 3 seconds
+
+      if (failedCount > 0) {
+        showError(
+          `Upload completed: ${uploadedCount} successful, ${failedCount} failed`
+        );
+      }
+
+      return;
     }
 
-    // --- Handle logo and homepagephoto
+    // Handle logo and homepage photo (same as before)
     if (files) {
       formDataToSend.append(componentKey, files);
     }
@@ -858,6 +1056,7 @@ const useChooseComponents = () => {
     previewImage,
     setPreviewImage,
     handleDeleteGalleryImage,
+    uploadProgress,
   };
 };
 
