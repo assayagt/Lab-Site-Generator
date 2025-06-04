@@ -170,7 +170,7 @@ class DatabaseManager:
             domain TEXT,
             scholarly_stub,
             bibtex,
-            arxiv_link,
+            pub_url,
             FOREIGN KEY (domain) REFERENCES websites(domain) ON DELETE CASCADE
         );
         '''

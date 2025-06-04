@@ -269,7 +269,7 @@ class UserFacade:
 
         self.dal_controller.LabMembers_repo.clear_member_role(email, self.domain)  # ===========================
 
-    def get_user_by_id(self, userId):
+    def get_user_by_id(self, userId) -> User:
         if userId in self.users:
             user = self.users[userId]
         else:

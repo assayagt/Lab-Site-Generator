@@ -5,7 +5,7 @@ class PublicationDTO:
     def __init__(self, title, publication_year, publication_link,
                  approved=ApprovalStatus.INITIAL_PENDING,
                  git_link=None, authors=None, video_link=None, presentation_link=None, description=None, paper_id=None, author_emails :list[str]=[], domain=None,
-                 _scholarly_stub: dict = None, bibtex=None, arxiv_link=None):
+                 _scholarly_stub: dict = None, bibtex=None, pub_url=None):
         self.paper_id = str(uuid.uuid4()) if paper_id is None else paper_id
         self.title = title
         self.authors = authors 
@@ -21,7 +21,7 @@ class PublicationDTO:
         self.domain = domain
         self._scholarly_stub = _scholarly_stub # store the scholarly stub so we can refill it later
         self.bibtex = bibtex
-        self.arxiv_link = arxiv_link
+        self.pub_url = pub_url
         
 
 
@@ -35,12 +35,12 @@ class PublicationDTO:
             "video_link": self.video_link,
             "git_link": self.git_link,
             "presentation_link": self.presentation_link,
-            "description": self.description , # Include description in dict
+            "description": self.description , 
             "status" : self.approved.value,
             "domain": self.domain,
             "_scholarly_stub": self._scholarly_stub,
             "bibtex": self.bibtex,
-            "arxiv": self.arxiv_link
+            "pub_url": self.pub_url
         }
 
     def __eq__(self, other):
@@ -58,8 +58,8 @@ class PublicationDTO:
     def set_bibtex(self, bibtex):
         self.bibtex = bibtex
 
-    def set_arxiv_link(self, arxiv_link):
-        self.arxiv_link = arxiv_link
+    def set_pub_url(self, pub_url):
+        self.pub_url = pub_url
 
     def set_video_link(self, video_link):
         self.video_link = video_link

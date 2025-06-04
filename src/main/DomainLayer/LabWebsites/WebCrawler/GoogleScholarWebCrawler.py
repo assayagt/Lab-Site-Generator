@@ -79,7 +79,7 @@ class GoogleScholarWebCrawler:
         return list(crawled)
     
     
-    def fill_details(self, publicationDTOs: list[PublicationDTO]): #TODO: complete this function to also fill bibtex and arxiv, also think of how can we implement a queue of fill / crawl requests.
+    def fill_details(self, publicationDTOs: list[PublicationDTO]): #TODO: complete this function to also fill bibtex and pub_url, also think of how can we implement a queue of fill / crawl requests.
         """
         This method accepts a list of PublicationDTO where and fills description and authors into it
         """
@@ -108,9 +108,9 @@ class GoogleScholarWebCrawler:
                 if "abstract" in bib:
                     pub.set_description(bib.get("abstract"))
                 # --ArXiv/PDF link-- (if present)
-                pub_url = filled_pub.get("pub_url") or bib.get("url")
-                if pub_url and "arxiv.org" in pub_url:
-                    pub.set_arxiv_link(pub_url)
+                pub_url = filled_pub.get("pub_url", bib.get("url", "")) 
+                if pub_url:
+                    pub.set_pub_url(pub_url)
                 # --bibTex-- 
                 bibtex_str = self._construct_bibtex_from_filledPub(filled_pub)# no HTTP request
                 if bibtex_str:
