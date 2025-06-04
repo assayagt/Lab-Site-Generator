@@ -322,7 +322,7 @@ const AccountPage = () => {
   }, [activeSection, setHasNewNotifications]);
   useEffect(() => {
     if (popupMessage) {
-      const timer = setTimeout(() => setPopupMessage(""), 3000);
+      const timer = setTimeout(() => setPopupMessage(""), 5000);
       return () => clearTimeout(timer);
     }
   }, [popupMessage]);
@@ -421,7 +421,9 @@ const AccountPage = () => {
       );
       if (response.response === "true") {
         setSelectedPublications([]);
-        setPopupMessage(`${selectedPublications.length} publications approved`);
+        setPopupMessage(
+          `${selectedPublications.length} publications approved, you will see them ina few minutes`
+        );
         setCrawledPublications((prev) =>
           prev.map((pub) =>
             selectedPublications.includes(pub.paper_id)
