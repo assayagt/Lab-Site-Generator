@@ -6,6 +6,8 @@ import MediaPage from "./Pages/MediaPage/MediaPage";
 import React, { useEffect, useState } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import ParticipantProfile from "./Pages/ParticipantProfile/ParticipantProfile";
+import ParticipantProfile2 from "./Pages/ParticipantProfile/ParticipantProfile2";
+
 import {
   BrowserRouter as Router,
   Route,
@@ -165,14 +167,14 @@ function App() {
                 />
                 <Route
                   path="/participant/:email"
-                  element={<ParticipantProfile />}
+                  element={<ParticipantProfile2 />}
                 />
 
                 <Route
                   path="/LabMembers"
                   element={
                     websiteData.template === "template1" ? (
-                      <ParticipantsPage />
+                      <ParticipantsPage2 />
                     ) : (
                       <ParticipantsPage2 />
                     )
