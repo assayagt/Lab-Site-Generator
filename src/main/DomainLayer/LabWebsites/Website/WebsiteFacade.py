@@ -61,7 +61,8 @@ class WebsiteFacade:
 
 
     def get_all_website_domains(self) -> list[str]:
-        return self.dal_controller.website_repo.find_all_domains()
+        # return self.dal_controller.website_repo.find_all_domains()
+        return self.dal_controller.website_repo.find_all_domains() # because of lazy-loading the websites we should get it from the DB
 
 
     def get_all_approved_publication(self, domain):
@@ -278,7 +279,7 @@ class WebsiteFacade:
         #         self.websites.remove(website)
         #         break
         if domain in self.websites:
-            del self.websites[domain]
+            del self.websites[domain] # Ask Tomer about deleting from database
 
     def reset_system(self):
         """

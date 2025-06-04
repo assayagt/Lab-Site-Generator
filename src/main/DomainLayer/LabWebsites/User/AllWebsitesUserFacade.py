@@ -19,7 +19,7 @@ class AllWebsitesUserFacade:
         if self._initialized:
             return
 
-        self.usersFacades = {}  # key: website domain, value: userFacade
+        self.usersFacades: dict[str, UserFacade] = {}  # key: website domain, value: userFacade
         self.dal_controller = DAL_controller()
         # self._load_all_data()
         self._initialized = True
@@ -38,10 +38,7 @@ class AllWebsitesUserFacade:
     #     self.usersFacades[domain] = UserFacade.get_instance(domain) ==> Lazy-load mechanism covers that 
 
     def getUserFacadeByDomain(self, domain) -> UserFacade:
-        # first, verify this domain exists in the website table
-        if self.dal_controller.website_repo.find_by_domain(domain) is None:
-            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST.value)
-        
+        self.error_if_domain_not_exist(domain)
         # lazy-create the userFacade
         if domain not in self.usersFacades:
             # this calls UserFacade.__init__ and its _load_data()
@@ -49,7 +46,7 @@ class AllWebsitesUserFacade:
         return self.usersFacades[domain]
 
     def error_if_domain_not_exist(self, domain):
-        if domain not in self.usersFacades:
+        if self.dal_controller.website_repo.find_by_domain(domain) is None:
             raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST.value)
 
     def logout(self, domain, userId):
@@ -301,7 +298,7 @@ class AllWebsitesUserFacade:
 
     def remove_website_data(self, domain):
         """
-        Remove all data associated with a website from memory and database.
+        Remove all data associated with a website from memory.
 
         Args:
             domain (str): The domain of the website to remove
@@ -309,10 +306,8 @@ class AllWebsitesUserFacade:
         if domain in self.usersFacades:
             # Get all members before removing the facade
             user_facade = self.usersFacades[domain]
-
             # Reset the singleton instance
             user_facade.reset_instance(domain)
-
             # Remove from memory
             del self.usersFacades[domain]
 
