@@ -54,7 +54,7 @@ class EmailNotification:
 
                         <!-- Button -->
                         <div style="text-align: center; margin-top: 30px;">
-                          <a href="http://{self.domain}" style="
+                          <a href="http://lsg.cs.bgu.ac.il/labs/{self.domain}" style="
                             background-color: #007bff;
                             color: #ffffff;
                             padding: 12px 24px;
