@@ -405,7 +405,7 @@ const ParticipantsPage = () => {
                             "Page for Participant"
                           ) && (
                             <FaExternalLinkAlt
-                              className="profile-link-icon"
+                              className="profile-link-icon_2"
                               onClick={() => NavigateProfile(member.email)}
                               title="View Profile"
                             />

@@ -1,5 +1,4 @@
-/* ParticipantsPage2.css */
-.members-page {
+ParticipantsPage2.css .members-page {
   padding: 0;
   color: #333;
   min-height: calc(100vh - 80px);
@@ -228,7 +227,7 @@
   margin-left: 8px;
 }
 
-.profile-link-icon {
+.profile-link-icon_2 {
   color: #667eea;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -236,7 +235,7 @@
   border-radius: 4px;
 }
 
-.profile-link-icon:hover {
+.profile-link-icon_2:hover {
   color: #764ba2;
   background-color: rgba(102, 126, 234, 0.1);
   transform: scale(1.1);

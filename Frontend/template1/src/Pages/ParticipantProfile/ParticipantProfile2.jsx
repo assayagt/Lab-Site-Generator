@@ -304,13 +304,16 @@ const ParticipantProfile = () => {
 
           <div className="profile-info">
             <div className="profile-name-section">
-              <h1 className="profile-name">{participant.fullName}</h1>
+              <h1 className="profile-name_2">{participant.fullName}</h1>
               {getParticipantBadge()}
             </div>
 
             <div className="profile-details">
               <p className="profile-degree">{participant.degree}</p>
-              <a href={`mailto:${participant.email}`} className="profile-email">
+              <a
+                href={`mailto:${participant.email}`}
+                className="profile-email_2"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="18"
@@ -342,7 +345,7 @@ const ParticipantProfile = () => {
                   href={participant.linkedin_link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="profile-link profile-link--linkedin"
+                  className="profile-link_2 profile-link--linkedin"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
