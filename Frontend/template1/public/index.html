@@ -2,6 +2,40 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <script>
+      (function () {
+        const pathParts = window.location.pathname.split("/");
+        const currentLab = pathParts[1] === "labs" ? pathParts[2] : null;
+
+        const preservedKey = "alreadyRefreshed";
+        const preservedValue = sessionStorage.getItem(preservedKey);
+        const previousLab = sessionStorage.getItem("domain");
+
+        const labChanged = previousLab && previousLab !== currentLab;
+        const enteredLab = !previousLab && currentLab;
+        const exitedLab = previousLab && !currentLab;
+
+        if (labChanged || enteredLab || exitedLab) {
+          // 🔥 Clear all sessionStorage
+          sessionStorage.clear();
+
+          // ✅ Restore preserved key
+          if (preservedValue !== null) {
+            sessionStorage.setItem(preservedKey, preservedValue);
+          }
+
+          // ✅ Update current domain (lab)
+          if (currentLab) {
+            sessionStorage.setItem("domain", currentLab);
+          } else {
+            sessionStorage.removeItem("domain");
+          }
+        } else if (!previousLab && currentLab) {
+          // First entry into a lab (not coming from somewhere else)
+          sessionStorage.setItem("domain", currentLab);
+        }
+      })();
+    </script>
     <link
       rel="icon"
       type="image/svg+xml"
