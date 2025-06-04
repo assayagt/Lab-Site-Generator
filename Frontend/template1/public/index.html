@@ -2,6 +2,38 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <script>
+      (function () {
+        const pathParts = window.location.pathname.split("/");
+        const isLabPath = pathParts[1] === "labs";
+        const currentLab = isLabPath ? pathParts[2] : null;
+
+        const preservedKey = "alreadyRefreshed";
+        const preservedValue = sessionStorage.getItem(preservedKey);
+        const previousLab = sessionStorage.getItem("domain");
+
+        const labChanged = previousLab && currentLab && previousLab !== currentLab;
+        const enteredLab = !previousLab && currentLab;
+        const exitedLab = previousLab && !currentLab;
+
+        // ✅ Only clear when switching between labs, entering a lab, or leaving a lab
+        if (labChanged || enteredLab || exitedLab) {
+          sessionStorage.clear();
+
+          if (preservedValue !== null) {
+            sessionStorage.setItem(preservedKey, preservedValue);
+          }
+
+          if (currentLab) {
+            sessionStorage.setItem("domain", currentLab);
+          } else {
+            sessionStorage.removeItem("domain");
+          }
+        } else if (!previousLab && currentLab) {
+          sessionStorage.setItem("domain", currentLab);
+        }
+      })();
+    </script>
     <link
       rel="icon"
       type="image/svg+xml"
