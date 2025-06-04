@@ -11,7 +11,7 @@ import { GoogleLogin } from "@react-oauth/google";
 function Header(props) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, logout } = useAuth();
+  const { login, logout, fetchToken } = useAuth();
   const { hasNewNotifications, updateNotifications, notifications } =
     useContext(NotificationContext);
   const [showLogin, setShowLogin] = useState(false);
@@ -76,23 +76,6 @@ function Header(props) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showAccountMenu, isNavbarExpanded]);
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    let data = await login(email);
-    if (data) {
-      setShowLogin(false);
-      setLoginError("");
-      setIsLoggedIn(true);
-      const notifications = await fetchUserNotifications(email);
-      updateNotifications(notifications);
-    } else {
-      setIsLoggedIn(false);
-      setShowLogin(true);
-      setLoginError("Login failed. Please check your username.");
-    }
-    setEmail("");
-  };
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
@@ -330,6 +313,9 @@ function Header(props) {
                       className="login_button"
                       onClick={(e) => {
                         e.stopPropagation();
+                        if (sessionStorage.getItem("sid") === null) {
+                          fetchToken();
+                        }
                         setShowLogin(true);
                         setShowAccountMenu(false);
                       }}

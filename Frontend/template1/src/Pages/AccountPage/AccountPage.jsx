@@ -248,7 +248,10 @@ const AccountPage = () => {
     }
 
     try {
-      const response = await uploadProfilePicture(selectedFile);
+      const response = await uploadProfilePicture(
+        selectedFile,
+        sessionStorage.getItem("domain")
+      );
       console.log(response);
     } catch (error) {
       setErrorMessage("Error uploading photo.");
