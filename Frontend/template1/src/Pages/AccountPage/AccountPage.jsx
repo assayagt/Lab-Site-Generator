@@ -422,7 +422,7 @@ const AccountPage = () => {
       if (response.response === "true") {
         setSelectedPublications([]);
         setPopupMessage(
-          `${selectedPublications.length} publications approved, you will see them ina few minutes`
+          `${selectedPublications.length} publications approved, you will see them in a few minutes on website`
         );
         setCrawledPublications((prev) =>
           prev.map((pub) =>
