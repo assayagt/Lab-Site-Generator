@@ -21,7 +21,8 @@ class TestFetchCrawlerPublicationsReal(unittest.TestCase):
         publications = self.crawler.fetch_crawler_publications([self.valid_profile])
         self.crawler.fill_details(publications)
         self.assertIsInstance(publications, list)
-        print(len(publications))
+        for pub in publications:
+            print(pub.to_dict())
         self.assertGreater(len(publications), 0)  # At least one publication found
 
         for pub in publications:

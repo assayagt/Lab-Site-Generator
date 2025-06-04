@@ -50,9 +50,9 @@ class GoogleScholarWebCrawler:
             try:
                 # Fetch author by scholar_id
                 author_stub = scholarly.search_author_id(scholar_id)
-                time.sleep(1)
+                time.sleep(2)
                 author = scholarly.fill(author_stub)
-                time.sleep(5)
+                time.sleep(3)
                 author_name = author.get("name")
                 for pub in author.get("publications"):
                     pub_title = pub.get("bib").get("title")
@@ -84,19 +84,7 @@ class GoogleScholarWebCrawler:
         This method accepts a list of PublicationDTO where and fills description and authors into it
         """
         for pub in publicationDTOs:
-            # stub = pub._scholarly_stub
-            title = pub.title
-            year = pub.publication_year
-            author = pub.authors[0]
-            query = f"{title} {author} {year}"
-            # if not stub:
-            #     continue
             try:
-                # fetch full metadata for this stub
-                # pub_obj = scholarly.search_single_pub(query) # HTML REQUEST
-                # if not pub_obj:
-                #     print(f"[WARN] No exact match found for pub: {title}")
-                #     continue
                 time.sleep(1)
                 filled_pub = scholarly.fill(pub._scholarly_stub) #HTML REQUEST
                 bib = filled_pub.get("bib") or {}

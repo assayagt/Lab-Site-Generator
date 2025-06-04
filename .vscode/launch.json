@@ -3,7 +3,7 @@
   "configurations": [
     {
       "name": "Flask Debug",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "module": "flask",
       "env": {
@@ -15,7 +15,7 @@
     },
     {
       "name": "Debug Acceptance Test",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "module": "src.test.Acceptancetests.crawlerTest",
       "justMyCode": false,
