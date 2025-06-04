@@ -82,6 +82,8 @@ const ChooseComponentsPage = () => {
     previewImage,
     setPreviewImage,
     handleDeleteGalleryImage,
+    uploadProgress,
+    gallery,
   } = useChooseComponents();
 
   // Fix leaflet icon issues (put this near the top of the component file)
@@ -139,6 +141,45 @@ const ChooseComponentsPage = () => {
     return null;
   };
 
+  const UploadProgressIndicator = () => {
+    if (!uploadProgress.isUploading) return null;
+
+    const progressPercentage = Math.round(
+      ((uploadProgress.uploadedFiles + uploadProgress.failedFiles) /
+        uploadProgress.totalFiles) *
+        100
+    );
+
+    return (
+      <div className="upload-progress-container">
+        <div className="progress-header">
+          <h4>Uploading Gallery Images...</h4>
+          <span className="progress-text">
+            Batch {uploadProgress.currentBatch} of {uploadProgress.totalBatches}
+          </span>
+        </div>
+
+        <div className="progress-bar-container">
+          <div
+            className="progress-bar"
+            style={{ width: `${progressPercentage}%` }}
+          ></div>
+        </div>
+
+        <div className="progress-details">
+          <span>
+            {uploadProgress.uploadedFiles + uploadProgress.failedFiles} /{" "}
+            {uploadProgress.totalFiles} files processed
+          </span>
+          {uploadProgress.failedFiles > 0 && (
+            <span className="failed-count">
+              ({uploadProgress.failedFiles} failed)
+            </span>
+          )}
+        </div>
+      </div>
+    );
+  };
   return (
     <div className="choose_components_main">
       {step === 1 && (
@@ -439,9 +480,11 @@ const ChooseComponentsPage = () => {
                   <div className="media_item">
                     <label className="media_label">
                       Logo
+                      <span className="file-size-limit">(Max: 5MB)</span>
                       <input
                         className="media_input"
                         type="file"
+                        accept="image/*"
                         onChange={(e) => handleFileChange(e, "logo")}
                       />
                     </label>
@@ -449,7 +492,7 @@ const ChooseComponentsPage = () => {
                       type="button"
                       className="media_button"
                       onClick={(e) => {
-                        e.preventDefault(); // ✅ this prevents the page from reloading
+                        e.preventDefault();
                         handleSubmit("logo");
                       }}
                     >
@@ -459,18 +502,19 @@ const ChooseComponentsPage = () => {
                   <div className="media_item">
                     <label className="media_label">
                       Home Page Photo
+                      <span className="file-size-limit">(Max: 5MB)</span>
                       <input
                         className="media_input"
                         type="file"
+                        accept="image/*"
                         onChange={(e) => handleFileChange(e, "homepagephoto")}
                       />
                     </label>
-
                     <button
                       className="media_button"
                       type="button"
                       onClick={(e) => {
-                        e.preventDefault(); // ✅ prevent default form behavior
+                        e.preventDefault();
                         handleSubmit("homepagephoto");
                       }}
                     >
@@ -480,6 +524,7 @@ const ChooseComponentsPage = () => {
                 </div>
               </div>
             )}
+
             {step === 6 && (
               <div className="creator_info_card">
                 <h2>Creator Information</h2>
@@ -983,6 +1028,9 @@ const ChooseComponentsPage = () => {
                   <div className="media_item">
                     <label className="media_label">
                       Upload Images
+                      <span className="file-size-limit">
+                        (Max: 5MB each, uploads in batches of 10)
+                      </span>
                       <input
                         className="media_input"
                         type="file"
@@ -998,10 +1046,22 @@ const ChooseComponentsPage = () => {
                         e.preventDefault();
                         handleSubmit("gallery");
                       }}
+                      disabled={
+                        !formData?.files?.gallery ||
+                        formData.files.gallery.length === 0 ||
+                        uploadProgress.isUploading
+                      }
                     >
-                      {mediaSaveStatus.gallery ? "Saved" : "Save"}
+                      {uploadProgress.isUploading
+                        ? "Uploading..."
+                        : mediaSaveStatus.gallery
+                        ? "Saved"
+                        : "Save"}
                     </button>
                   </div>
+
+                  {/* Upload Progress Indicator */}
+                  <UploadProgressIndicator />
 
                   {/* Display selected files (before saving) */}
                   {formData?.files?.gallery &&
@@ -1009,11 +1069,18 @@ const ChooseComponentsPage = () => {
                       <div className="gallery_list_section">
                         <h4>
                           Selected Images ({formData.files.gallery.length})
+                          <span className="status-indicator pending">
+                            Pending Upload
+                          </span>
                         </h4>
                         <div className="gallery_list">
                           {Array.from(formData.files.gallery).map(
                             (file, index) => {
                               const imageUrl = URL.createObjectURL(file);
+                              const fileSizeMB = (
+                                file.size /
+                                (1024 * 1024)
+                              ).toFixed(2);
                               return (
                                 <div
                                   key={index}
@@ -1024,14 +1091,13 @@ const ChooseComponentsPage = () => {
                                     onClick={() =>
                                       window.open(imageUrl, "_blank")
                                     }
-                                    title={`Click to preview ${file.name}`}
+                                    title={`Click to preview ${file.name} (${fileSizeMB}MB)`}
                                   >
-                                    📄 {file.name}
+                                    📄 {file.name} ({fileSizeMB}MB)
                                   </span>
                                   <button
                                     className="remove_x_btn"
                                     onClick={() => {
-                                      // Remove this file from selection
                                       const newFiles = Array.from(
                                         formData.files.gallery
                                       ).filter((_, i) => i !== index);
@@ -1045,7 +1111,6 @@ const ChooseComponentsPage = () => {
                                               : null,
                                         },
                                       }));
-                                      // Clean up the object URL
                                       URL.revokeObjectURL(imageUrl);
                                     }}
                                     title="Remove from selection"
@@ -1061,13 +1126,14 @@ const ChooseComponentsPage = () => {
                     )}
 
                   {/* Display saved gallery images from database */}
-                  {websiteData?.gallery && websiteData.gallery.length > 0 && (
+                  {gallery && gallery.length > 0 && (
                     <div className="gallery_list_section">
                       <h4>
-                        Saved Gallery Images ({websiteData.gallery.length})
+                        Saved Gallery Images ({gallery.length})
+                        <span className="status-indicator saved">Saved</span>
                       </h4>
                       <div className="gallery_list">
-                        {websiteData.gallery.map((image, index) => (
+                        {gallery.map((image, index) => (
                           <div key={index} className="gallery_list_item saved">
                             <span
                               className="image_name_clickable"
