@@ -82,7 +82,7 @@ const NewsSection = (props) => {
   return (
     <div className="timeline-container">
       <div className="timeline-header">
-        <h2 className="timeline-title">News</h2>
+        {/* <h2 className="timeline-title">News</h2> */}
 
         {editMode && (
           <>

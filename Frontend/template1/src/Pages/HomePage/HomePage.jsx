@@ -42,6 +42,8 @@ function HomePage(props) {
               </div>
               {props.news && (
                 <div className="newsWrapper">
+                  <h2 className="timeline-title">News</h2>
+
                   <NewsSection info={props.news} domain={props.domain} />
                 </div>
               )}
