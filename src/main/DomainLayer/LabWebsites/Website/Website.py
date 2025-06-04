@@ -243,6 +243,9 @@ class Website:
         pub_list = DAL_controller().publications_repo.find_by_domain(self.domain)
         self.load_pub_dtos(pub_list)
 
+    def clear_publications(self):
+        self.members_publications.clear()
+
     def load_pub_dtos(self, pub_list: list[PublicationDTO]):
         for pub in pub_list:
             for author in pub.author_emails:

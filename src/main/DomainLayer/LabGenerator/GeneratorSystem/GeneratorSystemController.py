@@ -4,6 +4,7 @@ import threading
 from src.main.DomainLayer.LabGenerator.SiteCustom.SiteCustomFacade import SiteCustomFacade, Template
 from src.main.DomainLayer.LabGenerator.User.UserFacade import UserFacade
 from src.main.DomainLayer.LabWebsites.LabSystem.LabSystemController import LabSystemController
+from src.main.Util.ExceptionsEnum import ExceptionsEnum
 
 
 class GeneratorSystemController:
@@ -268,6 +269,9 @@ class GeneratorSystemController:
         self.user_facade.error_if_user_notExist(nominator_manager_userId)
         self.user_facade.error_if_user_not_logged_in(nominator_manager_userId)
         self.user_facade.error_if_user_is_not_site_manager(nominator_manager_userId, domain)
+        self.site_custom_facade.get_site_creator_email(domain)
+        if manager_toRemove_email == self.site_custom_facade.get_site_creator_email(domain):
+            raise Exception(ExceptionsEnum.PERMISSIONS_OF_SITE_CREATOR_CANNOT_BE_REMOVED.value)
         self.user_facade.remove_site_manager(manager_toRemove_email, domain)
         self.labSystem.remove_manager_permission_from_generator(manager_toRemove_email, domain)
 
@@ -330,6 +334,7 @@ class GeneratorSystemController:
         """
         self.user_facade.reset_system()
         self.site_custom_facade.reset_system()
+        self.labSystem.reset_system()
 
     def site_creator_resignation_from_generator(self, user_id, domain, nominated_email, new_role):
         """

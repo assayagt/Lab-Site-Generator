@@ -18,8 +18,8 @@ class RealToTests(BridgeToTests):
     def create_website(self, email, website_name, domain, components, template):
         return self.generator_system_service.create_website(email, website_name, domain, components, template)
 
-    def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator):
-        return self.generator_system_service.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
+    def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator, google_scholar_link):
+        return self.generator_system_service.create_new_lab_website(domain, lab_members, lab_managers, site_creator, google_scholar_link)
 
     def change_website_name(self, userId, new_name, domain):
         return self.generator_system_service.change_website_name(userId, new_name, domain)
@@ -68,4 +68,7 @@ class RealToTests(BridgeToTests):
 
     def delete_website(self, user_id, domain):
         return self.generator_system_service.delete_website(user_id, domain)
+
+    def site_creator_resignation_from_generator(self, site_creator_user_id, domain, nominated_email, new_role):
+        return self.generator_system_service.site_creator_resignation_from_generator(site_creator_user_id, domain, nominated_email, new_role)
 

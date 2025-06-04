@@ -16,6 +16,7 @@ from google.oauth2 import id_token
 from google.auth.transport import requests
 import glob
 
+
 def send_test_notifications():
     while True:
         socketio.emit('registration-notification', {'message': 'Test notification'})
@@ -220,6 +221,69 @@ def read_lab_info(excel_path):
 #         except Exception as e:
 #             return jsonify({"error": f"An error occurred: {str(e)}"})
 
+# class UploadFilesAndData(Resource):
+#     def post(self):
+#         try:
+#             domain = request.form['domain']
+#             website_name = request.form['website_name']
+
+#             website_folder = os.path.join(GENERATED_WEBSITES_FOLDER, domain)
+#             os.makedirs(website_folder, exist_ok=True)
+
+#             files = request.files
+#             uploaded_files = []
+
+#             for component in files:
+#                 file = files[component]
+#                 print(f"Processing: {component}")
+
+#                 if not file:
+#                     continue  
+
+#                 extension = os.path.splitext(file.filename)[1].lower()
+#                 file_path = None
+
+#                 if component == 'logo':
+#                     if extension in ['.svg', '.png', '.jpg', '.jpeg']:
+#                         file_path = os.path.join(website_folder, f"logo{extension}")
+#                     else:
+#                         return {
+#                             "error": "Invalid file type for logo. Allowed: PNG, JPG, JPEG"
+#                         }, 400
+
+#                 elif component == 'homepagephoto':
+#                     if extension in ['.jpg', '.jpeg', '.png']:
+#                         file_path = os.path.join(website_folder, f"homepagephoto{extension}")
+#                     else:
+#                         return {
+#                             "error": "Invalid file type for homepage photo. Allowed: JPG, JPEG, PNG"
+#                         }, 400
+
+#                 else:
+#                     return {
+#                         "error": f"Unsupported component: {component}"
+#                     }, 400
+
+#                 if file_path is None:
+#                     return {
+#                         "error": f"Failed to resolve file path for: {component}"
+#                     }, 500
+
+#                 file.save(file_path)
+#                 uploaded_files.append(os.path.basename(file_path))
+
+#             return {
+#                 "message": "Files and data uploaded successfully!",
+#                 "uploaded": uploaded_files
+#             }, 200
+
+#         except Exception as e:
+#             return {
+#                 "error": f"An error occurred: {str(e)}"
+#             }, 500
+
+
+
 class UploadFilesAndData(Resource):
     def post(self):
         try:
@@ -291,9 +355,7 @@ class UploadFilesAndData(Resource):
             print(f"Exception during upload: {e}")
             return {
                 "error": f"An error occurred: {str(e)}"
-  },500
-
-
+            }, 500
 class UploadGalleryImages(Resource):
     def post(self):
         try:

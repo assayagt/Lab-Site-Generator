@@ -26,7 +26,8 @@ class TestCreateNewSiteManager(unittest.TestCase):
         self.lab_member2_email = "member2@example.com"
         self.lab_members = {self.lab_member1_email: {"full_name": "Member One", "degree": "Ph.D."}, self.lab_member2_email: {"full_name": "Member Two", "degree": "M.Sc."}}
         self.lab_managers = {"manager1@example.com": {"full_name": "Manager One", "degree": "Ph.D."}}
-        self.site_creator = {"email": "creator@example.com", "full_name": "Site Creator", "degree": "Ph.D."}
+        self.site_creator = {"email": "creator@example.com", "full_name": "Liron David", "degree": "Ph.D."}
+        self.creator_scholar_link = "https://scholar.google.com/citations?user=rgUqRpYAAAAJ&hl=en"
 
         self.generator_system_service.create_website(self.user_id, "Lab Website", self.domain, self.components, self.template)
 
@@ -34,7 +35,7 @@ class TestCreateNewSiteManager(unittest.TestCase):
         self.generator_system_service.create_website(self.user_id, self.website_name, self.domain,self.components, self.template)
 
         # Create a new lab website
-        self.generator_system_service.create_new_lab_website(self.domain, self.lab_members, self.lab_managers, self.site_creator)
+        self.generator_system_service.create_new_lab_website(self.domain, self.lab_members, self.lab_managers, self.site_creator, self.creator_scholar_link)
 
     def tearDown(self):
         # Reset the system after each test

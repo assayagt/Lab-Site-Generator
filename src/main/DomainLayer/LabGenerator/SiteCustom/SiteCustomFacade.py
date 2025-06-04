@@ -169,7 +169,7 @@ class SiteCustomFacade:
     def set_site_creator(self, domain, nominated_email):
         site = self.sites[domain]
         site.set_site_creator_email(nominated_email)
-        self.dal_controller.siteCustom_repo.delete(domain=site.domain)
+        #self.dal_controller.siteCustom_repo.delete(domain=site.domain)
         self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto())
     
     def get_if_site_is_generated(self, domain):
