@@ -96,7 +96,7 @@ class GoogleScholarWebCrawler:
                 if "abstract" in bib:
                     pub.set_description(bib.get("abstract"))
                 # --ArXiv/PDF link-- (if present)
-                pub_url = filled_pub.get("pub_url", bib.get("url", "")) 
+                pub_url = bib.get("url") or filled_pub.get("pub_url")
                 if pub_url:
                     pub.set_pub_url(pub_url)
                 # --bibTex-- 
