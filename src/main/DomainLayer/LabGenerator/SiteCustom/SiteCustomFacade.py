@@ -248,7 +248,6 @@ class SiteCustomFacade:
 
     def _load_all_siteCustoms(self):
         res = self.dal_controller.siteCustom_repo.find_all()
-        print(res)
         for dto in res:
             if dto.template is not None:
                 template = Template(dto.template)

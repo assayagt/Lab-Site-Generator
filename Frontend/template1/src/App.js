@@ -26,6 +26,8 @@ import AccountPage from "./Pages/AccountPage/AccountPage";
 import AccountPage2 from "./Pages/AccountPage/AccountPage2";
 
 import PublicationsPage from "./Pages/PublicationsPage/PublicationsPage";
+import PublicationsPage2 from "./Pages/PublicationsPage/PublicationsPage2";
+
 //import publications from "./publications.json"
 import { AuthProvider } from "./Context/AuthContext";
 import { useWebsite } from "./Context/WebsiteContext";
@@ -208,7 +210,7 @@ function App() {
                     )
                   }
                 />
-                <Route path="/Publications" element={<PublicationsPage />} />
+                <Route path="/Publications" element={<PublicationsPage2 />} />
                 <Route path="/Media" element={<MediaPage />} />
               </Routes>
             </Router>
