@@ -26,7 +26,7 @@ ParticipantsPage2.css .members-page {
   font-weight: 700;
   color: #2c3e50;
   margin: 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1d1f36 0%, #6c859b 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -40,7 +40,7 @@ ParticipantsPage2.css .members-page {
   left: 0;
   width: 80px;
   height: 3px;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1d1f36 0%, #6c859b 100%);
   border-radius: 2px;
 }
 
@@ -81,7 +81,7 @@ ParticipantsPage2.css .members-page {
   align-items: center;
   gap: 8px;
   padding: 12px 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1d1f36 0%, #6c859b 100%);
   color: white;
   border: none;
   border-radius: 12px;
@@ -119,7 +119,7 @@ ParticipantsPage2.css .members-page {
   left: 0;
   width: 60px;
   height: 3px;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1d1f36 0%, #6c859b 100%);
   border-radius: 2px;
 }
 
@@ -228,15 +228,15 @@ ParticipantsPage2.css .members-page {
 }
 
 .profile-link-icon_2 {
-  color: #667eea;
+  color: #64748b;
   cursor: pointer;
   transition: all 0.2s ease;
-  padding: 4px;
+  /* padding: 4px; */
   border-radius: 4px;
 }
 
 .profile-link-icon_2:hover {
-  color: #764ba2;
+  color: #2a2c33;
   background-color: rgba(102, 126, 234, 0.1);
   transform: scale(1.1);
 }
@@ -263,12 +263,12 @@ ParticipantsPage2.css .members-page {
 }
 
 .member-card__bio::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1d1f36 0%, #6c859b 100%);
   border-radius: 4px;
 }
 
 .member-card__bio::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+  background: linear-gradient(135deg, #1d1f36 0%, #6c859b 100%);
 }
 
 .member-card__contact {
@@ -285,7 +285,7 @@ ParticipantsPage2.css .members-page {
   align-items: center;
   gap: 6px;
   font-size: 0.875rem;
-  color: #667eea;
+  color: #7e8594;
   text-decoration: none;
   transition: all 0.2s ease;
   padding: 4px 8px;
@@ -296,7 +296,7 @@ ParticipantsPage2.css .members-page {
 
 .member-card__email:hover,
 .member-card__linkedin:hover {
-  color: #764ba2;
+  color: #2a2c33;
   background: rgba(102, 126, 234, 0.1);
   transform: translateY(-1px);
 }
@@ -397,7 +397,7 @@ ParticipantsPage2.css .members-page {
   font-weight: 700;
   color: #2c3e50;
   margin: 0 0 28px 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1d1f36 0%, #6c859b 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -486,7 +486,7 @@ ParticipantsPage2.css .members-page {
 }
 
 .button--primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1d1f36 0%, #6c859b 100%);
   color: white;
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }

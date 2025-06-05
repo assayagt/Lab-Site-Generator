@@ -38,13 +38,10 @@ function HomePage(props) {
             <h1 className="homepage__main-title">
               Welcome to Our Research Lab
             </h1>
-            <p className="homepage__welcome-subtitle">
-              Welcome to our lab website.
-            </p>
-            <p className="homepage__hero-description">
-              Advancing scientific discovery through innovative research and
-              collaboration
-            </p>
+            <AboutUs
+              info={props.about_us}
+              className="homepage__hero-description"
+            />
           </div>
         </div>
       </div>
@@ -52,12 +49,11 @@ function HomePage(props) {
       <div className="homepage__main-layout">
         {/* Left Sidebar */}
         <div className="homepage__sidebar">
-          {(props.about_us || editMode) && (
+          {/* {(props.about_us || editMode) && (
             <div className="sidebar-section">
               <h3 className="sidebar-title">About Our Lab</h3>
-              <AboutUs info={props.about_us} />
             </div>
-          )}
+          )} */}
 
           {(props.news || editMode) && (
             <div className="sidebar-section">

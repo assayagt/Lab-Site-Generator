@@ -131,11 +131,11 @@ function App() {
           <EditModeProvider>
             <Router>
               {websiteData.template === "template1" ? (
-                <Header
+                <Header2
                   components={components}
                   title={websiteData.websiteName}
                   logo={websiteData.logo}
-                ></Header>
+                ></Header2>
               ) : (
                 <Header2
                   components={components}
@@ -149,7 +149,7 @@ function App() {
                   path="/"
                   element={
                     websiteData.template === "template1" ? (
-                      <HomePage
+                      <HomePage2
                         about_us={websiteData.about_us}
                         photo={websiteData.home_picture}
                         news={websiteData.news}
@@ -167,14 +167,14 @@ function App() {
                 />
                 <Route
                   path="/participant/:email"
-                  element={<ParticipantProfile />}
+                  element={<ParticipantProfile2 />}
                 />
 
                 <Route
                   path="/LabMembers"
                   element={
                     websiteData.template === "template1" ? (
-                      <ParticipantsPage />
+                      <ParticipantsPage2 />
                     ) : (
                       <ParticipantsPage2 />
                     )

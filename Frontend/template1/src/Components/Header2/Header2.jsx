@@ -159,7 +159,7 @@ function Header(props) {
       <header className="header2">
         <div className="header__logo-container" onClick={() => navigate("/")}>
           <img className="header__logo" src={props.logo} alt="logo" />
-          <h1 className="header__title">{props.title}</h1>
+          <h1 className="header__title">{props.title.toUpperCase()}</h1>
         </div>
 
         <div className="header__actions">

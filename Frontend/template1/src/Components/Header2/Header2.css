@@ -40,11 +40,11 @@
 }
 
 .header__title {
-  font-size: 24px;
+  font-size: 32px;
   font-weight: 700;
   color: #2c3e50;
   transition: color 0.2s;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1d1f36 0%, #6c859b 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -84,7 +84,7 @@
 .account-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  border-color: #667eea;
+  border-color: #2a2c33;
 }
 
 .account-button img {
@@ -167,7 +167,7 @@
 }
 
 .dropdown-item:hover {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1d1f36 0%, #6c859b 100%);
   color: white;
   transform: translateX(2px);
 }
@@ -246,7 +246,7 @@
 }
 
 input:checked + .slider {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1d1f36 0%, #6c859b 100%);
 }
 
 input:checked + .slider:before {
@@ -270,7 +270,7 @@ input:checked + .slider:before {
 .hamburger-menu span {
   width: 100%;
   height: 3px;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1d1f36 0%, #6c859b 100%);
   border-radius: 2px;
   transition: all 0.3s ease;
 }
@@ -385,7 +385,7 @@ input:checked + .slider:before {
 }
 
 .sidebar__nav-item:hover {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1d1f36 0%, #6c859b 100%);
   color: white;
   transform: translateX(4px);
 }
@@ -466,7 +466,7 @@ input:checked + .slider:before {
   font-weight: 700;
   color: #2c3e50;
   margin-bottom: 8px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1d1f36 0%, #6c859b 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -492,7 +492,7 @@ input:checked + .slider:before {
 }
 
 .login-modal input:focus {
-  border-color: #667eea;
+  border-color: #2a2c33;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -697,7 +697,7 @@ input:checked + .slider:before {
 .hamburger-menu:focus,
 .dropdown-item:focus,
 .sidebar__nav-item:focus {
-  outline: 2px solid #667eea;
+  outline: 2px solid #2a2c33;
   outline-offset: 2px;
 }
 
@@ -712,10 +712,10 @@ input:checked + .slider:before {
 }
 
 .sidebar__content::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1d1f36 0%, #6c859b 100%);
   border-radius: 3px;
 }
 
 .sidebar__content::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+  background: linear-gradient(135deg, #1d1f36 0%, #6c859b 100%);
 }
