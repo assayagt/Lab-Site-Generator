@@ -545,7 +545,8 @@ class UserFacade:
                 media=dto.media,
                 user_id=None,
                 bio=dto.bio,
-                scholar_link=dto.scholar_link
+                scholar_link=dto.scholar_link,
+                profile_picture=dto.profile_picture
             )
     
 ##TODO: there is an error doesnt load all the fields!!!!!!
