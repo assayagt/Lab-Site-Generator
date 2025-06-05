@@ -27,9 +27,10 @@ class TestLogoutFunction(unittest.TestCase):
         # Add lab members and managers
         self.site_creator_email = "someMail@gmail.com"
         self.lab_members = {"member1@example.com": {"full_name": "Member One","degree": "B.Sc."}, "member2@example.com": {"full_name": "Member Two", "degree": "M.Sc."}}
-        self.lab_managers = {}
+        # Add the site creator as a manager
+        self.lab_managers = {self.site_creator_email: {"full_name": "Site Creator", "degree": "Ph.D."}}
         self.site_creator = {"email": self.site_creator_email, "full_name": "Site Creator", "degree": "Ph.D."}
-        self.generator_system_service.create_new_lab_website(self.domain, self.lab_members, self.lab_managers, self.site_creator)
+        self.generator_system_service.create_new_lab_website(self.domain, self.lab_members, self.lab_managers, self.site_creator, "")
 
         # Simulate entering the lab website
         self.user_id_lab_website = self.lab_system_service.enter_lab_website(self.domain).get_data()
@@ -41,13 +42,26 @@ class TestLogoutFunction(unittest.TestCase):
 
     def test_successful_logout(self):
         # Test successful logout for an active user
-        self.lab_system_service.login(self.domain, self.site_creator_userId, self.site_creator_email)
+        login_response = self.lab_system_service.login(self.domain, self.site_creator_userId, self.site_creator_email)
+        print(f"\nLogin Response:")
+        print(f"Success: {login_response.is_success()}")
+        print(f"Message: {login_response.get_message()}")
+        print(f"Data: {login_response.get_data()}")
+        
         response = self.lab_system_service.logout(self.domain, self.site_creator_userId)
+        print(f"\nSuccessful Logout Test Response:")
+        print(f"Success: {response.is_success()}")
+        print(f"Message: {response.get_message()}")
+        print(f"Data: {response.get_data()}")
         self.assertTrue(response.is_success())
 
     def test_logout_user_not_logged_in(self):
         # Test logout for a user who is not logged in
         response = self.lab_system_service.logout(self.domain, self.site_creator_userId)
+        print(f"\nNot Logged In Test Response:")
+        print(f"Success: {response.is_success()}")
+        print(f"Message: {response.get_message()}")
+        print(f"Data: {response.get_data()}")
         self.assertFalse(response.is_success())
         self.assertEqual(response.get_message(), ExceptionsEnum.USER_IS_NOT_MEMBER.value)
 
@@ -56,6 +70,10 @@ class TestLogoutFunction(unittest.TestCase):
         invalid_domain = "invalid.example.com"
         self.lab_system_service.login(self.domain, self.site_creator_userId, self.site_creator_email)
         response = self.lab_system_service.logout(invalid_domain, self.site_creator_email)
+        print(f"\nInvalid Domain Test Response:")
+        print(f"Success: {response.is_success()}")
+        print(f"Message: {response.get_message()}")
+        print(f"Data: {response.get_data()}")
         self.assertFalse(response.is_success())
         self.assertEqual(response.get_message(), ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST.value)
 
@@ -64,4 +82,8 @@ class TestLogoutFunction(unittest.TestCase):
         self.lab_system_service.login(self.domain, self.site_creator_userId, self.site_creator_email)
         self.lab_system_service.login(self.domain, self.user_id_lab_website, "member1@example.com")  # Second session
         response = self.lab_system_service.logout(self.domain, self.user_id_lab_website)
+        print(f"\nMultiple Sessions Test Response:")
+        print(f"Success: {response.is_success()}")
+        print(f"Message: {response.get_message()}")
+        print(f"Data: {response.get_data()}")
         self.assertTrue(response.is_success())  # Logout should work for any active session

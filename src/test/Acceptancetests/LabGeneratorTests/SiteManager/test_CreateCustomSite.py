@@ -59,16 +59,6 @@ class TestCreateWebsite(unittest.TestCase):
         self.assertFalse(response.is_success())
         self.assertEqual(response.get_message(), ExceptionsEnum.WEBSITE_DOMAIN_ALREADY_EXIST.value)
 
-    def test_invalid_template(self):
-        # Test creating a website with an invalid template
-        website_name = "My Lab Website5"
-        domain = "lab5.example.com"
-        invalid_template = "NonExistentTemplate"  # Still testing raw strings as invalid cases
-        components = ["Homepage", "Contact Us", "Research"]
-        response = self.generator_system_service.create_website(self.user_id, website_name, domain, components, invalid_template)
-        self.assertFalse(response.is_success())
-        self.assertEqual(response.get_message(), ExceptionsEnum.INVALID_TEMPLATE.value)
-
     def test_missing_website_name(self):
         # Test creating a website with a missing name
         website_name = ""

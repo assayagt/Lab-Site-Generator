@@ -1,7 +1,18 @@
 import threading
-
+import time
+from queue import Queue
+from concurrent.futures import Future
+from typing import Any
 from src.main.DomainLayer.LabWebsites.WebCrawler.GoogleScholarWebCrawler import GoogleScholarWebCrawler
 from src.main.DomainLayer.LabWebsites.Website.PublicationDTO import PublicationDTO
+
+class _CrawlTask:
+    __slots__ = ("kind", "payload", "future")
+    def __init__(self, kind: str, payload: Any, future: Future):
+        # kind is either "fetch" of "fill"
+        self.kind=kind
+        self.payload=payload
+        self.future=future
 
 class WebCrawlerFacade:
     _instance = None
@@ -19,6 +30,9 @@ class WebCrawlerFacade:
             return
 
         self.web_crawlers = [GoogleScholarWebCrawler()]  # Holds all WebCrawler instances
+        self._tasks = Queue()
+        t = threading.Thread(target=self._worker_loop, daemon=True)
+        t.start()
         self._initialized = True
 
     @classmethod
@@ -30,6 +44,46 @@ class WebCrawlerFacade:
         """Reset the singleton instance (useful for unit tests)."""
         with cls._instance_lock:
             cls._instance = None
+
+    def fetch_async(self, scholar_links) -> Future:
+        """
+        Schedule a fetch_publications job.
+        Future.result() will be List[PublicationDTO].
+        """
+        fut = Future()
+        self._tasks.put(_CrawlTask("fetch", scholar_links, fut))
+        return fut
+    
+    def fill_async(self, pubs) -> Future:
+        """
+        Schedule a fill_details job.
+        Future.result() will be the same List[PublicationDTO] mutated in-place.
+        """
+        fut = Future()
+        self._tasks.put(_CrawlTask("fill", pubs, fut))
+        return fut
+    
+    def _worker_loop(self):
+        """
+        Single thread: process one task every 30 seconds.
+        """
+        while True:
+            task: _CrawlTask = self._tasks.get()
+            try:
+                if task.kind == "fetch":
+                    # run fetch
+                    pubs = self.fetch_publications(task.payload)
+                    task.future.set_result(pubs)
+
+                elif task.kind == "fill":
+                    # run fill (in-place)
+                    self.fill_pub_details(task.payload)
+                    task.future.set_result(task.payload)
+                else:
+                    raise ValueError(f"Unknown task kind: {task.kind}")
+            except Exception as e:
+                task.future.set_exception(e)
+            time.sleep(30)
 
 
     def fetch_publications(self, scholar_links)-> list[PublicationDTO]: #=================================== refactored

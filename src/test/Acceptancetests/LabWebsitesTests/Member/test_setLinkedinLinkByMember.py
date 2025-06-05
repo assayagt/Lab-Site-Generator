@@ -34,10 +34,12 @@ class TestSetLinkedinLinkByMember(unittest.TestCase):
         self.template = Template.template1
         self.generator_system_service.create_website(self.user_id, self.website_name, self.domain, self.components,
                                                      self.template)
+        self.creator_scholar_link = "https://scholar.google.com/citations?user=creator"
         self.generator_system_service.create_new_lab_website(
             self.domain, {self.labMember1_email: {"full_name":self.labMember1_name, "degree": "B.Sc."}, self.labMember2_email: {"full_name":self.labMember2_name, "degree": "M.Sc."}},
             self.lab_managers,
-            {"email": self.site_creator_email, "full_name": "Site Creator", "degree": "Ph.D."}
+            {"email": self.site_creator_email, "full_name": "Site Creator", "degree": "Ph.D."},
+            self.creator_scholar_link
         )
 
         # Simulate a lab member login

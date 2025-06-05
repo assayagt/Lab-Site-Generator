@@ -16,23 +16,6 @@ class PublicationRepository:
             return None
         return self._row_to_publication_dto(result[0])
     
-    # def find_scanned_pubs_by_domain(self, domain):
-    #     query = """
-    #     SELECT sp.*
-    #     FROM domain_scannedPub AS dsp
-    #     INNER JOIN scanned_pubs AS sp
-    #     ON dsp.title = sp.title AND dsp.publication_year = sp.publication_year
-    #     WHERE dsp.domain = ?
-    #     """
-    #     results =  self.db_manager.execute_query(query, (domain,))
-    #     return [self._row_to_scanned_pub(row) for row in results]
-    
-    # def find_all_domains_with_scannedPubs(self):
-    #     query = "SELECT DISTINCT domain FROM domain_scannedPub"
-    #     results = self.db_manager.execute_query(query)
-    #     return [row['domain'] for row in results]
-    
-    
     def find_all(self):
         """
         Find all publications
@@ -72,9 +55,9 @@ class PublicationRepository:
         publication_query = """
         INSERT INTO publications (
             paper_id, title, authors, publication_year, approved,
-            publication_link, video_link, git_link, presentation_link, description, author_emails, domain, scholarly_stub
+            publication_link, video_link, git_link, presentation_link, description, author_emails, domain, scholarly_stub, bibtex, pub_url
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(paper_id) DO UPDATE SET
             title = excluded.title,
             authors = excluded.authors,
@@ -87,7 +70,9 @@ class PublicationRepository:
             description = excluded.description, 
             author_emails = excluded.author_emails,
             domain = excluded.domain,
-            scholarly_stub = excluded.scholarly_stub
+            scholarly_stub = excluded.scholarly_stub,
+            bibtex = excluded.bibtex,
+            pub_url = excluded.pub_url
         """
 
         publication_parameters = (
@@ -103,7 +88,9 @@ class PublicationRepository:
             publication_dto.description, 
             json.dumps(publication_dto.author_emails),
             publication_dto.domain,
-            json.dumps(publication_dto._scholarly_stub or {})
+            json.dumps(publication_dto._scholarly_stub or {}),
+            publication_dto.bibtex,
+            publication_dto.pub_url
         )
 
         try:
@@ -143,20 +130,9 @@ class PublicationRepository:
             description=row['description'],
             author_emails=json.loads(row['author_emails']),
             domain=row["domain"],
-            _scholarly_stub=json.loads(row["scholarly_stub"] or "{}")
+            _scholarly_stub=json.loads(row["scholarly_stub"] or "{}"),
+            bibtex=row['bibtex'],
+            pub_url=row['pub_url']
         )
-    
-    
-    # def _row_to_scanned_pub(self, row):
-    #     scholar_data = json.loads(row['scholar_data']) # renamed field
-    #     scanned_pub = ScannedPublication(
-    #     title=row['title'],
-    #     publication_year=row['publication_year'],
-    #     scholar_id=scholar_data[0][0],               # first tuple scholar_id
-    #     author_pub_id=scholar_data[0][1]            # first tuple author_pub_id
-    #     )
-    #     # Set the full list
-    #     scanned_pub.scholar_N_author_pub_id = [tuple(item) for item in scholar_data]
-    #     return scanned_pub
     
     
