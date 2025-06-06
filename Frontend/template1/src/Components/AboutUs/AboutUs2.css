@@ -1,3 +1,12 @@
+/* AboutUs2.css - Responsive Design for Hero Section */
+
+.AboutUsComponent {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  position: relative;
+}
+
 .aboutUsParagraph_2 {
   font-size: 1.1rem;
   font-weight: 400;
@@ -6,7 +15,272 @@
   max-width: 600px;
   margin: 0 auto;
   color: white;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  text-align: center;
+  padding: 0 10px;
+  box-sizing: border-box;
 }
+
+/* Edit Mode Styles */
+.editModeContainer {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-sizing: border-box;
+  padding: 0 10px;
+}
+
 .aboutUsTextarea_2 {
   color: white;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 1rem;
+  font-family: inherit;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 100px;
+  max-height: 150px;
+  width: 100%;
+  box-sizing: border-box;
+  backdrop-filter: blur(5px);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.aboutUsTextarea_2::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.aboutUsTextarea_2:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.saveButton {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  align-self: center;
+  min-width: 80px;
+}
+
+.saveButton:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-1px);
+}
+
+.saveButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Tablet Responsive Design */
+@media (max-width: 992px) {
+  .aboutUsParagraph_2 {
+    font-size: 1rem;
+    max-width: 500px;
+    padding: 0 15px;
+  }
+
+  .editModeContainer {
+    max-width: 500px;
+    padding: 0 15px;
+  }
+
+  .aboutUsTextarea_2 {
+    font-size: 0.95rem;
+    padding: 10px;
+    max-height: 130px;
+  }
+
+  .saveButton {
+    font-size: 0.85rem;
+    padding: 8px 16px;
+  }
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+  .aboutUsParagraph_2 {
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 100%;
+    padding: 0 10px;
+    text-align: center;
+  }
+
+  .editModeContainer {
+    max-width: 100%;
+    padding: 0 10px;
+    gap: 12px;
+  }
+
+  .aboutUsTextarea_2 {
+    font-size: 0.9rem;
+    padding: 10px;
+    min-height: 80px;
+    max-height: 120px;
+    border-radius: 6px;
+  }
+
+  .saveButton {
+    font-size: 0.85rem;
+    padding: 8px 16px;
+    border-radius: 5px;
+  }
+}
+
+/* Small Mobile Responsive Design */
+@media (max-width: 480px) {
+  .aboutUsParagraph_2 {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    padding: 0 5px;
+  }
+
+  .editModeContainer {
+    padding: 0 5px;
+    gap: 10px;
+  }
+
+  .aboutUsTextarea_2 {
+    font-size: 0.85rem;
+    padding: 8px;
+    min-height: 70px;
+    max-height: 100px;
+    line-height: 1.4;
+  }
+
+  .saveButton {
+    font-size: 0.8rem;
+    padding: 6px 14px;
+    min-width: 70px;
+  }
+}
+
+/* Very Small Mobile Devices */
+@media (max-width: 360px) {
+  .aboutUsParagraph_2 {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    padding: 0;
+  }
+
+  .editModeContainer {
+    padding: 0;
+    gap: 8px;
+  }
+
+  .aboutUsTextarea_2 {
+    font-size: 0.8rem;
+    padding: 6px;
+    min-height: 60px;
+    max-height: 80px;
+  }
+
+  .saveButton {
+    font-size: 0.75rem;
+    padding: 5px 12px;
+    min-width: 60px;
+  }
+}
+
+/* Landscape mode for mobile devices */
+@media (max-width: 768px) and (orientation: landscape) {
+  .aboutUsParagraph_2 {
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  .aboutUsTextarea_2 {
+    max-height: 80px;
+    min-height: 60px;
+  }
+}
+
+/* High DPI screens */
+@media (min-resolution: 2dppx) {
+  .aboutUsParagraph_2 {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Dark theme support (if needed) */
+@media (prefers-color-scheme: dark) {
+  .saveButton {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .saveButton:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+}
+
+/* Print styles */
+@media print {
+  .AboutUsComponent {
+    color: black !important;
+  }
+
+  .aboutUsParagraph_2 {
+    color: black !important;
+    opacity: 1;
+    page-break-inside: avoid;
+  }
+
+  .editModeContainer {
+    display: none;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .saveButton {
+    transition: none;
+  }
+
+  .saveButton:hover:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* Focus styles for better accessibility */
+.aboutUsTextarea_2:focus,
+.saveButton:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.7);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .aboutUsTextarea_2 {
+    border-color: white;
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .saveButton {
+    border-color: white;
+    background: rgba(0, 0, 0, 0.3);
+  }
 }

@@ -1,7 +1,7 @@
 // Layout Option 1 - Sidebar Style
 import React, { useEffect } from "react";
 import "./HomePage2.css";
-import AboutUs from "../../Components/AboutUs/AboutUs2";
+import AboutUs2 from "../../Components/AboutUs/AboutUs2";
 import NewsSection from "../../Components/NewsSection/NewsSection";
 import { useAuth } from "../../Context/AuthContext";
 import { useEditMode } from "../../Context/EditModeContext";
@@ -38,7 +38,7 @@ function HomePage(props) {
             <h1 className="homepage__main-title">
               Welcome to Our Research Lab
             </h1>
-            <AboutUs
+            <AboutUs2
               info={props.about_us}
               className="homepage__hero-description"
             />

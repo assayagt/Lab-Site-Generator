@@ -2,6 +2,7 @@ import "./App.css";
 import HomePage from "./Pages/HomePage/HomePage";
 import HomePage2 from "./Pages/HomePage/HomePage2";
 import MediaPage from "./Pages/MediaPage/MediaPage";
+import MediaPage2 from "./Pages/MediaPage/MediaPage2";
 
 import React, { useEffect, useState } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -169,7 +170,13 @@ function App() {
                 />
                 <Route
                   path="/participant/:email"
-                  element={<ParticipantProfile />}
+                  element={
+                    websiteData.template === "template1" ? (
+                      <ParticipantProfile />
+                    ) : (
+                      <ParticipantProfile2 />
+                    )
+                  }
                 />
 
                 <Route
@@ -186,7 +193,7 @@ function App() {
                   path="/ContactUs"
                   element={
                     websiteData.template === "template1" ? (
-                      <ContactUsPage
+                      <ContactUsPage2
                         address="Ben Gurion University of the Negev"
                         email="roni@bgu.ac.il"
                         phone="+972 523456789"
@@ -209,8 +216,26 @@ function App() {
                     // )
                   }
                 />
-                <Route path="/Publications" element={<PublicationsPage />} />
-                <Route path="/Media" element={<MediaPage />} />
+                <Route
+                  path="/Publications"
+                  element={
+                    websiteData.template === "template1" ? (
+                      <PublicationsPage />
+                    ) : (
+                      <PublicationsPage2 />
+                    )
+                  }
+                />
+                <Route
+                  path="/Media"
+                  element={
+                    websiteData.template === "template1" ? (
+                      <MediaPage />
+                    ) : (
+                      <MediaPage2 />
+                    )
+                  }
+                />
               </Routes>
             </Router>
           </EditModeProvider>
