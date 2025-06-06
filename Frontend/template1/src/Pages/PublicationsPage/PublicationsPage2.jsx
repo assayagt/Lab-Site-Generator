@@ -400,7 +400,7 @@ const PublicationPage = () => {
                         onClick={() =>
                           handleViewPublication(pub.publication_link)
                         }
-                        className="publication-button_2 publication-button--primary_2"
+                        className="publication-button_2 publication-button--primary_2 publication-button--primary_2"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"

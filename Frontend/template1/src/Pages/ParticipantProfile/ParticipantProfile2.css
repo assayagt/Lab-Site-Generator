@@ -536,18 +536,15 @@
 }
 
 .publication-button--primary {
-  background: transparent;
-  color: #2a2c33;
-  border-color: rgba(102, 126, 234, 0.3);
-  box-shadow: none;
+  background: linear-gradient(135deg, #1d1f36 0%, #6c859b 100%);
+  color: white;
+  border-color: transparent;
 }
 
 .publication-button--primary:hover {
-  background: rgba(102, 126, 234, 0.1);
-  color: #2a2c33;
-  border-color: #2a2c33;
-  transform: none;
-  box-shadow: none;
+  background: linear-gradient(135deg, #1d1f36 0%, #6c859b 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 /* Responsive Design */

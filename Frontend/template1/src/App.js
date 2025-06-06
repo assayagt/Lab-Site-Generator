@@ -133,11 +133,11 @@ function App() {
           <EditModeProvider>
             <Router>
               {websiteData.template === "template1" ? (
-                <Header2
+                <Header
                   components={components}
                   title={websiteData.websiteName}
                   logo={websiteData.logo}
-                ></Header2>
+                ></Header>
               ) : (
                 <Header2
                   components={components}
@@ -151,7 +151,7 @@ function App() {
                   path="/"
                   element={
                     websiteData.template === "template1" ? (
-                      <HomePage2
+                      <HomePage
                         about_us={websiteData.about_us}
                         photo={websiteData.home_picture}
                         news={websiteData.news}
@@ -169,14 +169,14 @@ function App() {
                 />
                 <Route
                   path="/participant/:email"
-                  element={<ParticipantProfile2 />}
+                  element={<ParticipantProfile />}
                 />
 
                 <Route
                   path="/LabMembers"
                   element={
                     websiteData.template === "template1" ? (
-                      <ParticipantsPage2 />
+                      <ParticipantsPage />
                     ) : (
                       <ParticipantsPage2 />
                     )
@@ -203,14 +203,13 @@ function App() {
                 <Route
                   path="/Account"
                   element={
-                    websiteData.template === "template1" ? (
-                      <AccountPage />
-                    ) : (
-                      <AccountPage2 />
-                    )
+                    websiteData.template === "template1" && <AccountPage />
+                    // : (
+                    //   <AccountPage2 />
+                    // )
                   }
                 />
-                <Route path="/Publications" element={<PublicationsPage2 />} />
+                <Route path="/Publications" element={<PublicationsPage />} />
                 <Route path="/Media" element={<MediaPage />} />
               </Routes>
             </Router>

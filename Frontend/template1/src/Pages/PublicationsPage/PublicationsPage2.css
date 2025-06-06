@@ -300,13 +300,12 @@
   background: linear-gradient(135deg, #1d1f36 0%, #6c859b 100%);
   color: white;
   border-color: transparent;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
 .publication-button--primary_2:hover {
   background: linear-gradient(135deg, #1d1f36 0%, #6c859b 100%);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 /* Edit Form */
@@ -364,7 +363,7 @@
 .edit-input_2:focus,
 .edit-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #2c3e50;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
   transform: translateY(-1px);
 }

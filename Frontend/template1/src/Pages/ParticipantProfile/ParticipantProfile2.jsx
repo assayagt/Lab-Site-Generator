@@ -460,7 +460,7 @@ const ParticipantProfile = () => {
           ) : (
             <div className="publications-list">
               {filteredPublications.map((pub, index) => (
-                <div key={pub.id || index} className="publication-card">
+                <div key={pub.paper_id || index} className="publication-card">
                   <div className="publication-header">
                     <h3 className="publication-title">{pub.title}</h3>
                     <span className="publication-year">
@@ -494,15 +494,15 @@ const ParticipantProfile = () => {
                     {pub.description && (
                       <div className="publication-description">
                         <p>
-                          {expandedDescriptions[pub.id]
+                          {expandedDescriptions[pub.paper_id]
                             ? pub.description
-                            : truncateText(pub.description, 200)}
-                          {pub.description.length > 200 && (
+                            : truncateText(pub.description, 700)}
+                          {pub.description.length > 700 && (
                             <button
                               className="read-more-btn"
-                              onClick={() => toggleDescription(pub.id)}
+                              onClick={() => toggleDescription(pub.paper_id)}
                             >
-                              {expandedDescriptions[pub.id]
+                              {expandedDescriptions[pub.paper_id]
                                 ? " Read less"
                                 : " Read more"}
                             </button>
