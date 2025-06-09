@@ -146,6 +146,13 @@ class WebsiteFacade:
             raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
         if not website.check_if_member_is_publication_author(publication_id, email):
             raise Exception(ExceptionsEnum.USER_IS_NOT_PUBLICATION_AUTHOR_OR_LAB_MANAGER)
+        
+    def error_if_publication_is_rejected(self, domain, publication_id):
+        website = self.get_website(domain)
+        if not website:
+            raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST)
+        if not website.is_publication_rejected(publication_id):
+            raise Exception(ExceptionsEnum.PUBLICATION_ALREADY_REJECTED)
 
 
     def check_if_publication_approved(self, domain, publication_id):

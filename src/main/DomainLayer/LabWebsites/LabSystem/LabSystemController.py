@@ -370,6 +370,7 @@ class LabSystemController:
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
+        userFacade.error_if_user_is_not_labMember_manager_creator(userId=userId)
         publication_id = self.mark_as_read(userId, domain, notification_id)
         self.websiteFacade.reject_publication(domain, publication_id)
 
@@ -380,9 +381,27 @@ class LabSystemController:
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userId=userId)
         userFacade.error_if_user_not_logged_in(userId=userId)
+        userFacade.error_if_user_is_not_labMember_manager_creator(userId=userId)
         for pubId in publicationIds:
             self.websiteFacade.reject_publication(domain, pubId)
 
+    def remove_publication_by_manager(self, userId, domain, publicationId):
+        """
+        Delete publication by lab manager
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId=userId)
+        userFacade.error_if_user_not_logged_in(userId=userId)
+        userFacade.error_if_user_is_not_labMember_manager_creator(userId=userId)
+        self.websiteFacade.error_if_publication_is_rejected(domain=domain, publication_id=publicationId)
+        
+        email = userFacade.get_email_by_userId(userId=userId)
+        rejecting_name = userFacade.get_fullName_by_email(email)
+        pub = self.websiteFacade.get_publication_by_paper_id(domain=domain, paper_id=publicationId)
+        authors = pub.author_emails
+        self.websiteFacade.reject_publication(domain, publication_id=publicationId)
+        for author in authors:
+            self.notificationsFacade.send_email_notification_removing_pub(recipientEmail=author, publicationDTO=pub, deleting_manager_name=rejecting_name, domain=domain)
 
     def add_publication_manually(self, user_id, domain, publication_link, git_link, video_link, presentation_link):
         """A Lab Member updates the website with new research publications"""

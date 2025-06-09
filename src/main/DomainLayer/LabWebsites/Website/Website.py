@@ -148,7 +148,7 @@ class Website:
                     return True
         return False
 
-    def get_publication_by_paper_id(self, paper_id):
+    def get_publication_by_paper_id(self, paper_id) -> PublicationDTO:
         for pub_list in self.members_publications.values():
             for publication in pub_list:
                 if publication.get_paper_id() == paper_id:
@@ -164,6 +164,9 @@ class Website:
         #             self.members_publications[author].append(publication)
         #     return publication
         return None
+    
+    def is_publication_rejected(self, paper_id):
+        return self.get_publication_by_paper_id(paper_id=paper_id).approved == ApprovalStatus.REJECTED
 
     def final_approve_publication(self, paper_id) -> PublicationDTO:
         publication = self.get_publication_by_paper_id(paper_id)
