@@ -1795,6 +1795,22 @@ class UploadProfilePicture(Resource):
                 "error": f"An error occurred: {str(e)}"
             }, 500
 
+class SetMemberEmailNotification(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User ID is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        parser.add_argument('email_notifications', type=bool, required=True, help="Notification ID is required")
+        args = parser.parse_args()
+
+        try:
+            response = lab_system_service.set_member_email_notifications(args['user_id'], args['domain'], args['email_notifications'])
+            if response.is_success():
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
+
 # Add resources to the API of lab
 api.add_resource(EnterLabWebsite, '/api/enterLabWebsite')#
 api.add_resource(LoginWebsite, '/api/loginWebsite')#
@@ -1869,6 +1885,7 @@ api.add_resource(GetGalleryImages, '/api/getGallery')
 api.add_resource(DeleteGalleryImage, '/api/deleteGalleryImage')
 api.add_resource(AddNewsRecord, '/api/addNewsRecord')
 api.add_resource(UploadProfilePicture, '/api/uploadProfilePicture')
+api.add_resource(SetMemberEmailNotification, '/api/setMemberEmailNotification')
 ##
 api.add_resource(CrawlPublicationsForMember, '/api/CrawlPublicationsForMember')
 

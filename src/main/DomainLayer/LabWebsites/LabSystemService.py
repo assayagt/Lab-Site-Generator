@@ -465,3 +465,11 @@ class LabSystemService:
             return Response(True, "Profile picture added successfully")
         except Exception as e:
             return Response(None, str(e))
+
+    def set_member_email_notifications(self, user_id, domain, email_notifications):
+        """Set email notifications for a member."""
+        try:
+            self.lab_system_controller.set_member_email_notifications(user_id, domain, email_notifications)
+            return Response(True, "Email notifications set successfully")
+        except Exception as e:
+            return Response(None, str(e))

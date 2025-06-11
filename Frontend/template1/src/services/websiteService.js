@@ -717,3 +717,17 @@ export const addNewsRecord = async (userId, domain, text, link, date) => {
     return null;
   }
 };
+
+export const setMemberEmailNotification = async (userId, domain, emailNotifications) => {
+  try {
+    const response = await axios.post(`${baseApiUrl}setMemberEmailNotification`, {
+      user_id: userId,
+      domain: domain,
+      email_notifications: emailNotifications
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error setting email notification preference:", error);
+    return null;
+  }
+};
