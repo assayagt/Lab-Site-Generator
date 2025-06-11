@@ -35,7 +35,7 @@ class UserFacade:
         self.alumnis = {}
         self.emails_requests_to_register = {}
         self.dal_controller = DAL_controller()
-        self._load_data()
+        self._load_data() #=================== LAZY LOAD THAT (?)
         self._initialized = True
 
     @classmethod
