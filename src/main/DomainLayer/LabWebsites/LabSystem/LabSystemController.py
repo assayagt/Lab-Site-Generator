@@ -392,7 +392,7 @@ class LabSystemController:
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userId=userId)
         userFacade.error_if_user_not_logged_in(userId=userId)
-        userFacade.error_if_user_is_not_labMember_manager_creator(userId=userId)
+        userFacade.error_if_user_is_not_manager_or_site_creator(userId=userId)
         self.websiteFacade.error_if_publication_is_rejected(domain=domain, publication_id=publicationId)
         
         email = userFacade.get_email_by_userId(userId=userId)
