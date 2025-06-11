@@ -82,6 +82,12 @@ class BridgeToTests(ABC):
         """Approve a registration request."""
         pass
 
+    @abstractmethod 
+    def remove_publication(self, user_id, domain, publication_id):
+        """Remove a n approved publication from the lab website."""
+        pass
+
+
     def reject_registration_request(self, domain, manager_userId, requested_email):
         """Reject a registration request."""
         pass
@@ -141,3 +147,4 @@ class BridgeToTests(ABC):
     def get_all_not_approved_publications_of_member(self, domain, user_id):
         """Get all not approved publications of a specific member for a specific website."""
         pass
+

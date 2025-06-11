@@ -25,7 +25,7 @@ class NotificationsFacade:
         self.email_notifications_center = {}  # { website_id: { user_email: [notification_list] } }
         self.dal_controller = DAL_controller()
         self.web_socket_handler = WebSocketHandler()
-        self._load_all_data()
+        self._load_all_data() #=================== LAZY LOAD THAT
 
         self._initialized = True
 
