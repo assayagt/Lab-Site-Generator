@@ -43,9 +43,9 @@ class LabMembersRepository:
         query = """
         INSERT INTO lab_members (
             domain, email, second_email, linkedin_link, scholar_link,
-            media, full_name, degree, bio, profile_picture
+            media, full_name, degree, bio, profile_picture, email_notifications
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(domain, email) DO UPDATE SET
             second_email = excluded.second_email,
             linkedin_link = excluded.linkedin_link,
@@ -54,7 +54,8 @@ class LabMembersRepository:
             full_name = excluded.full_name,
             degree = excluded.degree,
             bio = excluded.bio,
-            profile_picture = excluded.profile_picture
+            profile_picture = excluded.profile_picture,
+            email_notifications = excluded.email_notifications
         """
         params = (
             labMemberDTO.domain,
@@ -66,7 +67,8 @@ class LabMembersRepository:
             labMemberDTO.full_name,
             labMemberDTO.degree,
             labMemberDTO.bio,
-            labMemberDTO.profile_picture
+            labMemberDTO.profile_picture,
+            labMemberDTO.email_notifications
         )
         return self.db_manager.execute_update(query, params) > 0
     
@@ -159,5 +161,6 @@ class LabMembersRepository:
             full_name=row['full_name'],
             degree=row['degree'],
             bio=row['bio'],
-            profile_picture=row['profile_picture']
+            profile_picture=row['profile_picture'],
+            email_notifications=bool(row['email_notifications'])
         )

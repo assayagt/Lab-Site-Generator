@@ -39,7 +39,7 @@ class NotificationsFacade:
         with cls._instance_lock:
             cls._instance = None
 
-    def notify_user(self, email_notification, domain, recipientEmail):
+    def notify_user(self, email_notification, domain, recipientEmail, send_email: bool):
         if domain not in self.email_notifications_center:
             self.email_notifications_center[domain] = {}
 
@@ -49,7 +49,8 @@ class NotificationsFacade:
         self.email_notifications_center[domain][recipientEmail].append(email_notification)
         self.dal_controller.notifications_repo.save_notification(email_notification.to_dto())  # Save the notification to the database
 
-        email_notification.send_email()
+        if send_email:
+            email_notification.send_email()
 
         # Send live notification
         event = ""
@@ -92,14 +93,10 @@ class NotificationsFacade:
         id = str(uuid.uuid4())
 
         email_notification = EmailNotification(id, recipientEmail, "New Publication Pending Approval", body, domain, publication_id=publicationDto.get_paper_id())
-        if emailOnly:
-            email_notification.send_email()
-        else:
-        # Send Email notification and save it
-            self.notify_user(email_notification, domain, recipientEmail)
+        self.notify_user(email_notification, domain, recipientEmail, emailOnly)
   
 
-    def send_publication_notification_for_final_approval(self, publicationDto, recipientEmail, domain):
+    def send_publication_notification_for_final_approval(self, publicationDto, recipientEmail, domain, emailOnly = False):
         """
         Sends a notification email for final approval of a publication to the lab mangers
         """
@@ -119,7 +116,7 @@ class NotificationsFacade:
         email_notification = EmailNotification(id, recipientEmail, "New Publication Pending Final Approval", body, domain, publication_id=publicationDto.get_paper_id())
 
         # Send Email notification and save it
-        self.notify_user(email_notification, domain, recipientEmail)
+        self.notify_user(email_notification, domain, recipientEmail, emailOnly)
 
     def send_multiple_pubs_notification_for_final_approval(self, recipientEmail, domain):
         """
@@ -137,7 +134,7 @@ class NotificationsFacade:
         email_notification.send_email()
 
 
-    def send_registration_request_notification(self, requestedEmail, recipientEmail, domain):
+    def send_registration_request_notification(self, requestedEmail, recipientEmail, domain, emailOnly = False):
         """
         Sends a notification email containing a registration request.
         """
@@ -155,7 +152,7 @@ class NotificationsFacade:
         email_notification = EmailNotification(id, recipientEmail, "New Registration Request Pending Approval", body, domain, request_email=requestedEmail)
 
         #Send Email notification and save it
-        self.notify_user(email_notification, domain, recipientEmail)
+        self.notify_user(email_notification, domain, recipientEmail, emailOnly)
 
 
     def get_notifications_for_user(self, domain, user_email, unread_only=True):

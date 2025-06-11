@@ -207,6 +207,7 @@ class DatabaseManager:
             degree TEXT,
             bio TEXT,
             profile_picture TEXT,
+            email_notifications INTEGER,
             PRIMARY KEY (domain, email),
             FOREIGN KEY (domain) REFERENCES site_customs (domain) ON DELETE CASCADE
         );
