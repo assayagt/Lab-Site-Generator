@@ -8,11 +8,11 @@ import json
 
 class Website:
     def __init__(self, domain, contact_info=None, about_us=None):
-        self.members_publications: dict[str, list[PublicationDTO]] = {}
+        self.members_publications: dict[str, list[PublicationDTO]] = {} #=================== LAZY LOAD THAT (?)
         self.domain = domain
         self.contact_info = contact_info
         self.about_us = about_us
-        self.news: list[NewsRecord_dto] = []
+        self.news: list[NewsRecord_dto] = [] #=================== LAZY LOAD THAT
 
     def create_publication(self, publicationDTO, authors_emails):
         # get new publicationDTO and add it to the dictionary
@@ -148,7 +148,7 @@ class Website:
                     return True
         return False
 
-    def get_publication_by_paper_id(self, paper_id):
+    def get_publication_by_paper_id(self, paper_id) -> PublicationDTO:
         for pub_list in self.members_publications.values():
             for publication in pub_list:
                 if publication.get_paper_id() == paper_id:
@@ -164,6 +164,9 @@ class Website:
         #             self.members_publications[author].append(publication)
         #     return publication
         return None
+    
+    def is_publication_rejected(self, paper_id):
+        return self.get_publication_by_paper_id(paper_id=paper_id).approved == ApprovalStatus.REJECTED
 
     def final_approve_publication(self, paper_id) -> PublicationDTO:
         publication = self.get_publication_by_paper_id(paper_id)

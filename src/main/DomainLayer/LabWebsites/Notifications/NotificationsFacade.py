@@ -25,7 +25,7 @@ class NotificationsFacade:
         self.email_notifications_center = {}  # { website_id: { user_email: [notification_list] } }
         self.dal_controller = DAL_controller()
         self.web_socket_handler = WebSocketHandler()
-        self._load_all_data()
+        self._load_all_data() #=================== LAZY LOAD THAT
 
         self._initialized = True
 
@@ -125,13 +125,24 @@ class NotificationsFacade:
         # Format email body
         body = (
             f"One or more publication requests were submitted by lab members and are awaiting your review.\n"
-            f"Please log in to your lab site to approve or reject them.\n\n"
-            f"Website link: {domain}"
+            f"Please log in to your lab site to approve or reject them."
         )
         # Create the email notification
         id = str(uuid.uuid4())
         email_notification = EmailNotification(id, recipientEmail, "New Publications Pending Final Approval", body, domain)
         email_notification.send_email()
+
+    def send_email_notification_removing_pub(self, recipientEmail, publicationDTO, deleting_manager_name, domain):
+        """
+        sends an email only notification for deleting an approved publication
+        """
+        body = (
+            f"please note that the publication \"{publicationDTO.title}\" was removed by {deleting_manager_name}\n The publication is now rejected.\n"
+        )
+        _subject = f"Publication: \"{publicationDTO.title}\" was rejected"
+        id=str(uuid.uuid4)
+        emailNotification= EmailNotification(id=id, subject=_subject, recipient=recipientEmail, body=body, domain=domain, publication_id=publicationDTO.get_paper_id())
+        emailNotification.send_email()
 
 
     def send_registration_request_notification(self, requestedEmail, recipientEmail, domain, emailOnly = False):

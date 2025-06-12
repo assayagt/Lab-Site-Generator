@@ -1285,6 +1285,7 @@ class InitialApprovePublicationByAuthor(Resource):
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
+        
 
 class FinalApprovePublicationByManager(Resource):
     """
@@ -1638,7 +1639,8 @@ class RejectMultiplePublications(Resource):
             return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": str(e)})
-
+        
+    
 class InitialApproveMultiplePublicationsByAuthor(Resource):
     """
     Approve a publication by its author in the initial review stage.
@@ -1651,8 +1653,8 @@ class InitialApproveMultiplePublicationsByAuthor(Resource):
         parser.add_argument('domain', required=True, help="Domain is required")
         parser.add_argument('publication_IDs', type=str, required=True, help="A list of publication IDs is required")
         args = parser.parse_args()
-        print(args['publication_IDs'].split(", "))
         pubs = args['publication_IDs'].split(", ")
+        print(pubs)
         try:
             response = lab_system_service.initial_approve_multiple_publications_by_author(args['user_id'], args['domain'], pubs)
             if response.is_success():
@@ -1794,6 +1796,21 @@ class UploadProfilePicture(Resource):
             return {
                 "error": f"An error occurred: {str(e)}"
             }, 500
+        
+class RemovePublication(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=str, required=True, help="User ID is required")
+        parser.add_argument('domain', type=str, required=True, help="Domain is required")
+        parser.add_argument('publication_ID', type = str, required=True, help="publication ID is required")
+        args = parser.parse_args()
+        try:
+            response = lab_system_service.remove_publication(args['user_id'], args['domain'], args['publication_ID'])
+            if response.is_success():
+                return jsonify({"message": response.get_message(), "response": "true"})
+            return jsonify({"message": response.get_message(), "response": "false"})
+        except Exception as e:
+            return jsonify({"error": str(e)})
 
 class SetMemberEmailNotification(Resource):
     def post(self):
@@ -1830,6 +1847,7 @@ api.add_resource(GetAllMembersNames, '/api/getAllMembersNames')
 api.add_resource(GetPendingRegistrationEmails, '/api/getPendingRegistrationEmails')
 api.add_resource(RejectPublication, '/api/RejectPublication')
 api.add_resource(RejectMultiplePublications, '/api/rejectMultiplePublications')
+api.add_resource(RemovePublication, 'api/RemovePublication')
 
 # Add the resources to API
 api.add_resource(UploadFilesAndData, '/api/uploadFile')#

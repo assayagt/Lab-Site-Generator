@@ -101,3 +101,6 @@ class RealToTests(BridgeToTests):
 
     def get_all_not_approved_publications_of_member(self, domain, user_id):
         return self.lab_system_service.get_all_not_approved_publications_of_member(domain, user_id)
+    
+    def remove_publication(self, user_id, domain, publication_id):
+        return self.lab_system_service.remove_publication(user_id, domain, publication_id)
