@@ -66,6 +66,10 @@ class TestRemovePub(unittest.TestCase):
         response = self.lab_system_service.remove_publication(
             self.member_id, self.domain, self.publication_id
         )
+        print(response)
         self.assertFalse(response.is_success())
         self.assertIsNone(response.get_data())
-        self.assertEqual(response.get_message(), ExceptionsEnum.USER_IS_NOT_MANAGER.value)
+        self.assertEqual(response.get_message(), ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER_OR_CREATOR.value)
+
+if __name__ == "__main__":
+    unittest.main()

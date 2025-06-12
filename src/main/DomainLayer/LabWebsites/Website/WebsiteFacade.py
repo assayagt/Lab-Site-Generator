@@ -126,7 +126,7 @@ class WebsiteFacade:
         
     def error_if_publication_is_rejected(self, domain, publication_id):
         website = self.get_website(domain)
-        if not website.is_publication_rejected(publication_id):
+        if website.is_publication_rejected(publication_id):
             raise Exception(ExceptionsEnum.PUBLICATION_ALREADY_REJECTED.value)
 
 
@@ -144,7 +144,6 @@ class WebsiteFacade:
         website = self.get_website(domain)
         pub_dto = website.final_approve_publication(publication_id)
         self.dal_controller.publications_repo.save(publication_dto=pub_dto, domain=domain)
-
 
     def set_site_about_us(self, domain, about_us):
         website = self.get_website(domain)

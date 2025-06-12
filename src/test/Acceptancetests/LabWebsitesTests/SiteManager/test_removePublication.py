@@ -77,8 +77,8 @@ class TestRemovePublicationEdgeCases(unittest.TestCase):
         )
 
         self.assertTrue(response.is_success())
-        # self.assertEqual(response.get_message(), "Publication removed successfully")
-        self.assertIsNone(response.get_data())
+        self.assertEqual(response.get_message(), "Publication removed successfully")
+        
 
     def test_remove_already_removed_publication(self):
         """
@@ -98,3 +98,6 @@ class TestRemovePublicationEdgeCases(unittest.TestCase):
         self.assertFalse(response2.is_success())
         self.assertEqual(response2.get_message(), ExceptionsEnum.PUBLICATION_ALREADY_REJECTED.value)
         self.assertIsNone(response2.get_data())
+
+if __name__ == "__main__":
+    unittest.main()

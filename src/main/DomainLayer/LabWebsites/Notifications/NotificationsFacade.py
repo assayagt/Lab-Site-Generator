@@ -142,8 +142,9 @@ class NotificationsFacade:
         body = (
             f"please note that the publication \"{publicationDTO.title}\" was removed by {deleting_manager_name}\n The publication is now rejected.\n"
         )
+        _subject = f"Publication: \"{publicationDTO.title}\" was rejected"
         id=str(uuid.uuid4)
-        emailNotification= EmailNotification(id=id, recipient=recipientEmail, body=body, domain=domain, publication_id=publicationDTO.publicationDto.get_paper_id())
+        emailNotification= EmailNotification(id=id, subject=_subject, recipient=recipientEmail, body=body, domain=domain, publication_id=publicationDTO.get_paper_id())
         emailNotification.send_email()
 
 
