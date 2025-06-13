@@ -1831,7 +1831,7 @@ api.add_resource(GetAllMembersNames, '/api/getAllMembersNames')
 api.add_resource(GetPendingRegistrationEmails, '/api/getPendingRegistrationEmails')
 api.add_resource(RejectPublication, '/api/RejectPublication')
 api.add_resource(RejectMultiplePublications, '/api/rejectMultiplePublications')
-api.add_resource(RemovePublication, 'api/RemovePublication')
+api.add_resource(RemovePublication, '/api/RemovePublication')
 
 # Add the resources to API
 api.add_resource(UploadFilesAndData, '/api/uploadFile')#
