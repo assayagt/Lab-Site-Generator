@@ -28,7 +28,7 @@ class SiteCustomFacade:
 
         self.sites = {}
         self.dal_controller = DAL_controller()
-        self._load_all_siteCustoms() #==================== LazyLoadThat
+        self._load_all_siteCustoms()  # ==================== LazyLoadThat
 
         self._initialized = True
 
@@ -44,13 +44,15 @@ class SiteCustomFacade:
 
     def error_if_domain_is_not_valid(self, domain):
         # Regular expression for basic domain validation
-        #TODO: probably need to be changed in the future once we know the domains provided by the university
-        domain_regex = r'^(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z0-9-]{2,}$'
+        # TODO: probably need to be changed in the future once we know the domains provided by the university
+        domain_regex = (
+            r"^(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z0-9-]{2,}$"
+        )
         if re.match(domain_regex, domain) is None:
             raise Exception(ExceptionsEnum.INVALID_DOMAIN_FORMAT.value)
 
     def create_new_site(self, domain, name, components, template, email):
-        #if not isinstance(template, Template):
+        # if not isinstance(template, Template):
         #     raise Exception(ExceptionsEnum.INVALID_TEMPLATE.value)
         if not isinstance(name, str) or not name:
             raise Exception(ExceptionsEnum.INVALID_SITE_NAME.value)
@@ -60,17 +62,18 @@ class SiteCustomFacade:
             gallery_path = self.create_gallery_directory(domain)
             site.set_gallery_path(gallery_path)
         self.sites[domain] = site
-        self.dal_controller.siteCustom_repo.save(site.to_dto(), email) #===========================================
+        self.dal_controller.siteCustom_repo.save(site.to_dto(), email)
         return site
 
     def error_if_domain_already_exist(self, domain):
-        if domain in self.sites:
+        custom = self.dal_controller.siteCustom_repo.find_by_domain(domain)
+        if custom:
             raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_ALREADY_EXIST.value)
 
     def error_if_domain_not_exist(self, domain):
-        if domain not in self.sites:
+        custom = self.dal_controller.siteCustom_repo.find_by_domain(domain)
+        if not custom:
             raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST.value)
-
 
     def change_site_name(self, domain, new_name):
         """Changes the name of a site."""
@@ -78,7 +81,7 @@ class SiteCustomFacade:
             raise Exception(ExceptionsEnum.INVALID_SITE_NAME.value)
         site = self.sites[domain]
         site.change_name(new_name)
-        self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto()) #===========================================
+        self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto())
 
     def change_site_domain(self, old_domain, new_domain):
         """Changes the domain of a site."""
@@ -101,7 +104,9 @@ class SiteCustomFacade:
 
     def add_components_to_site(self, old_domain, components):
         """Adds components to a site."""
-        if not isinstance(components, list) or not all(isinstance(c, str) for c in components):
+        if not isinstance(components, list) or not all(
+            isinstance(c, str) for c in components
+        ):
             raise Exception(ExceptionsEnum.INVALID_COMPONENTS_FORMAT.value)
         site = self.sites[old_domain]
         site.add_component(components)
@@ -123,7 +128,10 @@ class SiteCustomFacade:
         custom_sites_details = {}
         for domain in domains:
             site = self.sites[domain]
-            custom_sites_details[domain] = {"site_name": site.name, "generated": site.generated}
+            custom_sites_details[domain] = {
+                "site_name": site.name,
+                "generated": site.generated,
+            }
         return custom_sites_details
 
     def set_custom_site_as_generated(self, domain):
@@ -138,7 +146,7 @@ class SiteCustomFacade:
         """
         self.sites.clear()
         self.dal_controller.drop_all_tables()
-       
+
     def get_site_by_domain(self, domain):
         """Get site by domain, return siteCustomDTO object"""
         site = self.sites[domain]
@@ -169,9 +177,9 @@ class SiteCustomFacade:
     def set_site_creator(self, domain, nominated_email):
         site = self.sites[domain]
         site.set_site_creator_email(nominated_email)
-        #self.dal_controller.siteCustom_repo.delete(domain=site.domain)
+        # self.dal_controller.siteCustom_repo.delete(domain=site.domain)
         self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto())
-    
+
     def get_if_site_is_generated(self, domain):
         site = self.sites[domain]
         return site.generated
@@ -188,7 +196,7 @@ class SiteCustomFacade:
         Create a gallery directory for the site.
         """
         website_folder = os.path.join("LabWebsitesUploads", domain)
-        gallery_folder = os.path.join(website_folder, 'gallery')
+        gallery_folder = os.path.join(website_folder, "gallery")
         os.makedirs(gallery_folder, exist_ok=True)
 
         return gallery_folder
@@ -205,26 +213,29 @@ class SiteCustomFacade:
                 # Check if it's a file and has a valid image extension
                 if os.path.isfile(file_path):
                     extension = os.path.splitext(filename)[1].lower()
-                    if extension in ['.jpg', '.jpeg', '.png', '.gif']:
+                    if extension in [".jpg", ".jpeg", ".png", ".gif"]:
                         try:
                             with open(file_path, "rb") as image_file:
                                 # Determine the correct MIME type
-                                if extension == '.jpg' or extension == '.jpeg':
-                                    mime_type = 'image/jpeg'
-                                elif extension == '.png':
-                                    mime_type = 'image/png'
-                                elif extension == '.gif':
-                                    mime_type = 'image/gif'
+                                if extension == ".jpg" or extension == ".jpeg":
+                                    mime_type = "image/jpeg"
+                                elif extension == ".png":
+                                    mime_type = "image/png"
+                                elif extension == ".gif":
+                                    mime_type = "image/gif"
                                 else:
-                                    mime_type = 'application/octet-stream'
+                                    mime_type = "application/octet-stream"
 
                                 # Encode the image
-                                image_base64 = base64.b64encode(image_file.read()).decode()
-                                image_data_url = f"data:{mime_type};base64,{image_base64}"
-                                gallery_images.append({
-                                    'filename': filename,
-                                    'data_url': image_data_url
-                                })
+                                image_base64 = base64.b64encode(
+                                    image_file.read()
+                                ).decode()
+                                image_data_url = (
+                                    f"data:{mime_type};base64,{image_base64}"
+                                )
+                                gallery_images.append(
+                                    {"filename": filename, "data_url": image_data_url}
+                                )
                         except Exception as e:
                             print(f"Error processing image {filename}: {str(e)}")
                             continue
@@ -263,5 +274,5 @@ class SiteCustomFacade:
                 logo=dto.logo,
                 home_picture=dto.home_picture,
                 generated=bool(dto.generated),
-                gallery_path=dto.gallery_path
+                gallery_path=dto.gallery_path,
             )

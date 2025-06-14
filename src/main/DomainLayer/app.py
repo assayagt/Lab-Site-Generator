@@ -638,27 +638,13 @@ class RemoveSiteManagerFromGenerator(Resource):
 class Login(Resource):
     def post(self):
         data = request.get_json()
-        user_id = data.get('user_id')
         google_token = data.get('google_token')
-    
 
         try:
             if google_token:
-                try:
-                    # Verify the token
-                    print("request token")
-                    idinfo = id_token.verify_oauth2_token(google_token, requests.Request(), GOOGLE_CLIENT_ID, clock_skew_in_seconds=2)
-                    print("token verified")
-                    email = idinfo['email']
-                    
-                except ValueError as e:
-                    print("Token verification failed:", str(e))
-                    return jsonify({"error": "Invalid Google token", "response": "false"})
-
-            response = generator_system.login(user_id, email)
-            
+                response = generator_system.login(google_token) # google_token instead of user_id
             if response.is_success():
-                return jsonify({"message": "User logged in successfully","response" : "true", "email": email })
+                return jsonify({"message": "User logged in successfully","response" : "true", "email": response.data, "user_id": google_token })
             return jsonify({"message": response.get_message(),"response" : "false" })
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}","response" : "false"})

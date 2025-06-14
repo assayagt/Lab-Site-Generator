@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
         sessionStorage.setItem("userEmail", data.email);
         const email = data.email;
         setUser({ email });
-        //sessionStorage.setItem('sid',"id"); still doesn't exist
+        sessionStorage.setItem('sid', data.user_id);
         return true;
       }
 

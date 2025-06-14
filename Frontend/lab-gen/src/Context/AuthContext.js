@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
       if (data.response === "true") {
         sessionStorage.setItem("isLoggedIn", true);
         sessionStorage.setItem("userEmail", data.email);
-        //sessionStorage.setItem('sid',"id"); still doesn't exist
+        sessionStorage.setItem('sid', data.user_id); 
         return data;
       }
       return data;
