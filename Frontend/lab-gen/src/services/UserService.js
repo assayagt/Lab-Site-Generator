@@ -20,20 +20,6 @@ export const SendLogin = async (token, sid) => {
     });
 };
 
-export const SendLogout = async () => {
-  let data;
-  const sid = sessionStorage.getItem("sid");
-  try {
-    const response = await axios.post(`${baseApiUrl}Logout`, {
-      user_id: sid,
-    });
-    data = response.data;
-  } catch (err) {
-    console.error("Error sending to signup" + err);
-  }
-  return data;
-};
-
 export const EnterSystem = async () => {
   let data;
   await axios

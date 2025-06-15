@@ -49,7 +49,7 @@ class GeneratorSystemController:
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
         self.site_custom_facade.error_if_domain_already_exist(domain)
-        email = self.user_facade.get_email_by_userId(user_id)
+        email = self.user_facade.get_email_from_token(user_id)
         self.site_custom_facade.create_new_site(domain, website_name, components, template, email)
         self.user_facade.create_new_site_manager(email, domain)
 
@@ -345,7 +345,7 @@ class GeneratorSystemController:
         """
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
-        email = self.user_facade.get_email_by_userId(user_id)
+        email = self.user_facade.get_email_from_token(user_id)
         self.site_custom_facade.error_if_user_is_not_site_creator(email, domain)
         self.site_custom_facade.set_site_creator(domain, nominated_email)
         if new_role != "manager":

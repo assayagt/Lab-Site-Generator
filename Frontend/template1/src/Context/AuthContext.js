@@ -29,12 +29,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    let data = await SendLogout();
-    console.log(data);
-    if (data.response === "true") {
-      return true;
-    }
-    return false;
+    sessionStorage.removeItem("isLoggedIn");
+    sessionStorage.removeItem("userEmail");
+    sessionStorage.removeItem("sid");
+    return true
   };
 
   const fetchToken = async () => {

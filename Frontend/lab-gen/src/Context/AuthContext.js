@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import { SendLogin, SendLogout, EnterSystem } from "../services/UserService";
+import { SendLogin, EnterSystem } from "../services/UserService";
 
 const AuthContext = createContext();
 
@@ -19,12 +19,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    let data = await SendLogout();
-    console.log(data);
-    if (data.response === "true") {
-      return true;
-    }
-    return false;
+    sessionStorage.removeItem("isLoggedIn");
+    sessionStorage.removeItem("userEmail");
+    sessionStorage.removeItem('sid');
+    return true
   };
 
   const fetchToken = async () => {

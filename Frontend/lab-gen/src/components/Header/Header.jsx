@@ -25,7 +25,6 @@ function Header(props) {
     let data= await logout();  
     if(data===true){
       resetWebsiteData();
-      sessionStorage.clear();
       navigate("/");
       // window.location.reload();
     }

@@ -32,7 +32,7 @@ class UserFacade:
         self.users = {}
         self.members_customSites = {}  # sites created by user <email, <Member, [domains]>>
         self.dal_controller = DAL_controller()
-        self._load_all_members()  # =================== LAZY LOAD THAT
+        # self._load_all_members()  # =================== LAZY LOAD THAT
         self._initialized = True
 
     @classmethod
@@ -54,6 +54,12 @@ class UserFacade:
         This method validates the token exists, and then extracts email from the token
         and then get or create member by email (we trust the token because it was validated by google)
         """
+        email = self.get_email_from_token(google_token=google_token)
+        if not self.dal_controller.members_repo.find_by_email(email=email):
+            self.dal_controller.members_repo.save_member(email=email)
+        return email
+    
+    def get_email_from_token(self, google_token):
         # Verify the token
         idinfo = id_token.verify_oauth2_token(
             google_token,
@@ -61,10 +67,8 @@ class UserFacade:
             GOOGLE_CLIENT_ID,
             clock_skew_in_seconds=2,
         )
-        email = idinfo["email"]
-        if not self.dal_controller.members_repo.find_by_email(email=email):
-            self.dal_controller.members_repo.save_member(email=email)
-        return email
+        return idinfo["email"]
+
 
     def get_domains_by_email(self, email):
         customs = self.dal_controller.siteCustom_repo.find_by_email(email)
@@ -113,8 +117,9 @@ class UserFacade:
         pass
 
     def error_if_user_not_logged_in(self, userId):
-        user = self.get_user_by_id(userId)
-        if not user.is_member():
+        try:
+            self.get_email_from_token(google_token=userId)
+        except Exception as e:
             raise Exception(ExceptionsEnum.USER_IS_NOT_MEMBER.value)
 
     def get_email_by_userId(self, userId):
@@ -129,8 +134,8 @@ class UserFacade:
 
     def get_lab_websites(self, user_id):
         """Get all lab websites."""
-        email = self.get_email_by_userId(user_id)
-        return self.members_customSites[email]["domains"]
+        email = self.get_email_from_token(user_id)
+        return self.get_domains_by_email(email)
 
     def reset_system(self):
         """
