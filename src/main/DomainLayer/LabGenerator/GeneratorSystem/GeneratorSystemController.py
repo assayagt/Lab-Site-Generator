@@ -297,7 +297,7 @@ class GeneratorSystemController:
         """
         return self.user_facade.get_or_create_user_by_token(google_token)
 
-    def logout(self, userId):
+    def logout(self, userId):  # NOT USED ANYMORE
         """
         logout from the generator system (should be via Google in the future)
         """
@@ -335,7 +335,6 @@ class GeneratorSystemController:
         """
         Resets the entire system, clearing all users, websites, and lab-related data.
         """
-        self.user_facade.reset_system()
         self.site_custom_facade.reset_system()
         self.labSystem.reset_system()
 
@@ -366,7 +365,6 @@ class GeneratorSystemController:
         """
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
-        self.user_facade.delete_website(user_id, domain)
         self.site_custom_facade.delete_website(domain)
 
     def get_gallery_images(self, domain):

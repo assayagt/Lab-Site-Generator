@@ -191,7 +191,7 @@ class GeneratorSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def logout(self, user_id):
+    def logout(self, user_id):  # NOT USED ANYMORE
         """Log out the current user through GeneratorSystemController."""
         try:
             self.generator_system_controller.logout(user_id)

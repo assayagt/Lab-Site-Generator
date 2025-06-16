@@ -13,20 +13,16 @@ from src.main.DomainLayer.socketio_instance import socketio
 from google.oauth2 import id_token
 from google.auth.transport import requests
 import glob
-
+from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
+from src.main.DomainLayer.LabGenerator.GeneratorSystemService import GeneratorSystemService
+from src.main.DomainLayer.LabWebsites.LabSystemService import LabSystemService
+from src.main.DomainLayer.LabWebsites.Website.ContactInfo import ContactInfo
 
 def send_test_notifications():
     while True:
         socketio.emit('registration-notification', {'message': 'Test notification'})
         print("Test notification sent")
         time.sleep(60)  # Wait for 60 seconds
-
-
-
-from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
-from src.main.DomainLayer.LabGenerator.GeneratorSystemService import GeneratorSystemService
-from src.main.DomainLayer.LabWebsites.LabSystemService import LabSystemService
-from src.main.DomainLayer.LabWebsites.Website.ContactInfo import ContactInfo
 
 # Create a Flask app
 app_secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -639,7 +635,6 @@ class Login(Resource):
     def post(self):
         data = request.get_json()
         google_token = data.get('google_token')
-
         try:
             if google_token:
                 response = generator_system.login(google_token) # google_token instead of user_id
@@ -649,15 +644,13 @@ class Login(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}","response" : "false"})
 
-# Handles user logout
+# Handles user logout NOT USED ANYMORE
 class Logout(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('user_id', type=str, required=True, help="User id is required")
         args = parser.parse_args()
-
         user_id = args['user_id']
-
         try:
             response = generator_system.logout(user_id)
             if response.is_success():
