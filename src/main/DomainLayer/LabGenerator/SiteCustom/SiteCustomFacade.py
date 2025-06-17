@@ -76,6 +76,7 @@ class SiteCustomFacade:
         """Changes the name of a site."""
         if not isinstance(new_name, str) or not new_name:
             raise Exception(ExceptionsEnum.INVALID_SITE_NAME.value)
+        self.error_if_domain_not_exist(domain)
         site = self.sites[domain]
         site.change_name(new_name)
         self.dal_controller.siteCustom_repo.save(siteCustom_dto=site.to_dto()) #===========================================
