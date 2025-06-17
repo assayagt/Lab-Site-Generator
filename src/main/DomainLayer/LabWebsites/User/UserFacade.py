@@ -8,8 +8,12 @@ from src.main.DomainLayer.LabWebsites.User.RegistrationStatus import Registratio
 from src.main.DomainLayer.LabWebsites.User.User import User
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.main.DomainLayer.LabWebsites.User.Degree import Degree
-
 from src.DAL.DAL_controller import DAL_controller
+from google.oauth2 import id_token
+from google.auth.transport import requests
+
+GOOGLE_CLIENT_ID = "894370088866-4jkvg622sluvf0k7cfv737tnjlgg00nt.apps.googleusercontent.com"
+
 
 
 class UserFacade:
@@ -54,6 +58,18 @@ class UserFacade:
         """Reset all UserFacade instances."""
         with cls._instance_lock:
             cls._instances.clear()
+
+    def verify_google_token(self, google_token):
+        if google_token:
+            try:
+                # Verify the token
+                idinfo = id_token.verify_oauth2_token(google_token, requests.Request(), GOOGLE_CLIENT_ID, clock_skew_in_seconds=2)
+                return idinfo['email']
+            except Exception as e:
+                print("Token verification failed:", str(e))
+                raise Exception(f"{ExceptionsEnum.GOOGLE_VERIFICATION_FAILED.value} \n {str(e)}")
+        else:
+            raise Exception(ExceptionsEnum.GOOGLE_TOKEN_NOT_EXIST.value)
 
     def create_new_site_manager(self, nominated_manager_email, nominated_manager_fullName, nominated_manager_degree):
         if nominated_manager_email in self.members:
@@ -275,6 +291,11 @@ class UserFacade:
         else:
             user = None
         return user
+    
+    def get_user_by_google_token(self, google_token):
+        email = self.verify_google_token(google_token=google_token)
+        return self.get_member_by_email(email)
+
 
     def error_if_user_notExist(self, userId):
         if self.get_user_by_id(userId) is None:
