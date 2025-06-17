@@ -13,17 +13,14 @@ export const AuthProvider = ({ children }) => {
       sessionStorage.getItem("domain")
     );
     console.log(data);
-    if (data) {
-      if (data.response === "true") {
-        sessionStorage.setItem("isLoggedIn", true);
-        sessionStorage.setItem("userEmail", data.email);
-        const email = data.email;
-        setUser({ email });
-        sessionStorage.setItem('sid', data.user_id);
-        return true;
-      }
 
-      return false;
+    if (data && data.response === "true") {
+      sessionStorage.setItem("isLoggedIn", true);
+      sessionStorage.setItem("userEmail", data.email);
+      const email = data.email;
+      setUser({ email });
+      sessionStorage.setItem('sid', data.user_id);
+      return true;
     }
     return false;
   };

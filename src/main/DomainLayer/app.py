@@ -10,8 +10,6 @@ import pandas as pd
 from flask_socketio import SocketIO, emit
 import threading
 from src.main.DomainLayer.socketio_instance import socketio
-from google.oauth2 import id_token
-from google.auth.transport import requests
 import glob
 from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
 from src.main.DomainLayer.LabGenerator.GeneratorSystemService import GeneratorSystemService
@@ -28,7 +26,6 @@ def send_test_notifications():
 app_secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app = Flask(__name__)
 app.config["SECRET_KEY"] = app_secret_key
-GOOGLE_CLIENT_ID = "894370088866-4jkvg622sluvf0k7cfv737tnjlgg00nt.apps.googleusercontent.com"
 # CORS(app)
 
 CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "http://localhost:3001"]}})  # Allow both frontends
@@ -824,15 +821,13 @@ class EnterLabWebsite(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
-
-
 class LoginWebsite(Resource):
     def post(self):
         data = request.get_json()
         domain = data.get('domain')
         user_id = data.get('user_id')
         google_token = data.get('google_token')
-                
+
         try:
             if google_token:
                 try:
@@ -844,10 +839,10 @@ class LoginWebsite(Resource):
                 except ValueError as e:
                     print("Token verification failed:", str(e))
                     return jsonify({"error": "Invalid Google token", "response": "false"})
-            response = lab_system_service.login(domain, user_id, email)
+            response = lab_system_service.login(domain=domain, google_token=google_token)
             if response.is_success():
                 if response.get_data():
-                    return jsonify({"message": response.get_message(), "response": "true", "email": email})
+                    return jsonify({"message": response.get_message(), "response": "true", "email": email, "user_id": google_token})
                 else:
                     #notify_registration(email, domain)
                     return jsonify({"message": response.get_message(), "response": "false"})
