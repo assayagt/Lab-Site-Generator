@@ -49,10 +49,10 @@ class LabSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def login(self, domain, user_id, email):
+    def login(self, domain, google_token):
         """Log in a user to a specific lab website."""
         try:
-            self.lab_system_controller.login(domain, user_id, email)
+            self.lab_system_controller.login(domain=domain, google_token=google_token)
             return Response(True, "Login successful")
         except Exception as e:
             #check if the exception is USER_NOT_REGISTERED

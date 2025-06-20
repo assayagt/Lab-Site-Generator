@@ -3,17 +3,13 @@ import axios from "axios";
 import { baseApiUrl } from "./BaseUrl"; // Ensure the path is correct relative to this file
 
 export const SendLogin = async (token, sid, domain) => {
-  let data;
   return axios
     .post(`${baseApiUrl}loginWebsite`, {
       domain: domain,
       google_token: token,
       user_id: sid,
     })
-    .then((response) => {
-      data = response.data;
-      return data;
-    })
+    .then((response) => response.data)
     .catch((err) => {
       console.error("Error sending to login: " + err);
       return null;

@@ -8,7 +8,6 @@ from src.main.DomainLayer.LabWebsites.Notifications.NotificationsFacade import N
 from src.main.DomainLayer.LabWebsites.User.AllWebsitesUserFacade import AllWebsitesUserFacade
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 
-
 class LabSystemController:
     _instance = None
     _instance_lock = threading.Lock()
@@ -28,48 +27,7 @@ class LabSystemController:
         self.websiteFacade = WebsiteFacade()
         self.notificationsFacade = NotificationsFacade()
         self.allWebsitesUserFacade = AllWebsitesUserFacade()
-
-        # # ===== new last-access tracking and eviction mechanism ====
-        # self._last_access: dict[str, datetime] = {} # domain -> last accessed map
-        # self._stop_eviction = threading.Event()
-        # self._start_eviction_thread()
-        # # patch the two "get" methods so they auto-touch on every access
-        # self._wrap_facade_accessors()
-
         self._initialized = True
-
-    # def _start_eviction_thread(self):
-    #     def _evict_loop():
-    #         while not self._start_eviction.is_set():
-    #             cutoff = datetime.now() - timedelta(minutes=20)
-    #             # find stale domains
-    #             stale = [d for d, ts in self._last_access.itmes() if ts < cutoff]
-    #             for domain in stale:
-    #                 # remove from both facades
-    #                 self.websiteFacade.remove_website_data(domain)
-    #                 self.allWebsitesUserFacade.remove_website_data(domain)
-    #                 del self._last_access[domain]
-    #             time.sleep(60)
-    #     t = threading.Thread(target=_evict_loop, daemon=True)
-    #     t.start()
-
-    # def _touch(self, domain: str):
-    #     """Record that 'domain' was just accessed."""
-    #     self._last_access[domain] = datetime.now()
-
-    # def _wrap_facade_accessors(self):
-    #     # wrap WebsiteFacade.get_website
-    #     orig_ws = self.websiteFacade.get_website
-    #     def wrapped_get_website(domain):
-    #         self._touch(domain)
-    #         return orig_ws(domain)
-    #     self.websiteFacade.get_website = wrapped_get_website
-    #     # wrap AllWebsiteUserFacade.getUserFacadeByDomain
-    #     orig_uf = self.allWebsitesUserFacade.getUserFacadeByDomain
-    #     def wrapped_get_userFacade(domain):
-    #         self._touch(domain)
-    #         return orig_uf(domain)
-    #     self.allWebsitesUserFacade.getUserFacadeByDomain = wrapped_get_userFacade
 
 
     @classmethod
@@ -124,15 +82,24 @@ class LabSystemController:
         time.sleep(10)
 
 
-    def login(self, domain, userId, email):
+    def login(self, domain, google_token):
         """
-        Login user into a specific website by email (should be via google in the future)
-        If the given email is not associated with a member, an email is sent to all managers in order to approve\reject
+        Login user into a specific website by google_token.
+        If the given email is not associated with a member, an email is sent to all managers in order to approve or reject
         the registration request
         """
-        # self.allWebsitesUserFacade.error_if_domain_not_exist(domain)
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(userId)
+        if google_token:
+            try:
+                # Verify the token
+                idinfo = id_token.verify_oauth2_token(google_token, requests.Request(), GOOGLE_CLIENT_ID, clock_skew_in_seconds=2)
+                email = idinfo['email']
+            except Exception as e:
+                print("Token verification failed:", str(e))
+                raise Exception(f"{ExceptionsEnum.GOOGLE_VERIFICATION_FAILED.value} \n {str(e)}")
+        else:
+            raise Exception(ExceptionsEnum.GOOGLE_TOKEN_NOT_EXIST.value)
+        # userFacade.error_if_user_notExist(userId)
         member = userFacade.get_member_by_email(email)
         if member is None:
             alumni = userFacade.get_alumni_by_email(email)
@@ -172,6 +139,7 @@ class LabSystemController:
         """
         Approve registration request of a specific email, by a lab manager
         """
+
         requested_email = self.mark_as_read(manager_userId, domain, notification_id)
         self.allWebsitesUserFacade.approve_registration_request(domain, manager_userId, requested_email,
                                                                 requested_full_name, requested_degree)
