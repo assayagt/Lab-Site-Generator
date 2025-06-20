@@ -44,3 +44,4 @@ class ExceptionsEnum(Enum):
     GALLERY_NOT_FOUND = "Gallery not found"
     PERMISSIONS_OF_SITE_CREATOR_CANNOT_BE_REMOVED = "The permissions of the site creator cannot be removed"
     INVALID_PHONE_NUMBER = "Invalid phone number provided"
+    PUBLICATION_NOT_FOUND = "Publication not found"
