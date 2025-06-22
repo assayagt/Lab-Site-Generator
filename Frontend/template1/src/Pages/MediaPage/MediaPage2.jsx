@@ -7,7 +7,6 @@ const MediaPage = () => {
   const [images, setImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null); // NEW: For modal
 
-  
   useEffect(() => {
     const loadGallery = async () => {
       const domain = sessionStorage.getItem("domain");
@@ -32,7 +31,7 @@ const MediaPage = () => {
 
   return (
     <div className="gallery-page">
-      <h2 className="gallery_title">Media Gallery</h2>
+      <h2 className="gallery_title2">Media Gallery</h2>
 
       <div className="gallery_grid">
         {images.length ? (

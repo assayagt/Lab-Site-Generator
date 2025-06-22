@@ -2,10 +2,13 @@ import "./App.css";
 import HomePage from "./Pages/HomePage/HomePage";
 import HomePage2 from "./Pages/HomePage/HomePage2";
 import MediaPage from "./Pages/MediaPage/MediaPage";
+import MediaPage2 from "./Pages/MediaPage/MediaPage2";
 
 import React, { useEffect, useState } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import ParticipantProfile from "./Pages/ParticipantProfile/ParticipantProfile";
+import ParticipantProfile2 from "./Pages/ParticipantProfile/ParticipantProfile2";
+
 import {
   BrowserRouter as Router,
   Route,
@@ -24,6 +27,8 @@ import AccountPage from "./Pages/AccountPage/AccountPage";
 import AccountPage2 from "./Pages/AccountPage/AccountPage2";
 
 import PublicationsPage from "./Pages/PublicationsPage/PublicationsPage";
+import PublicationsPage2 from "./Pages/PublicationsPage/PublicationsPage2";
+
 //import publications from "./publications.json"
 import { AuthProvider } from "./Context/AuthContext";
 import { useWebsite } from "./Context/WebsiteContext";
@@ -157,13 +162,21 @@ function App() {
                       <HomePage2
                         about_us={websiteData.about_us}
                         photo={websiteData.home_picture}
+                        news={websiteData.news}
+                        domain={websiteData.domain}
                       />
                     )
                   }
                 />
                 <Route
                   path="/participant/:email"
-                  element={<ParticipantProfile />}
+                  element={
+                    websiteData.template === "template1" ? (
+                      <ParticipantProfile />
+                    ) : (
+                      <ParticipantProfile2 />
+                    )
+                  }
                 />
 
                 <Route
@@ -197,15 +210,32 @@ function App() {
                 <Route
                   path="/Account"
                   element={
+                    websiteData.template === "template1" && <AccountPage />
+                    // : (
+                    //   <AccountPage2 />
+                    // )
+                  }
+                />
+                <Route
+                  path="/Publications"
+                  element={
                     websiteData.template === "template1" ? (
-                      <AccountPage />
+                      <PublicationsPage />
                     ) : (
-                      <AccountPage2 />
+                      <PublicationsPage2 />
                     )
                   }
                 />
-                <Route path="/Publications" element={<PublicationsPage />} />
-                <Route path="/Media" element={<MediaPage />} />
+                <Route
+                  path="/Media"
+                  element={
+                    websiteData.template === "template1" ? (
+                      <MediaPage />
+                    ) : (
+                      <MediaPage2 />
+                    )
+                  }
+                />
               </Routes>
             </Router>
           </EditModeProvider>

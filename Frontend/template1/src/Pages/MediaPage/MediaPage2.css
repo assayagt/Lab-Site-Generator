@@ -1,4 +1,5 @@
-.gallery_title2 {
+.gallery_title {
+  background: linear-gradient(135deg, #1d1f36 0%, #6c859b 100%);
   font-family: "Oswald", sans-serif;
   font-size: 30px;
   font-weight: bold;

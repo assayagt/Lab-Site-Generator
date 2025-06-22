@@ -50,9 +50,9 @@ function AboutUs(props) {
     <div className="AboutUsComponent">
       {/* <div className="aboutUsTitle">About Us</div> */}
       {editMode ? (
-        <div className="editModeContainer">
+        <div className="editModeContainer_2">
           <textarea
-            className="aboutUsTextarea"
+            className="aboutUsTextarea_2"
             value={aboutUsText}
             onChange={handleChange}
           />
@@ -65,7 +65,7 @@ function AboutUs(props) {
           </button>
         </div>
       ) : (
-        <div className="aboutUsParagraph">{aboutUsText}</div>
+        <div className="aboutUsParagraph_2">{aboutUsText}</div>
       )}
       {popupMessage && (
         <SuccessPopup

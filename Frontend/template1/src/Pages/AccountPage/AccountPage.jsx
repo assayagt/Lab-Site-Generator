@@ -149,7 +149,7 @@ const AccountPage = () => {
           degree: data.user.degree || "",
           linkedIn: data.user.linkedin_link || "",
           fullname: data.user.fullName,
-          emailNotifications: data.user.emailNotifications !== false, // Default to true if not set
+          emailNotifications: data.user.email_notifications, // Default to true if not set
           google_scholar: data.user.scholar_link || "",
           profile_picture: data.user.profile_picture || "",
         });
@@ -606,8 +606,13 @@ const AccountPage = () => {
       }
 
       // Handle email notification preference
-      res = await setMemberEmailNotification(sid, domain, userDetails.emailNotifications);
+      res = await setMemberEmailNotification(
+        sid,
+        domain,
+        userDetails.emailNotifications
+      );
       if (res?.response === "true") {
+        console.log(res);
         isUpdated = true;
       } else {
         isUpdated = false;

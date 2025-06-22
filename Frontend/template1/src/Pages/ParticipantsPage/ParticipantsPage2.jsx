@@ -1,6 +1,7 @@
 // ParticipantsPage.jsx
 import React, { useState, useEffect } from "react";
 import "./ParticipantsPage2.css";
+import accountIcon from "../../images/account_avatar.svg";
 import {
   getAllAlumni,
   getAllLabManagers,
@@ -9,12 +10,18 @@ import {
   createNewSiteManagerFromLabWebsite,
   addAlumniFromLabWebsite,
   removeManagerPermission,
+  removeAlumniFromLabWebsite,
 } from "../../services/websiteService";
 import { useEditMode } from "../../Context/EditModeContext";
 import ErrorPopup from "../../Components/PopUp/ErrorPopup";
 import SuccessPopup from "../../Components/PopUp/SuccessPopup";
+import { FaLinkedin, FaEnvelope, FaExternalLinkAlt } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { useWebsite } from "../../Context/WebsiteContext";
 
 const ParticipantsPage = () => {
+  const { websiteData, setWebsite } = useWebsite();
+  const navigate = useNavigate();
   const [selectedDegree, setSelectedDegree] = useState("All");
   const [participants, setParticipants] = useState([]);
   const [alumni, setAlumni] = useState([]);
@@ -32,19 +39,19 @@ const ParticipantsPage = () => {
   });
 
   const degreeOrder = {
-    "Faculty Member": 1,
-    "Ph.D.": 2,
-    "D.Sc.": 3,
-    "M.Sc.": 4,
-    "B.Sc.": 5,
+    "Ph.D.": 1,
+    "M.Sc.": 2,
+    "B.Sc.": 3,
+    "Research Assistant": 4,
+    "Faculty Member": 5,
   };
 
   const staticDegreeOptions = [
-    "Faculty Member",
     "Ph.D.",
-    "D.Sc.",
     "M.Sc.",
     "B.Sc.",
+    "Research Assistant",
+    "Faculty Member",
     "Alumni",
   ];
 
@@ -103,7 +110,8 @@ const ParticipantsPage = () => {
 
   const editModeOption = (member) => {
     return (
-      editMode && (
+      editMode &&
+      !member.is_creator && (
         <div className="member-card__edit-options">
           <label className="edit-option">
             <input
@@ -197,16 +205,25 @@ const ParticipantsPage = () => {
           setErrorMessage("Failed to promote to alumni: " + response?.message);
         }
       } else {
-        // Handle case to demote from alumni if needed
+        const response = await removeAlumniFromLabWebsite(
+          sessionStorage.getItem("sid"),
+          member.email,
+          sessionStorage.getItem("domain")
+        );
+
+        if (response?.response === "true") {
+          setAlumni((prev) => prev.filter((p) => p.email !== member.email)); // Remove from alumni
+
+          setParticipants((prev) => [
+            ...prev,
+            { ...member, isAlumni: false }, // Add back to participants
+          ]);
+        }
       }
     } catch (err) {
-      setErrorMessage("Error toggling alumni: " + err);
+      setErrorMessage("Error toggling alumni:", err);
     }
   };
-
-  const sortedDegrees = Object.keys(groupedParticipants).sort(
-    (a, b) => (degreeOrder[a] || 999) - (degreeOrder[b] || 999)
-  );
 
   const filteredParticipants =
     selectedDegree === "All"
@@ -223,13 +240,19 @@ const ParticipantsPage = () => {
     }));
   };
 
+  const NavigateProfile = (email) => {
+    if (websiteData.components.includes("Page for Participant")) {
+      navigate(`/participant/${encodeURIComponent(email)}`);
+    }
+  };
+
   const handleAddParticipant = async () => {
     const { fullName, email, degree, isManager, isAlumni } = newParticipant;
     const userId = sessionStorage.getItem("sid");
     const domain = sessionStorage.getItem("domain");
 
     if (!fullName || !email || !degree) {
-      setErrorMessage("Please fill in all required fields.");
+      setErrorMessage("Please fill in all fields.");
       return;
     }
 
@@ -248,9 +271,7 @@ const ParticipantsPage = () => {
         );
         return;
       } else {
-        setPopupMessage(
-          "Member added successfully! It may take a moment for changes to appear."
-        );
+        setPopupMessage("Participant added successfully! ");
       }
 
       if (isManager) {
@@ -289,7 +310,7 @@ const ParticipantsPage = () => {
       setShowAddForm(false);
       fetchParticipants(); // Refresh full list from backend
     } catch (error) {
-      setErrorMessage("Error adding participant: " + error);
+      setErrorMessage("Error adding participant:" + error);
     }
   };
 
@@ -358,15 +379,38 @@ const ParticipantsPage = () => {
 
               {members.length === 0 ? (
                 <div className="degree-section__empty">
-                  No members found in this category.
+                  No participants found for this category.
                 </div>
               ) : (
                 <div className="member-grid">
                   {members.map((member) => (
                     <div key={member.email} className="member-card">
-                      <div className="member-card__photo"></div>
+                      <div className="member-card__photo">
+                        <img
+                          src={
+                            member.profile_picture
+                              ? member.profile_picture
+                              : accountIcon
+                          }
+                          alt="User"
+                          className="member-photo-img"
+                        />
+                      </div>
                       <div className="member-card__content">
-                        <h3 className="member-card__name">{member.fullName}</h3>
+                        <div className="member-card__header">
+                          <h3 className="member-card__name">
+                            {member.fullName}
+                          </h3>
+                          {websiteData.components.includes(
+                            "Page for Participant"
+                          ) && (
+                            <FaExternalLinkAlt
+                              className="profile-link-icon_2"
+                              onClick={() => NavigateProfile(member.email)}
+                              title="View Profile"
+                            />
+                          )}
+                        </div>
 
                         <div className="member-card__bio">
                           {member.bio ||
@@ -378,20 +422,7 @@ const ParticipantsPage = () => {
                             href={`mailto:${member.email}`}
                             className="member-card__email"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                              <polyline points="22,6 12,13 2,6"></polyline>
-                            </svg>
+                            <FaEnvelope />
                             <span>{member.email}</span>
                           </a>
 
@@ -402,21 +433,7 @@ const ParticipantsPage = () => {
                               rel="noopener noreferrer"
                               className="member-card__linkedin"
                             >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="16"
-                                height="16"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              >
-                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                                <rect x="2" y="9" width="4" height="12"></rect>
-                                <circle cx="4" cy="4" r="2"></circle>
-                              </svg>
+                              <FaLinkedin />
                               <span>LinkedIn</span>
                             </a>
                           )}
@@ -431,58 +448,80 @@ const ParticipantsPage = () => {
             </div>
           ))}
 
-          {selectedDegree === "All" && alumni.length > 0 && (
-            <div className="degree-section">
-              <h2 className="degree-section__title">Alumni</h2>
-              <div className="member-grid">
-                {alumni.map((member) => (
-                  <div
-                    key={member.email}
-                    className="member-card member-card--alumni"
-                  >
-                    <div className="member-card__photo"></div>
-                    <div className="member-card__content">
-                      <h3 className="member-card__name">
-                        {member.fullName}
-                        <span className="member-card__degree">
-                          {member.degree}
-                        </span>
-                      </h3>
-
-                      <div className="member-card__bio">
-                        {member.bio || "Alumni information will appear here."}
+          {/* Show Alumni section when "All" is selected or when Alumni is specifically selected */}
+          {(selectedDegree === "All" || selectedDegree === "Alumni") &&
+            alumni.length > 0 && (
+              <div className="degree-section">
+                <h2 className="degree-section__title">Alumni</h2>
+                <div className="member-grid">
+                  {alumni.map((member) => (
+                    <div
+                      key={member.email}
+                      className="member-card member-card--alumni"
+                    >
+                      <div className="member-card__photo">
+                        <img
+                          src={
+                            member.profile_picture
+                              ? member.profile_picture
+                              : accountIcon
+                          }
+                          alt="User"
+                          className="member-photo-img"
+                        />
                       </div>
+                      <div className="member-card__content">
+                        <div className="member-card__header">
+                          <h3 className="member-card__name">
+                            {member.fullName}
+                            <span className="member-card__degree">
+                              [{member.degree}]
+                            </span>
+                          </h3>
+                          {websiteData.components.includes(
+                            "Page for Participant"
+                          ) && (
+                            <FaExternalLinkAlt
+                              className="profile-link-icon"
+                              onClick={() => NavigateProfile(member.email)}
+                              title="View Profile"
+                            />
+                          )}
+                        </div>
 
-                      <div className="member-card__contact">
-                        <a
-                          href={`mailto:${member.email}`}
-                          className="member-card__email"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
+                        <div className="member-card__bio">
+                          {member.bio || "Alumni information will appear here."}
+                        </div>
+
+                        <div className="member-card__contact">
+                          <a
+                            href={`mailto:${member.email}`}
+                            className="member-card__email"
                           >
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                            <polyline points="22,6 12,13 2,6"></polyline>
-                          </svg>
-                          <span>{member.email}</span>
-                        </a>
-                      </div>
+                            <FaEnvelope />
+                            <span>{member.email}</span>
+                          </a>
 
-                      {editModeOption(member)}
+                          {member.linkedin_link && (
+                            <a
+                              href={member.linkedin_link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="member-card__linkedin"
+                            >
+                              <FaLinkedin />
+                              <span>LinkedIn</span>
+                            </a>
+                          )}
+                        </div>
+
+                        {editModeOption(member)}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
       </div>
 
@@ -497,7 +536,7 @@ const ParticipantsPage = () => {
               ×
             </button>
 
-            <h2 className="modal__title">Add New Lab Member</h2>
+            <h2 className="modal__title">Add New Participant</h2>
 
             <div className="modal__form">
               <div className="form-field">
@@ -554,6 +593,30 @@ const ParticipantsPage = () => {
                     ))}
                 </select>
               </div>
+
+              <div className="form-field form-field--checkbox">
+                <label className="checkbox">
+                  <input
+                    type="checkbox"
+                    name="isManager"
+                    checked={newParticipant.isManager}
+                    onChange={handleInputChangeParticipant}
+                  />
+                  <span>Manager</span>
+                </label>
+              </div>
+
+              <div className="form-field form-field--checkbox">
+                <label className="checkbox">
+                  <input
+                    type="checkbox"
+                    name="isAlumni"
+                    checked={newParticipant.isAlumni}
+                    onChange={handleInputChangeParticipant}
+                  />
+                  <span>Alumni</span>
+                </label>
+              </div>
             </div>
 
             <div className="modal__actions">
@@ -567,7 +630,7 @@ const ParticipantsPage = () => {
                 className="button button--primary"
                 onClick={handleAddParticipant}
               >
-                Add Member
+                Add Participant
               </button>
             </div>
           </div>
