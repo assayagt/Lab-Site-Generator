@@ -32,14 +32,16 @@ function HomePage(props) {
       <div className="main_section_homePage_entire">
         <div
           className={`main_section_homePage ${
-            props.about_us ? "hasAboutUs" : "noAboutUs"
+            props.about_us ? "hasAboutUs" : "hasAboutUs"
           }`}
         >
-          {props.about_us && (
+          {
             <div className="section_news">
-              <div className="aboutUsContainer">
-                <AboutUs info={props.about_us} />
-              </div>
+              {(props.about_us || editMode) && (
+                <div className="aboutUsContainer">
+                  <AboutUs info={props.about_us} />
+                </div>
+              )}
               {props.news && (
                 <div className="newsWrapper">
                   <h2 className="timeline-title">News</h2>
@@ -48,7 +50,7 @@ function HomePage(props) {
                 </div>
               )}
             </div>
-          )}
+          }
 
           <img src={props.photo} className="homeImg" alt="home_page_photo" />
         </div>

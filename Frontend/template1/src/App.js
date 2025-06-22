@@ -193,7 +193,7 @@ function App() {
                   path="/ContactUs"
                   element={
                     websiteData.template === "template1" ? (
-                      <ContactUsPage2
+                      <ContactUsPage
                         address="Ben Gurion University of the Negev"
                         email="roni@bgu.ac.il"
                         phone="+972 523456789"

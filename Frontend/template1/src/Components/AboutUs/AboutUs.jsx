@@ -57,7 +57,7 @@ function AboutUs(props) {
             onChange={handleChange}
           />
           <button
-            className="saveButton"
+            className="saveButton_1"
             onClick={handleSave}
             disabled={!hasUnsavedChanges}
           >

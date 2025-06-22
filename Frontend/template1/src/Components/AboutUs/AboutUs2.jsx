@@ -50,7 +50,7 @@ function AboutUs(props) {
     <div className="AboutUsComponent">
       {/* <div className="aboutUsTitle">About Us</div> */}
       {editMode ? (
-        <div className="editModeContainer">
+        <div className="editModeContainer_2">
           <textarea
             className="aboutUsTextarea_2"
             value={aboutUsText}
