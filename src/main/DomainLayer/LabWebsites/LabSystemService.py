@@ -123,12 +123,20 @@ class LabSystemService:
             return Response(True, "Publications rejected successfully")
         except Exception as e:
             return Response(None, str(e))
+        
+    def remove_publication(self, user_id, domain, publicationID):
+        "Delete a publication from website"
+        try:
+            self.lab_system_controller.remove_publication_by_manager(userId=user_id, domain=domain, publicationId=publicationID)
+            return Response(True, "Publication removed successfully")
+        except Exception as e:
+            return Response(None, str(e))
 
     def add_publication_manually(self, user_id, domain, publication_link, git_link, video_link, presentation_link):
         """Add a publication manually to a lab website."""
         try:
-            self.lab_system_controller.add_publication_manually(user_id, domain, publication_link, git_link, video_link, presentation_link)
-            return Response(True, "Publication added successfully")
+            paper_id = self.lab_system_controller.add_publication_manually(user_id, domain, publication_link, git_link, video_link, presentation_link)
+            return Response(paper_id, "Publication added successfully")
         except Exception as e:
             return Response(None, str(e))
 
@@ -463,5 +471,13 @@ class LabSystemService:
         try:
             self.lab_system_controller.add_profile_picture(user_id, domain, file_path)
             return Response(True, "Profile picture added successfully")
+        except Exception as e:
+            return Response(None, str(e))
+
+    def set_member_email_notifications(self, user_id, domain, email_notifications):
+        """Set email notifications for a member."""
+        try:
+            self.lab_system_controller.set_member_email_notifications(user_id, domain, email_notifications)
+            return Response(True, "Email notifications set successfully")
         except Exception as e:
             return Response(None, str(e))

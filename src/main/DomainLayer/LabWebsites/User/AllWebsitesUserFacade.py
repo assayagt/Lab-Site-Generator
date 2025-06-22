@@ -21,7 +21,7 @@ class AllWebsitesUserFacade:
 
         self.usersFacades: dict[str, UserFacade] = {}  # key: website domain, value: userFacade
         self.dal_controller = DAL_controller()
-        # self._load_all_data()
+        # self._load_all_data() #=================== LAZY LOAD THAT
         self._initialized = True
 
     @classmethod

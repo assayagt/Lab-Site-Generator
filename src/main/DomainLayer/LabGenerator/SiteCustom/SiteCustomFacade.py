@@ -28,7 +28,7 @@ class SiteCustomFacade:
 
         self.sites = {}
         self.dal_controller = DAL_controller()
-        self._load_all_siteCustoms()
+        self._load_all_siteCustoms() #==================== LazyLoadThat
 
         self._initialized = True
 

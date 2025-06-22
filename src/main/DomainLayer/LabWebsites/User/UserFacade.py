@@ -35,7 +35,7 @@ class UserFacade:
         self.alumnis = {}
         self.emails_requests_to_register = {}
         self.dal_controller = DAL_controller()
-        self._load_data()
+        self._load_data() #=================== LAZY LOAD THAT (?)
         self._initialized = True
 
     @classmethod
@@ -545,7 +545,9 @@ class UserFacade:
                 media=dto.media,
                 user_id=None,
                 bio=dto.bio,
-                scholar_link=dto.scholar_link
+                scholar_link=dto.scholar_link,
+                profile_picture=dto.profile_picture,
+                email_notifications=dto.email_notifications
             )
     
 ##TODO: there is an error doesnt load all the fields!!!!!!
@@ -601,4 +603,21 @@ class UserFacade:
             os.remove(curr_picture)
         else:
             raise Exception(ExceptionsEnum.IMAGE_NOT_FOUND.value)
+
+    def set_email_notifications(self, user_id, email_notifications):
+        user = self.get_user_by_id(user_id)
+        if user is None:
+            raise Exception(ExceptionsEnum.USER_NOT_EXIST.value)
+        member = self.get_member_by_email(user.get_email())
+        if member is None:
+            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MEMBER.value)
+        member.set_email_notifications(email_notifications)
+        self.dal_controller.LabMembers_repo.save_LabMember(member.get_dto(self.domain))
+
+    def get_email_notifications(self, email):
+        member = self.get_member_by_email(email)
+        if member is None:
+            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MEMBER.value)
+        return member.get_email_notifications()
+
         

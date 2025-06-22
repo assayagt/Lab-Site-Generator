@@ -27,6 +27,7 @@ import {
   setScholarLinkByMember,
   initialApproveMultiplePublicationsByAuthor,
   rejectMultiplePublications,
+  setMemberEmailNotification,
 } from "../../services/websiteService";
 import {
   fetchUserNotifications,
@@ -605,14 +606,12 @@ const AccountPage = () => {
       }
 
       // Handle email notification preference
-      // You'll need to add a new API method for this
-      // For now, we'll just simulate the update
-      console.log(
-        "Email notifications preference:",
-        userDetails.emailNotifications
-      );
-      // TODO: Call API to update email notification preference
-      // res = await setEmailNotificationPreference(sid, userDetails.emailNotifications, domain);
+      res = await setMemberEmailNotification(sid, domain, userDetails.emailNotifications);
+      if (res?.response === "true") {
+        isUpdated = true;
+      } else {
+        isUpdated = false;
+      }
 
       if (isUpdated) {
         setPopupMessage("Changes saved successfully!");

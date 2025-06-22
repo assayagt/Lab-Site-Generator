@@ -354,16 +354,3 @@ class GoogleScholarWebCrawler:
         return ""
         
 
-    # def _load_scanned_pubs(self):
-    #     domain_list = self.dal_controller.publications_repo.find_all_domains_with_scannedPubs()
-    #     for domain in domain_list:
-    #         pub_list = self.dal_controller.publications_repo.find_scanned_pubs_by_domain(domain)  # → list of ScannedPublication
-    #         if domain not in self.crawled:
-    #             self.crawled[domain] = {}
-    #         domain_pubs = self.crawled[domain]
-
-    #         # Add each publication into the dict with key (title, year)
-    #         for pub in pub_list:
-    #             key = (pub.title, pub.publication_year)
-    #             domain_pubs[key] = pub
-

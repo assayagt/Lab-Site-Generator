@@ -106,7 +106,7 @@ function ContactUsPage() {
           contact_us: { email, phone: phoneNum, address },
         });
       } else {
-        setErrorMessage("An error occurred while saving.");
+        setErrorMessage(response.message);
       }
     } catch (error) {
       setErrorMessage("An error occurred while saving.");

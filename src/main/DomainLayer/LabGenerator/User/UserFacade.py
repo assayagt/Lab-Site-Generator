@@ -25,7 +25,7 @@ class UserFacade:
         self.users = {}
         self.members_customSites = {}  # sites created by user <email, <Member, [domains]>>
         self.dal_controller = DAL_controller()
-        self._load_all_members()
+        self._load_all_members() #=================== LAZY LOAD THAT
 
         self._initialized = True
 
