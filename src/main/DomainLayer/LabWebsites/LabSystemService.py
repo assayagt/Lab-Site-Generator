@@ -41,19 +41,11 @@ class LabSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator):
-        """Create a new lab website."""
-        try:
-            self.lab_system_controller.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
-            return Response(True, "Lab website created successfully")
-        except Exception as e:
-            return Response(None, str(e))
-
     def login(self, domain, google_token):
         """Log in a user to a specific lab website."""
         try:
-            self.lab_system_controller.login(domain=domain, google_token=google_token)
-            return Response(True, "Login successful")
+            email = self.lab_system_controller.login(domain=domain, google_token=google_token)
+            return Response(email, "Login successful")
         except Exception as e:
             #check if the exception is USER_NOT_REGISTERED
             if e == ExceptionsEnum.USER_NOT_REGISTERED.value:
@@ -228,35 +220,11 @@ class LabSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def get_all_lab_managers(self, domain):
-        """Get all lab managers, including the site creator."""
-        try:
-            lab_managers = self.lab_system_controller.get_all_lab_managers(domain)
-            return Response(lab_managers, "Retrieved all lab managers successfully")
-        except Exception as e:
-            return Response(None, str(e))
-
-    def get_all_lab_members(self, domain):
-        """Get all lab members."""
-        try:
-            lab_members = self.lab_system_controller.get_all_lab_members(domain)
-            return Response(lab_members, "Retrieved all lab members successfully")
-        except Exception as e:
-            return Response(None, str(e))
-
     def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain):
         """Register a new lab member."""
         try:
             self.lab_system_controller.register_new_LabMember_from_labWebsite(manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain)
             return Response(True, "Lab member registered successfully")
-        except Exception as e:
-            return Response(None, str(e))
-
-    def get_all_alumnis(self, domain):
-        """Get all alumnis."""
-        try:
-            alumnis = self.lab_system_controller.get_all_alumnis(domain)
-            return Response(alumnis, "Retrieved all alumnis successfully")
         except Exception as e:
             return Response(None, str(e))
 

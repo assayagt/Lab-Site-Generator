@@ -208,61 +208,12 @@ class DatabaseManager:
             bio TEXT,
             profile_picture TEXT,
             email_notifications INTEGER,
+            role TEXT,
             PRIMARY KEY (domain, email),
             FOREIGN KEY (domain) REFERENCES site_customs (domain) ON DELETE CASCADE
         );
         '''
         self.execute_script(LabMembers_table)
-
-        LabRoles_users_table='''
-        CREATE TABLE IF NOT EXISTS LabRoles_users(
-            domain TEXT,
-            email TEXT,
-            PRIMARY KEY (domain, email),
-            FOREIGN KEY (domain, email) REFERENCES lab_members (domain, email) ON DELETE CASCADE
-        );
-        '''
-        self.execute_script(LabRoles_users_table)
-
-        LabRoles_members_table='''
-        CREATE TABLE IF NOT EXISTS LabRoles_members(
-            domain TEXT,
-            email TEXT,
-            PRIMARY KEY (domain, email),
-            FOREIGN KEY (domain, email) REFERENCES lab_members (domain, email) ON DELETE CASCADE
-        );
-        '''
-        self.execute_script(LabRoles_members_table)
-
-        LabRoles_managers_table='''
-        CREATE TABLE IF NOT EXISTS LabRoles_managers(
-            domain TEXT,
-            email TEXT,
-            PRIMARY KEY (domain, email),
-            FOREIGN KEY (domain, email) REFERENCES lab_members (domain, email) ON DELETE CASCADE
-        );
-        '''
-        self.execute_script(LabRoles_managers_table)
-
-        LabRoles_siteCreator_table='''
-        CREATE TABLE IF NOT EXISTS LabRoles_siteCreator(
-            domain TEXT,
-            email TEXT,
-            PRIMARY KEY (domain, email),
-           FOREIGN KEY (domain, email) REFERENCES lab_members (domain, email) ON DELETE CASCADE
-        );
-        '''
-        self.execute_script(LabRoles_siteCreator_table)
-
-        LabRoles_alumnis_table='''
-        CREATE TABLE IF NOT EXISTS LabRoles_alumnis(
-            domain TEXT,
-            email TEXT,
-            PRIMARY KEY (domain, email),
-            FOREIGN KEY (domain, email) REFERENCES lab_members (domain, email) ON DELETE CASCADE
-        );
-        '''
-        self.execute_script(LabRoles_alumnis_table)
 
         emails_pending_table='''
         CREATE TABLE IF NOT EXISTS emails_pending(

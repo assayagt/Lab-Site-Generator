@@ -89,40 +89,26 @@ class LabSystemController:
         the registration request
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        if google_token:
-            try:
-                # Verify the token
-                idinfo = id_token.verify_oauth2_token(google_token, requests.Request(), GOOGLE_CLIENT_ID, clock_skew_in_seconds=2)
-                email = idinfo['email']
-            except Exception as e:
-                print("Token verification failed:", str(e))
-                raise Exception(f"{ExceptionsEnum.GOOGLE_VERIFICATION_FAILED.value} \n {str(e)}")
-        else:
-            raise Exception(ExceptionsEnum.GOOGLE_TOKEN_NOT_EXIST.value)
+        email = userFacade.get_email_from_token(google_token)
         # userFacade.error_if_user_notExist(userId)
         member = userFacade.get_member_by_email(email)
         if member is None:
-            alumni = userFacade.get_alumni_by_email(email)
-            if alumni is None:
-                # check if registration request already sent to managers:
-                userFacade.error_if_email_is_in_requests_and_wait_approval(email)
-                # error if registration request already sent to managers and rejected:
-                userFacade.error_if_email_is_in_requests_and_rejected(email)
-                # send registration request to all LabManagers:
-                self.send_registration_notification_to_all_LabManagers(domain, email) #notification here
-                # keep the email in the requests list, so next time the user will login, a registration request wont be sent again:
-                userFacade.add_email_to_requests(email)
-                raise Exception(ExceptionsEnum.USER_NOT_REGISTERED.value)
-            else:
-                userFacade.login(userId, email)
-        else:
-            userFacade.login(userId, email)
+            # check if registration request already sent to managers:
+            userFacade.error_if_email_is_in_requests_and_wait_approval(email)
+            # error if registration request already sent to managers and rejected:
+            userFacade.error_if_email_is_in_requests_and_rejected(email)
+            # send registration request to all LabManagers:
+            self.send_registration_notification_to_all_LabManagers(domain, email) #notification here
+            # keep the email in the requests list, so next time the user will login, a registration request wont be sent again:
+            userFacade.add_email_to_requests(email)
+            raise Exception(ExceptionsEnum.USER_NOT_REGISTERED.value)
+        return email
 
     def send_registration_notification_to_all_LabManagers(self, domain, requestedEmail):
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        managers = userFacade.getManagers()
-        siteCreator = userFacade.getSiteCreator()
-        recipients = {**managers, **siteCreator}
+        managers = userFacade.get_managers_emails()
+        siteCreator = userFacade.get_site_creator_emails()
+        recipients = managers + siteCreator
         print("recipients: ", recipients)
         for managerEmail in recipients:
             send_email_notification = self.get_if_email_notifications_enabled(managerEmail,
@@ -235,9 +221,8 @@ class LabSystemController:
         """
         print(publication_ids)
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
-        email = userFacade.get_email_by_userId(userId)
+        email = userFacade.get_email_from_token(userId)
         is_manager = userFacade.verify_if_member_is_manager(email=email)
         if is_manager:
             self.final_approve_multiple_publications_by_manager(userId, domain, publication_ids)
@@ -251,7 +236,7 @@ class LabSystemController:
             else:
                 raise Exception(ExceptionsEnum.PUBLICATION_ALREADY_APPROVED.value)
         if not is_manager:
-            managers_emails = managers_emails = list(userFacade.getManagers().keys())
+            managers_emails = userFacade.get_managers_emails()
             for mail in managers_emails:
                 self.notificationsFacade.send_multiple_pubs_notification_for_final_approval(mail, domain)
                         
@@ -262,13 +247,12 @@ class LabSystemController:
         the system sends a notification to lab managers requesting final approval.
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
-        email = userFacade.get_email_by_userId(userId)
+        email = userFacade.get_email_from_token(userId)
         publication_id = self.mark_as_read(userId, domain, notification_id)
         self.websiteFacade.error_if_member_is_not_publication_author(domain, publication_id, email)
         if not self.websiteFacade.check_if_publication_approved(domain, publication_id):
-            managers_emails = list(userFacade.getManagers().keys())
+            managers_emails = userFacade.get_managers_emails()
             # check if userId is manager. if he is not, do the following rows
             if not userFacade.verify_if_member_is_manager(email):
                 self.websiteFacade.initial_approve_publication(domain, publication_id)
@@ -288,9 +272,8 @@ class LabSystemController:
         Approve a publication by a lab manager in the final review stage.
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
-        userFacade.error_if_user_is_not_manager(userId)
+        userFacade.error_if_user_is_not_manager_or_site_creator(userId)
         publication_id = self.mark_as_read(userId, domain, notification_id)
         pub_dto = self.websiteFacade.get_publication_by_paper_id(domain, publication_id)
         future = self.webCrawlerFacade.fill_async([pub_dto])
@@ -312,9 +295,8 @@ class LabSystemController:
         Approve multiple publicatios at once by a lab manager in the final review stage.
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
-        userFacade.error_if_user_is_not_manager(userId)
+        userFacade.error_if_user_is_not_manager_or_site_creator(userId)
 
         pub_dtos = [self.websiteFacade.get_publication_by_paper_id(domain, pubId)
                      for pubId in publicationIds]
@@ -340,9 +322,9 @@ class LabSystemController:
         Reject a publication by a lab manager in the final review stage.
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
-        userFacade.error_if_user_is_not_labMember_manager_creator(userId=userId)
+        email = userFacade.get_email_from_token(userId)
+        userFacade.error_if_user_is_not_labMember_manager_creator(email)
         publication_id = self.mark_as_read(userId, domain, notification_id)
         self.websiteFacade.reject_publication(domain, publication_id)
 
@@ -351,9 +333,9 @@ class LabSystemController:
         Reject multiple publications by a lab manager in the final review stage.
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(userId=userId)
         userFacade.error_if_user_not_logged_in(userId=userId)
-        userFacade.error_if_user_is_not_labMember_manager_creator(userId=userId)
+        email = userFacade.get_email_from_token(userId)
+        userFacade.error_if_user_is_not_labMember_manager_creator(email)
         for pubId in publicationIds:
             self.websiteFacade.reject_publication(domain, pubId)
 
@@ -362,12 +344,12 @@ class LabSystemController:
         Delete publication by lab manager
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(userId=userId)
         userFacade.error_if_user_not_logged_in(userId=userId)
-        userFacade.error_if_user_is_not_labMember_manager_creator(userId=userId)
+        email = userFacade.get_email_from_token(userId)
+        userFacade.error_if_user_is_not_labMember_manager_creator(email)
         self.websiteFacade.error_if_publication_is_rejected(domain=domain, publication_id=publicationId)
         
-        email = userFacade.get_email_by_userId(userId=userId)
+        email = userFacade.get_email_from_token(userId)
         rejecting_name = userFacade.get_fullName_by_email(email)
         pub = self.websiteFacade.get_publication_by_paper_id(domain=domain, paper_id=publicationId)
         authors = pub.author_emails
@@ -379,7 +361,6 @@ class LabSystemController:
         """A Lab Member updates the website with new research publications"""
         self.allWebsitesUserFacade.error_if_domain_not_exist(domain)
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(user_id)
         userFacade.error_if_user_not_logged_in(user_id)
         userFacade.error_if_user_is_not_labMember_manager_creator(user_id)
 
@@ -400,9 +381,9 @@ class LabSystemController:
             domain, publication_link, publication_details, git_link, video_link, presentation_link, authors_emails
         )
 
-        email = userFacade.get_email_by_userId(user_id)
+        email = userFacade.get_email_from_token(user_id)
         if not userFacade.verify_if_member_is_manager(email):
-            managers_emails = list(userFacade.getManagers().keys())
+            managers_emails = userFacade.get_managers_emails()
             for manager_email in managers_emails:
                 publicationDTO = self.websiteFacade.get_publication_by_paper_id(domain, publication_id)
                 #TODO: Add email notification
@@ -433,9 +414,8 @@ class LabSystemController:
         (in order to display them on his personal profile on the website)
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(user_id)
         userFacade.error_if_user_not_logged_in(user_id)
-        email = userFacade.get_email_by_userId(user_id)
+        email = userFacade.get_email_from_token(user_id)
         return self.websiteFacade.get_all_approved_publications_of_member(domain, email)
     
     def get_all_not_approved_publications_of_member(self, domain, user_id):
@@ -444,9 +424,8 @@ class LabSystemController:
         (in order to display them on his personal profile on the website)
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(user_id)
         userFacade.error_if_user_not_logged_in(user_id)
-        email = userFacade.get_email_by_userId(user_id)
+        email = userFacade.get_email_from_token(user_id)
         return self.websiteFacade.get_all_not_approved_publications_of_member(domain, email)
 
     def define_member_as_alumni_from_generator(self, member_email, domain):
@@ -479,16 +458,6 @@ class LabSystemController:
     def remove_alumni_from_generator(self, alumni_email, domain):
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.remove_alumni(alumni_email)
-
-    def get_all_alumnis(self, domain):
-        return self.allWebsitesUserFacade.get_all_alumnis(domain)
-
-    def get_all_lab_members(self, domain):
-        return self.allWebsitesUserFacade.get_all_lab_members(domain)
-
-    def get_all_lab_managers(self, domain):
-        """notice! this function returns all managers including site creator!"""
-        return self.allWebsitesUserFacade.get_all_lab_managers(domain)
 
     def set_secondEmail_by_member(self, userid, secondEmail, domain):
         self.allWebsitesUserFacade.set_secondEmail_by_member(userid, secondEmail, domain)
@@ -535,9 +504,8 @@ class LabSystemController:
         - Lab managers can add video links directly without approval.
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
-        email = userFacade.get_email_by_userId(userId)
+        email = userFacade.get_email_from_token(userId)
         if userFacade.verify_if_member_is_manager(email):
             self.websiteFacade.set_publication_video_link(domain, publication_id, self.get_preview_url(video_link))
         else:
@@ -551,9 +519,8 @@ class LabSystemController:
         - Lab managers can add git links directly without approval.
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
-        email = userFacade.get_email_by_userId(userId)
+        email = userFacade.get_email_from_token(userId)
         if userFacade.verify_if_member_is_manager(email):
             self.websiteFacade.set_publication_git_link(domain, publication_id, git_link)
         else:
@@ -567,9 +534,8 @@ class LabSystemController:
         - Lab managers can add presentation links directly without approval.
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
-        email = userFacade.get_email_by_userId(userId)
+        email = userFacade.get_email_from_token(userId)
         if userFacade.verify_if_member_is_manager(email):
             self.websiteFacade.set_publication_presentation_link(domain, publication_id, presentation_link)
         else:
@@ -585,7 +551,6 @@ class LabSystemController:
 
     def get_pending_registration_emails(self, userid, domain):
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(userid)
         userFacade.error_if_user_not_logged_in(userid)
         return self.allWebsitesUserFacade.get_pending_registration_emails(domain)
 
@@ -600,7 +565,6 @@ class LabSystemController:
         Set the about us section of the website.
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
         userFacade.error_if_user_is_not_manager_or_site_creator(userId)
         self.websiteFacade.set_site_about_us(domain, about_us)
@@ -619,7 +583,6 @@ class LabSystemController:
         if not re.match(r"^\+?[0-9\s\-()]+$", contact_info_dto.lab_phone_num):
             raise Exception(ExceptionsEnum.INVALID_PHONE_NUMBER.value)
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
         userFacade.error_if_user_is_not_manager_or_site_creator(userId)
         self.websiteFacade.set_site_contact_info(domain, contact_info_dto)
@@ -674,9 +637,8 @@ class LabSystemController:
         Get all notifications of a specific user.
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
-        email = userFacade.get_email_by_userId(userId)
+        email = userFacade.get_email_from_token(userId)
         return self.notificationsFacade.get_notifications_for_user(domain, email)
 
     def mark_as_read(self, userId, domain, notification_id):
@@ -684,9 +646,8 @@ class LabSystemController:
         Mark notification as read, and return the email/ publication id of the notification.
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
-        email = userFacade.get_email_by_userId(userId)
+        email = userFacade.get_email_from_token(userId)
         return self.notificationsFacade.mark_notification_as_read(domain, email, notification_id)
 
     def connect_user_socket(self, email, domain, sid):
@@ -700,14 +661,6 @@ class LabSystemController:
         Disconnect a user socket from the system.
         """
         self.notificationsFacade.disconnect_user_socket(sid)
-    
-    def delete_website(self, domain):
-        """
-        Delete a website.
-        """
-        self.websiteFacade.remove_website_data(domain) # Ask Tomer about deleting publications from websites
-        self.notificationsFacade.remove_website_data(domain)
-        self.allWebsitesUserFacade.remove_website_data(domain)
 
     def reset_system(self):
         """
@@ -766,9 +719,8 @@ class LabSystemController:
 
     def crawl_publications_for_labMember(self, website_domain, userId, with_notifications=True):
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(website_domain)
-        userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
-        email = userFacade.get_email_by_userId(userId)
+        email = userFacade.get_email_from_token(userId)
         website = self.websiteFacade.get_website(website_domain)
         scholar_link = self.allWebsitesUserFacade.get_scholar_link_by_email(domain=website_domain, email=email)
         if not scholar_link:
@@ -803,7 +755,6 @@ class LabSystemController:
         Add a news record to the website.
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(user_id)
         userFacade.error_if_user_not_logged_in(user_id)
         self.websiteFacade.add_news_record(domain, text, link, date)
 
@@ -818,7 +769,6 @@ class LabSystemController:
         Add a profile picture for a user.
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(user_id)
         userFacade.error_if_user_not_logged_in(user_id)
         userFacade.add_profile_picture(user_id, file_path)
 
@@ -827,7 +777,6 @@ class LabSystemController:
         Set email notifications preference for a user.
         """
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
-        userFacade.error_if_user_notExist(user_id)
         userFacade.error_if_user_not_logged_in(user_id)
         userFacade.set_email_notifications(user_id, email_notifications)
 

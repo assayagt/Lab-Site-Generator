@@ -829,25 +829,13 @@ class LoginWebsite(Resource):
         google_token = data.get('google_token')
 
         try:
-            if google_token:
-                try:
-                    # Verify the token
-                    idinfo = id_token.verify_oauth2_token(google_token, requests.Request(), GOOGLE_CLIENT_ID, clock_skew_in_seconds=2)
-                    
-                    # Check if the email from token matches the provided email
-                    email = idinfo['email']
-                except ValueError as e:
-                    print("Token verification failed:", str(e))
-                    return jsonify({"error": "Invalid Google token", "response": "false"})
             response = lab_system_service.login(domain=domain, google_token=google_token)
             if response.is_success():
-                if response.get_data():
-                    return jsonify({"message": response.get_message(), "response": "true", "email": email, "user_id": google_token})
-                else:
-                    #notify_registration(email, domain)
-                    return jsonify({"message": response.get_message(), "response": "false"})
-            #notify_registration(email, domain)
-            return jsonify({"message": response.get_message(), "response": "false"})
+                email = response.get_data()
+                return jsonify({"message": response.get_message(), "response": "true", "email": email, "user_id": google_token})
+            else:
+                #notify_registration(email, domain)
+                return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
         
