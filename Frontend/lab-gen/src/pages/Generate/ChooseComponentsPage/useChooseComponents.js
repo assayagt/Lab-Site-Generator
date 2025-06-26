@@ -5,7 +5,6 @@ import { useWebsite } from "../../../Context/WebsiteContext";
 import {
   createCustomSite,
   changeComponents,
-  changeDomain,
   removeAlumni,
   changeName,
   getAllAlumni,
@@ -20,7 +19,6 @@ import {
   saveHomePicture,
   addAlumni,
   changeTemplate,
-  generate,
   deleteGalleryImage,
 } from "../../../services/Generator";
 
@@ -221,7 +219,6 @@ const useChooseComponents = () => {
           email,
           websiteData.domain
         );
-        console.log(email);
         if (data.response === "true") {
           participant.isLabManager = !isLabManager;
           setParticipants(updatedParticipants);
@@ -258,7 +255,6 @@ const useChooseComponents = () => {
           email,
           websiteData.domain
         );
-        console.log(email);
         if (data.response === "true") {
           participant.alumni = !islumi;
           setParticipants(updatedParticipants);
@@ -605,11 +601,8 @@ const useChooseComponents = () => {
   // };
   const refreshGalleryData = async () => {
     try {
-      console.log("Calling refreshGalleryData with domain:", domain);
       const response = await fetch(`${baseApiUrl}getGallery?domain=${domain}`);
       const data = await response.json();
-
-      console.log("Raw data received:", data);
 
       if (data.response === "true") {
         if (!data.images || data.images.length === 0) {
@@ -620,8 +613,6 @@ const useChooseComponents = () => {
         const newGalleryData = {
           gallery: data.images || [],
         };
-
-        console.log("Updating gallery with:", newGalleryData);
 
         setWebsite((prev) => ({
           ...prev,
@@ -811,10 +802,6 @@ const useChooseComponents = () => {
 
     setIsLoading(true); // Show loading popup
     try {
-      console.log(websiteData.domain);
-      console.log(domain);
-      console.log(participants);
-      console.log(googleLink);
       const response = await axios.post(
         `${baseApiUrl}generateWebsite`,
         {
@@ -838,7 +825,6 @@ const useChooseComponents = () => {
       );
 
       const data = response.data;
-      console.log("Response Data:", data);
 
       if (data.response === "true") {
         sessionStorage.removeItem("AboutUs");
@@ -914,14 +900,10 @@ const useChooseComponents = () => {
     setTempSaved(false);
   };
   const handleSveTemplate = async () => {
-    console.log(template);
-
     let data = await changeTemplate(domain, template);
-    console.log(data);
     if (data.response === "true") {
       setIsChanged(true);
       setTempSaved(true);
-      console.log(template);
     } else {
       showError("Couldn't change template");
     }

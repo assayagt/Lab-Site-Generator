@@ -141,7 +141,6 @@ const AccountPage = () => {
         sessionStorage.getItem("sid")
       );
       if (data) {
-        console.log(data);
         setUserDetails({
           bio: data.user.bio || "",
           email: data.user.email || "",
@@ -159,7 +158,6 @@ const AccountPage = () => {
     const fetchPublications = async () => {
       const domain = sessionStorage.getItem("domain");
       const data = await getMemberPublications(domain);
-      console.log("Fetched Publications:", data); // Debugging log
       setPublications(data || []);
     };
 
@@ -171,7 +169,6 @@ const AccountPage = () => {
         sessionStorage.getItem("sid")
       );
 
-      console.log("Fetched Crawled Publications:", data);
       setCrawledPublications(data);
     };
 
@@ -253,7 +250,6 @@ const AccountPage = () => {
         selectedFile,
         sessionStorage.getItem("domain")
       );
-      console.log(response);
     } catch (error) {
       setErrorMessage("Error uploading photo.");
     }
@@ -494,10 +490,8 @@ const AccountPage = () => {
           publication.git_link
         );
         if (githubResponse.response === "true") {
-          console.log(githubResponse);
           isUpdated = true;
         } else {
-          console.log(githubResponse);
           isUpdated = false;
         }
       }
@@ -612,7 +606,6 @@ const AccountPage = () => {
         userDetails.emailNotifications
       );
       if (res?.response === "true") {
-        console.log(res);
         isUpdated = true;
       } else {
         isUpdated = false;
@@ -623,7 +616,6 @@ const AccountPage = () => {
         setSaveButtonText("Saved");
         setHasUnsavedChanges(false);
       } else {
-        console.log(res);
         setErrorMessage("Error: " + res?.message);
       }
     } catch (error) {

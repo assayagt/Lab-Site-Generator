@@ -13,7 +13,6 @@ const MediaPage = () => {
       if (!domain) return;
 
       const data = await fetchGalleryImages(domain);
-      console.log(data);
       if (Array.isArray(data)) {
         const images = data.map((item, index) => ({
           id: index,
