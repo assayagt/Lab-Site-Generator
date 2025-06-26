@@ -63,7 +63,6 @@ function App() {
       let domain = window.location.hostname;
       domain = domain.replace(/^https?:\/\//, "");
       domain = domain.replace(":3001", "");
-      console.log(domain);
       // Add "www." if missing
       if (!domain.startsWith("www.")) {
         domain = `www.${domain}`;
@@ -73,7 +72,6 @@ function App() {
       if (!domain.endsWith(".com")) {
         domain = `${domain}.com`;
       }
-      console.log(domain);
       sessionStorage.setItem("domain", domain);
       try {
         const data = await getHomepageDetails(domain);
@@ -89,7 +87,6 @@ function App() {
         //     home_picture: data.data.home_picture,
         //     about_us: data.data.about_us,
         //   };
-        console.log(data);
         if (data.response === "true") {
           const mappedData = {
             domain: data.data.domain,
@@ -103,9 +100,7 @@ function App() {
               : "",
             news: data.data.components.includes("News") ? data.data.news : "",
           };
-          console.log(mappedData);
           setWebsite(mappedData);
-          console.log(sessionStorage.getItem("domain"));
           // sessionStorage.setItem("domain", mappedData.domain);
         }
         // await fetchToken();

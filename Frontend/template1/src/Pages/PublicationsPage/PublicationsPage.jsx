@@ -169,7 +169,6 @@ const PublicationPage = () => {
       const sid = sessionStorage.getItem("sid");
       const domain = sessionStorage.getItem("domain");
       const updatedLinks = editedLinks[paperId];
-      console.log(updatedLinks);
 
       if (!updatedLinks) return;
 
@@ -215,7 +214,6 @@ const PublicationPage = () => {
       } else {
         if (!success) {
           if (updatedLinks?.git_link === "") {
-            console.log("j");
             setErrorMessage("Can not save empty filed for GitHub link");
           }
           if (updatedLinks?.presentation_link === "") {
