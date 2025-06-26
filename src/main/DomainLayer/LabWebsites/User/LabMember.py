@@ -12,7 +12,7 @@ class Degree(Enum):
     POSTDOC = "Postdoctoral"
 
 class LabMember(State):
-    def __init__(self, email, fullName, degree, secondEmail=None, linkedin_link=None, media=None, user_id=None, bio=None, scholar_link=None, profile_picture=None, email_notifications=None):
+    def __init__(self, email, fullName, degree, secondEmail=None, linkedin_link=None, media=None, user_id=None, bio=None, scholar_link=None, profile_picture=None, email_notifications=None, role=None):
         self.email = email
         self.secondEmail = secondEmail
         self.linkedin_link = linkedin_link
@@ -25,6 +25,7 @@ class LabMember(State):
         self.profile_picture = profile_picture
         #True if none else email_notifications
         self.email_notifications = email_notifications if email_notifications is not None else True
+        self.role = role
 
     def logout(self):
         # Do nothing
@@ -99,6 +100,12 @@ class LabMember(State):
     def get_email_notifications(self):
         return self.email_notifications
 
+    def set_role(self, role):
+        self.role = role
+    
+    def get_role(self):
+        return self.role
+
     #TODO: fix this method so support scholar link as well. I DID ITTTT
     def get_details(self):
         return {"email": self.email,
@@ -110,7 +117,8 @@ class LabMember(State):
                 "bio": self.bio,
                 "scholar_link": self.scholar_link,
                 "profile_picture": self.get_encoded_profile_picture(),
-                "email_notifications": self.email_notifications}
+                "email_notifications": self.email_notifications,
+                "role": self.role}
 
     def get_dto(self, domain) -> lab_member_dto:
         return lab_member_dto(
@@ -124,7 +132,8 @@ class LabMember(State):
             degree=self.degree,
             bio=self.bio,
             profile_picture=self.profile_picture,
-            email_notifications=self.email_notifications
+            email_notifications=self.email_notifications,
+            role=self.role.value if self.role else None
         )
 
     def get_encoded_profile_picture(self):
