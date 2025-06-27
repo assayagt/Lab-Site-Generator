@@ -1,0 +1,186 @@
+.HomePage {
+  display: flex;
+  flex-direction: column;
+  color: #090c10;
+  padding: 40px;
+  min-height: 100vh;
+}
+
+/* Welcome Title */
+.subTitle {
+  font-size: 32px;
+  font-weight: 500;
+  color: #090c10;
+  letter-spacing: 1px;
+  margin-bottom: 30px;
+  font-family: "Oswald", sans-serif;
+}
+
+/* Main Section Layout */
+.main_section_homePage {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* default: left-aligned */
+  gap: 40px;
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
+  max-width: 1200px;
+  transition: all 0.3s ease-in-out;
+}
+
+/* If both About Us and Image exist - Side by Side */
+.main_section_homePage.hasAboutUs {
+  display: grid;
+  grid-template-columns: 1.5fr 2.2fr;
+  align-items: start;
+  gap: 30px;
+}
+
+/* About Us Styling */
+.aboutUsContainer {
+  border-radius: 10px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #090c10;
+  transition: transform 0.3s ease-in-out;
+}
+
+.aboutUsContainer:hover {
+  transform: translateY(-3px);
+}
+
+/* Image Styling */
+.homeImg {
+  margin-top: 20px;
+  border-radius: 15px;
+  width: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.homeImg:hover {
+  transform: scale(1.02);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* When there's no About Us, image takes full width */
+.main_section_homePage.noAboutUs .homeImg {
+  width: 100%;
+}
+
+/* Tablets (max-width: 768px) */
+@media (max-width: 768px) {
+  .main_section_homePage.hasAboutUs {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* left-aligned on tablet */
+    gap: 20px;
+  }
+
+  .aboutUsContainer {
+    text-align: left; /* remove center for consistency */
+  }
+
+  .subTitle {
+    font-size: 28px;
+    margin-bottom: 25px;
+  }
+}
+
+/* Phones (max-width: 480px) */
+@media (max-width: 480px) {
+  .subTitle {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .main_section_homePage {
+    align-items: flex-start; /* left align on phones */
+    padding: 0 15px;
+  }
+
+  .main_section_homePage.hasAboutUs {
+    gap: 15px;
+  }
+
+  .aboutUsContainer {
+    text-align: left;
+  }
+
+  .homeImg {
+    display: none; /* hide image on small phones */
+  }
+}
+
+.home-page {
+  min-height: calc(100vh - 76px); /* Subtract header height */
+  background-color: #f8f9fa;
+}
+
+.welcome-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 500;
+  color: #212529;
+  letter-spacing: 0.5px;
+}
+
+.hover-card {
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.hover-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
+}
+
+.image-card {
+  overflow: hidden;
+  border-radius: 12px;
+  border: none;
+}
+
+.home-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  transition: transform 0.3s ease-in-out;
+}
+
+.image-card:hover .home-image {
+  transform: scale(1.02);
+}
+
+.about-us-col {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+  .welcome-title {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .about-us-col {
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .welcome-title {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .welcome-title {
+    font-size: 1.5rem;
+  }
+
+  .home-image {
+    max-height: 300px;
+  }
+}

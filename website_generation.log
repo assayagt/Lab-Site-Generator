@@ -1,0 +1,71 @@
+2025-05-07 13:15:25,783 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.20.0.36:5000
+2025-05-07 13:15:25,785 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-07 13:16:36,298 - INFO - 127.0.0.1 - - [07/May/2025 13:16:36] "GET /api/enterGeneratorSystem HTTP/1.1" 200 -
+2025-05-07 13:16:36,553 - INFO - 127.0.0.1 - - [07/May/2025 13:16:36] "GET /api/enterGeneratorSystem HTTP/1.1" 200 -
+2025-05-07 13:16:41,910 - INFO - 127.0.0.1 - - [07/May/2025 13:16:41] "OPTIONS /api/Login HTTP/1.1" 200 -
+2025-05-07 13:16:42,229 - INFO - 127.0.0.1 - - [07/May/2025 13:16:42] "POST /api/Login HTTP/1.1" 200 -
+2025-05-07 13:16:42,488 - INFO - 127.0.0.1 - - [07/May/2025 13:16:42] "GET /api/getAllLabManagers?domain= HTTP/1.1" 200 -
+2025-05-07 13:16:42,564 - INFO - 127.0.0.1 - - [07/May/2025 13:16:42] "GET /api/getAllLabMembers?domain= HTTP/1.1" 200 -
+2025-05-07 13:16:42,567 - INFO - 127.0.0.1 - - [07/May/2025 13:16:42] "GET /api/getAllAlumni?domain= HTTP/1.1" 200 -
+2025-05-07 13:16:42,568 - INFO - 127.0.0.1 - - [07/May/2025 13:16:42] "GET /api/getAllLabManagers?domain= HTTP/1.1" 200 -
+2025-05-07 13:16:42,798 - INFO - 127.0.0.1 - - [07/May/2025 13:16:42] "GET /api/getAllLabMembers?domain= HTTP/1.1" 200 -
+2025-05-07 13:16:42,874 - INFO - 127.0.0.1 - - [07/May/2025 13:16:42] "GET /api/getAllAlumni?domain= HTTP/1.1" 200 -
+2025-05-07 13:16:52,796 - INFO - 127.0.0.1 - - [07/May/2025 13:16:52] "OPTIONS /api/startCustomSite HTTP/1.1" 200 -
+2025-05-07 13:16:53,136 - INFO - 127.0.0.1 - - [07/May/2025 13:16:53] "POST /api/startCustomSite HTTP/1.1" 200 -
+2025-05-07 13:16:53,369 - INFO - 127.0.0.1 - - [07/May/2025 13:16:53] "GET /api/getAllLabManagers?domain=new1 HTTP/1.1" 200 -
+2025-05-07 13:16:53,462 - INFO - 127.0.0.1 - - [07/May/2025 13:16:53] "GET /api/getAllLabMembers?domain=new1 HTTP/1.1" 200 -
+2025-05-07 13:16:53,465 - INFO - 127.0.0.1 - - [07/May/2025 13:16:53] "GET /api/getAllAlumni?domain=new1 HTTP/1.1" 200 -
+2025-05-07 13:16:56,468 - INFO - 127.0.0.1 - - [07/May/2025 13:16:56] "OPTIONS /api/chooseComponents HTTP/1.1" 200 -
+2025-05-07 13:16:56,807 - INFO - 127.0.0.1 - - [07/May/2025 13:16:56] "POST /api/chooseComponents HTTP/1.1" 200 -
+2025-05-07 13:16:58,721 - INFO - 127.0.0.1 - - [07/May/2025 13:16:58] "OPTIONS /api/chooseTemplate HTTP/1.1" 200 -
+2025-05-07 13:16:59,056 - INFO - 127.0.0.1 - - [07/May/2025 13:16:59] "POST /api/chooseTemplate HTTP/1.1" 200 -
+2025-05-07 13:17:19,233 - INFO - 127.0.0.1 - - [07/May/2025 13:17:19] "OPTIONS /api/generateWebsite HTTP/1.1" 200 -
+2025-05-07 13:17:19,546 - INFO - Starting website generation process
+2025-05-07 13:17:19,548 - INFO - Processing website generation for domain: new1
+2025-05-07 13:17:19,548 - INFO - Processing participant information
+2025-05-07 13:17:19,549 - INFO - About to call create_new_lab_website
+2025-05-07 13:17:19,549 - INFO - Parameters: domain=new1, members=1, managers=1
+2025-05-07 13:17:19,549 - INFO - [GeneratorSystemController] Starting website creation for domain: new1
+2025-05-07 13:17:19,550 - INFO - [GeneratorSystemController] Checking if domain exists
+2025-05-07 13:17:19,550 - INFO - [GeneratorSystemController] Setting site as generated
+2025-05-07 13:17:19,557 - INFO - [GeneratorSystemController] Processing lab managers
+2025-05-07 13:17:19,558 - INFO - [GeneratorSystemController] Creating lab website
+2025-05-07 13:17:19,604 - INFO - Getting https://scholar.google.com/citations?hl=en&view_op=search_authors&mauthors=Roni%20Stern
+2025-05-07 13:17:21,876 - INFO - HTTP Request: GET https://scholar.google.com/citations?hl=en&view_op=search_authors&mauthors=Roni%20Stern "HTTP/1.1 200 OK"
+2025-05-07 13:17:22,004 - INFO - Found 1 authors
+2025-05-07 13:17:22,006 - INFO - Getting https://scholar.google.com/citations?hl=en&user=X6t18NkAAAAJ&pagesize=100
+2025-05-07 13:17:23,817 - INFO - HTTP Request: GET https://scholar.google.com/citations?hl=en&user=X6t18NkAAAAJ&pagesize=100 "HTTP/1.1 200 OK"
+2025-05-07 13:17:24,079 - INFO - Getting https://scholar.google.com/citations?hl=en&user=X6t18NkAAAAJ&cstart=100&pagesize=100
+2025-05-07 13:17:26,021 - INFO - HTTP Request: GET https://scholar.google.com/citations?hl=en&user=X6t18NkAAAAJ&cstart=100&pagesize=100 "HTTP/1.1 200 OK"
+2025-05-07 13:17:26,267 - INFO - Getting https://scholar.google.com/citations?hl=en&user=X6t18NkAAAAJ&cstart=200&pagesize=100
+2025-05-07 13:17:27,553 - INFO - HTTP Request: GET https://scholar.google.com/citations?hl=en&user=X6t18NkAAAAJ&cstart=200&pagesize=100 "HTTP/1.1 200 OK"
+2025-05-07 13:17:27,728 - INFO - Getting https://scholar.google.com/citations?hl=en&tzom=300&user=X6t18NkAAAAJ&view_op=list_mandates&pagesize=100
+2025-05-07 13:17:29,411 - INFO - HTTP Request: GET https://scholar.google.com/citations?hl=en&tzom=300&user=X6t18NkAAAAJ&view_op=list_mandates&pagesize=100 "HTTP/1.1 200 OK"
+2025-05-07 13:17:44,470 - INFO - Getting https://scholar.google.com/citations?hl=en&view_op=search_authors&mauthors=Roni%20Stern
+2025-05-07 13:17:47,060 - INFO - HTTP Request: GET https://scholar.google.com/citations?hl=en&view_op=search_authors&mauthors=Roni%20Stern "HTTP/1.1 200 OK"
+2025-05-07 13:17:47,162 - INFO - Found 1 authors
+2025-05-07 13:17:47,163 - INFO - Getting https://scholar.google.com/citations?hl=en&user=X6t18NkAAAAJ&pagesize=100
+2025-05-07 13:17:48,877 - INFO - HTTP Request: GET https://scholar.google.com/citations?hl=en&user=X6t18NkAAAAJ&pagesize=100 "HTTP/1.1 200 OK"
+2025-05-07 13:17:49,176 - INFO - Getting https://scholar.google.com/citations?hl=en&user=X6t18NkAAAAJ&cstart=100&pagesize=100
+2025-05-07 13:17:50,985 - INFO - HTTP Request: GET https://scholar.google.com/citations?hl=en&user=X6t18NkAAAAJ&cstart=100&pagesize=100 "HTTP/1.1 200 OK"
+2025-05-07 13:17:51,220 - INFO - Getting https://scholar.google.com/citations?hl=en&user=X6t18NkAAAAJ&cstart=200&pagesize=100
+2025-05-07 13:17:53,080 - INFO - HTTP Request: GET https://scholar.google.com/citations?hl=en&user=X6t18NkAAAAJ&cstart=200&pagesize=100 "HTTP/1.1 200 OK"
+2025-05-07 13:17:53,293 - INFO - Getting https://scholar.google.com/citations?hl=en&tzom=300&user=X6t18NkAAAAJ&view_op=list_mandates&pagesize=100
+2025-05-07 13:17:55,379 - INFO - HTTP Request: GET https://scholar.google.com/citations?hl=en&tzom=300&user=X6t18NkAAAAJ&view_op=list_mandates&pagesize=100 "HTTP/1.1 200 OK"
+2025-05-07 13:18:12,918 - INFO - [GeneratorSystemController] Setting site logo
+2025-05-07 13:18:12,919 - INFO - [GeneratorSystemController] Setting site home picture
+2025-05-07 13:18:12,919 - INFO - [GeneratorSystemController] Website creation completed successfully
+2025-05-07 13:18:12,919 - INFO - create_new_lab_website completed in 53.37 seconds
+2025-05-07 13:18:12,919 - INFO - Lab website created successfully
+2025-05-07 13:18:12,920 - INFO - Setting about us content
+2025-05-07 13:18:12,926 - INFO - About us content set successfully
+2025-05-07 13:18:12,926 - INFO - Setting contact information
+2025-05-07 13:18:12,930 - INFO - Contact information set successfully
+2025-05-07 13:18:12,930 - INFO - Starting template build process
+2025-05-07 13:18:12,941 - INFO - Website generation completed successfully
+2025-05-07 13:18:12,942 - INFO - 127.0.0.1 - - [07/May/2025 13:18:12] "POST /api/generateWebsite HTTP/1.1" 200 -
+2025-05-07 13:18:12,974 - INFO - 127.0.0.1 - - [07/May/2025 13:18:12] "GET /api/getCustomWebsites?user_id=b6981015-d3b6-4159-84c7-d32901651cc3 HTTP/1.1" 200 -
+2025-05-07 13:18:13,293 - INFO - 127.0.0.1 - - [07/May/2025 13:18:13] "GET /api/getCustomWebsites?user_id=b6981015-d3b6-4159-84c7-d32901651cc3 HTTP/1.1" 200 -

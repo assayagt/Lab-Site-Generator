@@ -5,9 +5,83 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="66900a22-caf0-4dab-b17d-0e6d246a619b" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Frontend/lab-gen/src/images/tamplate2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/MediaPage/MediaPage2.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/MediaPage/MediaPage2.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/ParticipantProfile/ParticipantProfile2.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/ParticipantProfile/ParticipantProfile2.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/PublicationsPage/PublicationsPage2.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/PublicationsPage/PublicationsPage2.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/Acceptancetests/LabWebsitesTests/Member/test_removePublication.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/Acceptancetests/LabWebsitesTests/SiteManager/test_removePublication.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/lab site generator.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/lab site generator.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/launch.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/launch.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/lab-gen/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/lab-gen/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/lab-gen/src/Context/AuthContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/lab-gen/src/Context/AuthContext.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/lab-gen/src/components/Header/Header.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/lab-gen/src/components/Header/Header.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/lab-gen/src/pages/Generate/ChooseComponentsPage/ChooseComponentsPage.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/lab-gen/src/pages/Generate/ChooseComponentsPage/ChooseComponentsPage.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/lab-gen/src/pages/Generate/ChooseComponentsPage/ChooseComponentsPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/lab-gen/src/pages/Generate/ChooseComponentsPage/ChooseComponentsPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/lab-gen/src/pages/Generate/ChooseComponentsPage/old.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/lab-gen/src/pages/Generate/ChooseComponentsPage/useChooseComponents.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/lab-gen/src/pages/Generate/ChooseComponentsPage/useChooseComponents.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/lab-gen/src/pages/Generate/UploadFilesPage/UploadFilesPage.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/lab-gen/src/pages/Generate/UploadFilesPage/UploadFilesPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/lab-gen/src/pages/Generate/UploadFilesPage/UploadFilesPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/lab-gen/src/pages/MyAccountPage/MyAccountPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/lab-gen/src/pages/MyAccountPage/MyAccountPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/lab-gen/src/services/Generator.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/lab-gen/src/services/Generator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/lab-gen/src/services/MyAccount.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/lab-gen/src/services/MyAccount.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/lab-gen/src/services/UserService.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/lab-gen/src/services/UserService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Components/AboutUs/AboutUs.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Components/AboutUs/AboutUs.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Components/AboutUs/AboutUs.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Components/AboutUs/AboutUs.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Components/AboutUs/AboutUs2.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Components/AboutUs/AboutUs2.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Components/AboutUs/AboutUs2.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Components/AboutUs/AboutUs2.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Components/Header2/Header2.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Components/Header2/Header2.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Components/Header2/Header2.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Components/Header2/Header2.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Components/NewsSection/News.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Components/NewsSection/News.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Components/NewsSection/NewsSection.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Components/NewsSection/NewsSection.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Context/AuthContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Context/AuthContext.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Pages/AccountPage/AccountPage.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/AccountPage/AccountPage.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Pages/AccountPage/AccountPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/AccountPage/AccountPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Pages/ContactUsPage/ContactUsPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/ContactUsPage/ContactUsPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Pages/ContactUsPage/ContactUsPage2.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/ContactUsPage/ContactUsPage2.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Pages/ContactUsPage/ContactUsPage2.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/ContactUsPage/ContactUsPage2.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Pages/HomePage/HomePage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/HomePage/HomePage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Pages/HomePage/HomePage2.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/HomePage/HomePage2.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Pages/HomePage/HomePage2.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/HomePage/HomePage2.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Pages/MediaPage/MediaPage.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/MediaPage/MediaPage.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Pages/MediaPage/MediaPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/MediaPage/MediaPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Pages/ParticipantProfile/ParticipantProfile.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/ParticipantProfile/ParticipantProfile.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Pages/ParticipantsPage/ParticipantsPage.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/ParticipantsPage/ParticipantsPage.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Pages/ParticipantsPage/ParticipantsPage2.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/ParticipantsPage/ParticipantsPage2.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Pages/ParticipantsPage/ParticipantsPage2.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/ParticipantsPage/ParticipantsPage2.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Pages/PublicationsPage/PublicationsPage.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/PublicationsPage/PublicationsPage.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/Pages/PublicationsPage/PublicationsPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/Pages/PublicationsPage/PublicationsPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/services/UserService.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/services/UserService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/template1/src/services/websiteService.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/template1/src/services/websiteService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LabWebsitesUploads/www.localhost.com/homepagephoto.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/LabWebsitesUploads/www.localhost.com/logo.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DAL/DTOs/LabMember_dto.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/DAL/DTOs/LabMember_dto.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DAL/Repositories/LabMembers_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/DAL/Repositories/LabMembers_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DAL/database_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/DAL/database_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/DomainLayer/LabGenerator/GeneratorSystem/GeneratorSystemController.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/DomainLayer/LabGenerator/GeneratorSystem/GeneratorSystemController.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/DomainLayer/LabGenerator/GeneratorSystemService.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/DomainLayer/LabGenerator/GeneratorSystemService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/DomainLayer/LabGenerator/SiteCustom/SiteCustomFacade.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/DomainLayer/LabGenerator/SiteCustom/SiteCustomFacade.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/DomainLayer/LabGenerator/User/UserFacade.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/DomainLayer/LabGenerator/User/UserFacade.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/DomainLayer/LabWebsites/LabSystem/LabSystemController.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/DomainLayer/LabWebsites/LabSystem/LabSystemController.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/DomainLayer/LabWebsites/LabSystemService.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/DomainLayer/LabWebsites/LabSystemService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/DomainLayer/LabWebsites/Notifications/NotificationsFacade.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/DomainLayer/LabWebsites/Notifications/NotificationsFacade.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/DomainLayer/LabWebsites/User/AllWebsitesUserFacade.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/DomainLayer/LabWebsites/User/AllWebsitesUserFacade.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/DomainLayer/LabWebsites/User/LabMember.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/DomainLayer/LabWebsites/User/LabMember.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/DomainLayer/LabWebsites/User/UserFacade.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/DomainLayer/LabWebsites/User/UserFacade.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/DomainLayer/LabWebsites/WebCrawler/GoogleScholarWebCrawler.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/DomainLayer/LabWebsites/WebCrawler/GoogleScholarWebCrawler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/DomainLayer/LabWebsites/Website/Website.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/DomainLayer/LabWebsites/Website/Website.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/DomainLayer/LabWebsites/Website/WebsiteFacade.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/DomainLayer/LabWebsites/Website/WebsiteFacade.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/DomainLayer/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/DomainLayer/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/Util/ExceptionsEnum.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Util/ExceptionsEnum.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/Acceptancetests/LabWebsitesTests/BridgeToTests.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/Acceptancetests/LabWebsitesTests/BridgeToTests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/Acceptancetests/LabWebsitesTests/ProxyToTests.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/Acceptancetests/LabWebsitesTests/ProxyToTests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/Acceptancetests/LabWebsitesTests/RealToTests.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/Acceptancetests/LabWebsitesTests/RealToTests.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,11 +109,43 @@
     "Python tests.Python tests for test_CreateCustomSite.TestCreateWebsite.test_successful_website_creation.executor": "Run",
     "Python tests.Python tests for test_CreateCustomSite.TestCreateWebsite.test_user_not_exist.executor": "Run",
     "Python tests.Python tests for test_CreateCustomSite.TestCreateWebsite.test_user_not_logged_in.executor": "Run",
+    "Python tests.Python tests for test_DefineMemberAsAlumni.TestDefineMemberAsAlumni.executor": "Run",
+    "Python tests.Python tests for test_DefineMemberAsAlumni.TestDefineMemberAsAlumni.test_define_member_as_alumni_failure_member_does_not_exist.executor": "Debug",
     "Python tests.Python tests for test_DeleteWebsite.TestDeleteWebsite.test_delete_website_removes_members.executor": "Run",
     "Python tests.Python tests for test_DeleteWebsite.TestDeleteWebsite.test_delete_website_removes_site_creator.executor": "Run",
-    "Python tests.Python tests for test_Login.TestLogin.executor": "Debug",
+    "Python tests.Python tests for test_Login.TestLogin.executor": "Run",
+    "Python tests.Python tests for test_Login.TestLogin.test_already_logged_in.executor": "Debug",
+    "Python tests.Python tests for test_Login.TestLogin.test_incorrect_email.executor": "Debug",
     "Python tests.Python tests for test_Login.TestLogin.test_successful_login.executor": "Debug",
+    "Python tests.Python tests for test_Login.TestLoginFunction.executor": "Run",
+    "Python tests.Python tests for test_Login.TestLoginFunction.test_login_email_not_member.executor": "Run",
+    "Python tests.Python tests for test_Login.TestLoginFunction.test_successful_login.executor": "Debug",
+    "Python tests.Python tests for test_RemoveAlumniFromLabWebsite.TestRemoveAlumniFromLabWebsite.executor": "Run",
     "Python tests.Python tests for test_RemoveAlumniFromLabWebsite.TestRemoveAlumniFromLabWebsite.test_remove_alumni_failure_not_alumni.executor": "Run",
+    "Python tests.Python tests for test_addPublicationManually.TestAddPublicationManually.executor": "Run",
+    "Python tests.Python tests for test_addPublicationManually.TestAddPublicationManually.test_add_publication_manually_success.executor": "Debug",
+    "Python tests.Python tests for test_add_alumni_from_generator.TestAddAlumniFromGenerator.executor": "Run",
+    "Python tests.Python tests for test_crawlForPublications.TestCrawlForPublications.executor": "Run",
+    "Python tests.Python tests for test_createNewSiteManagerFromLabWebsite.TestCreateNewSiteManagerFromLabWebsite.executor": "Run",
+    "Python tests.Python tests for test_createNewSiteManagerFromLabWebsite.TestCreateNewSiteManagerFromLabWebsite.test_create_new_site_manager_failure_user_not_manager.executor": "Debug",
+    "Python tests.Python tests for test_createNewSiteManagerFromLabWebsite.TestCreateNewSiteManagerFromLabWebsite.test_create_new_site_manager_success.executor": "Debug",
+    "Python tests.Python tests for test_registerNewLabMemberFromLabWebsite.TestRegisterNewLabMemberFromLabWebsite.executor": "Run",
+    "Python tests.Python tests for test_registerNewLabMemberFromLabWebsite.TestRegisterNewLabMemberFromLabWebsite.test_register_new_lab_member_failure_user_not_manager.executor": "Run",
+    "Python tests.Python tests for test_removeManagerPermissions.TestRemoveManagerPermission.executor": "Run",
+    "Python tests.Python tests for test_removePublication.TestRemovePub.executor": "Run",
+    "Python tests.Python tests for test_removePublication.TestRemovePub.test_remove_publication_by_non_manager_fails.executor": "Debug",
+    "Python tests.Python tests for test_setBioByMember.TestSetBioByMember.executor": "Run",
+    "Python tests.Python tests for test_setBioByMember.TestSetBioByMember.test_set_bio_by_alumni_success.executor": "Debug",
+    "Python tests.Python tests for test_setBioByMember.TestSetBioByMember.test_set_bio_by_member_success.executor": "Run",
+    "Python tests.Python tests for test_setDegreeByMember.TestSetDegreeByMember.executor": "Run",
+    "Python tests.Python tests for test_setDegreeByMember.TestSetDegreeByMember.test_set_degree_by_member_failure_user_not_member.executor": "Run",
+    "Python tests.Python tests for test_setFullNameByMember.TestSetFullNameByMember.executor": "Run",
+    "Python tests.Python tests for test_setLinkedinLinkByMember.TestSetLinkedinLinkByMember.executor": "Run",
+    "Python tests.Python tests for test_setMediaByMember.TestSetMediaByMember.executor": "Run",
+    "Python tests.Python tests for test_setSecondEmailByMember.TestSetSecondEmailByMember.executor": "Run",
+    "Python tests.Python tests for test_site_custom.TestSiteCustom.test_site_serialization.executor": "Debug",
+    "Python tests.Python tests for test_site_custom_facade.TestSiteCustomFacade.executor": "Run",
+    "Python tests.Python tests for test_site_custom_facade.TestSiteCustomFacade.test_error_handling.executor": "Debug",
     "Python tests.Python tests in test_AddComponents.py.executor": "Run",
     "Python tests.Python tests in test_ChangeCustomSiteDomain.py.executor": "Run",
     "Python tests.Python tests in test_ChangeCustomSiteName.py.executor": "Run",
@@ -60,18 +166,69 @@
     "Python tests.Python tests in test_setFullNameByMember.py.executor": "Run",
     "Python tests.Python tests in test_setLinkedinLinkByMember.py.executor": "Run",
     "Python tests.Python tests in test_setSecondEmailByMember.py.executor": "Run",
+    "Python tests.Python tests in test_site_custom.py.executor": "Run",
+    "Python tests.Python tests in test_site_custom_facade.py.executor": "Run",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "Merging 238-deploy",
     "last_opened_file_path": "C:/ניצן/לימודים/קורסים/סימסטר ז/פרוייקט שנה ד/genratorCode/Lab-Site-Generator",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Python tests.Python tests for test_DeleteWebsite.TestDeleteWebsite.test_delete_website_removes_site_creator">
-    <configuration name="Python tests for test_DeleteWebsite.TestDeleteWebsite.test_delete_website_removes_members" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python tests.Python tests for test_add_alumni_from_generator.TestAddAlumniFromGenerator">
+    <configuration name="Python tests for test_Login.TestLogin" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="lab site generator" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/test/Acceptancetests/LabGeneratorTests/Guest" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_Login.TestLogin&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for test_Login.TestLogin.test_already_logged_in" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="lab site generator" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/test/Acceptancetests/LabGeneratorTests/Guest" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_Login.TestLogin.test_already_logged_in&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for test_Login.TestLogin.test_incorrect_email" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="lab site generator" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/test/Acceptancetests/LabGeneratorTests/Guest" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_Login.TestLogin.test_incorrect_email&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for test_add_alumni_from_generator.TestAddAlumniFromGenerator" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="lab site generator" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -83,81 +240,40 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_DeleteWebsite.TestDeleteWebsite.test_delete_website_removes_members&quot;" />
+      <option name="_new_target" value="&quot;test_add_alumni_from_generator.TestAddAlumniFromGenerator&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for test_DeleteWebsite.TestDeleteWebsite.test_delete_website_removes_site_creator" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests in test_Login.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="lab site generator" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/test/Acceptancetests/LabGeneratorTests/SiteManager" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/test/Acceptancetests/LabGeneratorTests/Guest" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_DeleteWebsite.TestDeleteWebsite.test_delete_website_removes_site_creator&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Python tests for test_RemoveAlumniFromLabWebsite.TestRemoveAlumniFromLabWebsite.test_remove_alumni_failure_not_alumni" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="lab site generator" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/test/Acceptancetests/LabWebsitesTests/SiteManager" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_RemoveAlumniFromLabWebsite.TestRemoveAlumniFromLabWebsite.test_remove_alumni_failure_not_alumni&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Python tests in test_RemoveAlumniFromLabWebsite.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="lab site generator" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/test/Acceptancetests/LabWebsitesTests/SiteManager" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/src/test/Acceptancetests/LabWebsitesTests/SiteManager/test_RemoveAlumniFromLabWebsite.py&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/src/test/Acceptancetests/LabGeneratorTests/Guest/test_Login.py&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests in test_remove_alumni_from_generator.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="lab site generator" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/test/Acceptancetests/LabGeneratorTests/SiteManager" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/src/test/Acceptancetests/LabGeneratorTests/SiteManager/test_remove_alumni_from_generator.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
-      <method v="2" />
-    </configuration>
+    <list>
+      <item itemvalue="Python tests.Python tests for test_Login.TestLogin" />
+      <item itemvalue="Python tests.Python tests for test_Login.TestLogin.test_already_logged_in" />
+      <item itemvalue="Python tests.Python tests for test_Login.TestLogin.test_incorrect_email" />
+      <item itemvalue="Python tests.Python tests for test_add_alumni_from_generator.TestAddAlumniFromGenerator" />
+      <item itemvalue="Python tests.Python tests in test_Login.py" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Python tests for test_DeleteWebsite.TestDeleteWebsite.test_delete_website_removes_site_creator" />
-        <item itemvalue="Python tests.Python tests for test_DeleteWebsite.TestDeleteWebsite.test_delete_website_removes_members" />
-        <item itemvalue="Python tests.Python tests in test_RemoveAlumniFromLabWebsite.py" />
-        <item itemvalue="Python tests.Python tests for test_RemoveAlumniFromLabWebsite.TestRemoveAlumniFromLabWebsite.test_remove_alumni_failure_not_alumni" />
-        <item itemvalue="Python tests.Python tests in test_remove_alumni_from_generator.py" />
+        <item itemvalue="Python tests.Python tests for test_add_alumni_from_generator.TestAddAlumniFromGenerator" />
+        <item itemvalue="Python tests.Python tests for test_Login.TestLogin" />
+        <item itemvalue="Python tests.Python tests in test_Login.py" />
+        <item itemvalue="Python tests.Python tests for test_Login.TestLogin.test_incorrect_email" />
+        <item itemvalue="Python tests.Python tests for test_Login.TestLogin.test_already_logged_in" />
       </list>
     </recent_temporary>
   </component>
@@ -182,6 +298,10 @@
       <workItem from="1743246978003" duration="16259000" />
       <workItem from="1747290892022" duration="438000" />
       <workItem from="1747291360592" duration="15812000" />
+      <workItem from="1749471605682" duration="16330000" />
+      <workItem from="1750166188244" duration="1007000" />
+      <workItem from="1750924822686" duration="635000" />
+      <workItem from="1750934171304" duration="16717000" />
     </task>
     <servers />
   </component>
@@ -192,32 +312,62 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/test/Acceptancetests/LabWebsitesTests/Guest/test_Login.py</url>
+          <line>54</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/test/Acceptancetests/LabGeneratorTests/Guest/test_Login.py</url>
           <line>24</line>
-          <option name="timeStamp" value="1" />
+          <option name="timeStamp" value="23" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/test/Acceptancetests/LabGeneratorTests/Guest/test_Login.py</url>
-          <line>8</line>
-          <option name="timeStamp" value="2" />
+          <url>file://$PROJECT_DIR$/src/test/Acceptancetests/LabWebsitesTests/Guest/test_Login.py</url>
+          <line>41</line>
+          <option name="timeStamp" value="27" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/test/Acceptancetests/LabGeneratorTests/Guest/test_Login.py</url>
-          <line>11</line>
-          <option name="timeStamp" value="3" />
+          <url>file://$PROJECT_DIR$/src/main/DomainLayer/LabWebsites/LabSystem/LabSystemController.py</url>
+          <line>142</line>
+          <option name="timeStamp" value="32" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/test/Acceptancetests/LabGeneratorTests/SiteManager/test_CreateCustomSite.py</url>
+          <url>file://$PROJECT_DIR$/src/test/Acceptancetests/LabWebsitesTests/Member/test_addPublicationManually.py</url>
+          <line>57</line>
+          <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/main/DomainLayer/LabWebsites/LabSystem/LabSystemController.py</url>
+          <line>414</line>
+          <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/test/Acceptancetests/LabWebsitesTests/Member/test_setBioByMember.py</url>
+          <line>123</line>
+          <option name="timeStamp" value="38" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/test/Acceptancetests/LabWebsitesTests/Member/test_setBioByMember.py</url>
+          <line>61</line>
+          <option name="timeStamp" value="39" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/test/Acceptancetests/LabWebsitesTests/SiteManager/test_createNewSiteManagerFromLabWebsite.py</url>
           <line>63</line>
-          <option name="timeStamp" value="4" />
+          <option name="timeStamp" value="41" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/test/Acceptancetests/LabWebsitesTests/SiteManager/test_createNewSiteManagerFromLabWebsite.py</url>
+          <line>81</line>
+          <option name="timeStamp" value="42" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Lab_Site_Generator$.coverage" NAME=" Coverage Results" MODIFIED="1750965967266" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/test/Acceptancetests/LabGeneratorTests/SiteManager" />
     <SUITE FILE_PATH="coverage/Lab_Site_Generator$__init__.coverage" NAME="__init__ Coverage Results" MODIFIED="1735900694433" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/test/Acceptancetests/LabGeneratorTests/SiteManager" />
     <SUITE FILE_PATH="coverage/Lab_Site_Generator$SiteCustomFacade.coverage" NAME="SiteCustomFacade Coverage Results" MODIFIED="1737880181223" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/main/DomainLayer/LabGenerator/SiteCustom" />
     <SUITE FILE_PATH="coverage/Lab_Site_Generator$app.coverage" NAME="app Coverage Results" MODIFIED="1735813434448" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/main/DomainLayer" />
-    <SUITE FILE_PATH="coverage/Lab_Site_Generator$.coverage" NAME=" Coverage Results" MODIFIED="1747311866381" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/test/Acceptancetests/LabGeneratorTests/SiteManager" />
   </component>
 </project>

@@ -106,7 +106,7 @@ function ContactUsPage() {
           contact_us: { email, phone: phoneNum, address },
         });
       } else {
-        setErrorMessage("An error occurred while saving.");
+        setErrorMessage(response.message);
       }
     } catch (error) {
       setErrorMessage("An error occurred while saving.");
@@ -120,7 +120,7 @@ function ContactUsPage() {
         setCoordinates({ lat, lng });
         try {
           const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=en`
+            `https://corsproxy.io/?https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=en`
           );
           const data = await res.json();
           if (data?.display_name) {

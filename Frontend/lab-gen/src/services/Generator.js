@@ -5,7 +5,6 @@ import { baseApiUrl } from "./BaseUrl"; // Ensure the path is correct relative t
 export const changeComponents = async (domain, components) => {
   let data;
   const sid = sessionStorage.getItem("sid");
-  console.log(domain);
   return axios
     .post(`${baseApiUrl}chooseComponents`, {
       user_id: sid,
@@ -14,7 +13,6 @@ export const changeComponents = async (domain, components) => {
     })
     .then((response) => {
       data = response.data;
-      console.log(data);
       return data;
     })
     .catch((err) => {
@@ -26,7 +24,6 @@ export const changeComponents = async (domain, components) => {
 export const changeDomain = async (oldDomain, domain) => {
   let data;
   const sid = sessionStorage.getItem("sid");
-  console.log(sid);
   return axios
     .post(`${baseApiUrl}chooseDomain`, {
       user_id: sid,
@@ -47,7 +44,6 @@ export const changeDomain = async (oldDomain, domain) => {
 export const changeName = async (domain, name) => {
   let data;
   const sid = sessionStorage.getItem("sid");
-  console.log(sid);
   return axios
     .post(`${baseApiUrl}chooseName`, {
       user_id: sid,
@@ -68,7 +64,6 @@ export const changeName = async (domain, name) => {
 export const createCustomSite = async (domain, name, components, template) => {
   let data;
   const sid = sessionStorage.getItem("sid");
-  console.log(sid);
   return axios
     .post(`${baseApiUrl}startCustomSite`, {
       user_id: sid,
@@ -79,7 +74,6 @@ export const createCustomSite = async (domain, name, components, template) => {
     })
     .then((response) => {
       data = response.data;
-      console.log(data);
       return data;
     })
     .catch((err) => {
@@ -113,7 +107,6 @@ export const getAllLabManagers = async (domain) => {
     const response = await axios.get(
       `${baseApiUrl}getAllLabManagers?domain=${domain}`
     );
-    console.log(response.data);
     return response.data.managers;
   } catch (error) {
     console.error("Error getting all lab managers:", error);
@@ -126,7 +119,6 @@ export const getAllLabMembers = async (domain) => {
     const response = await axios.get(
       `${baseApiUrl}getAllLabMembers?domain=${domain}`
     );
-    console.log(response.data);
     return response.data.members;
   } catch (error) {
     console.error("Error getting all lab members:", error);
@@ -139,7 +131,6 @@ export const getAllAlumni = async (domain) => {
     const response = await axios.get(
       `${baseApiUrl}getAllAlumni?domain=${domain}`
     );
-    console.log(response.data);
     return response.data.alumni;
   } catch (error) {
     console.error("Error getting all alumni:", error);
@@ -161,7 +152,6 @@ export const createNewSiteManager = async (
         domain: domain,
       }
     );
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error creating new site manager:", error);
@@ -180,7 +170,6 @@ export const addAlumni = async (
       email_toSetAlumni: nominatedManagerEmail,
       domain: domain,
     });
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error creating new ALUMNI:", error);
@@ -199,7 +188,6 @@ export const removeSiteManager = async (
       manager_toRemove_email: managerToRemoveEmail,
       domain: domain,
     });
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error removing site manager:", error);
@@ -225,7 +213,6 @@ export const addLabMember = async (
         domain: domain,
       }
     );
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error adding lab member:", error);
@@ -244,7 +231,6 @@ export const setSiteAboutUs = async (userId, domain, aboutUs) => {
       }
     );
 
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error setting About Us:", error);
@@ -271,7 +257,6 @@ export const setSiteContactInfo = async (
       }
     );
 
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error setting contact info:", error);
@@ -339,7 +324,6 @@ export const generate = async (
     );
 
     const data = response.data;
-    console.log("Response Data:", data);
     return data;
   } catch (error) {
     //alert("Error: " + (error.response?.data?.message || error.message));
@@ -357,7 +341,6 @@ export const removeAlumni = async (managerUserId, alumniEmail, domain) => {
       }
     );
 
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error removing alumni:", error);

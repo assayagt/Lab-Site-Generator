@@ -52,7 +52,6 @@ export const approveRegistration = async ({
       requested_degree,
       notification_id,
     });
-    console.log(response.data);
     return response.data.message;
   } catch (error) {
     console.error("Error approving registration:", error);
@@ -71,7 +70,6 @@ export const rejectRegistration = async ({
       manager_userId,
       notification_id,
     });
-    console.log(response.data);
     return response.data.message;
   } catch (error) {
     console.error("Error rejecting registration:", error);
@@ -85,7 +83,6 @@ export const getAllLabManagers = async (domain) => {
     const response = await axios.get(
       `${baseApiUrl}getAllLabManagers?domain=${domain}`
     );
-    console.log(response.data);
     return response.data.managers;
   } catch (error) {
     console.error("Error getting all lab managers:", error);
@@ -98,7 +95,6 @@ export const getAllLabMembers = async (domain) => {
     const response = await axios.get(
       `${baseApiUrl}getAllLabMembers?domain=${domain}`
     );
-    console.log(response.data);
     return response.data.members;
   } catch (error) {
     console.error("Error getting all lab members:", error);
@@ -111,7 +107,6 @@ export const getAllAlumni = async (domain) => {
     const response = await axios.get(
       `${baseApiUrl}getAllAlumni?domain=${domain}`
     );
-    console.log(response.data);
     return response.data.alumni;
   } catch (error) {
     console.error("Error getting all alumni:", error);
@@ -141,7 +136,6 @@ export const setLinkedInLinkByMember = async (userId, linkedInLink, domain) => {
       linkedin_link: linkedInLink,
       domain,
     });
-    console.log(response);
     return response.data;
   } catch (error) {
     console.error("Error setting LinkedIn link:", error);
@@ -184,7 +178,6 @@ export const setBioByMember = async (userId, bio, domain) => {
       bio,
       domain,
     });
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error setting bio:", error);
@@ -211,7 +204,6 @@ export const getApprovedPublications = async (domain) => {
     const response = await axios.get(
       `${baseApiUrl}getApprovedPublications?domain=${domain}`
     );
-    console.log(response.data);
     return response.data.publications;
   } catch (error) {
     console.error("Error getting approved publications:", error);
@@ -227,7 +219,6 @@ export const addPublication = async (
   presentation_link
 ) => {
   try {
-    console.log(publication_link);
     const response = await axios.post(`${baseApiUrl}addPublication`, {
       user_id: sessionStorage.getItem("sid"),
       publication_link: publication_link,
@@ -237,7 +228,6 @@ export const addPublication = async (
       presentation_link: presentation_link || "",
     });
     if (response) {
-      console.log(response.data);
       return response.data;
     }
   } catch (error) {
@@ -260,7 +250,6 @@ export const setPublicationVideoLink = async (
       publication_id: publicationId,
       video_link: videoLink,
     });
-    console.log(response);
     return response.data;
   } catch (error) {
     console.error("Error setting publication video link:", error);
@@ -302,7 +291,6 @@ export const setPublicationPttxLink = async (
       presentation_link: presentationLink,
     });
     const dd = response.data;
-    console.log(dd);
     return dd;
   } catch (error) {
     console.error("Error setting publication presentation link:", error);
@@ -331,7 +319,6 @@ export const getMemberPublications = async (domain) => {
         "sid"
       )}`
     );
-    console.log(response.data);
     return response.data.publications;
   } catch (error) {
     console.error("Error getting member publications:", error);
@@ -345,7 +332,6 @@ export const getHomepageDetails = async (domain) => {
     .get(`${baseApiUrl}getHomepageDetails?domain=${domain}`)
     .then((resp) => {
       data = resp.data;
-      console.log(data);
       return data;
     })
     .catch((err) => console.log(err.message));
@@ -356,7 +342,6 @@ export const getContactUs = async (domain) => {
     const response = await axios.get(
       `${baseApiUrl}getContactUs?domain=${domain}`
     );
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error getting all alumni:", error);
@@ -369,7 +354,6 @@ export const getUserDetails = async (domain, user_id) => {
     const response = await axios.get(
       `${baseApiUrl}getUserDetails?domain=${domain}&user_id=${user_id}`
     );
-    console.log(response.data); // Log the response data
     return response.data; // Return the data
   } catch (error) {
     console.error("Error getting user details:", error); // Log the error
@@ -596,7 +580,6 @@ export const removeAlumniFromLabWebsite = async (
         domain: domain,
       }
     );
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error removing alumni from lab website:", error);
@@ -646,7 +629,6 @@ export const initialApproveMultiplePublicationsByAuthor = async (
   publicationIds
 ) => {
   try {
-    console.log(publicationIds);
     const response = await axios.post(
       `${baseApiUrl}initialApproveMultiplePublicationsByAuthor`,
       {
@@ -714,6 +696,27 @@ export const addNewsRecord = async (userId, domain, text, link, date) => {
     return response.data; // { message, response: "true" | "false" }
   } catch (error) {
     console.error("Error adding news record:", error);
+    return null;
+  }
+};
+
+export const setMemberEmailNotification = async (
+  userId,
+  domain,
+  emailNotifications
+) => {
+  try {
+    const response = await axios.post(
+      `${baseApiUrl}setMemberEmailNotification`,
+      {
+        user_id: userId,
+        domain: domain,
+        email_notifications: emailNotifications,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error setting email notification preference:", error);
     return null;
   }
 };

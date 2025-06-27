@@ -173,7 +173,7 @@
 .template_section_choose {
   position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   background: rgba(255, 255, 255, 0.1);
   gap: 20px;
   padding: 10px;
@@ -220,6 +220,7 @@
 .template {
   width: fit-content; /* Make it responsive */
   height: 200px;
+  max-width: 300px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   overflow: hidden;

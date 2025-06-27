@@ -1,4 +1,5 @@
 import os
+import re
 import threading
 
 from src.main.DomainLayer.LabGenerator.SiteCustom.SiteCustomFacade import SiteCustomFacade, Template
@@ -98,6 +99,8 @@ class GeneratorSystemController:
         """
         Set the contact us section on lab website creation. This function should be called after create_new_lab_website.
         """
+        if not re.match(r"^\+?[0-9\s\-()]+$", contact_info_dto.lab_phone_num):
+            raise Exception(ExceptionsEnum.INVALID_PHONE_NUMBER.value)
         self.labSystem.set_site_contact_info_from_generator(domain, contact_info_dto)
 
     def get_contact_info_from_generator(self, domain):
@@ -112,6 +115,8 @@ class GeneratorSystemController:
         """
         Set the contact us section by manager
         """
+        if not re.match(r"^\+?[0-9\s\-()]+$", contact_info_dto.lab_phone_num):
+            raise Exception(ExceptionsEnum.INVALID_PHONE_NUMBER.value)
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
         self.user_facade.error_if_user_is_not_site_manager(user_id, domain)

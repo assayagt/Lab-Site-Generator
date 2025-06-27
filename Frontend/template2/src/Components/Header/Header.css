@@ -1,0 +1,524 @@
+.header_logo {
+  height: 50px;
+  width: 50px;
+}
+.header_title {
+  font-size: 45px;
+  font-weight: 700;
+  /* padding-right: 100px; */
+  color: black;
+}
+
+.navbar-item-button {
+  background-color: transparent;
+  border: none;
+}
+
+.navbar-item-button:hover {
+  color: black;
+}
+
+.edit-mode-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.icon_photo {
+  /* height: 40px;
+  width: 40px; */
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 0;
+  gap: 20px;
+}
+.icon_photo2 {
+  height: 40px;
+  width: 40px;
+}
+.menu {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  position: relative;
+  /* position: absolute;
+  right: 0; */
+  margin-right: 15px;
+  background-image: url("../../images/account_avatar.svg");
+}
+.hidden-box {
+  display: none; /* Initially hidden */
+  position: absolute;
+  right: 0;
+  background-color: white;
+  padding: 20px;
+  width: 150px; /* Adjust width as needed */
+  border-radius: 10px; /* Rounded corners to match the shape of the menu */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
+  transform: translateX(-15px) translateY(13.5px); /* Adjust horizontally */
+  z-index: 1;
+  -webkit-mask-image: radial-gradient(
+    circle at top right,
+    transparent 40px,
+    /* Cutout starts */ black 40px /* Solid color starts */
+  );
+  mask-image: radial-gradient(
+    circle at top right,
+    transparent 28px,
+    /* Cutout starts */ black 28px /* Solid color starts */
+  );
+}
+.menu:hover .hidden-box {
+  display: block;
+}
+.personal_menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.hr_line {
+  height: 1px;
+  width: 100%;
+  background-color: gray;
+}
+
+.choose_item {
+  width: 100%;
+  /* display: flex;
+  flex-direction: column;
+  gap:10px; */
+}
+
+.logout_button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  background-color: transparent;
+  border-color: transparent;
+  font-size: 16px;
+  border-radius: 10px;
+  width: 100%;
+  justify-content: center;
+  padding: 10px;
+}
+
+.logout_button:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
+}
+
+.my_sites_button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  background-color: transparent;
+  border-color: transparent;
+  font-size: 16px;
+  border-radius: 10px;
+  width: 100%;
+  justify-content: center;
+  padding: 10px;
+}
+
+.my_sites_button:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
+}
+
+.login_button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  background-color: transparent;
+  border-color: transparent;
+  font-size: 16px;
+  border-radius: 10px;
+  width: 100%;
+  justify-content: center;
+  padding: 10px;
+}
+
+.login_button:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for effect */
+}
+
+.my_sites_icon {
+  width: 18px;
+  height: 18px;
+}
+
+.notification-icon {
+  display: inline-block;
+}
+
+.notification-dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  background-color: rgb(227, 0, 0);
+  border-radius: 50%;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+}
+
+.login-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.login-content {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+.login-modal .login-content {
+  position: relative; /* Needed to position the close button absolutely within the content div */
+}
+
+.login-modal .close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 24px; /* Large enough to be easily clickable */
+}
+
+.login-error {
+  color: red;
+  margin: 10px 0;
+}
+/* HEADER */
+.header {
+  display: flex;
+  align-items: center;
+  padding: 15px 30px;
+  gap: 30px;
+  justify-content: space-between; /* Even spacing */
+  position: relative;
+}
+
+.header_title_name {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  flex: 1;
+}
+
+/* NAVBAR */
+.navbar {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: row;
+  background: rgba(69, 69, 69, 0.1);
+  border-radius: 30px;
+  min-width: fit-content;
+  max-width: fit-content;
+  height: 40px;
+  padding: 6px;
+  overflow: hidden;
+  white-space: nowrap;
+  align-items: center;
+  transition: max-width 0.8s ease-out, transform 0.5s ease-out,
+    height 0.8s ease-out;
+  z-index: 10;
+}
+
+/* NAVBAR EXPANDS ON HOVER */
+
+/* NAVBAR ITEMS */
+.navbar-item {
+  align-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 10px 20px;
+  display: flex;
+  gap: 15px;
+  color: rgb(64, 64, 64);
+  transition: transform 0.3s ease-in-out;
+}
+
+.navbar-item:hover {
+  transform: translateY(-3px);
+}
+
+/* NAVBAR BUTTONS */
+.navbar-item-button {
+  font-family: "Oswald", sans-serif;
+
+  font-size: 18px;
+  cursor: pointer;
+  color: rgb(64, 64, 64);
+  background-color: transparent;
+  border: none;
+  transition: color 0.3s ease;
+  align-items: center;
+}
+
+.navbar-item-button:hover {
+  color: black;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 25px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(69, 69, 69, 0.3);
+  transition: 0.4s;
+  border-radius: 25px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 4px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #4e575c;
+}
+
+input:checked + .slider:before {
+  transform: translateX(25px);
+}
+
+.login-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.login-popup {
+  background: #fff;
+  padding: 30px 25px;
+  width: 90vw; /* ✅ use viewport width for responsiveness */
+  max-width: 320px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  position: relative;
+  text-align: center;
+  font-family: "Segoe UI", sans-serif;
+  text-transform: none;
+  font-size: 1rem;
+  font-weight: 400;
+}
+.login-title {
+  margin-bottom: 5px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+}
+
+.login-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* Input */
+.login-input {
+  width: 90%;
+  padding: 10px 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.login-input:focus {
+  border-color: #161616;
+}
+
+/* Error message */
+.login-error {
+  color: red;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+/* Login button */
+.login-button {
+  width: 100%;
+  background-color: #2d3035;
+  color: white;
+  border: none;
+  padding: 10px 0;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.login-button:hover {
+  background-color: #45474a;
+}
+
+/* Close button */
+.close-popup {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.close-popup:hover {
+  color: #ff4d4f;
+}
+
+/* Hamburger menu styling */
+.hamburger-menu {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.hamburger-menu span {
+  width: 25px;
+  height: 3px;
+  background-color: #000;
+  border-radius: 3px;
+  transition: all 0.3s;
+}
+
+/* Responsive behavior for mobile */
+@media (max-width: 1024px) {
+  .hamburger-menu {
+    display: flex;
+  }
+}
+@media (max-width: 1024px) {
+  .navbar {
+    display: none;
+    flex-direction: column;
+    align-items: stretch; /* full width buttons */
+    position: absolute;
+    top: 190px;
+    right: 10px;
+    width: 200px;
+    background-color: white;
+    padding: 10px 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    z-index: 100;
+    height: fit-content;
+  }
+
+  .navbar.expanded {
+    display: flex;
+    min-width: 200px;
+  }
+
+  .navbar-item {
+    padding: 10px 15px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .navbar-item-button {
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    padding: 10px;
+  }
+
+  .line-nav {
+    display: none;
+  }
+  .edit-mode-container {
+    display: none;
+  }
+}
+@media (max-width: 1024px) {
+  .edit-mode-container {
+    display: none !important;
+  }
+}
+
+/* Custom styles for the header */
+.navbar {
+  padding: 0.5rem 1rem;
+}
+
+.navbar-brand img {
+  transition: transform 0.2s ease-in-out;
+}
+
+.navbar-brand img:hover {
+  transform: scale(1.05);
+}
+
+/* Custom notification badge */
+.badge {
+  font-size: 0.75rem;
+  padding: 0.25em 0.6em;
+}
+
+/* Account menu dropdown */
+.account-menu {
+  min-width: 200px;
+}
+
+/* Edit mode switch custom styling */
+.form-switch .form-check-input {
+  width: 2.5em;
+  height: 1.25em;
+}
+
+.form-switch .form-check-input:checked {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}

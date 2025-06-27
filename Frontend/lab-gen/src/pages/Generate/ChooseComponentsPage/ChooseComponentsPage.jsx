@@ -2,6 +2,8 @@ import React from "react";
 import { useState, useEffect } from "react";
 import useChooseComponents from "./useChooseComponents";
 import Tamplate from "../../../images/tamplate.svg";
+import Tamplate2 from "../../../images/tamplate2.png";
+
 import "./ChooseComponentsPage.css";
 import ErrorPopup from "../../../components/Popups/ErrorPopup";
 import LoadingPopup from "../../../components/Popups/LoadingPopup";
@@ -459,10 +461,20 @@ const ChooseComponentsPage = () => {
                 <h2>Choose a Template</h2>
                 <div className="template_section_choose">
                   <img
-                    className={`template ${template !== "" ? "selected" : ""}`}
+                    className={`template ${
+                      template === "template1" ? "selected" : ""
+                    }`}
                     src={Tamplate}
-                    alt="Template"
+                    alt="Template1"
                     onClick={() => handleTemplateClick("template1")}
+                  />
+                  <img
+                    className={`template ${
+                      template === "template2" ? "selected" : ""
+                    }`}
+                    src={Tamplate2}
+                    alt="Template2"
+                    onClick={() => handleTemplateClick("template2")}
                   />
                   <button
                     className="save_template_button"

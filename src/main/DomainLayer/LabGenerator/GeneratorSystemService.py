@@ -284,7 +284,6 @@ class GeneratorSystemService:
             else:
                 logo_data_url = None
             homePhoto_path = website.get_home_picture()  # Ensure `website.logo` contains the full file path
-            print(logo_path)
             if homePhoto_path and os.path.exists(homePhoto_path):
                 # Check the file extension
                 extension = os.path.splitext(homePhoto_path)[1].lower()

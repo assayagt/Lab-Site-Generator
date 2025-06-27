@@ -158,7 +158,9 @@ class LabSystemController:
         recipients = {**managers, **siteCreator}
         print("recipients: ", recipients)
         for managerEmail in recipients:
-            self.notificationsFacade.send_registration_request_notification(requestedEmail, managerEmail, domain)
+            send_email_notification = self.get_if_email_notifications_enabled(managerEmail,
+                                                                              domain)
+            self.notificationsFacade.send_registration_request_notification(requestedEmail, managerEmail, domain, send_email_notification)
 
     def logout(self, domain, userId):
         """
@@ -304,8 +306,10 @@ class LabSystemController:
                 self.websiteFacade.initial_approve_publication(domain, publication_id)
                 for manager_email in managers_emails:
                     publicationDTO = self.websiteFacade.get_publication_by_paper_id(domain, publication_id)
+                    send_email_notification = self.get_if_email_notifications_enabled(manager_email,
+                                                                                      domain)
                     self.notificationsFacade.send_publication_notification_for_final_approval(publicationDTO,
-                                                                                              manager_email, domain)
+                                                                                              manager_email, domain, send_email_notification)
             else:
                 self.final_approve_publication_by_manager(userId, domain, publication_id)
         else:
@@ -370,6 +374,7 @@ class LabSystemController:
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
+        userFacade.error_if_user_is_not_labMember_manager_creator(userId=userId)
         publication_id = self.mark_as_read(userId, domain, notification_id)
         self.websiteFacade.reject_publication(domain, publication_id)
 
@@ -380,9 +385,27 @@ class LabSystemController:
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userId=userId)
         userFacade.error_if_user_not_logged_in(userId=userId)
+        userFacade.error_if_user_is_not_labMember_manager_creator(userId=userId)
         for pubId in publicationIds:
             self.websiteFacade.reject_publication(domain, pubId)
 
+    def remove_publication_by_manager(self, userId, domain, publicationId):
+        """
+        Delete publication by lab manager
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(userId=userId)
+        userFacade.error_if_user_not_logged_in(userId=userId)
+        userFacade.error_if_user_is_not_labMember_manager_creator(userId=userId)
+        self.websiteFacade.error_if_publication_is_rejected(domain=domain, publication_id=publicationId)
+        
+        email = userFacade.get_email_by_userId(userId=userId)
+        rejecting_name = userFacade.get_fullName_by_email(email)
+        pub = self.websiteFacade.get_publication_by_paper_id(domain=domain, paper_id=publicationId)
+        authors = pub.author_emails
+        self.websiteFacade.reject_publication(domain, publication_id=publicationId)
+        for author in authors:
+            self.notificationsFacade.send_email_notification_removing_pub(recipientEmail=author, publicationDTO=pub, deleting_manager_name=rejecting_name, domain=domain)
 
     def add_publication_manually(self, user_id, domain, publication_link, git_link, video_link, presentation_link):
         """A Lab Member updates the website with new research publications"""
@@ -414,10 +437,14 @@ class LabSystemController:
             managers_emails = list(userFacade.getManagers().keys())
             for manager_email in managers_emails:
                 publicationDTO = self.websiteFacade.get_publication_by_paper_id(domain, publication_id)
+                #TODO: Add email notification
+                send_email_notification = self.get_if_email_notifications_enabled(manager_email,
+                                                                                  domain)
                 self.notificationsFacade.send_publication_notification_for_final_approval(publicationDTO, manager_email,
-                                                                                          domain)
+                                                                                          domain, send_email_notification)
         else:
             self.websiteFacade.final_approve_publication(domain, publication_id)
+        return publication_id
 
     def get_all_approved_publication(self, domain):
         """
@@ -620,6 +647,9 @@ class LabSystemController:
         """
         Set the contact us section of the website.
         """
+        # checko that phone number is valid
+        if not re.match(r"^\+?[0-9\s\-()]+$", contact_info_dto.lab_phone_num):
+            raise Exception(ExceptionsEnum.INVALID_PHONE_NUMBER.value)
         userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
         userFacade.error_if_user_notExist(userId)
         userFacade.error_if_user_not_logged_in(userId)
@@ -756,8 +786,10 @@ class LabSystemController:
                         if with_notifications:
                             # send notifications to the website authors about the new publications, for initial approval.
                             for authorEmail in authorEmails:
+                                send_email_notification = self.get_if_email_notifications_enabled(authorEmail,
+                                                                                                  website_domain)
                                 self.notificationsFacade.send_publication_notification(pub, authorEmail,
-                                                                                    website_domain, emailOnly=True)
+                                                                                    website_domain, send_email_notification)
             except Exception as e:
                 print(f"[ERROR] post-crawl processing failed: {e}")
         future.add_done_callback(_on_done)
@@ -789,8 +821,9 @@ class LabSystemController:
                         if with_notifications:
                             # send notifications to the website authors about the new publications, for initial approve
                             for authorEmail in authorEmails:
+                                send_email_notification = self.get_if_email_notifications_enabled(authorEmail, website_domain)
                                 self.notificationsFacade.send_publication_notification(pub, authorEmail,
-                                                                                    website_domain, emailOnly=True)
+                                                                                    website_domain, send_email_notification)
             except Exception as e:
                 print(f"[ERROR] crawl failed for {scholar_link}: {e}")
                 return
@@ -820,4 +853,20 @@ class LabSystemController:
         userFacade.error_if_user_notExist(user_id)
         userFacade.error_if_user_not_logged_in(user_id)
         userFacade.add_profile_picture(user_id, file_path)
+
+    def set_member_email_notifications(self, user_id, domain, email_notifications):
+        """
+        Set email notifications preference for a user.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        userFacade.error_if_user_notExist(user_id)
+        userFacade.error_if_user_not_logged_in(user_id)
+        userFacade.set_email_notifications(user_id, email_notifications)
+
+    def get_if_email_notifications_enabled(self, email, domain):
+        """
+        Get email notifications preference for a user.
+        """
+        userFacade = self.allWebsitesUserFacade.getUserFacadeByDomain(domain)
+        return userFacade.get_email_notifications(email)
 

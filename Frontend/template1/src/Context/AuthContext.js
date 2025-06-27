@@ -12,7 +12,6 @@ export const AuthProvider = ({ children }) => {
       sessionStorage.getItem("sid"),
       sessionStorage.getItem("domain")
     );
-    console.log(data);
     if (data) {
       if (data.response === "true") {
         sessionStorage.setItem("isLoggedIn", true);
@@ -30,7 +29,6 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     let data = await SendLogout();
-    console.log(data);
     if (data.response === "true") {
       return true;
     }
@@ -41,7 +39,6 @@ export const AuthProvider = ({ children }) => {
     let data = await EnterSystem();
     if (data) {
       sessionStorage.setItem("sid", data);
-      console.log(data);
       return data;
     }
     return data;
