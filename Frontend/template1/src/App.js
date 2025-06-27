@@ -209,10 +209,8 @@ function App() {
                 <Route
                   path="/Account"
                   element={
-                    websiteData.template === "template1" && <AccountPage />
-                    // : (
-                    //   <AccountPage2 />
-                    // )
+                    <AccountPage />
+                    
                   }
                 />
                 <Route
