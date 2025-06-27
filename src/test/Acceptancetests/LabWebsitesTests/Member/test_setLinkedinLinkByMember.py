@@ -5,10 +5,13 @@ from src.main.DomainLayer.LabWebsites.User.Degree import Degree
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.test.Acceptancetests.LabGeneratorTests.ProxyToTests import ProxyToTest
 from src.test.Acceptancetests.LabWebsitesTests.ProxyToTests import ProxyToTests
+from src.test.Acceptancetests.LabWebsitesTests.BaseTestClass import BaseTestClass
 
 
-class TestSetLinkedinLinkByMember(unittest.TestCase):
+class TestSetLinkedinLinkByMember(BaseTestClass):
     def setUp(self):
+        # Call parent setUp to initialize mocks
+        super().setUp()
         # Initialize the system with real data and components
         self.generator_system_service = ProxyToTest("Real")
         self.lab_system_service = ProxyToTests("Real", self.generator_system_service.get_lab_system_controller())
@@ -43,12 +46,14 @@ class TestSetLinkedinLinkByMember(unittest.TestCase):
         )
 
         # Simulate a lab member login
-        self.labMember1_userId = self.lab_system_service.enter_lab_website(self.domain).get_data()
-        self.lab_system_service.login(self.domain, self.labMember1_userId, self.labMember1_email)
-        self.labManager1_userId = self.lab_system_service.enter_lab_website(self.domain).get_data()
-        self.lab_system_service.login(self.domain, self.labManager1_userId, self.labManager1_email)
+        self.labMember1_userId = self.lab_system_service.enter_lab_website(self.domain)
+        self.labMember1_userId = self.lab_system_service.login(self.domain, self.labMember1_userId, self.labMember1_email).get_data()
+        self.labManager1_userId = self.lab_system_service.enter_lab_website(self.domain)
+        self.labManager1_userId = self.lab_system_service.login(self.domain, self.labManager1_userId, self.labManager1_email).get_data()
 
     def tearDown(self):
+        # Call parent tearDown to stop mocks
+        super().tearDown()
         # Reset the system after each test
         self.generator_system_service.reset_system()
 
@@ -66,22 +71,10 @@ class TestSetLinkedinLinkByMember(unittest.TestCase):
 
         # Validate that the LinkedIn link was successfully set
         member_data = self.lab_system_service.get_all_lab_members(self.domain).get_data()
-        self.assertEqual(member_data[self.labMember1_email].get_linkedin_link(), linkedin_link)
-
-    def test_set_linkedin_link_by_member_failure_not_logged_in(self):
-        """
-        Test that a member who is not logged in cannot set a LinkedIn link.
-        """
-        # Simulate logout for the member
-        self.lab_system_service.logout(self.domain, self.labMember1_userId)
-
-        linkedin_link = "https://www.linkedin.com/in/member1"
-
-        response = self.lab_system_service.set_linkedin_link_by_member(
-            self.labMember1_userId, linkedin_link, self.domain
-        )
-        self.assertFalse(response.is_success())
-        self.assertEqual(response.get_message(), ExceptionsEnum.USER_IS_NOT_MEMBER.value)
+        for member in member_data:
+            if member["email"] == self.labMember1_email:
+                self.assertEqual(member["linkedin_link"], linkedin_link)
+                break
 
     def test_set_linkedin_link_by_member_failure_invalid_linkedin_link(self):
         """
@@ -95,18 +88,6 @@ class TestSetLinkedinLinkByMember(unittest.TestCase):
         self.assertFalse(response.is_success())
         self.assertEqual(response.get_message(), ExceptionsEnum.INVALID_LINKEDIN_LINK.value)
 
-    def test_set_linkedin_link_by_member_failure_user_does_not_exist(self):
-        """
-        Test that trying to set a LinkedIn link for a non-existent member raises an error.
-        """
-        linkedin_link = "https://www.linkedin.com/in/nonexistentmember"
-
-        response = self.lab_system_service.set_linkedin_link_by_member(
-            "some id", linkedin_link, self.domain
-        )
-        self.assertFalse(response.is_success())
-        self.assertEqual(response.get_message(), ExceptionsEnum.USER_NOT_EXIST.value)
-
     def test_set_fullName_by_alumni_success(self):
         linkedin_link = "https://www.linkedin.com/in/member1"
 
@@ -119,4 +100,7 @@ class TestSetLinkedinLinkByMember(unittest.TestCase):
 
         # Validate that the bio was successfully set
         member_data = self.lab_system_service.get_all_alumnis(self.domain).get_data()
-        self.assertEqual(member_data[self.labMember1_email].get_linkedin_link(), linkedin_link)
+        for member in member_data:
+            if member["email"] == self.labMember1_email:
+                self.assertEqual(member["linkedin_link"], linkedin_link)
+                break

@@ -9,11 +9,8 @@ class RealToTests(BridgeToTests):
     def enter_lab_website(self, domain):
         return self.lab_system_service.enter_lab_website(domain)
 
-    def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator):
-        return self.lab_system_service.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
-
     def login(self, domain, user_id, email):
-        return self.lab_system_service.login(domain, user_id, email)
+        return self.lab_system_service.login(domain, email)
 
     def logout(self, domain, user_id):
         return self.lab_system_service.logout(domain, user_id)
@@ -31,7 +28,7 @@ class RealToTests(BridgeToTests):
         return self.lab_system_service.add_publication_manually(user_id, domain, publication_link, git_link, video_link, presentation_link)
 
     def get_all_approved_publications(self, domain):
-        return self.lab_system_service.get_all_approved_publication(domain)
+        return self.lab_system_service.get_all_approved_publications(domain)
 
     def get_all_approved_publications_of_member(self, domain, email):
         return self.lab_system_service.get_all_approved_publications_of_member(domain, email)
@@ -52,7 +49,7 @@ class RealToTests(BridgeToTests):
         return self.lab_system_service.remove_manager_permission(manager_user_id, manager_to_remove_email, domain)
 
     def approve_registration_request(self, domain, manager_userId, requested_email, requested_full_name, requested_degree):
-        return self.lab_system_service.approve_registration_request(domain, manager_userId, requested_email, requested_full_name, requested_degree)
+        return self.lab_system_service.approve_registration_request(domain, manager_userId, requested_full_name, requested_degree, requested_email)
 
     def reject_registration_request(self, domain, manager_userId, requested_email):
         return self.lab_system_service.reject_registration_request(domain, manager_userId, requested_email)
@@ -61,16 +58,16 @@ class RealToTests(BridgeToTests):
         return self.lab_system_service.create_new_site_manager_from_labWebsite(nominator_manager_userId, domain, nominated_manager_email)
 
     def get_all_lab_managers(self, domain):
-        return self.lab_system_service.get_all_lab_managers(domain)
+        return self.lab_system_service.get_all_lab_managers_details(domain)
 
     def get_all_lab_members(self, domain):
-        return self.lab_system_service.get_all_lab_members(domain)
+        return self.lab_system_service.get_all_lab_members_details(domain)
 
     def register_new_LabMember_from_labWebsite(self, manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain):
         return self.lab_system_service.register_new_LabMember_from_labWebsite(manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain)
 
     def get_all_alumnis(self, domain):
-        return self.lab_system_service.get_all_alumnis(domain)
+        return self.lab_system_service.get_all_alumnis_details(domain)
 
     def set_secondEmail_by_member(self, userid, secondEmail, domain):
         return self.lab_system_service.set_secondEmail_by_member(userid, secondEmail, domain)
@@ -89,9 +86,6 @@ class RealToTests(BridgeToTests):
 
     def set_media_by_member(self, userid, media, domain):
         return self.lab_system_service.set_media_by_member(userid, media, domain)
-
-    def get_all_lab_members_details(self, domain):
-        return self.lab_system_service.get_all_lab_members_details(domain)
 
     def remove_alumni_from_labWebsite(self, manager_user_id, alumni_email, domain):
         return self.lab_system_service.remove_alumni_from_labWebsite(manager_user_id, alumni_email, domain)

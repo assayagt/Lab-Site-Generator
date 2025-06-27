@@ -414,7 +414,7 @@ class UserFacade:
                 scholar_link=dto.scholar_link,
                 profile_picture=dto.profile_picture,
                 email_notifications=dto.email_notifications,
-                role=dto.role
+                role=Role(dto.role)
             )
     
     def add_profile_picture(self, email, file_path):
@@ -459,7 +459,7 @@ class UserFacade:
     def error_if_user_is_not_manager_or_site_creator(self, userId):
         member = self.get_member_by_email(userId)
         if member and member.get_role() != Role.MANAGER and member.get_role() != Role.CREATOR:
-            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER.value)
+            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER_OR_CREATOR.value)
     
     def error_if_trying_to_define_site_creator_as_alumni(self, email):
         member = self.get_member_by_email(email)
@@ -468,8 +468,8 @@ class UserFacade:
         
     def error_if_member_is_not_labMember_or_manager(self, email):
         member = self.get_member_by_email(email)
-        if member and member.get_role() != Role.MEMBER and member.get_role() != Role.MANAGER:
-            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MEMBER.value)
+        if (not member) or (member and member.get_role() != Role.MEMBER and member.get_role() != Role.MANAGER):
+            raise Exception(ExceptionsEnum.USER_IS_NOT_A_LAB_MEMBER_OR_LAB_MANAGER.value)
 
     def get_email_from_token(self, google_token):
         # Verify the token

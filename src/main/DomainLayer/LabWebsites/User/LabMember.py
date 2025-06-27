@@ -118,7 +118,7 @@ class LabMember(State):
                 "scholar_link": self.scholar_link,
                 "profile_picture": self.get_encoded_profile_picture(),
                 "email_notifications": self.email_notifications,
-                "role": self.role}
+                "role": self.role.value if self.role else None}
 
     def get_dto(self, domain) -> lab_member_dto:
         return lab_member_dto(

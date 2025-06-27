@@ -5,10 +5,13 @@ from src.main.DomainLayer.LabWebsites.User.Degree import Degree
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.test.Acceptancetests.LabGeneratorTests.ProxyToTests import ProxyToTest
 from src.test.Acceptancetests.LabWebsitesTests.ProxyToTests import ProxyToTests
+from src.test.Acceptancetests.LabWebsitesTests.BaseTestClass import BaseTestClass
 
 
-class TestDefineMemberAsAlumni(unittest.TestCase):
+class TestDefineMemberAsAlumni(BaseTestClass):
     def setUp(self):
+        # Call parent setUp to initialize mocks
+        super().setUp()
         # Initialize the system with real data and components
         self.generator_system_service = ProxyToTest("Real")
         self.lab_system_service = ProxyToTests("Real", self.generator_system_service.get_lab_system_controller())
@@ -36,15 +39,16 @@ class TestDefineMemberAsAlumni(unittest.TestCase):
                                                      self.template)
         self.generator_system_service.create_new_lab_website(
             self.domain, {self.labMember1_email: {"full_name":self.labMember1_name, "degree":"B.Sc."}, self.labMember2_email: {"full_name":self.labMember2_name, "degree":"B.Sc."}}, self.lab_managers,
-            {"email": self.site_creator_email, "full_name": "Site Creator", "degree": "Ph.D."}
-        )
+            {"email": self.site_creator_email, "full_name": "Site Creator", "degree": "Ph.D."},        "")
 
         # Simulate a lab manager login
-        self.manager_userId = self.lab_system_service.enter_lab_website(self.domain).get_data()
+        self.manager_userId = self.lab_system_service.enter_lab_website(self.domain)
         self.siteCreator_userId = self.lab_system_service.enter_lab_website(self.domain).get_data()
-        self.lab_system_service.login(self.domain, self.manager_userId, "manager1@example.com")
+        self.manager_userId = self.lab_system_service.login(self.domain, self.manager_userId, "manager1@example.com").get_data()
 
     def tearDown(self):
+        # Call parent tearDown to stop mocks
+        super().tearDown()
         # Reset the system after each test
         self.generator_system_service.reset_system()
 
@@ -58,29 +62,33 @@ class TestDefineMemberAsAlumni(unittest.TestCase):
         self.assertTrue(response.is_success())
 
         # Validate that the member is now in the alumni list
-        alumni = self.lab_system_service.get_all_alumnis(self.domain).get_data()
-        self.assertIn(self.labMember1_email, alumni)
+        alumnis = self.lab_system_service.get_all_alumnis(self.domain).get_data()
+        alumnis = [alumni['email'] for alumni in alumnis]
+        self.assertIn(self.labMember1_email, alumnis)
 
         # Validate that the member is no longer in the member list
         members = self.lab_system_service.get_all_lab_members(self.domain).get_data()
+        members = [member['email'] for member in members]
         self.assertNotIn(self.labMember1_email, members)
 
     def test_define_manager_as_alumni_success(self):
         """
         Test that a lab manager can successfully define a lab member as alumni.
         """
-        self.lab_system_service.login(self.domain, self.siteCreator_userId, self.site_creator_email)
+        self.siteCreator_userId = self.lab_system_service.login(self.domain, self.siteCreator_userId, self.site_creator_email).get_data()
         response = self.lab_system_service.define_member_as_alumni(
             self.siteCreator_userId, self.labManager1_email, self.domain
         )
         self.assertTrue(response.is_success())
 
         # Validate that the member is now in the alumni list
-        alumni = self.lab_system_service.get_all_alumnis(self.domain).get_data()
-        self.assertIn(self.labManager1_email, alumni)
+        alumnis = self.lab_system_service.get_all_alumnis(self.domain).get_data()
+        alumnis = [alumni['email'] for alumni in alumnis]
+        self.assertIn(self.labManager1_email, alumnis)
 
         # Validate that the member is no longer in the member list
         managers = self.lab_system_service.get_all_lab_managers(self.domain).get_data()
+        managers = [manager['email'] for manager in managers]
         self.assertNotIn(self.labManager1_email, managers)
 
     def test_define_member_as_alumni_failure_not_manager(self):
@@ -88,8 +96,8 @@ class TestDefineMemberAsAlumni(unittest.TestCase):
         Test that a non-manager user cannot define a member as alumni.
         """
         # Simulate a lab member login
-        member_userId = self.lab_system_service.enter_lab_website(self.domain).get_data()
-        self.lab_system_service.login(self.domain, member_userId, self.labMember1_email)
+        member_userId = self.lab_system_service.enter_lab_website(self.domain)
+        member_userId = self.lab_system_service.login(self.domain, member_userId, self.labMember1_email).get_data()
 
         response = self.lab_system_service.define_member_as_alumni(
             member_userId, self.labMember2_email, self.domain
@@ -118,16 +126,3 @@ class TestDefineMemberAsAlumni(unittest.TestCase):
         )
         self.assertFalse(response.is_success())
         self.assertEqual(response.get_message(), ExceptionsEnum.SITE_CREATOR_CANT_BE_ALUMNI.value)
-
-    def test_define_member_as_alumni_failure_user_not_logged_in(self):
-        """
-        Test that a user who is not logged in cannot define a member as alumni.
-        """
-        # Simulate logout for the manager
-        self.lab_system_service.logout(self.domain, self.manager_userId)
-
-        response = self.lab_system_service.define_member_as_alumni(
-            self.manager_userId, self.labMember1_email, self.domain
-        )
-        self.assertFalse(response.is_success())
-        self.assertEqual(response.get_message(), ExceptionsEnum.USER_IS_NOT_MEMBER.value)

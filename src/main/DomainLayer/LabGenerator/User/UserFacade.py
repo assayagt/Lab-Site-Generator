@@ -53,7 +53,10 @@ class UserFacade:
         This method validates the token exists, and then extracts email from the token
         and then get or create member by email (we trust the token because it was validated by google)
         """
-        email = self.get_email_from_token(google_token=google_token)
+        try:
+            email = self.get_email_from_token(google_token=google_token)
+        except Exception as e:
+            raise Exception(e)
         if not self.dal_controller.members_repo.find_by_email(email=email):
             self.dal_controller.members_repo.save_member(email=email)
         return email

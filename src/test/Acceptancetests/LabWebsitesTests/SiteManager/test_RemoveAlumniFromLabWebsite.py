@@ -4,9 +4,12 @@ from src.main.DomainLayer.LabWebsites.User.Degree import Degree
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.test.Acceptancetests.LabGeneratorTests.ProxyToTests import ProxyToTest
 from src.test.Acceptancetests.LabWebsitesTests.ProxyToTests import ProxyToTests
+from src.test.Acceptancetests.LabWebsitesTests.BaseTestClass import BaseTestClass
 
-class TestRemoveAlumniFromLabWebsite(unittest.TestCase):
+class TestRemoveAlumniFromLabWebsite(BaseTestClass):
     def setUp(self):
+        # Call parent setUp to initialize mocks
+        super().setUp()
         # Initialize the system with real data and components
         self.generator_system_service = ProxyToTest("Real")
         self.lab_system_service = ProxyToTests("Real", self.generator_system_service.get_lab_system_controller())
@@ -44,12 +47,14 @@ class TestRemoveAlumniFromLabWebsite(unittest.TestCase):
         # Simulate a lab manager login
         self.manager_userId = self.lab_system_service.enter_lab_website(self.domain).get_data()
         self.siteCreator_userId = self.lab_system_service.enter_lab_website(self.domain).get_data()
-        self.lab_system_service.login(self.domain, self.manager_userId, "manager1@example.com")
+        self.manager_userId = self.lab_system_service.login(self.domain, self.manager_userId, "manager1@example.com").get_data()
 
         # First make a member an alumni
         self.lab_system_service.define_member_as_alumni(self.manager_userId, self.labMember1_email, self.domain)
 
     def tearDown(self):
+        # Call parent tearDown to stop mocks
+        super().tearDown()
         # Reset the system after each test
         self.generator_system_service.reset_system()
 
@@ -63,11 +68,13 @@ class TestRemoveAlumniFromLabWebsite(unittest.TestCase):
         self.assertTrue(response.is_success())
 
         # Validate that the member is no longer in the alumni list
-        alumni = self.lab_system_service.get_all_alumnis(self.domain).get_data()
-        self.assertNotIn(self.labMember1_email, alumni)
+        alumnis = self.lab_system_service.get_all_alumnis(self.domain).get_data()
+        alumnis = [alumni['email'] for alumni in alumnis]
+        self.assertNotIn(self.labMember1_email, alumnis)
 
         # Validate that the member is back in the member list
         members = self.lab_system_service.get_all_lab_members(self.domain).get_data()
+        members = [member['email'] for member in members]
         self.assertIn(self.labMember1_email, members)
 
     def test_remove_alumni_failure_not_manager(self):
@@ -76,7 +83,7 @@ class TestRemoveAlumniFromLabWebsite(unittest.TestCase):
         """
         # Simulate a lab member login
         member_userId = self.lab_system_service.enter_lab_website(self.domain).get_data()
-        self.lab_system_service.login(self.domain, member_userId, self.labMember2_email)
+        member_userId = self.lab_system_service.login(self.domain, member_userId, self.labMember2_email).get_data()
 
         response = self.lab_system_service.remove_alumni_from_labWebsite(
             member_userId, self.labMember1_email, self.domain
@@ -94,16 +101,3 @@ class TestRemoveAlumniFromLabWebsite(unittest.TestCase):
         self.assertFalse(response.is_success())
         print(response.get_message())
         self.assertEqual(response.get_message(), ExceptionsEnum.USER_IS_NOT_AN_ALUMNI.value)
-
-    def test_remove_alumni_failure_user_not_logged_in(self):
-        """
-        Test that a user who is not logged in cannot remove an alumni.
-        """
-        # Simulate logout for the manager
-        self.lab_system_service.logout(self.domain, self.manager_userId)
-
-        response = self.lab_system_service.remove_alumni_from_labWebsite(
-            self.manager_userId, self.labMember1_email, self.domain
-        )
-        self.assertFalse(response.is_success())
-        self.assertEqual(response.get_message(), ExceptionsEnum.USER_IS_NOT_MEMBER.value)

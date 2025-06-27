@@ -280,13 +280,6 @@ class DatabaseManager:
             "publications",         # depends on websites
             "news",                 # depends on websites
             
-            # Second: Role tables that depend on lab_members
-            "LabRoles_alumnis",     # depends on lab_members
-            "LabRoles_siteCreator", # depends on lab_members
-            "LabRoles_managers",    # depends on lab_members
-            "LabRoles_members",     # depends on lab_members
-            "LabRoles_users",       # depends on lab_members
-            
             # Third: Tables that depend on site_customs
             "lab_members",          # depends on site_customs
             "member_domain",        # depends on site_customs and member_emails
