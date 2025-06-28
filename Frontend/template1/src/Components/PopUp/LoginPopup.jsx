@@ -5,10 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 
-const LoginPopup = ({ onClose }) => {
+const LoginPopup = ({ onClose, onLoginSuccess, loginError, setLoginError }) => {
   const [email, setEmail] = useState("");
-  const [error, setError] = useState(false);
-  const [errorMsg, setErrorMsg] = useState(false);
+  const [error, setError] = useState(setLoginError);
+  const [errorMsg, setErrorMsg] = useState(loginError);
   const { login, fetchToken } = useAuth(); // Access the login function from context
   const navigate = useNavigate();
 
@@ -74,9 +74,7 @@ const LoginPopup = ({ onClose }) => {
           onChange={(e) => setEmail(e.target.value)}
         /> */}
 
-        {error && (
-          <div className="login-error">Invalid email. Please try again.</div>
-        )}
+        {error && <div className="login-error">{errorMsg}</div>}
 
         {/* <button className="login-button" onClick={handleGoogleSuccess}>
           Login
