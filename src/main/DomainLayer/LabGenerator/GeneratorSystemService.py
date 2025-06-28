@@ -308,7 +308,7 @@ class GeneratorSystemService:
                 "domain": domain,
                 "name": website.get_name(),
                 "components": website.get_components(),
-                "template": website.get_template().value,
+                "template": website.get_template().value if website.get_template() else None,
                 "logo": logo_data_url,  # Include the logo
                 "home_picture":  picture_data_url,  # Include the home picture,
                 "gallery_images": gallery_images
