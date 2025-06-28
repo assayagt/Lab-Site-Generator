@@ -15,6 +15,9 @@ from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
 from src.main.DomainLayer.LabGenerator.GeneratorSystemService import GeneratorSystemService
 from src.main.DomainLayer.LabWebsites.LabSystemService import LabSystemService
 from src.main.DomainLayer.LabWebsites.Website.ContactInfo import ContactInfo
+from src.main.DomainLayer.socketio_instance import init_socketio
+import shutil
+import logging
 
 def send_test_notifications():
     while True:
@@ -28,9 +31,9 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = app_secret_key
 # CORS(app)
 
-CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "http://localhost:3001"]}})  # Allow both frontends
+CORS(app, resources={r"/*": {"origins": ["http://lsg.cs.bgu.ac.il", "https://lsg.cs.bgu.ac.il"]}})
 api = Api(app)
-socketio.init_app(app)
+socketio = init_socketio(app)
 # Directories for file storage and website generation
 UPLOAD_FOLDER = './uploads'
 GENERATED_WEBSITES_FOLDER = './LabWebsitesUploads'
@@ -274,7 +277,6 @@ def read_lab_info(excel_path):
 #             }, 500
 
 
-
 class UploadFilesAndData(Resource):
     def post(self):
         try:
@@ -347,6 +349,8 @@ class UploadFilesAndData(Resource):
             return {
                 "error": f"An error occurred: {str(e)}"
             }, 500
+
+
 class UploadGalleryImages(Resource):
     def post(self):
         try:
@@ -390,17 +394,17 @@ class UploadGalleryImages(Resource):
                 "error": f"An error occurred: {str(e)}"
             }, 500
 
+
 class GenerateWebsiteResource(Resource):
     def post(self):
         try:
-            # Parse JSON request body
-       # Parse incoming JSON data
             data = request.get_json()
 
-            # Ensure required fields exist
-            required_fields = ['domain', 'about_us', 'lab_address', 'lab_mail', 'lab_phone_num', 'participants', 'creator_scholar_link']
+            required_fields = ['domain', 'about_us', 'lab_address', 'lab_mail', 'lab_phone_num', 'participants',
+                               'creator_scholar_link']
             for field in required_fields:
                 if field not in data:
+                    logging.error(f"Missing required field: {field}")
                     return jsonify({"error": f"Missing required field: {field}", "response": "false"})
 
             domain = data['domain']
@@ -411,11 +415,9 @@ class GenerateWebsiteResource(Resource):
             participants = data['participants']
             creator_scholar_link = data['creator_scholar_link']
             contact_info = ContactInfo(lab_address, lab_mail, lab_phone_num)
-            # Extract lab members, managers, and site creator
+
             lab_members = {}
             lab_managers = {}
-            site_creator = None
-            print(participants)
 
             for participant in participants:
                 email = participant.get("email", "").strip()
@@ -424,7 +426,8 @@ class GenerateWebsiteResource(Resource):
                 is_lab_manager = participant.get("isLabManager", False)
 
                 if not email or not full_name or not degree:
-                    return jsonify({"error": "All participants must have an email, full name, and degree.", "response": "false"})
+                    return jsonify(
+                        {"error": "All participants must have an email, full name, and degree.", "response": "false"})
 
                 # Add to lab members
                 lab_members[email] = {"full_name": full_name, "degree": degree}
@@ -433,33 +436,59 @@ class GenerateWebsiteResource(Resource):
                 if is_lab_manager:
                     lab_managers[email] = {"full_name": full_name, "degree": degree}
 
-            # Set the site creator (there is exactly one due to check above)
             site_creator = {
                 "email": participants[0]["email"],
                 "full_name": participants[0]["fullName"],
                 "degree": participants[0]["degree"]
             }
 
+            try:
+                response = generator_system.create_new_lab_website(domain, lab_members, lab_managers, site_creator,
+                                                                   creator_scholar_link)
 
-            # Call generator system to create a new lab website
-            response = generator_system.create_new_lab_website(domain, lab_members, lab_managers, site_creator, creator_scholar_link)
+                if response.is_success():
+                    response2 = generator_system.set_site_about_us_on_creation_from_generator(domain, about_us)
+                    if response2.is_success():
+                        response3 = generator_system.set_site_contact_info_on_creation_from_generator(domain,
+                                                                                                      contact_info)
+                        if response3.is_success():
 
-            if response.is_success():
-                response2 = generator_system.set_site_about_us_on_creation_from_generator(domain, about_us)
-                if response2.is_success():
-                    response3 = generator_system.set_site_contact_info_on_creation_from_generator(domain, contact_info)
-                    if response3.is_success():
-                        # Start npm server in a new terminal
-                        command = ['start', 'cmd', '/K', 'npm', 'start']
-                        process = subprocess.Popen(command, cwd=TEMPLATE_1_PATH, shell=True)
+                            TEMPLATE_1_PATH = "/home/admin/project/Lab-Site-Generator/Frontend/template1"
+                            package_json_path = os.path.join(TEMPLATE_1_PATH, 'package.json')
 
-                        return jsonify({"message": "Website generated successfully!", "response": "true"})
-                    return jsonify({"error1": f"An error occurred: {response3.get_message()}", "response": "false"})
-                return jsonify({"error2": f"An error occurred: {response2.get_message()}", "response": "false"})
-            return jsonify({"error3": f"An error occurred: {response.get_message()}", "response": "false"})
+                            with open(package_json_path, 'r+') as f:
+                                pkg = json.load(f)
+                                pkg['homepage'] = f"/labs/{domain}"
+                                f.seek(0)
+                                json.dump(pkg, f, indent=2)
+                                f.truncate()
+
+                            try:
+                                build_process = subprocess.run(
+                                    ['npm', 'run', 'build'],
+                                    cwd=TEMPLATE_1_PATH,
+                                    check=True,
+                                    capture_output=True,
+                                    text=True
+                                )
+                            except subprocess.CalledProcessError as e:
+                                raise e
+
+                            target_path = f"/var/www/labs/{domain}"
+                            if os.path.exists(target_path):
+                                shutil.rmtree(target_path)
+                            shutil.copytree(os.path.join(TEMPLATE_1_PATH, 'build'), target_path)
+
+                            return jsonify({"message": "Website generated successfully!", "response": "true"})
+
+                        return jsonify({"error": f"An error occurred: {response3.get_message()}", "response": "false"})
+                    return jsonify({"error": f"An error occurred: {response2.get_message()}", "response": "false"})
+                return jsonify({"error": f"An error occurred: {response.get_message()}", "response": "false"})
+            except Exception as e:
+                raise e
 
         except Exception as e:
-            return jsonify({"error4": f"An error occurred: {str(e)}", "response": "false"})
+            return jsonify({"error": f"An error occurred: {str(e)}", "response": "false"})
         
 class ChooseDomain(Resource):
     def post(self):
@@ -1872,6 +1901,6 @@ api.add_resource(CrawlPublicationsForMember, '/api/CrawlPublicationsForMember')
 if __name__ == '__main__':
     # notification_thread = threading.Thread(target=send_test_notifications, daemon=True)
     # notification_thread.start()
-    socketio.run(app, host='0.0.0.0', port=5000, debug=True, use_reloader=True)    ##app.run(debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000)    ##app.run(debug=True)
 
 

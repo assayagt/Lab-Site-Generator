@@ -2,6 +2,7 @@
   "name": "lab-gen",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://lsg.cs.bgu.ac.il",
   "dependencies": {
     "@react-oauth/google": "^0.12.2",
     "axios": "^1.7.9",

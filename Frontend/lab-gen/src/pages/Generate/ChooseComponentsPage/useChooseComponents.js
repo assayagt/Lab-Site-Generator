@@ -679,7 +679,7 @@ const useChooseComponents = () => {
         });
 
         try {
-          const response = await fetch(`${baseApiUrl}/uploadGalleryImages`, {
+          const response = await fetch(`${baseApiUrl}uploadGalleryImages`, {
             method: "POST",
             body: batchFormData,
           });
@@ -760,7 +760,7 @@ const useChooseComponents = () => {
     }
 
     try {
-      const response = await fetch(`${baseApiUrl}/uploadFile`, {
+      const response = await fetch(`${baseApiUrl}uploadFile`, {
         method: "POST",
         body: formDataToSend,
       });

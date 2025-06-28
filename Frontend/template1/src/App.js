@@ -148,17 +148,21 @@ function AppContent() {
 
   useEffect(() => {
     const fetchHomepageDetails = async () => {
-      let domain = window.location.hostname;
-      domain = domain.replace(/^https?:\/\//, "");
-      domain = domain.replace(":3001", "");
+      //let domain = window.location.hostname;Add commentMore actions
+      //domain = domain.replace(/^https?:\/\//, "");
+      //domain = domain.replace(":3001", "");
+      let pathParts = window.location.pathname.split('/');
+      let domain = pathParts[2]; // "/labs-beta/beta4/" → ['', 'labs-beta', 'beta4', '']
+      console.log("Detected lab domain:", domain);
+      // Add "www." if missing
+      //if (!domain.startsWith("www.")) {
+      //  domain = `www.${domain}`;
+      //}
 
-      if (!domain.startsWith("www.")) {
-        domain = `www.${domain}`;
-      }
-
-      if (!domain.endsWith(".com")) {
-        domain = `${domain}.com`;
-      }
+      // Add ".com" if missing
+      //if (!domain.endsWith(".com")) {
+      //  domain = `${domain}.com`;
+      //}
 
       sessionStorage.setItem("domain", domain);
 
@@ -313,7 +317,7 @@ function AppContent() {
 function App() {
   return (
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
-      <Router>
+      <Router basename={process.env.PUBLIC_URL}>
         <AuthProvider>
           <NotificationProvider>
             <EditModeProvider>
