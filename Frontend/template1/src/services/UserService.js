@@ -25,7 +25,6 @@ export const SendLogout = async () => {
       domain: sessionStorage.getItem("domain"),
     });
     data = response.data;
-    console.log(data);
   } catch (err) {
     console.error("Error sending to signup" + err);
   }
@@ -53,7 +52,6 @@ export const fetchUserNotifications = async (email) => {
         "sid"
       )}&domain=${sessionStorage.getItem("domain")}`
     );
-    console.log(data.data);
     if (data.data.response === "true") {
       return data.data.notifications || [];
     }

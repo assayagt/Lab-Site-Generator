@@ -45,7 +45,6 @@ const MyAccountPage = () => {
             ...details,
           })
         );
-        console.log(websitesArray);
         setWebsites(websitesArray);
       } catch (err) {
         setError(err.message);
@@ -61,12 +60,10 @@ const MyAccountPage = () => {
     const selectedWebsite = websites.find(
       (site) => site.domain === websiteDomain
     );
-    console.log(websiteDomain);
     const data = await getCustomSite(
       sessionStorage.getItem("sid"),
       websiteDomain
     );
-    console.log(data);
     setWebsite({
       components: data?.data?.components || [],
       template: data?.data?.template || "",

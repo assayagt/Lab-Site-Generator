@@ -36,7 +36,6 @@ export const AuthProvider = ({ children }) => {
     let data = await EnterSystem();
     if (data) {
       sessionStorage.setItem("sid", data);
-      console.log(data);
       return data;
     }
     return data;

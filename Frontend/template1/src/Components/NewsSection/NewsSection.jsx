@@ -5,9 +5,11 @@ import { addNewsRecord } from "../../services/websiteService";
 import "./News.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useWebsite } from "../../Context/WebsiteContext";
 
 const NewsSection = (props) => {
   const { editMode } = useEditMode();
+  const { websiteData, setWebsite } = useWebsite();
 
   const [timelineData, setTimelineData] = useState([]);
   const [showAllNews, setShowAllNews] = useState(false);
@@ -63,7 +65,7 @@ const NewsSection = (props) => {
           const dateB = new Date(b.date);
           return dateB - dateA; // Newest first
         });
-
+        setWebsite({ news: updatedData });
         setTimelineData(updatedData);
         setNewItem({ date: "", link: "", text: "" });
         setShowAddForm(false);
@@ -82,7 +84,7 @@ const NewsSection = (props) => {
   return (
     <div className="timeline-container">
       <div className="timeline-header">
-        <h2 className="timeline-title">News</h2>
+        {/* <h2 className="timeline-title">News</h2> */}
 
         {editMode && (
           <>

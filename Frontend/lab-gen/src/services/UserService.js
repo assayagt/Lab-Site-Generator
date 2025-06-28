@@ -11,7 +11,6 @@ export const SendLogin = async (token, sid) => {
     })
     .then((response) => {
       data = response.data;
-      console.log(data);
       return data;
     })
     .catch((err) => {

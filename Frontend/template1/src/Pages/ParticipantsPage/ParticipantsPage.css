@@ -280,61 +280,6 @@
   margin-bottom: 20px;
 }
 
-@media (max-width: 768px) {
-  .participants-page {
-    margin: 0 20px;
-    padding-top: 10px;
-    padding-bottom: 40px;
-  }
-
-  .modal-content {
-    width: 90vw;
-    padding: 15px;
-  }
-
-  .form-group {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
-
-  .form-group label {
-    width: 100%;
-    text-align: left;
-  }
-
-  .modal-content-item {
-    width: 100%;
-  }
-
-  .modal-buttons {
-    flex-direction: column;
-    gap: 10px;
-  }
-  .degree-section-items {
-    margin-bottom: 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%; /* Ensures the grid doesn't exceed its container */
-  }
-  .personal_bio {
-    max-height: 160px;
-    overflow-y: auto;
-    word-break: break-word;
-    padding-right: 6px; /* optional spacing */
-  }
-
-  /* Optional scrollbar styling for visibility */
-  .personal-bio::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  .personal-bio::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
-  }
-}
 .contact-links {
   display: flex;
   flex-direction: column;
@@ -373,4 +318,290 @@
 }
 .profile-link-icon:hover {
   transform: translateY(-2px);
+}
+
+.alumni-degree {
+  font-style: italic;
+  color: #666;
+  font-size: 14px;
+}
+
+.no-participants-msg {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 20px;
+}
+
+/* iPad Responsive Design */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .participants-page {
+    margin: 0 30px;
+  }
+
+  .participant_title {
+    font-size: 26px;
+  }
+
+  .degree {
+    font-size: 22px;
+  }
+
+  .participant {
+    height: 240px;
+  }
+
+  .personal_photo {
+    height: 140px;
+    width: 110px;
+  }
+
+  .contact-links {
+    top: 140px;
+  }
+
+  .filter-container {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+  }
+
+  .filter-container label {
+    font-size: 14px;
+  }
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+  .participants-page {
+    margin: 0 15px;
+    padding-top: 15px;
+    padding-bottom: 40px;
+  }
+
+  .participant_title {
+    font-size: 24px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .degree {
+    font-size: 20px;
+  }
+
+  .fullname {
+    font-size: 16px;
+  }
+
+  .filter-container {
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .filter-container label {
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  #degree-filter {
+    max-width: 150px;
+    padding: 6px 8px;
+    font-size: 14px;
+  }
+
+  .degree-section {
+    padding: 5px;
+    gap: 15px;
+  }
+
+  .degree-section-items {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+
+  .participant {
+    height: auto;
+    min-height: 200px;
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+    text-align: center;
+  }
+
+  .personal_photo {
+    height: 120px;
+    width: 90px;
+    margin: 0 auto;
+    align-self: center;
+  }
+
+  .personal_info_member {
+    gap: 8px;
+    text-align: center;
+    position: relative;
+  }
+
+  .name-with-icon {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .alumni-degree {
+    display: block;
+    margin-top: 2px;
+  }
+
+  .personal_bio {
+    max-height: 80px;
+    margin-right: 0;
+    padding-right: 0;
+    text-align: left;
+    font-size: 14px;
+  }
+
+  .contact-links {
+    position: static;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .email-link,
+  .linkedin-link {
+    font-size: 13px;
+    justify-content: center;
+  }
+
+  .edit-options {
+    position: static;
+    justify-content: center;
+    margin-top: 10px;
+    gap: 15px;
+  }
+
+  .edit-options label {
+    font-size: 14px;
+  }
+
+  /* Modal adjustments for mobile */
+  .modal-content {
+    width: 90vw;
+    max-width: 350px;
+    padding: 20px;
+    margin: 10px;
+  }
+
+  .form-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .form-group label {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .modal-content-item {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .modal-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .modal-buttons button,
+  .modal-buttons .modal-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .title_add_user {
+    font-size: 18px;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  /* Tooltip adjustments */
+  .tooltip-text {
+    font-size: 12px;
+    padding: 4px 8px;
+    transform: translateX(-50%);
+  }
+
+  /* Scrollbar styling for mobile */
+  .personal_bio::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  .personal_bio::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+  }
+
+  .personal_bio::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .participants-page {
+    margin: 0 10px;
+    padding-top: 10px;
+  }
+
+  .participant_title {
+    font-size: 20px;
+  }
+
+  .degree {
+    font-size: 18px;
+  }
+
+  .fullname {
+    font-size: 15px;
+  }
+
+  .participant {
+    padding: 12px;
+    min-height: 180px;
+  }
+
+  .personal_photo {
+    height: 100px;
+    width: 75px;
+  }
+
+  .personal_bio {
+    font-size: 13px;
+    max-height: 60px;
+  }
+
+  .contact-links {
+    gap: 6px;
+  }
+
+  .email-link,
+  .linkedin-link {
+    font-size: 12px;
+  }
+
+  .modal-content {
+    width: 95vw;
+    padding: 15px;
+  }
+
+  .add-participant-btn {
+    width: 28px;
+    height: 28px;
+  }
 }

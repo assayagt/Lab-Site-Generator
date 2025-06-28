@@ -141,7 +141,6 @@ const AccountPage = () => {
         sessionStorage.getItem("sid")
       );
       if (data) {
-        console.log(data);
         setUserDetails({
           bio: data.user.bio || "",
           email: data.user.email || "",
@@ -149,7 +148,7 @@ const AccountPage = () => {
           degree: data.user.degree || "",
           linkedIn: data.user.linkedin_link || "",
           fullname: data.user.fullName,
-          emailNotifications: data.user.emailNotifications !== false, // Default to true if not set
+          emailNotifications: data.user.email_notifications, // Default to true if not set
           google_scholar: data.user.scholar_link || "",
           profile_picture: data.user.profile_picture || "",
         });
@@ -159,7 +158,6 @@ const AccountPage = () => {
     const fetchPublications = async () => {
       const domain = sessionStorage.getItem("domain");
       const data = await getMemberPublications(domain);
-      console.log("Fetched Publications:", data); // Debugging log
       setPublications(data || []);
     };
 
@@ -171,7 +169,6 @@ const AccountPage = () => {
         sessionStorage.getItem("sid")
       );
 
-      console.log("Fetched Crawled Publications:", data);
       setCrawledPublications(data);
     };
 
@@ -253,7 +250,6 @@ const AccountPage = () => {
         selectedFile,
         sessionStorage.getItem("domain")
       );
-      console.log(response);
     } catch (error) {
       setErrorMessage("Error uploading photo.");
     }
@@ -494,10 +490,8 @@ const AccountPage = () => {
           publication.git_link
         );
         if (githubResponse.response === "true") {
-          console.log(githubResponse);
           isUpdated = true;
         } else {
-          console.log(githubResponse);
           isUpdated = false;
         }
       }
@@ -606,7 +600,11 @@ const AccountPage = () => {
       }
 
       // Handle email notification preference
-      res = await setMemberEmailNotification(sid, domain, userDetails.emailNotifications);
+      res = await setMemberEmailNotification(
+        sid,
+        domain,
+        userDetails.emailNotifications
+      );
       if (res?.response === "true") {
         isUpdated = true;
       } else {
@@ -618,7 +616,6 @@ const AccountPage = () => {
         setSaveButtonText("Saved");
         setHasUnsavedChanges(false);
       } else {
-        console.log(res);
         setErrorMessage("Error: " + res?.message);
       }
     } catch (error) {

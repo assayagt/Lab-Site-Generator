@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext } from "react";
 import { SendLogin, EnterSystem } from "../services/UserService";
 
 const AuthContext = createContext();
@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
       if (data.response === "true") {
         sessionStorage.setItem("isLoggedIn", true);
         sessionStorage.setItem("userEmail", data.email);
-        sessionStorage.setItem('sid', data.user_id); 
+        sessionStorage.setItem('sid', data.user_id);
         return data;
       }
       return data;
@@ -29,7 +29,6 @@ export const AuthProvider = ({ children }) => {
     let data = await EnterSystem();
     if (data) {
       sessionStorage.setItem("sid", data);
-      console.log(data);
       return data;
     }
     return data;
