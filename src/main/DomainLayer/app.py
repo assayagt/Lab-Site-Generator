@@ -19,6 +19,42 @@ from src.main.DomainLayer.socketio_instance import init_socketio
 import shutil
 import logging
 
+# Configure logging
+def setup_logging():
+    # Create logs directory if it doesn't exist
+    logs_dir = './logs'
+    os.makedirs(logs_dir, exist_ok=True)
+    
+    # Configure logging to write to both file and console
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler(os.path.join(logs_dir, 'app.log'), encoding='utf-8'),
+            logging.StreamHandler()  # This will also log to console
+        ]
+    )
+    
+    # Create a specific logger for login events
+    login_logger = logging.getLogger('login')
+    login_logger.setLevel(logging.INFO)
+    
+    # Create file handler for login-specific logs
+    login_file_handler = logging.FileHandler(os.path.join(logs_dir, 'login.log'), encoding='utf-8')
+    login_file_handler.setLevel(logging.INFO)
+    
+    # Create formatter for login logs
+    login_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    login_file_handler.setFormatter(login_formatter)
+    
+    # Add handler to login logger
+    login_logger.addHandler(login_file_handler)
+    
+    return login_logger
+
+# Initialize logging
+login_logger = setup_logging()
+
 def send_test_notifications():
     while True:
         socketio.emit('registration-notification', {'message': 'Test notification'})
@@ -489,7 +525,7 @@ class GenerateWebsiteResource(Resource):
 
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}", "response": "false"})
-        
+
 class ChooseDomain(Resource):
     def post(self):
         """
@@ -857,15 +893,28 @@ class LoginWebsite(Resource):
         user_id = data.get('user_id')
         google_token = data.get('google_token')
 
+        # Log login attempt
+        login_logger.info(f"Lab website login attempt - Domain: {domain}, User ID: {user_id}, Has Google Token: {google_token is not None}")
+
         try:
+            # Log login attempt to lab system
+            login_logger.info(f"Attempting to login user to lab system - Domain: {domain}, User ID: {user_id}")
+            
             response = lab_system_service.login(domain=domain, google_token=google_token)
+            
             if response.is_success():
                 email = response.get_data()
+                # Log successful login
+                login_logger.info(f"Lab website login successful - Domain: {domain}, User ID: {user_id}, Email: {email}")
                 return jsonify({"message": response.get_message(), "response": "true", "email": email, "user_id": google_token})
             else:
+                # Log failed login
+                login_logger.warning(f"Lab website login failed - Domain: {domain}, User ID: {user_id}, Reason: {response.get_message()}")
                 #notify_registration(email, domain)
                 return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
+            # Log unexpected error during login
+            login_logger.error(f"Unexpected error during lab website login - Domain: {domain}, User ID: {user_id}, Error: {str(e)}")
             return jsonify({"error": f"An error occurred: {str(e)}"})
         
 class LogoutWebsite(Resource):
