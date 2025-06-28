@@ -317,7 +317,7 @@ function AppContent() {
 function App() {
   return (
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
-      <Router>
+      <Router basename={process.env.PUBLIC_URL}>
         <AuthProvider>
           <NotificationProvider>
             <EditModeProvider>
