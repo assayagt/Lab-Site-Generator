@@ -16,6 +16,41 @@ from google.oauth2 import id_token
 from google.auth.transport import requests
 import glob
 
+# Configure logging
+def setup_logging():
+    # Create logs directory if it doesn't exist
+    logs_dir = './logs'
+    os.makedirs(logs_dir, exist_ok=True)
+    
+    # Configure logging to write to both file and console
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler(os.path.join(logs_dir, 'app.log'), encoding='utf-8'),
+            logging.StreamHandler()  # This will also log to console
+        ]
+    )
+    
+    # Create a specific logger for login events
+    login_logger = logging.getLogger('login')
+    login_logger.setLevel(logging.INFO)
+    
+    # Create file handler for login-specific logs
+    login_file_handler = logging.FileHandler(os.path.join(logs_dir, 'login.log'), encoding='utf-8')
+    login_file_handler.setLevel(logging.INFO)
+    
+    # Create formatter for login logs
+    login_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    login_file_handler.setFormatter(login_formatter)
+    
+    # Add handler to login logger
+    login_logger.addHandler(login_file_handler)
+    
+    return login_logger
+
+# Initialize logging
+login_logger = setup_logging()
 
 def send_test_notifications():
     while True:
@@ -663,27 +698,47 @@ class Login(Resource):
         data = request.get_json()
         user_id = data.get('user_id')
         google_token = data.get('google_token')
+        
+        # Log login attempt
+        login_logger.info(f"Login attempt initiated - User ID: {user_id}, Has Google Token: {google_token is not None}")
     
-
         try:
             if google_token:
                 try:
+                    # Log token verification attempt
+                    login_logger.info(f"Attempting to verify Google token for user ID: {user_id}")
+                    
                     # Verify the token
                     print("request token")
                     idinfo = id_token.verify_oauth2_token(google_token, requests.Request(), GOOGLE_CLIENT_ID, clock_skew_in_seconds=2)
                     print("token verified")
                     email = idinfo['email']
                     
+                    # Log successful token verification
+                    login_logger.info(f"Google token verified successfully for email: {email}")
+                    
                 except ValueError as e:
+                    # Log token verification failure
+                    login_logger.error(f"Google token verification failed for user ID: {user_id}. Error: {str(e)}")
                     print("Token verification failed:", str(e))
                     return jsonify({"error": "Invalid Google token", "response": "false"})
 
+            # Log login attempt to generator system
+            login_logger.info(f"Attempting to login user ID: {user_id} with email: {email} to generator system")
+            
             response = generator_system.login(user_id, email)
             
             if response.is_success():
+                # Log successful login
+                login_logger.info(f"User login successful - User ID: {user_id}, Email: {email}")
                 return jsonify({"message": "User logged in successfully","response" : "true", "email": email })
-            return jsonify({"message": response.get_message(),"response" : "false" })
+            else:
+                # Log failed login
+                login_logger.warning(f"User login failed - User ID: {user_id}, Email: {email}, Reason: {response.get_message()}")
+                return jsonify({"message": response.get_message(),"response" : "false" })
         except Exception as e:
+            # Log unexpected error during login
+            login_logger.error(f"Unexpected error during login for user ID: {user_id}. Error: {str(e)}")
             return jsonify({"error": f"An error occurred: {str(e)}","response" : "false"})
 
 # Handles user logout
