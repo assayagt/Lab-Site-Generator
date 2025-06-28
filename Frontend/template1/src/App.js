@@ -93,7 +93,7 @@ function AppContent() {
     if (user) {
       logoutTimerRef.current = setTimeout(async () => {
         await handleAutoLogout();
-      }, 1 * 60 * 1000); // 2 minutes for testing (change to 60 * 60 * 1000 for 60 minutes)
+      }, 60 * 60 * 1000); // 2 minutes for testing (change to 60 * 60 * 1000 for 60 minutes)
     }
   };
 
