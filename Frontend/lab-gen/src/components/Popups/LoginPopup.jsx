@@ -1,59 +1,44 @@
 import React, { useState } from "react";
-import { useAuth } from "../../Context/AuthContext"; // Assuming you have this context
-import "./LoginPopup.css"; // Add necessary styles
+import { useAuth } from "../../Context/AuthContext";
+import "./LoginPopup.css";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
 
 const LoginPopup = ({ onClose }) => {
-  const [email, setEmail] = useState("");
   const [error, setError] = useState(false);
-  const [errorMsg, setErrorMsg] = useState(false);
-  const { login } = useAuth(); // Access the login function from context
+  const [errorMsg, setErrorMsg] = useState("");
+  const { login } = useAuth();
   const navigate = useNavigate();
-  const handleLogin = async () => {
-    if (email) {
-      try {
-        let data = await login(email); // Await the login function to get the result
-        if (data.response === "false") {
-          setError(true);
-        } else {
-          setError(false);
-          setErrorMsg(data);
-          onClose();
-          navigate("/choose-components");
-        }
-      } catch (err) {
-        console.error("Login error:", err);
-        setError(true);
-      }
-    } else {
-      setError(true);
-    }
-  };
+
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      const token = credentialResponse.credential; // ✅ SEND THE RAW TOKEN
+      const token = credentialResponse.credential;
+      const result = await login(token); // your backend should validate this token
 
-      // const email = decoded.email;
-
-      const success = await login(token); // This still hits your backend
-      if (success.response === "true") {
-        onClose();
-        navigate("/choose-components");
+      if (result.response === "true") {
+        setError(false);
+        onClose(); // close the popup
+        navigate("/choose-components"); // redirect after login
       } else {
         setError(true);
-        setErrorMsg(success.message);
+        setErrorMsg(result.message || "Login failed.");
       }
     } catch (err) {
       console.error("Google login error:", err);
-      setErrorMsg(err);
       setError(true);
+      setErrorMsg("Login failed. Please try again.");
     }
   };
 
   return (
-    <div className="login-popup-overlay">
+    <div
+      className="login-popup-overlay"
+      onClick={(e) => {
+        if (e.target.className === "login-popup-overlay") {
+          onClose();
+        }
+      }}
+    >
       <div className="login-popup">
         <button className="close-popup" onClick={onClose}>
           ×
@@ -63,28 +48,19 @@ const LoginPopup = ({ onClose }) => {
           Login with your University Google account
         </p>
 
-        {/* <input
-          className="login-input"
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        /> */}
-
         {error && (
-          <div className="login-error">Invalid email. Please try again.</div>
+          <div className="login-error">
+            {errorMsg || "Invalid email. Please try again."}
+          </div>
         )}
 
-        {/* <button className="login-button" onClick={handleGoogleSuccess}>
-          Login
-        </button> */}
         <GoogleLogin
           onSuccess={handleGoogleSuccess}
           onError={() => {
             setError(true);
-            console.log("Login Failed");
+            setErrorMsg("Login failed. Please try again.");
           }}
-          ux_mode="popup" // ensures a new token is fetched every time
+          ux_mode="popup"
         />
       </div>
     </div>

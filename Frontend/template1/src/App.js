@@ -3,18 +3,15 @@ import HomePage from "./Pages/HomePage/HomePage";
 import HomePage2 from "./Pages/HomePage/HomePage2";
 import MediaPage from "./Pages/MediaPage/MediaPage";
 import MediaPage2 from "./Pages/MediaPage/MediaPage2";
-
-import React, { useEffect, useState } from "react";
+import LoginPopup from "./Components/PopUp/LoginPopup";
+import React, { useEffect, useState, useRef } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import ParticipantProfile from "./Pages/ParticipantProfile/ParticipantProfile";
 import ParticipantProfile2 from "./Pages/ParticipantProfile/ParticipantProfile2";
 
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-} from "react-router-dom"; // Import Routes, Navigate
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+
 import ParticipantsPage2 from "./Pages/ParticipantsPage/ParticipantsPage2";
 
 import ParticipantsPage from "./Pages/ParticipantsPage/ParticipantsPage";
@@ -24,21 +21,30 @@ import Header from "./Components/Header/Header";
 import Header2 from "./Components/Header2/Header2";
 import AccountPage from "./Pages/AccountPage/AccountPage";
 
-import AccountPage2 from "./Pages/AccountPage/AccountPage2";
-
 import PublicationsPage from "./Pages/PublicationsPage/PublicationsPage";
 import PublicationsPage2 from "./Pages/PublicationsPage/PublicationsPage2";
 
-//import publications from "./publications.json"
-import { AuthProvider } from "./Context/AuthContext";
+import { AuthProvider, useAuth } from "./Context/AuthContext";
 import { useWebsite } from "./Context/WebsiteContext";
 import { getHomepageDetails } from "./services/websiteService";
 import { NotificationProvider } from "./Context/NotificationContext";
 import { EditModeProvider } from "./Context/EditModeContext";
-import { useAuth } from "./Context/AuthContext";
-function App() {
+
+function AppContent() {
   const { websiteData, setWebsite } = useWebsite();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth(); // Assuming you have user and logout from AuthContext
   const [loading, setLoading] = useState(true);
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [loginError, setLoginError] = useState(false);
+  const [userLoggedOut, setUserLoggedOut] = useState(
+    sessionStorage.getItem("wasLoggedOutDueToInactivity") === "true"
+  ); // Track if user was logged out due to inactivity
+
+  // Reference to the logout timer
+  const logoutTimerRef = useRef(null);
+
   const desiredOrder = [
     "Home",
     "About Us",
@@ -47,46 +53,118 @@ function App() {
     "Media",
     "Contact Us",
   ];
+
+  // Function to handle auto-logout
+  const handleAutoLogout = async () => {
+    if (user) {
+      // Only logout if user is actually logged in
+      const logoutSuccess = await logout();
+      if (logoutSuccess) {
+        // Clear session storage and user state
+        sessionStorage.removeItem("isLoggedIn");
+        sessionStorage.removeItem("userEmail");
+        sessionStorage.clear();
+        console.log("User has been logged out due to inactivity.");
+        sessionStorage.setItem("wasLoggedOutDueToInactivity", "true"); // set again after clearing
+
+        window.location.reload(); // <--- This forces a full page refresh
+      }
+    }
+  };
+
+  useEffect(() => {
+    const wasLoggedOut = sessionStorage.getItem("wasLoggedOutDueToInactivity");
+    if (wasLoggedOut === "true") {
+      setUserLoggedOut(true);
+      setShowLoginPopup(true);
+      if (location.pathname === "/Account") {
+        navigate("/");
+      }
+    }
+  }, []);
+
+  // Function to reset the inactivity timer
+  const resetTimer = () => {
+    if (logoutTimerRef.current) {
+      clearTimeout(logoutTimerRef.current);
+    }
+
+    // Only set timer if user is logged in
+    if (user) {
+      logoutTimerRef.current = setTimeout(async () => {
+        await handleAutoLogout();
+      }, 1 * 60 * 1000); // 2 minutes for testing (change to 60 * 60 * 1000 for 60 minutes)
+    }
+  };
+
+  // Set up inactivity timer
+  useEffect(() => {
+    // Events to track user activity
+    const events = [
+      "load",
+      "mousemove",
+      "mousedown",
+      "click",
+      "scroll",
+      "keypress",
+      "touchstart",
+    ];
+
+    // Add event listeners
+    events.forEach((event) => {
+      window.addEventListener(event, resetTimer);
+    });
+
+    // Start the timer initially
+    resetTimer();
+
+    // Cleanup function
+    return () => {
+      events.forEach((event) => {
+        window.removeEventListener(event, resetTimer);
+      });
+      if (logoutTimerRef.current) {
+        clearTimeout(logoutTimerRef.current);
+      }
+    };
+  }, [user]); // Re-run when user login status changes
+
+  // Reset the logged out flag when user logs back in
+  useEffect(() => {
+    if (user) {
+      setUserLoggedOut(false);
+    }
+  }, [user]);
+
   useEffect(() => {
     const domain = sessionStorage.getItem("domain");
 
     if (!domain && !sessionStorage.getItem("alreadyRefreshed")) {
       console.warn("🔁 domain is missing, refreshing page once...");
-
-      // prevent infinite reload loop
       sessionStorage.setItem("alreadyRefreshed", "true");
       window.location.reload();
     }
   }, []);
+
   useEffect(() => {
     const fetchHomepageDetails = async () => {
       let domain = window.location.hostname;
       domain = domain.replace(/^https?:\/\//, "");
       domain = domain.replace(":3001", "");
-      // Add "www." if missing
+
       if (!domain.startsWith("www.")) {
         domain = `www.${domain}`;
       }
 
-      // Add ".com" if missing
       if (!domain.endsWith(".com")) {
         domain = `${domain}.com`;
       }
+
       sessionStorage.setItem("domain", domain);
+
       try {
         const data = await getHomepageDetails(domain);
 
-        // const data = await getHomepageDetails("www.localhost.com");
-        // if (data.response === "true") {
-        //   const mappedData = {
-        //     domain: "www.localhost.com",
-        //     websiteName: data.data.name,
-        //     components: data.data.components,
-        //     template: data.data.template,
-        //     logo: data.data.logo,
-        //     home_picture: data.data.home_picture,
-        //     about_us: data.data.about_us,
-        //   };
         if (data.response === "true") {
           const mappedData = {
             domain: data.data.domain,
@@ -101,9 +179,7 @@ function App() {
             news: data.data.components.includes("News") ? data.data.news : "",
           };
           setWebsite(mappedData);
-          // sessionStorage.setItem("domain", mappedData.domain);
         }
-        // await fetchToken();
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -115,7 +191,7 @@ function App() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>; // Show loading indicator
+    return <div>Loading...</div>;
   }
 
   const components = desiredOrder.filter((comp) =>
@@ -123,119 +199,136 @@ function App() {
   );
 
   return (
+    <>
+      {/* Show notification if user was logged out due to inactivity */}
+      {userLoggedOut && (
+        <LoginPopup
+          onClose={() => {
+            setShowLoginPopup(false);
+            setUserLoggedOut(false);
+            sessionStorage.removeItem("wasLoggedOutDueToInactivity");
+          }}
+          onLoginSuccess={() => {
+            setShowLoginPopup(false);
+            setUserLoggedOut(false);
+            sessionStorage.removeItem("wasLoggedOutDueToInactivity");
+          }}
+          loginError={"You have been logged out due to inactivity."}
+          setLoginError={true}
+        ></LoginPopup>
+      )}
+
+      {websiteData.template === "template1" ? (
+        <Header
+          components={components}
+          title={websiteData.websiteName}
+          logo={websiteData.logo}
+        />
+      ) : (
+        <Header2
+          components={components}
+          title={websiteData.websiteName}
+          logo={websiteData.logo}
+        />
+      )}
+
+      <Routes>
+        <Route
+          path="/"
+          element={
+            websiteData.template === "template1" ? (
+              <HomePage
+                about_us={websiteData.about_us}
+                photo={websiteData.home_picture}
+                news={websiteData.news}
+                domain={websiteData.domain}
+              />
+            ) : (
+              <HomePage2
+                about_us={websiteData.about_us}
+                photo={websiteData.home_picture}
+                news={websiteData.news}
+                domain={websiteData.domain}
+              />
+            )
+          }
+        />
+        <Route
+          path="/participant/:email"
+          element={
+            websiteData.template === "template1" ? (
+              <ParticipantProfile />
+            ) : (
+              <ParticipantProfile2 />
+            )
+          }
+        />
+        <Route
+          path="/LabMembers"
+          element={
+            websiteData.template === "template1" ? (
+              <ParticipantsPage />
+            ) : (
+              <ParticipantsPage2 />
+            )
+          }
+        />
+        <Route
+          path="/ContactUs"
+          element={
+            websiteData.template === "template1" ? (
+              <ContactUsPage
+                address="Ben Gurion University of the Negev"
+                email="roni@bgu.ac.il"
+                phone="+972 523456789"
+              />
+            ) : (
+              <ContactUsPage2
+                address="Ben Gurion University of the Negev"
+                email="roni@bgu.ac.il"
+                phone="+972 523456789"
+              />
+            )
+          }
+        />
+        <Route path="/Account" element={<AccountPage />} />
+        <Route
+          path="/Publications"
+          element={
+            websiteData.template === "template1" ? (
+              <PublicationsPage />
+            ) : (
+              <PublicationsPage2 />
+            )
+          }
+        />
+        <Route
+          path="/Media"
+          element={
+            websiteData.template === "template1" ? (
+              <MediaPage />
+            ) : (
+              <MediaPage2 />
+            )
+          }
+        />
+      </Routes>
+    </>
+  );
+}
+
+function App() {
+  return (
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
-      <AuthProvider>
-        <NotificationProvider>
-          <EditModeProvider>
-            <Router>
-              {websiteData.template === "template1" ? (
-                <Header
-                  components={components}
-                  title={websiteData.websiteName}
-                  logo={websiteData.logo}
-                ></Header>
-              ) : (
-                <Header2
-                  components={components}
-                  title={websiteData.websiteName}
-                  logo={websiteData.logo}
-                ></Header2>
-              )}
-
-              <Routes>
-                <Route
-                  path="/"
-                  element={
-                    websiteData.template === "template1" ? (
-                      <HomePage
-                        about_us={websiteData.about_us}
-                        photo={websiteData.home_picture}
-                        news={websiteData.news}
-                        domain={websiteData.domain}
-                      />
-                    ) : (
-                      <HomePage2
-                        about_us={websiteData.about_us}
-                        photo={websiteData.home_picture}
-                        news={websiteData.news}
-                        domain={websiteData.domain}
-                      />
-                    )
-                  }
-                />
-                <Route
-                  path="/participant/:email"
-                  element={
-                    websiteData.template === "template1" ? (
-                      <ParticipantProfile />
-                    ) : (
-                      <ParticipantProfile2 />
-                    )
-                  }
-                />
-
-                <Route
-                  path="/LabMembers"
-                  element={
-                    websiteData.template === "template1" ? (
-                      <ParticipantsPage />
-                    ) : (
-                      <ParticipantsPage2 />
-                    )
-                  }
-                />
-                <Route
-                  path="/ContactUs"
-                  element={
-                    websiteData.template === "template1" ? (
-                      <ContactUsPage
-                        address="Ben Gurion University of the Negev"
-                        email="roni@bgu.ac.il"
-                        phone="+972 523456789"
-                      />
-                    ) : (
-                      <ContactUsPage2
-                        address="Ben Gurion University of the Negev"
-                        email="roni@bgu.ac.il"
-                        phone="+972 523456789"
-                      />
-                    )
-                  }
-                />
-                <Route
-                  path="/Account"
-                  element={
-                    websiteData.template === "template1" && <AccountPage />
-                    // : (
-                    //   <AccountPage2 />
-                    // )
-                  }
-                />
-                <Route
-                  path="/Publications"
-                  element={
-                    websiteData.template === "template1" ? (
-                      <PublicationsPage />
-                    ) : (
-                      <PublicationsPage2 />
-                    )
-                  }
-                />
-                <Route
-                  path="/Media"
-                  element={
-                    websiteData.template === "template1" ? (
-                      <MediaPage />
-                    ) : (
-                      <MediaPage2 />
-                    )
-                  }
-                />
-              </Routes>
-            </Router>
-          </EditModeProvider>
-        </NotificationProvider>
-      </AuthProvider>
+      <Router>
+        <AuthProvider>
+          <NotificationProvider>
+            <EditModeProvider>
+              <AppContent />
+            </EditModeProvider>
+          </NotificationProvider>
+        </AuthProvider>
+      </Router>
     </GoogleOAuthProvider>
   );
 }
