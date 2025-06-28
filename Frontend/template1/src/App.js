@@ -3,7 +3,7 @@ import HomePage from "./Pages/HomePage/HomePage";
 import HomePage2 from "./Pages/HomePage/HomePage2";
 import MediaPage from "./Pages/MediaPage/MediaPage";
 import MediaPage2 from "./Pages/MediaPage/MediaPage2";
-import LoginPopup from "./Components/PopUp/LoginPopup";
+import InactivityPopup from "./Components/PopUp/InactivityPopup";
 import React, { useEffect, useState, useRef } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import ParticipantProfile from "./Pages/ParticipantProfile/ParticipantProfile";
@@ -202,20 +202,13 @@ function AppContent() {
     <>
       {/* Show notification if user was logged out due to inactivity */}
       {userLoggedOut && (
-        <LoginPopup
+        <InactivityPopup
           onClose={() => {
             setShowLoginPopup(false);
             setUserLoggedOut(false);
             sessionStorage.removeItem("wasLoggedOutDueToInactivity");
           }}
-          onLoginSuccess={() => {
-            setShowLoginPopup(false);
-            setUserLoggedOut(false);
-            sessionStorage.removeItem("wasLoggedOutDueToInactivity");
-          }}
-          loginError={"You have been logged out due to inactivity."}
-          setLoginError={true}
-        ></LoginPopup>
+        ></InactivityPopup>
       )}
 
       {websiteData.template === "template1" ? (
