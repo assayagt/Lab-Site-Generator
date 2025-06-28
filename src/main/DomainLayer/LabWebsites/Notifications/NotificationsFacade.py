@@ -25,8 +25,6 @@ class NotificationsFacade:
         self.email_notifications_center = {}  # { website_id: { user_email: [notification_list] } }
         self.dal_controller = DAL_controller()
         self.web_socket_handler = WebSocketHandler()
-        self._load_all_data() #=================== LAZY LOAD THAT
-
         self._initialized = True
 
     @classmethod
@@ -40,14 +38,8 @@ class NotificationsFacade:
             cls._instance = None
 
     def notify_user(self, email_notification, domain, recipientEmail, send_email: bool):
-        if domain not in self.email_notifications_center:
-            self.email_notifications_center[domain] = {}
-
-        if recipientEmail not in self.email_notifications_center[domain]:
-            self.email_notifications_center[domain][recipientEmail] = []
-
-        self.email_notifications_center[domain][recipientEmail].append(email_notification)
-        self.dal_controller.notifications_repo.save_notification(email_notification.to_dto())  # Save the notification to the database
+        # Save the notification to the database
+        self.dal_controller.notifications_repo.save_notification(email_notification.to_dto())
 
         if send_email:
             email_notification.send_email()
@@ -140,10 +132,9 @@ class NotificationsFacade:
             f"please note that the publication \"{publicationDTO.title}\" was removed by {deleting_manager_name}\n The publication is now rejected.\n"
         )
         _subject = f"Publication: \"{publicationDTO.title}\" was rejected"
-        id=str(uuid.uuid4)
+        id=str(uuid.uuid4())
         emailNotification= EmailNotification(id=id, subject=_subject, recipient=recipientEmail, body=body, domain=domain, publication_id=publicationDTO.get_paper_id())
         emailNotification.send_email()
-
 
     def send_registration_request_notification(self, requestedEmail, recipientEmail, domain, emailOnly = False):
         """
@@ -157,27 +148,39 @@ class NotificationsFacade:
         )
 
         # Create the email notification
-
-        # Create ssuid
         id = str(uuid.uuid4())
         email_notification = EmailNotification(id, recipientEmail, "New Registration Request Pending Approval", body, domain, request_email=requestedEmail)
 
         #Send Email notification and save it
         self.notify_user(email_notification, domain, recipientEmail, emailOnly)
 
-
     def get_notifications_for_user(self, domain, user_email, unread_only=True):
         """
         Retrieves notifications for a user in a specific website domain.
         Returns a list of dictionaries with notification details.
         """
-        if domain not in self.email_notifications_center or user_email not in self.email_notifications_center[domain]:
+        notifications = self.dal_controller.notifications_repo.find_notifications_by_domain_email(domain, user_email)
+        if not notifications:
             return []
 
-        notifications = self.email_notifications_center[domain][user_email]
+        # Convert notification_dto objects to EmailNotification objects
+        email_notifications = []
+        for notif_dto in notifications:
+            email_notification = EmailNotification(
+                id=notif_dto.id,
+                recipient=notif_dto.recipient,
+                subject=notif_dto.subject,
+                body=notif_dto.body,
+                domain=notif_dto.domain,
+                request_email=notif_dto.request_email,
+                publication_id=notif_dto.publication_id
+            )
+            if notif_dto.isRead:
+                email_notification.mark_as_read()
+            email_notifications.append(email_notification)
 
         return [
-            n.to_dict() for n in notifications if not unread_only or not n.get_is_read()
+            n.to_dict() for n in email_notifications if not unread_only or not n.get_is_read()
         ]
 
     def mark_notification_as_read(self, domain, user_email, notification_id):
@@ -185,14 +188,23 @@ class NotificationsFacade:
         Marks a specific notification as read using its ID.
         Returns the request_email or publication_id based on which one is set.
         """
-        if domain in self.email_notifications_center and user_email in self.email_notifications_center[domain]:
-            notifications = self.email_notifications_center[domain][user_email]
-
-            for n in notifications:
-                if n.id == notification_id:
-                    n.mark_as_read()
-                    self.dal_controller.notifications_repo.save_notification(n.to_dto())
-                    return n.request_email or n.publication_id
+        notifications = self.dal_controller.notifications_repo.find_notifications_by_domain_email(domain, user_email)
+        for notif_dto in notifications:
+            if notif_dto.id == notification_id:
+                # Create EmailNotification object
+                email_notification = EmailNotification(
+                    id=notif_dto.id,
+                    recipient=notif_dto.recipient,
+                    subject=notif_dto.subject,
+                    body=notif_dto.body,
+                    domain=notif_dto.domain,
+                    request_email=notif_dto.request_email,
+                    publication_id=notif_dto.publication_id
+                )
+                email_notification.mark_as_read()
+                self.dal_controller.notifications_repo.save_notification(email_notification.to_dto())
+                return email_notification.request_email or email_notification.publication_id
+        return None
 
     def connect_user_socket(self, email, domain, sid):
         """
@@ -210,43 +222,12 @@ class NotificationsFacade:
         """
         Resets the entire system by clearing all stored notifications.
         """
-        self.email_notifications_center.clear()
-    
-    def _load_all_data(self):
-        """
-        Loads all notifications from the database into the email_notifications_center dictionary.
-        This is called when the system starts up to ensure all notifications are in memory.
-        """
-        # Get all notifications from the database
         notifications = self.dal_controller.notifications_repo.find_all()
-        
-        # Process each notification
         for notif_dto in notifications:
-            # Create EmailNotification object from DTO
-            email_notification = EmailNotification(
-                id=notif_dto.id,
-                recipient=notif_dto.recipient,
-                subject=notif_dto.subject,
-                body=notif_dto.body,
-                domain=notif_dto.domain,
-                request_email=notif_dto.request_email,
-                publication_id=notif_dto.publication_id
-            )
-            
-            # Set read status
-            if notif_dto.isRead:
-                email_notification.mark_as_read()
-            
-            # Add to email_notifications_center
-            if notif_dto.domain not in self.email_notifications_center:
-                self.email_notifications_center[notif_dto.domain] = {}
-            
-            if notif_dto.recipient not in self.email_notifications_center[notif_dto.domain]:
-                self.email_notifications_center[notif_dto.domain][notif_dto.recipient] = []
-            
-            self.email_notifications_center[notif_dto.domain][notif_dto.recipient].append(email_notification)
+            self.dal_controller.notifications_repo.delete_notification(notif_dto.domain, notif_dto.id)
 
     def remove_website_data(self, domain):
         """Remove all notifications associated with a website"""
-        if domain in self.email_notifications_center:
-            del self.email_notifications_center[domain]
+        notifications = self.dal_controller.notifications_repo.find_notifications_by_domain(domain)
+        for notif_dto in notifications:
+            self.dal_controller.notifications_repo.delete_notification(notif_dto.domain, notif_dto.id)

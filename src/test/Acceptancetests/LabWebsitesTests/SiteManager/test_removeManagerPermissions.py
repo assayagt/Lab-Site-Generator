@@ -5,10 +5,13 @@ from src.main.DomainLayer.LabWebsites.User.Degree import Degree
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.test.Acceptancetests.LabGeneratorTests.ProxyToTests import ProxyToTest
 from src.test.Acceptancetests.LabWebsitesTests.ProxyToTests import ProxyToTests
+from src.test.Acceptancetests.LabWebsitesTests.BaseTestClass import BaseTestClass
 
 
-class TestRemoveManagerPermission(unittest.TestCase):
+class TestRemoveManagerPermission(BaseTestClass):
     def setUp(self):
+        # Call parent setUp to initialize mocks
+        super().setUp()
         # Initialize the system with real data and components
         self.generator_system_service = ProxyToTest("Real")
         self.lab_system_service = ProxyToTests("Real", self.generator_system_service.get_lab_system_controller())
@@ -45,9 +48,11 @@ class TestRemoveManagerPermission(unittest.TestCase):
 
         # Simulate a lab manager login
         self.manager_userId = self.lab_system_service.enter_lab_website(self.domain).get_data()
-        self.lab_system_service.login(self.domain, self.manager_userId, self.manager1_email)
+        self.manager_userId = self.lab_system_service.login(self.domain, self.manager_userId, self.manager1_email).get_data()
 
     def tearDown(self):
+        # Call parent tearDown to stop mocks
+        super().tearDown()
         # Reset the system after each test
         self.generator_system_service.reset_system()
 
@@ -62,10 +67,12 @@ class TestRemoveManagerPermission(unittest.TestCase):
 
         # Validate that the manager is now a member
         members = self.lab_system_service.get_all_lab_members(self.domain).get_data()
+        members = [member['email'] for member in members]
         self.assertIn(self.manager2_email, members)
 
         # Validate that the user is no longer in the manager list
         managers = self.lab_system_service.get_all_lab_managers(self.domain).get_data()
+        managers = [manager['email'] for manager in managers]
         self.assertNotIn(self.manager2_email, managers)
 
     def test_remove_manager_permission_failure_not_manager(self):
@@ -74,7 +81,7 @@ class TestRemoveManagerPermission(unittest.TestCase):
         """
         # Simulate a lab member login
         member_userId = self.lab_system_service.enter_lab_website(self.domain).get_data()
-        self.lab_system_service.login(self.domain, member_userId, "member1@example.com")
+        member_userId = self.lab_system_service.login(self.domain, member_userId, "member1@example.com").get_data()
 
         response = self.lab_system_service.remove_manager_permission(
             member_userId, self.manager2_email, self.domain
@@ -103,19 +110,6 @@ class TestRemoveManagerPermission(unittest.TestCase):
         )
         self.assertFalse(response.is_success())
         self.assertEqual(response.get_message(), ExceptionsEnum.USER_IS_NOT_A_LAB_MANAGER.value)
-
-    def test_remove_manager_permission_failure_user_not_logged_in(self):
-        """
-        Test that a user who is not logged in cannot remove permissions from a manager.
-        """
-        # Simulate logout for the manager
-        self.lab_system_service.logout(self.domain, self.manager_userId)
-
-        response = self.lab_system_service.remove_manager_permission(
-            self.manager_userId, self.manager2_email, self.domain
-        )
-        self.assertFalse(response.is_success())
-        self.assertEqual(response.get_message(), ExceptionsEnum.USER_IS_NOT_MEMBER.value)
 
     def test_remove_manager_permission_failure_user_is_not_manager(self):
         """

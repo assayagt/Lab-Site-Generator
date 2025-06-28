@@ -1,5 +1,5 @@
 import React, { createContext } from "react";
-import { SendLogin, SendLogout, EnterSystem } from "../services/UserService";
+import { SendLogin, EnterSystem } from "../services/UserService";
 
 const AuthContext = createContext();
 
@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
       if (data.response === "true") {
         sessionStorage.setItem("isLoggedIn", true);
         sessionStorage.setItem("userEmail", data.email);
-        //sessionStorage.setItem('sid',"id"); still doesn't exist
+        sessionStorage.setItem('sid', data.user_id);
         return data;
       }
       return data;
@@ -19,11 +19,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    let data = await SendLogout();
-    if (data.response === "true") {
-      return true;
-    }
-    return false;
+    sessionStorage.removeItem("isLoggedIn");
+    sessionStorage.removeItem("userEmail");
+    sessionStorage.removeItem('sid');
+    return true
   };
 
   const fetchToken = async () => {

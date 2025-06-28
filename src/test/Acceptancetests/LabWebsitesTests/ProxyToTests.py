@@ -15,11 +15,6 @@ class ProxyToTests(BridgeToTests):
             return self.real_service_adapter.enter_lab_website(domain)
         return Response(None, "Not Implemented yet")
 
-    def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator):
-        if self.real_service_adapter:
-            return self.real_service_adapter.create_new_lab_website(domain, lab_members, lab_managers, site_creator)
-        return Response(None, "Not Implemented yet")
-
     def login(self, domain, user_id, email):
         if self.real_service_adapter:
             return self.real_service_adapter.login(domain, user_id, email)

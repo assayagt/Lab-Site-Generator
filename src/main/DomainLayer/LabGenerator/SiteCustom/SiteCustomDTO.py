@@ -1,4 +1,3 @@
-from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
 from src.main.DomainLayer.LabGenerator.SiteCustom.SiteCustom import SiteCustom
 
 class SiteCustomDTO:

@@ -7,7 +7,7 @@
       "request": "launch",
       "module": "flask",
       "env": {
-        "FLASK_APP": "C:\\Users\\sagyt\\OneDrive\\Desktop\\School\\G\\Project\\Lab-Site-Generator\\src\\main\\DomainLayer\\app.py",
+        "FLASK_APP": "${workspaceFolder}/src/main/DomainLayer/app.py",
         "FLASK_ENV": "development"
       },
       "args": ["run", "--no-debugger", "--no-reload"],
@@ -22,5 +22,5 @@
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}"
     }
-]
+  ]
 }

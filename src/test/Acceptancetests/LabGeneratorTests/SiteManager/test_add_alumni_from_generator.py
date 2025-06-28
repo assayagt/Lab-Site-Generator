@@ -2,10 +2,13 @@ import unittest
 from src.test.Acceptancetests.LabGeneratorTests.ProxyToTests import ProxyToTest
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
+from src.test.Acceptancetests.LabWebsitesTests.BaseTestClass import BaseTestClass
 from src.main.DomainLayer.LabWebsites.User.Degree import Degree
 
-class TestAddAlumniFromGenerator(unittest.TestCase):
+class TestAddAlumniFromGenerator(BaseTestClass):
     def setUp(self):
+        # Call parent setUp to initialize mocks
+        super().setUp()
         # Initialize ProxyToTest with "Real"
         self.generator_system_service = ProxyToTest("Real")
 
@@ -30,6 +33,8 @@ class TestAddAlumniFromGenerator(unittest.TestCase):
         self.generator_system_service.create_new_lab_website(self.domain, self.lab_members, self.lab_managers, self.site_creator, self.creator_scholar_link)
 
     def tearDown(self):
+        # Call parent tearDown to stop mocks
+        super().tearDown()
         # Reset the system after each test
         self.generator_system_service.reset_system()
 
@@ -37,10 +42,3 @@ class TestAddAlumniFromGenerator(unittest.TestCase):
         # Test successful registration of a new lab member
         response = self.generator_system_service.add_alumni_from_generator(self.manager_user_id, "member1@example.com", self.domain)
         self.assertTrue(response.is_success())
-
-    def test_user_not_logged_in(self):
-        # Test trying to register a new lab member when the user is not logged in
-        self.generator_system_service.logout(self.manager_user_id)
-        response = self.generator_system_service.add_alumni_from_generator(self.manager_user_id, "member1@example.com", self.domain)
-        self.assertFalse(response.is_success())
-        self.assertEqual(response.get_message(), ExceptionsEnum.USER_IS_NOT_MEMBER.value)

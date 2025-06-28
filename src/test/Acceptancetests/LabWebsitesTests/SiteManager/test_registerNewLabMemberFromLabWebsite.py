@@ -7,9 +7,12 @@ from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.main.Util.Response import Response
 from src.test.Acceptancetests.LabGeneratorTests.ProxyToTests import ProxyToTest
 from src.test.Acceptancetests.LabWebsitesTests.ProxyToTests import ProxyToTests
+from src.test.Acceptancetests.LabWebsitesTests.BaseTestClass import BaseTestClass
 
-class TestRegisterNewLabMemberFromLabWebsite(unittest.TestCase):
+class TestRegisterNewLabMemberFromLabWebsite(BaseTestClass):
     def setUp(self):
+        # Call parent setUp to initialize mocks
+        super().setUp()
         # Initialize the system with real data and components
         self.generator_system_service = ProxyToTest("Real")
         self.lab_system_service = ProxyToTests("Real", self.generator_system_service.get_lab_system_controller())
@@ -46,11 +49,13 @@ class TestRegisterNewLabMemberFromLabWebsite(unittest.TestCase):
         )
 
         # Simulate a lab manager login
-        self.manager_userId = self.lab_system_service.enter_lab_website(self.domain).get_data()
+        self.manager_userId = self.lab_system_service.enter_lab_website(self.domain)
         self.member1_userId = self.lab_system_service.enter_lab_website(self.domain).get_data()
-        self.lab_system_service.login(self.domain, self.manager_userId, self.nominator_manager_email)
+        self.manager_userId = self.lab_system_service.login(self.domain, self.manager_userId, self.nominator_manager_email).get_data()
 
     def tearDown(self):
+        # Call parent tearDown to stop mocks
+        super().tearDown()
         # Reset the system after each test
         self.generator_system_service.reset_system()
 
@@ -69,6 +74,7 @@ class TestRegisterNewLabMemberFromLabWebsite(unittest.TestCase):
 
         # Validate that the new lab member is added
         lab_members = self.lab_system_service.get_all_lab_members(self.domain).get_data()
+        lab_members = [member['email'] for member in lab_members]
         self.assertIn(email_to_register, lab_members)
 
     def test_register_new_lab_member_failure_user_not_manager(self):
@@ -76,7 +82,7 @@ class TestRegisterNewLabMemberFromLabWebsite(unittest.TestCase):
         Test that a non-manager cannot register a new lab member.
         """
         # Simulate a lab member (not manager) login
-        self.lab_system_service.login(self.domain, self.member1_userId, self.labMember1_email)
+        self.member1_userId = self.lab_system_service.login(self.domain, self.member1_userId, self.labMember1_email).get_data()
 
         email_to_register = "new_member@example.com"
         full_name = "New Member"
@@ -107,26 +113,6 @@ class TestRegisterNewLabMemberFromLabWebsite(unittest.TestCase):
         # Validate the exception
         self.assertFalse(response.is_success())
         self.assertEqual(response.get_message(), ExceptionsEnum.EMAIL_IS_ALREADY_ASSOCIATED_WITH_A_MEMBER.value)
-
-    def test_register_new_lab_member_failure_user_not_logged_in(self):
-        """
-        Test that a user who is not logged in cannot register a new lab member.
-        """
-        # Simulate a logout for the manager
-        self.lab_system_service.logout(self.domain, self.manager_userId)
-
-        email_to_register = "new_member@example.com"
-        full_name = "New Member"
-        degree = "B.Sc."
-
-        # Attempt to perform the operation
-        response = self.lab_system_service.register_new_LabMember_from_labWebsite(
-            self.manager_userId, email_to_register, full_name, degree, self.domain
-        )
-
-        # Validate the exception
-        self.assertFalse(response.is_success())
-        self.assertEqual(response.get_message(), ExceptionsEnum.USER_IS_NOT_MEMBER.value)
 
     def test_register_new_lab_member_failure_invalid_email(self):
         """

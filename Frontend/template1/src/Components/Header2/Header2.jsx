@@ -144,8 +144,6 @@ function Header(props) {
   const handleLogout = () => {
     const success = logout();
     if (success) {
-      sessionStorage.removeItem("isLoggedIn");
-      sessionStorage.removeItem("userEmail");
       setIsLoggedIn(false);
       if (editMode) {
         toggleEditMode();

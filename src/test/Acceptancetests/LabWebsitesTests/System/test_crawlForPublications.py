@@ -5,10 +5,13 @@ from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.test.Acceptancetests.LabGeneratorTests.ProxyToTests import ProxyToTest
 from src.test.Acceptancetests.LabWebsitesTests.ProxyToTests import ProxyToTests
+from src.test.Acceptancetests.LabWebsitesTests.BaseTestClass import BaseTestClass
 
 
-class TestCrawlForPublications(unittest.TestCase):
+class TestCrawlForPublications(BaseTestClass):
     def setUp(self):
+        # Call parent setUp to initialize mocks
+        super().setUp()
         self.generator_system_service = ProxyToTest("Real")
         self.lab_system_service = ProxyToTests("Real", self.generator_system_service.get_lab_system_controller())
 
@@ -39,10 +42,12 @@ class TestCrawlForPublications(unittest.TestCase):
 
         # Simulate a lab member login
         self.lab_member_user_id = self.lab_system_service.enter_lab_website(self.domain).get_data()
-        self.lab_system_service.login(self.domain, self.lab_member_user_id, "creator@example.com")
+        self.lab_member_user_id = self.lab_system_service.login(self.domain, self.lab_member_user_id, "creator@example.com").get_data()
 
 
     def tearDown(self):
+        # Call parent tearDown to stop mocks
+        super().tearDown()
         # Reset the system after each test
         self.lab_system_service.reset_system()
 
@@ -50,9 +55,6 @@ class TestCrawlForPublications(unittest.TestCase):
         """
         Test that the system successfully crawls for publications and notifies authors.
         """
-        # Trigger publication crawling
-        #response = self.lab_system_service.crawl_for_publications()
-        #self.assertTrue(response.is_success())
 
         # Validate that publications were fetched and assigned to the correct members
         publications = self.lab_system_service.get_all_not_approved_publications_of_member(self.domain, self.lab_member_user_id).get_data()
