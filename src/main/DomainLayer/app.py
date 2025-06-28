@@ -10,10 +10,11 @@ import pandas as pd
 from flask_socketio import SocketIO, emit
 import threading
 from src.main.DomainLayer.socketio_instance import socketio
-from google.oauth2 import id_token
-from google.auth.transport import requests
 import glob
-
+from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
+from src.main.DomainLayer.LabGenerator.GeneratorSystemService import GeneratorSystemService
+from src.main.DomainLayer.LabWebsites.LabSystemService import LabSystemService
+from src.main.DomainLayer.LabWebsites.Website.ContactInfo import ContactInfo
 
 def send_test_notifications():
     while True:
@@ -21,18 +22,10 @@ def send_test_notifications():
         print("Test notification sent")
         time.sleep(60)  # Wait for 60 seconds
 
-
-
-from src.main.DomainLayer.LabGenerator.SiteCustom.Template import Template
-from src.main.DomainLayer.LabGenerator.GeneratorSystemService import GeneratorSystemService
-from src.main.DomainLayer.LabWebsites.LabSystemService import LabSystemService
-from src.main.DomainLayer.LabWebsites.Website.ContactInfo import ContactInfo
-
 # Create a Flask app
 app_secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app = Flask(__name__)
 app.config["SECRET_KEY"] = app_secret_key
-GOOGLE_CLIENT_ID = "894370088866-4jkvg622sluvf0k7cfv737tnjlgg00nt.apps.googleusercontent.com"
 # CORS(app)
 
 CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "http://localhost:3001"]}})  # Allow both frontends
@@ -638,40 +631,23 @@ class RemoveSiteManagerFromGenerator(Resource):
 class Login(Resource):
     def post(self):
         data = request.get_json()
-        user_id = data.get('user_id')
         google_token = data.get('google_token')
-    
-
         try:
             if google_token:
-                try:
-                    # Verify the token
-                    print("request token")
-                    idinfo = id_token.verify_oauth2_token(google_token, requests.Request(), GOOGLE_CLIENT_ID, clock_skew_in_seconds=2)
-                    print("token verified")
-                    email = idinfo['email']
-                    
-                except ValueError as e:
-                    print("Token verification failed:", str(e))
-                    return jsonify({"error": "Invalid Google token", "response": "false"})
-
-            response = generator_system.login(user_id, email)
-            
+                response = generator_system.login(google_token) # google_token instead of user_id
             if response.is_success():
-                return jsonify({"message": "User logged in successfully","response" : "true", "email": email })
+                return jsonify({"message": "User logged in successfully","response" : "true", "email": response.data, "user_id": google_token })
             return jsonify({"message": response.get_message(),"response" : "false" })
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}","response" : "false"})
 
-# Handles user logout
+# Handles user logout NOT USED ANYMORE
 class Logout(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('user_id', type=str, required=True, help="User id is required")
         args = parser.parse_args()
-
         user_id = args['user_id']
-
         try:
             response = generator_system.logout(user_id)
             if response.is_success():
@@ -845,35 +821,21 @@ class EnterLabWebsite(Resource):
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
 
-
-
 class LoginWebsite(Resource):
     def post(self):
         data = request.get_json()
         domain = data.get('domain')
         user_id = data.get('user_id')
         google_token = data.get('google_token')
-                
+
         try:
-            if google_token:
-                try:
-                    # Verify the token
-                    idinfo = id_token.verify_oauth2_token(google_token, requests.Request(), GOOGLE_CLIENT_ID, clock_skew_in_seconds=2)
-                    
-                    # Check if the email from token matches the provided email
-                    email = idinfo['email']
-                except ValueError as e:
-                    print("Token verification failed:", str(e))
-                    return jsonify({"error": "Invalid Google token", "response": "false"})
-            response = lab_system_service.login(domain, user_id, email)
+            response = lab_system_service.login(domain=domain, google_token=google_token)
             if response.is_success():
-                if response.get_data():
-                    return jsonify({"message": response.get_message(), "response": "true", "email": email})
-                else:
-                    #notify_registration(email, domain)
-                    return jsonify({"message": response.get_message(), "response": "false"})
-            #notify_registration(email, domain)
-            return jsonify({"message": response.get_message(), "response": "false"})
+                email = response.get_data()
+                return jsonify({"message": response.get_message(), "response": "true", "email": email, "user_id": google_token})
+            else:
+                #notify_registration(email, domain)
+                return jsonify({"message": response.get_message(), "response": "false"})
         except Exception as e:
             return jsonify({"error": f"An error occurred: {str(e)}"})
         

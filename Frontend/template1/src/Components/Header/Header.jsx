@@ -17,6 +17,7 @@ function Header(props) {
   const [showLogin, setShowLogin] = useState(false);
   const [email, setEmail] = useState("");
   const [loginError, setLoginError] = useState("");
+
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return sessionStorage.getItem("isLoggedIn") === "true";
   });
@@ -99,8 +100,6 @@ function Header(props) {
   const handleLogout = () => {
     const success = logout();
     if (success) {
-      sessionStorage.removeItem("isLoggedIn");
-      sessionStorage.removeItem("userEmail");
       setIsLoggedIn(false);
       if (editMode) {
         toggleEditMode();

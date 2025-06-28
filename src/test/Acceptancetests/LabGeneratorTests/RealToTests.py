@@ -40,7 +40,7 @@ class RealToTests(BridgeToTests):
         return self.generator_system_service.register_new_LabMember_from_generator(manager_userId, email_to_register, lab_member_fullName, lab_member_degree, domain)
 
     def login(self, user_id, email):
-        return self.generator_system_service.login(user_id, email)
+        return self.generator_system_service.login(email)
 
     def logout(self, user_id):
         return self.generator_system_service.logout(user_id)

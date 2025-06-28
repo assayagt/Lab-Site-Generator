@@ -1,8 +1,6 @@
-
 class MembersRepository:
     def __init__(self, db_manager):
         self.db_manager = db_manager
-
 
     def find_by_email(self, email: str):
         """
@@ -12,8 +10,7 @@ class MembersRepository:
         result = self.db_manager.execute_query(query, (email,))
         if not result:
             return None
-        return [row['domain'] for row in result]
-    
+        return [row["domain"] for row in result]
 
     def find_by_domain(self, domain: str):
         """
@@ -23,7 +20,7 @@ class MembersRepository:
         result = self.db_manager.execute_query(query, (domain,))
         if not result:
             return None
-        return [row['email'] for row in result]
+        return [row["email"] for row in result]
 
     def find_all(self):
         """
@@ -31,8 +28,8 @@ class MembersRepository:
         """
         query = "SELECT * FROM member_emails"
         result = self.db_manager.execute_query(query)
-        return [row['email'] for row in result]
-    
+        return [row["email"] for row in result]
+
     def save_member(self, email):
         query = """
         INSERT INTO member_emails (email)
@@ -55,13 +52,11 @@ class MembersRepository:
         query = "DELETE FROM member_domain WHERE email = ? AND domain = ?"
         rows_affected = self.db_manager.execute_update(query, (email, domain))
         return rows_affected > 0
-    
+
     def delete_domain(self, domain):
         query = "DELETE FROM member_domain WHERE domain = ?"
         rows_affected = self.db_manager.execute_update(query, (domain,))
         return rows_affected > 0
-    
-
 
     def delete_member(self, email):
         query = "DELETE FROM members WHERE email = ?"

@@ -8,11 +8,6 @@ class BridgeToTests(ABC):
         pass
 
     @abstractmethod
-    def create_new_lab_website(self, domain, lab_members, lab_managers, site_creator):
-        """Create a new lab website."""
-        pass
-
-    @abstractmethod
     def login(self, domain, user_id, email):
         """Log in a user to a specific lab website."""
         pass

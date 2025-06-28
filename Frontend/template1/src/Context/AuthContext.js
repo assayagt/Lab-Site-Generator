@@ -12,27 +12,24 @@ export const AuthProvider = ({ children }) => {
       sessionStorage.getItem("sid"),
       sessionStorage.getItem("domain")
     );
-    if (data) {
-      if (data.response === "true") {
-        sessionStorage.setItem("isLoggedIn", true);
-        sessionStorage.setItem("userEmail", data.email);
-        const email = data.email;
-        setUser({ email });
-        //sessionStorage.setItem('sid',"id"); still doesn't exist
-        return true;
-      }
+    console.log(data);
 
-      return false;
+    if (data && data.response === "true") {
+      sessionStorage.setItem("isLoggedIn", true);
+      sessionStorage.setItem("userEmail", data.email);
+      const email = data.email;
+      setUser({ email });
+      sessionStorage.setItem('sid', data.user_id);
+      return true;
     }
     return false;
   };
 
   const logout = async () => {
-    let data = await SendLogout();
-    if (data.response === "true") {
-      return true;
-    }
-    return false;
+    sessionStorage.removeItem("isLoggedIn");
+    sessionStorage.removeItem("userEmail");
+    sessionStorage.removeItem("sid");
+    return true
   };
 
   const fetchToken = async () => {

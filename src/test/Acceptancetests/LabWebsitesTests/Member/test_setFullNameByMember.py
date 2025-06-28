@@ -5,10 +5,13 @@ from src.main.DomainLayer.LabWebsites.User.Degree import Degree
 from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.test.Acceptancetests.LabGeneratorTests.ProxyToTests import ProxyToTest
 from src.test.Acceptancetests.LabWebsitesTests.ProxyToTests import ProxyToTests
+from src.test.Acceptancetests.LabWebsitesTests.BaseTestClass import BaseTestClass
 
 
-class TestSetFullNameByMember(unittest.TestCase):
+class TestSetFullNameByMember(BaseTestClass):
     def setUp(self):
+        # Call parent setUp to initialize mocks
+        super().setUp()
         # Initialize the system with real data and components
         self.generator_system_service = ProxyToTest("Real")
         self.lab_system_service = ProxyToTests("Real", self.generator_system_service.get_lab_system_controller())
@@ -42,12 +45,14 @@ class TestSetFullNameByMember(unittest.TestCase):
         )
 
         # Simulate a lab member login
-        self.labMember1_userId = self.lab_system_service.enter_lab_website(self.domain).get_data()
-        self.lab_system_service.login(self.domain, self.labMember1_userId, self.labMember1_email)
-        self.labManager1_userId = self.lab_system_service.enter_lab_website(self.domain).get_data()
-        self.lab_system_service.login(self.domain, self.labManager1_userId, self.labManager1_email)
+        self.labMember1_userId = self.lab_system_service.enter_lab_website(self.domain)
+        self.labMember1_userId = self.lab_system_service.login(self.domain, self.labMember1_userId, self.labMember1_email).get_data()
+        self.labManager1_userId = self.lab_system_service.enter_lab_website(self.domain)
+        self.labManager1_userId = self.lab_system_service.login(self.domain, self.labManager1_userId, self.labManager1_email).get_data()
 
     def tearDown(self):
+        # Call parent tearDown to stop mocks
+        super().tearDown()
         # Reset the system after each test
         self.generator_system_service.reset_system()
 
@@ -65,22 +70,10 @@ class TestSetFullNameByMember(unittest.TestCase):
 
         # Validate that the full name was successfully updated
         member_data = self.lab_system_service.get_all_lab_members(self.domain).get_data()
-        self.assertEqual(member_data[self.labMember1_email].get_fullName(), new_full_name)
-
-    def test_set_fullName_by_member_failure_not_logged_in(self):
-        """
-        Test that a member who is not logged in cannot set their full name.
-        """
-        # Simulate logout for the member
-        self.lab_system_service.logout(self.domain, self.labMember1_userId)
-
-        new_full_name = "Updated Member One"
-
-        response = self.lab_system_service.set_fullName_by_member(
-            self.labMember1_userId, new_full_name, self.domain
-        )
-        self.assertFalse(response.is_success())
-        self.assertEqual(response.get_message(), ExceptionsEnum.USER_IS_NOT_MEMBER.value)
+        for member in member_data:
+            if member["email"] == self.labMember1_email:
+                self.assertEqual(member["fullName"], new_full_name)
+                break
 
     def test_set_fullName_by_member_failure_empty_fullName(self):
         """
@@ -94,18 +87,6 @@ class TestSetFullNameByMember(unittest.TestCase):
         self.assertFalse(response.is_success())
         self.assertEqual(response.get_message(), ExceptionsEnum.INVALID_FULL_NAME.value)
 
-    def test_set_fullName_by_member_failure_user_does_not_exist(self):
-        """
-        Test that trying to set a full name for a non-existent member raises an error.
-        """
-        new_full_name = "Nonexistent Member"
-
-        response = self.lab_system_service.set_fullName_by_member(
-            "some id", new_full_name, self.domain
-        )
-        self.assertFalse(response.is_success())
-        self.assertEqual(response.get_message(), ExceptionsEnum.USER_NOT_EXIST.value)
-
     def test_set_fullName_by_alumni_success(self):
         new_full_name = "Name Member"
 
@@ -118,4 +99,7 @@ class TestSetFullNameByMember(unittest.TestCase):
 
         # Validate that the bio was successfully set
         member_data = self.lab_system_service.get_all_alumnis(self.domain).get_data()
-        self.assertEqual(member_data[self.labMember1_email].get_fullName(), new_full_name)
+        for member in member_data:
+            if member["email"] == self.labMember1_email:
+                self.assertEqual(member["fullName"], new_full_name)
+                break

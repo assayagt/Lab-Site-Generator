@@ -7,10 +7,13 @@ from src.main.Util.ExceptionsEnum import ExceptionsEnum
 from src.main.Util.Response import Response
 from src.test.Acceptancetests.LabGeneratorTests.ProxyToTests import ProxyToTest
 from src.test.Acceptancetests.LabWebsitesTests.ProxyToTests import ProxyToTests
+from src.test.Acceptancetests.LabWebsitesTests.BaseTestClass import BaseTestClass
 
 
-class TestCreateNewSiteManagerFromLabWebsite(unittest.TestCase):
+class TestCreateNewSiteManagerFromLabWebsite(BaseTestClass):
     def setUp(self):
+        # Call parent setUp to initialize mocks
+        super().setUp()
         # Initialize the system with real data and components
         self.generator_system_service = ProxyToTest("Real")
         self.lab_system_service = ProxyToTests("Real", self.generator_system_service.get_lab_system_controller())
@@ -47,11 +50,13 @@ class TestCreateNewSiteManagerFromLabWebsite(unittest.TestCase):
         )
 
         # Simulate a lab manager login
-        self.nominator_manager_userId = self.lab_system_service.enter_lab_website(self.domain).get_data()
-        self.lab_system_service.login(self.domain, self.nominator_manager_userId, self.nominator_manager_email)
+        self.nominator_manager_userId = self.lab_system_service.enter_lab_website(self.domain)
+        self.nominator_manager_userId = self.lab_system_service.login(self.domain, self.nominator_manager_userId, self.nominator_manager_email).get_data()
         self.member1_userId = self.lab_system_service.enter_lab_website(self.domain).get_data()
 
     def tearDown(self):
+        # Call parent tearDown to stop mocks
+        super().tearDown()
         # Reset the system after each test
         self.generator_system_service.reset_system()
 
@@ -68,10 +73,12 @@ class TestCreateNewSiteManagerFromLabWebsite(unittest.TestCase):
 
         # Validate that the nominated user is now a manager
         lab_managers = self.lab_system_service.get_all_lab_managers(self.domain).get_data()
+        lab_managers = [manager['email'] for manager in lab_managers]
         self.assertIn(self.labMember1_email, lab_managers)
 
         # Validate that the user is no longer listed as a lab member
         lab_members = self.lab_system_service.get_all_lab_members(self.domain).get_data()
+        lab_members = [member['email'] for member in lab_members]
         self.assertNotIn(self.labMember1_email, lab_members)
 
     def test_create_new_site_manager_failure_user_not_manager(self):
@@ -79,7 +86,7 @@ class TestCreateNewSiteManagerFromLabWebsite(unittest.TestCase):
         Test that a non-manager cannot nominate a lab member as a site manager.
         """
         # Simulate a lab member (not manager) login
-        self.lab_system_service.login(self.domain, self.member1_userId, self.labMember1_email)
+        self.member1_userId = self.lab_system_service.login(self.domain, self.member1_userId, self.labMember1_email).get_data()
 
         # Attempt to perform the operation
         response = self.lab_system_service.create_new_site_manager_from_labWebsite(self.member1_userId, self.domain, self.labMember2_email)
@@ -102,20 +109,3 @@ class TestCreateNewSiteManagerFromLabWebsite(unittest.TestCase):
         # Validate the exception
         self.assertFalse(response.is_success())
         self.assertEqual(response.get_message(), ExceptionsEnum.USER_IS_NOT_A_LAB_MEMBER.value)
-
-    def test_create_new_site_manager_failure_user_not_logged_in(self):
-        """
-        Test that a user who is not logged in cannot nominate a lab member as a site manager.
-        """
-        # Simulate a logout for the nominating manager
-        self.lab_system_service.logout(self.domain, self.nominator_manager_userId)
-
-        # Attempt to perform the operation
-        response = self.lab_system_service.create_new_site_manager_from_labWebsite(
-            self.nominator_manager_userId, self.domain, self.labMember1_email
-        )
-
-        # Validate the exception
-        self.assertFalse(response.is_success())
-        self.assertEqual(response.get_message(), ExceptionsEnum.USER_IS_NOT_MEMBER.value)
-

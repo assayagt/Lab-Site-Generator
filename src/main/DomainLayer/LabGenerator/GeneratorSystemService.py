@@ -183,15 +183,15 @@ class GeneratorSystemService:
         except Exception as e:
             return Response(None, str(e))
 
-    def login(self, user_id, email):
+    def login(self, google_token):
         """Log in a user through GeneratorSystemController."""
         try:
-            self.generator_system_controller.login(user_id, email)
-            return Response(user_id, "User logged in successfully")
+            email = self.generator_system_controller.login(google_token)
+            return Response(email, "User logged in successfully")
         except Exception as e:
             return Response(None, str(e))
 
-    def logout(self, user_id):
+    def logout(self, user_id):  # NOT USED ANYMORE
         """Log out the current user through GeneratorSystemController."""
         try:
             self.generator_system_controller.logout(user_id)

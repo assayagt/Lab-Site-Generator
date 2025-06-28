@@ -39,30 +39,28 @@ class WebsiteFacade:
         with cls._instance_lock:
             cls._instance = None
 
-    def add_website(self, website: Website):
-        # self.websites.append(website)
-        self.websites[website.domain] = website
-
-
     def create_new_website(self, domain):
         website = Website(domain)
-        self.add_website(website)
-        self.dal_controller.website_repo.save(website_dto=website.to_dto()) #===========================================       
-
+        self.dal_controller.website_repo.save(website_dto=website.to_dto())
 
     def get_website(self, domain) -> Website:
-        if domain not in self.websites:
-            self._load_website(domain)
-        website = self.websites.get(domain)
-        if website is None:
+        dto = self.dal_controller.website_repo.find_by_domain(domain=domain)
+        if not dto:
             raise Exception(ExceptionsEnum.WEBSITE_DOMAIN_NOT_EXIST.value)
+            
+        contact_info = None
+        if dto.contact_info:
+            contact_info_dict = json.loads(dto.contact_info)
+            contact_info = ContactInfo(
+                lab_mail=contact_info_dict.get("email"),
+                lab_phone_num=contact_info_dict.get("phone_num"),
+                lab_address=contact_info_dict.get("address")
+            )
+        website = Website(domain=dto.domain, contact_info=contact_info, about_us=dto.about_us)
         return website
 
-
     def get_all_website_domains(self) -> list[str]:
-        # return self.dal_controller.website_repo.find_all_domains()
-        return self.dal_controller.website_repo.find_all_domains() # because of lazy-loading the websites we should get it from the DB
-
+        return self.dal_controller.website_repo.find_all_domains()
 
     def get_all_approved_publication(self, domain):
         website = self.get_website(domain)
@@ -71,7 +69,6 @@ class WebsiteFacade:
     def get_all_not_approved_publications(self, domain):
         website = self.get_website(domain=domain)
         return website.get_all_not_approved_publications()
-
 
     def get_all_approved_publications_of_member(self, domain, email):
         website = self.get_website(domain)
@@ -85,7 +82,7 @@ class WebsiteFacade:
     #creare new publication manually
     def create_new_publication(self, domain, publication_link, publication_details, git_link, video_link, presentation_link, authors_emails):
         website = self.get_website(domain)
-        pub_dto =  website.add_publication_manually(publication_link, publication_details, git_link, video_link, presentation_link, authors_emails)
+        pub_dto = website.add_publication_manually(publication_link, publication_details, git_link, video_link, presentation_link, authors_emails)
         self.dal_controller.publications_repo.save(publication_dto=pub_dto, domain=domain)
         return pub_dto.get_paper_id()
     
@@ -106,18 +103,15 @@ class WebsiteFacade:
         pub_dto = website.set_publication_video_link(publication_id, video_link)
         self.dal_controller.publications_repo.save(publication_dto=pub_dto, domain=domain)
 
-
     def set_publication_git_link(self, domain, publication_id, git_link):
         website = self.get_website(domain)
         pub_dto = website.set_publication_git_link(publication_id, git_link)
         self.dal_controller.publications_repo.save(publication_dto=pub_dto, domain=domain)
 
-
     def set_publication_presentation_link(self, domain, publication_id, presentation_link):
         website = self.get_website(domain)
         pub_dto = website.set_publication_presentation_link(publication_id, presentation_link)
         self.dal_controller.publications_repo.save(publication_dto=pub_dto, domain=domain)
-
 
     def error_if_member_is_not_publication_author(self, domain, publication_id, email):
         website = self.get_website(domain)
@@ -129,16 +123,13 @@ class WebsiteFacade:
         if website.is_publication_rejected(publication_id):
             raise Exception(ExceptionsEnum.PUBLICATION_ALREADY_REJECTED.value)
 
-
     def check_if_publication_approved(self, domain, publication_id):
         website = self.get_website(domain)
         return website.check_if_publication_approved(publication_id)
 
-
     def get_publication_by_paper_id(self, domain, paper_id):
         website = self.get_website(domain)
         return website.get_publication_by_paper_id(paper_id)
-
 
     def final_approve_publication(self, domain, publication_id):
         website = self.get_website(domain)
@@ -150,30 +141,25 @@ class WebsiteFacade:
         website.set_about_us(about_us)
         self.dal_controller.website_repo.save(website_dto=website.to_dto())
 
-
     def set_site_contact_info(self, domain, contact_info_dto):
         website = self.get_website(domain)
         website.set_contact_info(contact_info_dto)
         self.dal_controller.website_repo.save(website_dto=website.to_dto())
 
-
     def get_about_us(self, domain):
         website = self.get_website(domain)
         return website.get_about_us()
-
 
     def initial_approve_publication(self, domain, publication_id):
         website = self.get_website(domain)
         pub_dto = website.initial_approve_publication(publication_id)
         self.dal_controller.publications_repo.save(publication_dto=pub_dto, domain=domain)
 
-
     def reject_publication(self, domain, publication_id):
         website = self.get_website(domain)
         pub_dto = website.reject_publication(publication_id)
         self.dal_controller.publications_repo.save(publication_dto=pub_dto, domain=domain)
     
-
     def get_contact_us(self, domain):
         website = self.get_website(domain)
         return website.get_contact_us()
@@ -192,61 +178,12 @@ class WebsiteFacade:
         )
         website.add_news_record(news_record_dto)
         self.dal_controller.News_repo.save_news_record(news_record_dto=news_record_dto)
-    
-    def _load_website(self, domain):
-        dto = self.dal_controller.website_repo.find_by_domain(domain=domain)
-        if not dto:
-            return
-        contact_info = None
-        if dto.contact_info:
-            contact_info_dict = json.loads(dto.contact_info)
-            contact_info = ContactInfo(
-                lab_mail=contact_info_dict.get("email"),
-                lab_phone_num=contact_info_dict.get("phone_num"),
-                lab_address=contact_info_dict.get("address")
-            )
-        website = Website(domain=dto.domain, contact_info=contact_info, about_us=dto.about_us)
-        pubs = self.dal_controller.publications_repo.find_by_domain(domain=dto.domain)
-        website.load_pub_dtos(pub_list=pubs)
-        news = self.dal_controller.News_repo.find_news_by_domain(domain=dto.domain)
-        website.set_news(news_list=news)
-        self.websites[domain] = website
-    
-    def _load_all_data(self):
-        website_dtos = self.dal_controller.website_repo.find_all()
-        for dto in website_dtos:
-            contact_info = None
-            if dto.contact_info:
-                contact_info_dict = json.loads(dto.contact_info)
-                contact_info = ContactInfo(
-                    lab_mail=contact_info_dict.get("email"),
-                    lab_phone_num=contact_info_dict.get("phone_num"),
-                    lab_address=contact_info_dict.get("address")
-                )
-            website = Website(domain=dto.domain, contact_info=contact_info, about_us=dto.about_us)
-            pubs = self.dal_controller.publications_repo.find_by_domain(domain=dto.domain)
-            website.load_pub_dtos(pub_list=pubs)
-            news = self.dal_controller.News_repo.find_news_by_domain(domain=dto.domain)
-            website.set_news(news_list=news)
-            self.websites[website.domain] = website
-    
-    def remove_website_data(self, domain):
-        """
-        Delete a website.
-        """
-        #remove website from websites list
-        # for website in self.websites:
-        #     if website.domain == domain:
-        #         self.websites.remove(website)
-        #         break
-        if domain in self.websites:
-            del self.websites[domain] 
 
     def reset_system(self):
         """
         Resets the entire system by clearing all stored websites.
         """
-        self.websites.clear()
+        self.dal_controller.drop_all_tables()
 
     def get_news(self, domain):
         """

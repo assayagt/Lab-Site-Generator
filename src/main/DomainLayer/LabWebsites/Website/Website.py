@@ -8,43 +8,27 @@ import json
 
 class Website:
     def __init__(self, domain, contact_info=None, about_us=None):
-        self.members_publications: dict[str, list[PublicationDTO]] = {} #=================== LAZY LOAD THAT (?)
         self.domain = domain
         self.contact_info = contact_info
         self.about_us = about_us
-        self.news: list[NewsRecord_dto] = [] #=================== LAZY LOAD THAT
+        self.dal_controller = DAL_controller()
 
     def create_publication(self, publicationDTO, authors_emails):
-        # get new publicationDTO and add it to the dictionary
-        for author_email in authors_emails:
-            if author_email not in self.members_publications:
-                self.members_publications[author_email] = []
-            if publicationDTO not in self.members_publications[author_email]:
-                self.members_publications[author_email].append(publicationDTO)
+        # Check if publication already exists
+        existing_pub = self.dal_controller.publications_repo.find_by_id(publicationDTO.get_paper_id())
+        if existing_pub:
+            if existing_pub.approved == ApprovalStatus.APPROVED:
+                raise Exception(ExceptionsEnum.PUBLICATION_ALREADY_APPROVED.value)
             else:
-                for pub in self.members_publications[author_email]:
-                    if pub == publicationDTO:
-                        if pub.approved == ApprovalStatus.APPROVED:
-                            raise Exception(ExceptionsEnum.PUBLICATION_ALREADY_APPROVED.value)
-                        else:
-                            raise Exception(ExceptionsEnum.PUBLICATION_ALREADY_WAITING.value)
-        print("publication added to website succesffully")
+                raise Exception(ExceptionsEnum.PUBLICATION_ALREADY_WAITING.value)
+        
+        # Save the publication
+        self.dal_controller.publications_repo.save(publication_dto=publicationDTO, domain=self.domain)
+        print("publication added to website successfully")
 
     def update_publication(self, publicationDTO: PublicationDTO):
-        # Remove any existing entries equal to publicationDTO
-        for author_email, pubs in list(self.members_publications.items()):
-            # filter out old instances
-            new_list = [p for p in pubs if p != publicationDTO]
-            if new_list:
-                self.members_publications[author_email] = new_list
-            else:
-                # no publications left for this email → remove the key
-                del self.members_publications[author_email]
-
-        # Re-add the updated DTO under its current authors
-        self.create_publication(publicationDTO, publicationDTO.author_emails)
-                    
-            
+        # Update the publication in the database
+        self.dal_controller.publications_repo.save(publication_dto=publicationDTO, domain=self.domain)
 
     def add_publication_manually(self, publication_link, publication_details, git_link, video_link, presentation_link,
                                  authors_emails) -> PublicationDTO:
@@ -70,107 +54,71 @@ class Website:
         self.create_publication(publication_dto, authors_emails)
         return publication_dto
 
-
     def check_publication_exist(self, publication):
-        for author_publications in self.members_publications.values():
-            if publication in author_publications:
-                    return True
-        return False
+        return self.dal_controller.publications_repo.find_by_id(publication.get_paper_id()) is not None
 
     def get_all_approved_publication(self):
-        approved_publications = []
-        seen_paper_ids = set()  # To track unique paper IDs
-
-        for publications in self.members_publications.values():  # Iterate over all author-publication lists
-            for publication in publications:  # Iterate over publications for each author
-                if publication.approved == ApprovalStatus.APPROVED and publication.get_paper_id() not in seen_paper_ids:
-                    approved_publications.append(publication.to_dict())
-                    seen_paper_ids.add(publication.get_paper_id())  # Mark the paper ID as seen
-
-        return approved_publications
+        publications = self.dal_controller.publications_repo.find_by_domain(self.domain)
+        return [pub.to_dict() for pub in publications if pub.approved == ApprovalStatus.APPROVED]
     
     def get_all_not_approved_publications(self):
-        pubs = set()
-        for publications in self.members_publications.values():
-            for publication in publications:
-                if publication.approved != ApprovalStatus.APPROVED.value:
-                    pubs.add(publication)
-        return list(pubs)
+        publications = self.dal_controller.publications_repo.find_by_domain(self.domain)
+        return [pub for pub in publications if pub.approved != ApprovalStatus.APPROVED.value]
 
     def check_if_publication_approved(self, publication_paper_id):
-        for author_email in self.members_publications:
-            for publication in self.members_publications[author_email]:
-                if publication.get_paper_id() == publication_paper_id:
-                    return publication.approved == ApprovalStatus.APPROVED
-                    
+        publication = self.dal_controller.publications_repo.find_by_id(publication_paper_id)
+        return publication is not None and publication.approved == ApprovalStatus.APPROVED
 
     def get_all_approved_publications_of_member(self, email):
-        approved_publications = []
-        if email in self.members_publications:  # Check if the email exists in the dictionary
-            for publication in self.members_publications[email]:  # Iterate through the member's publications
-                if publication.approved == ApprovalStatus.APPROVED:  # Check if the publication is approved
-                    approved_publications.append(publication.to_dict())
-        return approved_publications
+        publications = self.dal_controller.publications_repo.find_by_domain(self.domain)
+        return [pub.to_dict() for pub in publications if pub.approved == ApprovalStatus.APPROVED and email in pub.author_emails]
     
     def get_all_not_approved_publications_of_member(self, email):
-        pubs = []
-        if email in self.members_publications:
-            for pub in self.members_publications[email]:
-                if pub.approved != ApprovalStatus.APPROVED.value:
-                    pubs.append(pub.to_dict())
-        return pubs
+        publications = self.dal_controller.publications_repo.find_by_domain(self.domain)
+        return [pub.to_dict() for pub in publications if pub.approved != ApprovalStatus.APPROVED.value and email in pub.author_emails]
 
     def set_publication_video_link(self, publication_paper_id, video_link) -> PublicationDTO:
-        for author_email in self.members_publications:
-            for publication in self.members_publications[author_email]:
-                if publication.get_paper_id() == publication_paper_id:
-                    publication.set_video_link(video_link)
-                    return publication
+        publication = self.dal_controller.publications_repo.find_by_id(publication_paper_id)
+        if publication:
+            publication.set_video_link(video_link)
+            self.dal_controller.publications_repo.save(publication_dto=publication, domain=self.domain)
+            return publication
+        raise Exception(ExceptionsEnum.PUBLICATION_NOT_FOUND.value)
 
     def set_publication_git_link(self, publication_paper_id, git_link) -> PublicationDTO:
-        for author_email in self.members_publications:
-            for publication in self.members_publications[author_email]:
-                if publication.get_paper_id() == publication_paper_id:
-                    publication.set_git_link(git_link)
-                    return publication
+        publication = self.dal_controller.publications_repo.find_by_id(publication_paper_id)
+        if publication:
+            publication.set_git_link(git_link)
+            self.dal_controller.publications_repo.save(publication_dto=publication, domain=self.domain)
+            return publication
+        raise Exception(ExceptionsEnum.PUBLICATION_NOT_FOUND.value)
 
-    def set_publication_presentation_link(self, publication_paper_id,link) -> PublicationDTO:
-        for author_email in self.members_publications:
-            for publication in self.members_publications[author_email]:
-                if publication.get_paper_id() == publication_paper_id:
-                    publication.set_presentation_link(link)
-                    return publication
+    def set_publication_presentation_link(self, publication_paper_id, link) -> PublicationDTO:
+        publication = self.dal_controller.publications_repo.find_by_id(publication_paper_id)
+        if publication:
+            publication.set_presentation_link(link)
+            self.dal_controller.publications_repo.save(publication_dto=publication, domain=self.domain)
+            return publication
+        raise Exception(ExceptionsEnum.PUBLICATION_NOT_FOUND.value)
 
-    def check_if_member_is_publication_author(self,publication_paper_id, email):
-        if email in self.members_publications:
-            for publication in self.members_publications[email]:
-                if publication.get_paper_id() == publication_paper_id:
-                    return True
-        return False
+    def check_if_member_is_publication_author(self, publication_paper_id, email):
+        publication = self.dal_controller.publications_repo.find_by_id(publication_paper_id)
+        return publication is not None and email in publication.author_emails
 
     def get_publication_by_paper_id(self, paper_id) -> PublicationDTO:
-        for pub_list in self.members_publications.values():
-            for publication in pub_list:
-                if publication.get_paper_id() == paper_id:
-                    return publication
-        
-        # # Lazy-load from DB if not found (we don't do that anymore)
-        # publication = DAL_controller().publications_repo.find_by_id(paper_id=paper_id)
-        # if publication:
-        #     for author in publication.author_emails:
-        #         if author not in self.members_publications:
-        #             self.members_publications[author] = []
-        #         if publication not in self.members_publications[author]:
-        #             self.members_publications[author].append(publication)
-        #     return publication
-        return None
+        publication = self.dal_controller.publications_repo.find_by_id(paper_id)
+        if not publication:
+            raise Exception(ExceptionsEnum.PUBLICATION_NOT_FOUND.value)
+        return publication
     
     def is_publication_rejected(self, paper_id):
-        return self.get_publication_by_paper_id(paper_id=paper_id).approved == ApprovalStatus.REJECTED
+        publication = self.get_publication_by_paper_id(paper_id)
+        return publication.approved == ApprovalStatus.REJECTED
 
     def final_approve_publication(self, paper_id) -> PublicationDTO:
         publication = self.get_publication_by_paper_id(paper_id)
         publication.approved = ApprovalStatus.APPROVED
+        self.dal_controller.publications_repo.save(publication_dto=publication, domain=self.domain)
         return publication
 
     def get_domain(self):
@@ -181,83 +129,52 @@ class Website:
 
     def set_about_us(self, about_us_text):
         self.about_us = about_us_text
+        self.dal_controller.website_repo.save(website_dto=self.to_dto())
 
     def get_contact_us(self):
+        if not self.contact_info:
+            return None
         return self.contact_info.to_dict()
 
     def set_contact_info(self, contact_info_dto):
         self.contact_info = contact_info_dto
+        self.dal_controller.website_repo.save(website_dto=self.to_dto())
 
     def initial_approve_publication(self, publication_id) -> PublicationDTO:
         publication = self.get_publication_by_paper_id(publication_id)
         publication.approved = ApprovalStatus.FINAL_PENDING
+        self.dal_controller.publications_repo.save(publication_dto=publication, domain=self.domain)
         return publication
 
     def get_all_initial_pending_publication(self):
-        initial_publications = []
-        seen_paper_ids = set()  # To track unique paper IDs
-
-        for publications in self.members_publications.values():  # Iterate over all author-publication lists
-            for publication in publications:  # Iterate over publications for each author
-                if publication.approved == ApprovalStatus.INITIAL_PENDING and publication.get_paper_id() not in seen_paper_ids:
-                    initial_publications.append(publication)
-                    seen_paper_ids.add(publication.get_paper_id())  # Mark the paper ID as seen
-
-        return initial_publications
+        publications = self.dal_controller.publications_repo.find_by_domain(self.domain)
+        return [pub for pub in publications if pub.approved == ApprovalStatus.INITIAL_PENDING]
 
     def get_all_final_pending_publication(self):
-        final_publications = []
-        seen_paper_ids = set()  # To track unique paper IDs
-
-        for publications in self.members_publications.values():  # Iterate over all author-publication lists
-            for publication in publications:  # Iterate over publications for each author
-                if publication.approved == ApprovalStatus.INITIAL_PENDING and publication.get_paper_id() not in seen_paper_ids:
-                    final_publications.append(publication)
-                    seen_paper_ids.add(publication.get_paper_id())  # Mark the paper ID as seen
-
-        return final_publications
+        publications = self.dal_controller.publications_repo.find_by_domain(self.domain)
+        return [pub for pub in publications if pub.approved == ApprovalStatus.FINAL_PENDING]
 
     def reject_publication(self, publication_id) -> PublicationDTO:
         publication = self.get_publication_by_paper_id(publication_id)
         publication.approved = ApprovalStatus.REJECTED
+        self.dal_controller.publications_repo.save(publication_dto=publication, domain=self.domain)
         return publication
 
     def add_news_record(self, news_record: NewsRecord_dto):
         """
         Adds a news record to the website's news list.
         """
-        self.news.append(news_record)
+        self.dal_controller.News_repo.save_news_record(news_record_dto=news_record)
     
     def to_dto(self) -> website_dto:
         return website_dto(
             domain=self.domain,
-            contact_info=json.dumps(self.contact_info.to_dict()) if self.contact_info else None,
-            about_us=self.about_us
+            contact_info=json.dumps(self.contact_info.to_dict()) if self.contact_info else "",
+            about_us=self.about_us or ""
         )
-    
-    def load_author_publications(self, author_email: str):
-        if author_email in self.members_publications:
-            return
-        pub_list = DAL_controller().publications_repo.find_by_author_email(author_email, self.domain)
-        self.members_publications[author_email] = pub_list
-
-    def reload_all_publications(self):
-        self.members_publications.clear()
-        pub_list = DAL_controller().publications_repo.find_by_domain(self.domain)
-        self.load_pub_dtos(pub_list)
-
-    def clear_publications(self):
-        self.members_publications.clear()
-
-    def load_pub_dtos(self, pub_list: list[PublicationDTO]):
-        for pub in pub_list:
-            for author in pub.author_emails:
-                if author not in self.members_publications:
-                    self.members_publications[author] = []
-                self.members_publications[author].append(pub)
 
     def set_news(self, news_list):
         self.news = news_list
 
     def get_news(self):
-        return self.news
+        return self.dal_controller.News_repo.find_news_by_domain(self.domain)

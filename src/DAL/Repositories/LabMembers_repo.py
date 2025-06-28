@@ -12,20 +12,26 @@ class LabMembersRepository:
         result = self.db_manager.execute_query(query, (domain, email))
         return self._row_to_labMember_dto(result[0]) if result else None
 
-    def find_all_users_by_domain(self, domain):
-        return self._find_by_role(table="LabRoles_users", domain=domain)
-
-    def find_all_members_by_domain(self, domain):
-        return self._find_by_role(table="LabRoles_members", domain=domain)
+    def find_all_lab_members_by_domain(self, domain):
+        return self._find_by_role(role="member", domain=domain)
 
     def find_all_managers_by_domain(self, domain):
-        return self._find_by_role(table="LabRoles_managers", domain=domain)
+        return self._find_by_role(role="manager", domain=domain)
 
     def find_all_siteCreators_by_domain(self, domain):
-        return self._find_by_role(table="LabRoles_siteCreator", domain=domain)
+        return self._find_by_role(role="creator", domain=domain)
 
     def find_all_alumnis_by_domain(self, domain):
-        return self._find_by_role(table="LabRoles_alumnis", domain=domain)
+        return self._find_by_role(role="alumni", domain=domain)
+
+    def find_all_by_domain(self, domain):
+        # get all members from lab_members table by the domain
+        query = """
+        SELECT * FROM lab_members
+        WHERE domain = ?
+        """
+        results = self.db_manager.execute_query(query, (domain,))
+        return [self._row_to_labMember_dto(row) for row in results]
 
     def find_all_pending_emails_by_domain(self, domain):
         query="""
@@ -35,6 +41,14 @@ class LabMembersRepository:
         """
         results = self.db_manager.execute_query(query, (domain,))
         return [row['email'] for row in results]
+    
+    #get status of email by domain and email
+    def get_status_of_email_by_domain_email(self, domain, email):
+        query = """
+        SELECT status FROM emails_pending WHERE domain = ? AND email = ?
+        """
+        result = self.db_manager.execute_query(query, (domain, email))
+        return result[0]['status'] if result else None
 
 
     #==========SAVE SECTION -> Later for easier data handling we can keep only the save_to_labRoles functions and merge them with save_labMember function
@@ -43,9 +57,9 @@ class LabMembersRepository:
         query = """
         INSERT INTO lab_members (
             domain, email, second_email, linkedin_link, scholar_link,
-            media, full_name, degree, bio, profile_picture, email_notifications
+            media, full_name, degree, bio, profile_picture, email_notifications, role
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(domain, email) DO UPDATE SET
             second_email = excluded.second_email,
             linkedin_link = excluded.linkedin_link,
@@ -55,7 +69,8 @@ class LabMembersRepository:
             degree = excluded.degree,
             bio = excluded.bio,
             profile_picture = excluded.profile_picture,
-            email_notifications = excluded.email_notifications
+            email_notifications = excluded.email_notifications,
+            role = excluded.role
         """
         params = (
             labMemberDTO.domain,
@@ -68,34 +83,11 @@ class LabMembersRepository:
             labMemberDTO.degree,
             labMemberDTO.bio,
             labMemberDTO.profile_picture,
-            labMemberDTO.email_notifications
+            labMemberDTO.email_notifications,
+            labMemberDTO.role
         )
         return self.db_manager.execute_update(query, params) > 0
     
-
-    def save_to_LabRoles_users(self, email, domain):
-        return self._save_role(table="LabRoles_users", domain=domain, email=email)
-    
-
-    def save_to_LabRoles_members(self, email, domain):
-        query="""
-        INSERT OR REPLACE INTO LabRoles_members(domain, email)
-        VALUES(?, ?)
-        """
-        return self._save_role(table="LabRoles_members", domain=domain, email=email)
-    
-
-    def save_to_LabRoles_managers(self, email, domain):
-        return self._save_role(table="LabRoles_managers", domain=domain, email=email)
-    
-
-    def save_to_LabRoles_siteCreator(self, email, domain):
-        return self._save_role(table="LabRoles_siteCreator", domain=domain, email=email)
-    
-
-    def save_to_LabRoles_alumnis(self, email, domain):
-        return self._save_role(table="LabRoles_alumnis", domain=domain, email=email)
-
     def save_to_emails_pending(self, email, domain, status):
         query = """
         INSERT INTO emails_pending (domain, email, status)
@@ -110,45 +102,17 @@ class LabMembersRepository:
         query = "DELETE FROM lab_members WHERE email = ? AND domain = ?"
         return self.db_manager.execute_update(query, (email, domain)) > 0
     
+    def delete_from_emails_pending(self, email, domain):
+        query = "DELETE FROM emails_pending WHERE email = ? AND domain = ?"
+        return self.db_manager.execute_update(query, (email, domain)) > 0
 
-    def _save_role(self, table, domain, email):
-        self.clear_member_role(email=email, domain=domain)
-        query = f"""
-        INSERT INTO {table} (domain, email)
-        VALUES (?, ?)
-        ON CONFLICT(domain, email) DO NOTHING
+    def _find_by_role(self, role, domain):
+        query = """
+        SELECT * FROM lab_members
+        WHERE domain = ? AND role = ?
         """
-        return self.db_manager.execute_update(query, (domain, email)) > 0
-
-
-    def _find_by_role(self, table, domain):
-        query = f"""
-            SELECT lm.* FROM lab_members AS lm
-            INNER JOIN {table} AS role
-            ON lm.domain = role.domain AND lm.email = role.email
-            WHERE role.domain = ?
-        """
-        results = self.db_manager.execute_query(query, (domain,))
-        return [self._row_to_labMember_dto(row) for row in results]
-    
-    def clear_member_role(self, email, domain):
-        """
-        Remove a (domain, email) pair from all LabRoles_* tables and emails_pending.
-        """
-        role_tables = [
-            "LabRoles_users",
-            "LabRoles_members",
-            "LabRoles_managers",
-            "LabRoles_siteCreator",
-            "LabRoles_alumnis",
-            "emails_pending"
-        ]
-        total_deleted = 0
-        for table in role_tables:
-            query = f"DELETE FROM {table} WHERE domain = ? AND email= ?"
-            total_deleted += self.db_manager.execute_update(query, (domain, email))
-        return total_deleted
-    
+        result = self.db_manager.execute_query(query, (domain, role))
+        return [self._row_to_labMember_dto(row) for row in result]
 
     def _row_to_labMember_dto(self, row):
         return lab_member_dto(
@@ -162,5 +126,6 @@ class LabMembersRepository:
             degree=row['degree'],
             bio=row['bio'],
             profile_picture=row['profile_picture'],
-            email_notifications=bool(row['email_notifications'])
+            email_notifications=bool(row['email_notifications']),
+            role=row['role']
         )

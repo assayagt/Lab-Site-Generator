@@ -49,7 +49,7 @@ class GeneratorSystemController:
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
         self.site_custom_facade.error_if_domain_already_exist(domain)
-        email = self.user_facade.get_email_by_userId(user_id)
+        email = self.user_facade.get_email_from_token(user_id)
         self.site_custom_facade.create_new_site(domain, website_name, components, template, email)
         self.user_facade.create_new_site_manager(email, domain)
 
@@ -290,16 +290,14 @@ class GeneratorSystemController:
         self.user_facade.error_if_user_is_not_site_manager(manager_userId, domain)
         self.labSystem.register_new_LabMember_from_generator(email_to_register, lab_member_fullName, lab_member_degree, domain)
 
-    def login(self, userId, email):
+    def login(self, google_token):
         """
         login into the generator system  (should be via Google in the future).
         A user can log in to the generator system using any email address of their choice.
         """
-        self.user_facade.error_if_user_notExist(userId)
-        self.user_facade.error_if_email_is_not_valid(email)
-        self.user_facade.login(userId, email)
+        return self.user_facade.get_or_create_user_by_token(google_token)
 
-    def logout(self, userId):
+    def logout(self, userId):  # NOT USED ANYMORE
         """
         logout from the generator system (should be via Google in the future)
         """
@@ -337,7 +335,6 @@ class GeneratorSystemController:
         """
         Resets the entire system, clearing all users, websites, and lab-related data.
         """
-        self.user_facade.reset_system()
         self.site_custom_facade.reset_system()
         self.labSystem.reset_system()
 
@@ -347,7 +344,7 @@ class GeneratorSystemController:
         """
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
-        email = self.user_facade.get_email_by_userId(user_id)
+        email = self.user_facade.get_email_from_token(user_id)
         self.site_custom_facade.error_if_user_is_not_site_creator(email, domain)
         self.site_custom_facade.set_site_creator(domain, nominated_email)
         if new_role != "manager":
@@ -368,9 +365,6 @@ class GeneratorSystemController:
         """
         self.user_facade.error_if_user_notExist(user_id)
         self.user_facade.error_if_user_not_logged_in(user_id)
-        if self.site_custom_facade.get_if_site_is_generated(domain):
-            self.labSystem.delete_website(domain)
-        self.user_facade.delete_website(user_id, domain)
         self.site_custom_facade.delete_website(domain)
 
     def get_gallery_images(self, domain):
